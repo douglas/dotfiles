@@ -11,7 +11,7 @@
 ## General PATH changes
 ##
 export PATH="~/.bin:$PATH"
-export PATH="$PATH:/~/.local/bin"
+export PATH="$PATH:~/.local/bin"
 
 ##
 ## ADSF
@@ -50,7 +50,7 @@ bindkey '\e[F'    end-of-line
 ## Golang
 ##
 export GOPATH=$HOME
-export PATH=$PATH:$GOPATH/bin
+export PATH="$PATH:$GOPATH/bin"
 
 ##
 ## FZF
