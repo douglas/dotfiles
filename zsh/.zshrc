@@ -41,4 +41,6 @@ source ~/.zsh/extensions/ruby-on-rails.sh
 ##
 ## Work related configurations
 ##
-source ~/.zsh_private/prepare_environment.sh
+if [[ -f ~/.zsh_private/prepare_environment.sh ]]; then
+	source ~/.zsh_private/prepare_environment.sh
+fi
