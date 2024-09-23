@@ -19,3 +19,6 @@ solargraph.rb
 
 # TypeScript
 tsconfig.json
+
+# Ignore .zsh_private companies secrets files
+*.secrets.sh
