@@ -1,0 +1,112 @@
+[user]
+  name = Douglas Soares de Andrade
+  email = contato@douglasandrade.com
+	signingkey = /Users/douglas/.ssh/id_ed25519.pub
+[include]
+  path = ~/src/catppuccin/delta/catppuccin.gitconfig
+[includeIf "gitdir:~/work/"]
+  path = ~/work/.gitconfig
+[core]
+  pager = delta
+[interactive]
+  diffFilter = delta --color-only --features=interactive
+[delta]
+  dark = true
+  navigate = true  # use n and N to move between diff sections
+  # side-by-side = true
+  line-numbers = true
+  features = line-numbers decorations catppuccin-frappe
+  syntax-theme = Dracula
+[delta "decorations"]
+  commit-decoration-style = bold yellow box ul
+  file-style = bold yellow ul
+  file-decoration-style = none
+  hunk-header-decoration-style = cyan box ul
+[delta "line-numbers"]
+  line-numbers-left-style = cyan
+  line-numbers-right-style = cyan
+  line-numbers-minus-style = 124
+  line-numbers-plus-style = 28
+[diff]
+  colorMoved = default
+[diff]
+  tool = difftastic
+[difftool]
+  prompt = false
+[difftool "difftastic"]
+  cmd = difft "$LOCAL" "$REMOTE"
+[pager]
+  difftool = true
+[merge]
+	conflictstyle = zdiff3
+[alias]
+  # commits
+  ci = commit
+  cia = commit --amend --no-edit
+
+  # checkout
+  co = checkout
+
+  # cherry-pick
+  cp = cherry-pick
+  cpa = cherry-pick --abort
+
+  # fixup
+  rfixup = "!f() { TARGET=$(git log --pretty=oneline | sk | awk {' print $1'}); git commit --no-verify --fixup=$TARGET ${@:2} && EDITOR=true git rebase -i --autostash --autosquash $TARGET^; }; f"
+  nfixup = "!git log -n 50 --pretty=format:'%h %s' --no-merges | fzf | cut -c -7 | xargs -o git commit --no-verify --fixup"
+
+  # push
+  pushu = push --set-upstream origin HEAD
+  pf = push --force-with-lease --force-if-includes
+
+  # rebase
+  ri = "!git rebase --interactive `git merge-base @ origin/master`"
+  rii = "!EDITOR=true git rebase --interactive `git merge-base @ origin/master`"
+  rom = rebase origin/master
+  rs = rebase --skip
+  rc = rebase --continue
+
+  # stash
+  s = stash
+  sk = stash --keep-index
+  sp = stash pop
+  ss = show stash
+
+  # status
+  st = status -sb
+
+  # submodules
+  su = submodule update --init --recursive
+  suu = submodule update --init --recursive --remote
+
+  # tags
+  ptags = push --tags
+[core]
+  excludesfile = /Users/douglas/.gitignore
+[rebase]
+  autosquash = true
+  autostash = true
+[pull]
+  rebase = true
+[filter "lfs"]
+  process = git-lfs filter-process
+  required = true
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+[init]
+  defaultBranch = main
+[absorb]
+  maxStack=50
+[commit]
+  template = /Users/douglas/.gitmessage
+	gpgsign = true
+[fetch]
+  prune = true
+[url "ssh://git@github.com/"]
+  insteadOf = https://github.com/
+[rerere]
+  enabled = true
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	allowedSignersFile = /Users/douglas/.ssh/id_ed25519.pub
