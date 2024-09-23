@@ -22,7 +22,8 @@ fi
 alias ls="eza"
 alias ll="eza -la"
 alias lt="eza -laT -I .git ."
-alias zshconfig="zed ~/.zshrc"
+alias zshconfig="zed ~/.public_dotfiles ~/.private_dotfiles"
+alias zshreload="source ~/.zshrc"
 
 ##
 ## Environment Variables

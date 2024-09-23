@@ -10,7 +10,7 @@
 ##
 ## General PATH changes
 ##
-export PATH="~/.bin:$PATH"
+export PATH="$PATH:~/.bin"
 export PATH="$PATH:~/.local/bin"
 
 ##
