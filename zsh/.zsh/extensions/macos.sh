@@ -8,12 +8,6 @@
 [[ -x /opt/homebrew/bin/brew ]] && eval $(/opt/homebrew/bin/brew shellenv)
 
 ##
-## General PATH changes
-##
-export PATH="$PATH:~/.bin"
-export PATH="$PATH:~/.local/bin"
-
-##
 ## ADSF
 ##
 source /opt/homebrew/opt/asdf/libexec/asdf.sh
@@ -72,3 +66,9 @@ source <(fzf --zsh)
 # Requires zsh-autosuggestions and zsh-syntax-highlighting zsh plugins
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+##
+## General PATH changes
+##
+export PATH="~/.local/bin:$PATH"
+export PATH="~/.bin:$PATH"
