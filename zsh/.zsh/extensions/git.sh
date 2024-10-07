@@ -21,6 +21,7 @@ alias gcob="git cob"
 alias gco="git co"
 alias gcp="git cp"
 alias gpull="git pull"
+alias gpush="git push"
 
 # Requires GitHub CLI (gh)
 function pr() { gh pr create -w }

@@ -20,5 +20,8 @@ solargraph.rb
 # TypeScript
 tsconfig.json
 
+# MacOS
+.DS_Store
+
 # Ignore .zsh_private companies secrets files
 *.secrets.sh
