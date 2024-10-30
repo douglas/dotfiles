@@ -81,6 +81,7 @@
 
   # tags
   ptags = push --tags
+	cleanup = "!git branch --merged | grep -E -v \"(master|main)\" | xargs git branch -d"
 [core]
   excludesfile = /Users/douglas/.gitignore
 [rebase]
