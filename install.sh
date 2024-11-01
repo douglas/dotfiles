@@ -14,4 +14,5 @@ else
 fi
 
 # Install git-cob in /usr/local/bin so git can use it
-sudo ln -s $HOME/.bin/git-cob /usr/local/bin/git-cob
+git_cob="/usr/local/bin/git-cob"
+[ ! -f "$git_cob" ] && sudo ln -s $HOME/.bin/git-cob "$git_cob"
