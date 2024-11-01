@@ -1,0 +1,41 @@
+# Console theme
+theme = catppuccin-frappe
+
+# Font configurations
+font-family = Operator Mono
+font-style = Book
+font-size = 16
+
+# Move between tabs like iterm2
+keybind = cmd+right=next_tab
+keybind = cmd+left=previous_tab
+
+# Increase the x padding so the text
+# is further away from the window border
+window-padding-x = 6,6
+
+# Default terminal height I normally use
+window-height = 34
+window-width = 127
+
+# Save ghostty window state
+window-save-state = always
+
+# Use a different titlebar configuration for macOS
+macos-titlebar-style = tabs
+
+
+# Previous changes I tried
+
+#window-padding-x = 10
+#window-padding-x = 10
+#window-padding-y = 6,6
+
+#font-thicken = true
+
+#background-opacity = 0.95
+
+#background-blur-radius = 30
+#unfocused-split-opacity = 0.95
+#macos-window-shadow = false
+#window-decoration = false
