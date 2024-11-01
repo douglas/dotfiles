@@ -8,9 +8,9 @@ stow git
 stow zsh
 
 if [[ $OPERATINGSYSTEM == 'macos' ]]; then
-  stow ghostty-macos
+  stow apps-macos
 else
-  stow ghostty-linux
+  stow apps-linux
 fi
 
 # Install git-cob in /usr/local/bin so git can use it
