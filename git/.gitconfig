@@ -1,7 +1,6 @@
 [user]
   name = Douglas Soares de Andrade
   email = contato@douglasandrade.com
-	signingkey = /Users/douglas/.ssh/id_ed25519.pub
 [include]
   path = ~/src/catppuccin/delta/catppuccin.gitconfig
 [includeIf "gitdir:~/work/"]
@@ -98,16 +97,9 @@
   defaultBranch = main
 [absorb]
   maxStack=50
-[commit]
-  template = /Users/douglas/.gitmessage
-	gpgsign = true
 [fetch]
   prune = true
 [url "ssh://git@github.com/"]
   insteadOf = https://github.com/
 [rerere]
   enabled = true
-[gpg]
-	format = ssh
-[gpg "ssh"]
-	allowedSignersFile = /Users/douglas/.ssh/id_ed25519.pub
