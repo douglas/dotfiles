@@ -41,6 +41,11 @@ source ~/.zsh/extensions/ruby-on-rails.sh
 source ~/.zsh/extensions/fzf.sh
 
 ##
+## Load Theme
+##
+source ~/.zsh/themes/catppuccin-frappe.sh
+
+##
 ## Work related configurations
 ##
 [[ -f ~/.zsh_private/load_environment.sh ]] && source ~/.zsh_private/load_environment.sh
