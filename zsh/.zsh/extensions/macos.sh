@@ -55,11 +55,6 @@ export GOPATH=$HOME
 export PATH="$PATH:$GOPATH/bin"
 
 ##
-## FZF
-##
-source <(fzf --zsh)
-
-##
 ## ZSH Plugins
 ##
 

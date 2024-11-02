@@ -38,6 +38,7 @@ source ~/.zsh/extensions/general.sh
 source ~/.zsh/extensions/networking.sh
 source ~/.zsh/extensions/git.sh
 source ~/.zsh/extensions/ruby-on-rails.sh
+source ~/.zsh/extensions/fzf.sh
 
 ##
 ## Work related configurations
