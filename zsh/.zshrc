@@ -19,6 +19,8 @@ fi
 ##
 ## Default aliases
 ##
+alias cat="bat"
+alias top="bottom"
 alias ls="eza"
 alias ll="eza -la"
 alias lt="eza -laT -I .git ."
