@@ -6,6 +6,7 @@ stow stow
 stow bin
 stow git
 stow zsh
+stow apps
 
 if [[ $OPERATINGSYSTEM == 'macos' ]]; then
   stow apps-macos
