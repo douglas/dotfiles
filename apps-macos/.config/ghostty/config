@@ -1,4 +1,4 @@
-# Console theme
+# Catppuccin Frappe theme
 theme = catppuccin-frappe
 
 # Font configurations
@@ -24,6 +24,7 @@ window-save-state = always
 # Use a different titlebar configuration for macOS
 macos-titlebar-style = tabs
 
+macos-option-as-alt=left
 
 # Previous changes I tried
 
