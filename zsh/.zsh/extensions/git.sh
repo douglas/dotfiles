@@ -25,6 +25,8 @@ alias gco="git co"
 alias gcp="git cp"
 alias gpull="git pull"
 alias gpush="git push"
+alias gremr="git reset --hard origin/master"
+alias gremn="git reset --hard origin/main"
 
 # Requires GitHub CLI (gh)
 function pr() { gh pr create -w }
