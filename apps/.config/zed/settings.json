@@ -1,0 +1,104 @@
+{
+	"telemetry": {
+		"diagnostics": false,
+		"metrics": false
+	},
+	"language_models": {
+		"ollama": {
+			"low_speed_timeout_in_seconds": 30
+		}
+	},
+	"base_keymap": "JetBrains",
+	"assistant": {
+		"default_model": {
+			"provider": "copilot_chat",
+			"model": "gpt-4o"
+		},
+		"version": "2",
+		"provider": null
+	},
+	// "vim_mode": true,
+	"features": {
+		"copilot": true
+	},
+	"show_inline_completions": true,
+	"theme": "Catppuccin Frappé",
+	"buffer_font_family": "Operator Mono book",
+	"soft_wrap": "editor_width",
+	"hard_tabs": true,
+	"tab_size": 2,
+	"format_on_save": "off",
+	"buffer_font_size": 16,
+	"buffer_line_height": {
+		"custom": 1.7
+	},
+	"indent_guides": {
+		"enabled": false
+	},
+	"tab_bar": {
+		"show": true
+	},
+	"semantic_index": {
+		"enabled": true
+	},
+	"languages": {
+		"Ruby": {
+			"show_inline_completions": true,
+			// "formatter": {
+			// 	"external": {
+			// 		"command": "./bin/bundle",
+			// 		"arguments": [
+			// 			"exec",
+			// 			"rubocop",
+			// 			"--server",
+			// 			"--autocorrect",
+			// 			"--fail-level",
+			// 			"error",
+			// 			"--stdin",
+			// 			"corrected.rb",
+			// 			"--stderr"
+			// 		]
+			// 	}
+			// },
+			"language_servers": [
+				"ruby-lsp",
+				"tailwindcss-language-server",
+				"!solargraph"
+			]
+		},
+		"Markdown": {
+			"soft_wrap": "preferred_line_length",
+			"preferred_line_length": 80,
+			"hard_tabs": false
+		},
+		"YAML": {
+			"hard_tabs": false
+		}
+	},
+	"lsp": {
+		"ruby-lsp": {
+			"initialization_options": {
+				"enabledFeatures": {
+					"diagnostics": false
+				}
+			}
+		},
+		"rubocop": {
+			"initialization_options": {
+				"safeAutocorrect": false
+			}
+		}
+		// 	"tailwindcss-language-server": {
+		// 		"settings": {
+		// 			"includeLanguages": {
+		// 				"erb": "html",
+		// 				"ruby": "html"
+		// 			},
+		// 			"experimental": {
+		// 				"classRegex": ["\\bclass:\\s*['\"]([^'\"]*)['\"]"]
+		// 			}
+		// 		}
+		// 	}
+	},
+	"file_scan_exclusions": ["*.git", "*.DS_Store"]
+}
