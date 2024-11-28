@@ -9,5 +9,5 @@ branch=$(git for-each-ref --color --sort=-committerdate \
         xargs)
 
 if [ ! -z "$branch" ] ; then
-    git checkout "$branch"
+    git switch "$branch"
 fi

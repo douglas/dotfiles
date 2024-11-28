@@ -81,7 +81,11 @@
 
   # tags
   ptags = push --tags
-	cleanup = "!git branch --merged | grep -E -v \"(master|main)\" | xargs git branch -d"
+
+  # cleanup
+	cleanup-merged = "!git branch --merged | grep -E -v \"(master|main)\" | xargs git branch -d"
+	cleanup-gone = "!for branch in $(git for-each-ref --format '%(refname) %(upstream:track)' refs/heads | awk '$2 == \"[gone]\" {sub(\"refs/heads/\", \"\", $1); print $1}'); do git branch -D $branch; done"
+	cleanup = cleanup-merged & cleanup-gone
 [core]
   excludesfile = /Users/douglas/.gitignore
 [rebase]
@@ -110,3 +114,5 @@
 	allowedSignersFile = /Users/douglas/.ssh/id_ed25519.pub
 [commit]
 	gpgsign = true
+[push]
+	autoSetupRemote = true
