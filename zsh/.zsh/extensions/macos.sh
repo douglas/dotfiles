@@ -17,7 +17,12 @@ export HOMEBREW_NO_ANALYTICS=1
 ##
 ## ADSF
 ##
-source /opt/homebrew/opt/asdf/libexec/asdf.sh
+#source /opt/homebrew/opt/asdf/libexec/asdf.sh
+
+##
+## Mise
+##
+eval "$(mise activate zsh)"
 
 ##
 ## Rubymine
