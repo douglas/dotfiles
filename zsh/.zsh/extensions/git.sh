@@ -26,6 +26,7 @@ alias gcp="git cp"
 alias gpull="git pull"
 alias gpush="git push"
 alias gpushu="git pushu"
+alias gpushf="git pf"
 alias gremr="git reset --hard origin/master"
 alias gremn="git reset --hard origin/main"
 
