@@ -27,8 +27,8 @@ alias gpull="git pull"
 alias gpush="git push"
 alias gpushu="git pushu"
 alias gpushf="git pf"
-alias gremr="git reset --hard origin/master"
-alias gremn="git reset --hard origin/main"
+alias gresmr="git reset --hard origin/master"
+alias gresmn="git reset --hard origin/main"
 
 # Requires GitHub CLI (gh)
 function pr() { gh pr create -w }
