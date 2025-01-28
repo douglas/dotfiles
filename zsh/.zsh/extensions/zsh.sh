@@ -2,6 +2,9 @@
 ## ZSH Configuration
 #
 
+# ZSH Auto Complete
+# source /opt/homebrew/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+
 # ZSH_HISTORY
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=10000000
@@ -20,5 +23,7 @@ setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording en
 setopt HIST_VERIFY               # Don't execute immediately upon history expansion.
 setopt HIST_BEEP                 # Beep when accessing nonexistent history.
 autoload -Uz compinit
-zstyle ':completion:*' menu select
 fpath+=~/.zfunc
+
+# ZSH Completion tweaks
+zstyle ':completion:*' menu select
