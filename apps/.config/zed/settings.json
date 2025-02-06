@@ -22,6 +22,12 @@
 	"features": {
 		"copilot": true
 	},
+	"terminal": {
+		"dock": "bottom",
+		"font_family": "Operator Mono book",
+		"font_size": 16,
+		"line_height": "standard"
+  },
 	"show_inline_completions": true,
 	"theme": "Catppuccin Frappé",
 	"buffer_font_family": "Operator Mono book",
