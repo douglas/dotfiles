@@ -3,7 +3,7 @@
   email = contato@douglasandrade.com
 	signingkey = /Users/douglas/.ssh/id_ed25519.pub
 [include]
-  path = ~/src/catppuccin/delta/catppuccin.gitconfig
+  path = ~/.config/delta/catppuccin.gitconfig
 [includeIf "gitdir:~/work/"]
   path = ~/work/.gitconfig
 [core]
@@ -16,7 +16,6 @@
   # side-by-side = true
   line-numbers = true
   features = line-numbers decorations catppuccin-frappe
-  syntax-theme = Dracula
 [delta "decorations"]
   commit-decoration-style = bold yellow box ul
   file-style = bold yellow ul
