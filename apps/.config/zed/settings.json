@@ -24,13 +24,14 @@
 	},
 	"terminal": {
 		"dock": "bottom",
-		"font_family": "Operator Mono book",
+		"font_family": "OperatorMono Nerd Font",
 		"font_size": 16,
+		"font_weight": 300,
 		"line_height": "standard"
   },
 	"show_inline_completions": true,
 	"theme": "Catppuccin Frappé",
-	"buffer_font_family": "Operator Mono book",
+	"buffer_font_family": "Operator Mono Book",
 	"soft_wrap": "editor_width",
 	"hard_tabs": true,
 	"tab_size": 2,
