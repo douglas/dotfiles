@@ -84,6 +84,13 @@
 				}
 			}
 		},
+	  "languages": {
+	    "JavaScript": {
+	      "code_actions_on_format": {
+	        "source.fixAll.eslint": true
+	      }
+	    }
+	  },
 		"rubocop": {
 			"initialization_options": {
 				"safeAutocorrect": false
