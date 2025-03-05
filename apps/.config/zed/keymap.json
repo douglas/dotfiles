@@ -2,9 +2,9 @@
   {
     "context": "Workspace",
     "bindings": {
-      "cmd-k cmd-g": ["task::Spawn", { "task_name": "Open repository in lazygit" }],
-      "cmd-k g": ["task::Spawn", { "task_name": "Open repository in Sublime Merge" }],
-      "cmd-8": ["task::Spawn", { "task_name": "Open lazydocker" }],
+      "cmd-k cmd-g": ["task::Spawn", { "task_name": "open_repository_in_lazygit" }],
+      "cmd-k g": ["task::Spawn", { "task_name": "open_repository_in_sublime_merge" }],
+      "cmd-8": ["task::Spawn", { "task_name": "open_lazydocker" }],
       "cmd-k cmd-t": "workspace::NewTerminal",
       "cmd-k t": "terminal_panel::ToggleFocus"
     }
