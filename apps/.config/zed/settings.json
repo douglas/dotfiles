@@ -5,6 +5,7 @@
  "edit_predictions": {
   "mode": "eager_preview"
  },
+ "confirm_quit": true,
  "icon_theme": "Material Icon Theme",
  "telemetry": {
 		"diagnostics": false,
