@@ -44,7 +44,7 @@
 	"buffer_font_family": "Operator Mono Book",
 	"buffer_font_size": 16,
 	"soft_wrap": "editor_width",
-	"hard_tabs": true,
+	"hard_tabs": false,
 	"tab_size": 2,
 	"format_on_save": "off",
 	"indent_guides": {
