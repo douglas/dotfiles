@@ -25,3 +25,6 @@ tsconfig.json
 
 # Ignore .zsh_private companies secrets files
 *.secrets.sh
+
+# Ignore yarn cache files
+.yarn/cache/*.*

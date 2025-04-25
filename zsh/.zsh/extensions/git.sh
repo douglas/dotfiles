@@ -14,7 +14,6 @@ alias gclean="git clean -fd"
 alias gcleanb="git cleanup"
 alias gst="git status"
 alias gdiff="git diff"
-alias gst="git st"
 alias gci="git ci -m "
 alias gcia="git cia --amend"
 alias grfixup="git rfixup"
@@ -41,6 +40,15 @@ function grcb() {
 # Delete the current branch on the remote
 function gdrb() {
 	git push origin -d $(gcb)
+}
+
+# Create a new branch with the given name
+function gnb() {
+  if [ -z "$1" ]; then
+    echo "Usage: gnb <branch>"
+  else
+    git checkout -b dsa/$1
+  fi
 }
 
 # Rebase the current branch on top of master
