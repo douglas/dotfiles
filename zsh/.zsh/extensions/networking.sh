@@ -3,11 +3,11 @@
 #
 
 # Ports in use
-function piu() {
+function openports() {
 	sudo lsof -iTCP -sTCP:LISTEN -n -P
 }
 
 # Processes using a specific port
-function pusp() {
+function pup() {
   sudo lsof -iTCP -sTCP:LISTEN -n -P | grep -i --color $1
 }
