@@ -61,9 +61,6 @@
   # Show the most recent commit with difftastic.
   ds = -c diff.external=difft show --ext-diff
 
-  # `git diff` with difftastic.
-  dft = -c diff.external=difft diff
-
   # fixup
   rfixup = "!f() { TARGET=$(git log --pretty=oneline | sk | awk {' print $1'}); git commit --no-verify --fixup=$TARGET ${@:2} && EDITOR=true git rebase -i --autostash --autosquash $TARGET^; }; f"
   nfixup = "!git log -n 50 --pretty=format:'%h %s' --no-merges | fzf | cut -c -7 | xargs -o git commit --no-verify --fixup"
@@ -75,9 +72,6 @@
   # rebase
   ri = "!git rebase --interactive `git merge-base @ origin/master`"
   rii = "!EDITOR=true git rebase --interactive `git merge-base @ origin/master`"
-  rom = rebase origin/master
-  rs = rebase --skip
-  rc = rebase --continue
 
   # stash
   s = stash

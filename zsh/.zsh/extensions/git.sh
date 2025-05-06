@@ -5,54 +5,49 @@
 ## Path changes
 export PATH="/Users/douglas/src/git-fuzzy/bin:$PATH"
 
-## Aliases
+## Git Aliases
 alias g="git"
+
+### Add
 alias gadd="git add"
+alias gadda='git add .'
+
+# Branches
 alias gbc="git branch --show-current | pbcopy"
 alias gcb="git branch --show-current"
-alias gclean="git clean -fd"
-alias gcleanup="git cleanup-merged && git cleanup-gone"
-alias gst="git status"
-alias gdiff="git diff"
+
+### Commit
 alias gci="git ci -m "
 alias gcia="git cia --amend"
+
+### Diff
+alias gdiff="git ddiff"
+
+### Fixup
 alias grfixup="git rfixup"
 alias gnfixup="git nfixup"
-alias gpf="git pf"
+
+### Cherry Pick
+alias gcp="git cp"
+
+### Cleanup
+alias gclean="git clean -fd"
+alias gcleanup="git cleanup-merged && git cleanup-gone"
+
+### Checkout / New Branch
 alias gcob="git cob"
 alias gco="git co"
-alias gcp="git cp"
-alias gpull="git pull"
-alias gpush="git push"
-alias gpushu="git pushu"
-alias gpushf="git pf"
-alias gresmr="git reset --hard origin/master"
-alias gresmn="git reset --hard origin/main"
+alias gnb="git checkout -b dsa/$1"
 
-# Requires GitHub CLI (gh)
-function pr() { gh pr create -w }
-
-# Reset the current branch to the remote branch
-function grcb() {
-	git reset --hard origin/$(gcb)
-}
-
-# Delete the current branch on the remote
-function gdrb() {
-	git push origin -d $(gcb)
-}
-
-# Create a new branch with the given name
-function gnb() {
-  if [ -z "$1" ]; then
-    echo "Usage: gnb <branch>"
-  else
-    git checkout -b dsa/$1
-  fi
-}
+### Rebase
+alias grbs="git rebase --skip"
+alias grbc="git rebase --continue"
+alias grba="git rebase --abort"
+alias grbi="git rebase --interactive"
+alias grbm="git rebase origin/master"
 
 # Rebase the current branch on top of master
-function girb() {
+function grbmm() {
   if [ -z "$1" ]; then
     echo "Usage: girb <branch>"
   else
@@ -60,12 +55,40 @@ function girb() {
   fi
 }
 
+# Pull
+alias gpull="git pull"
+alias gpush="git push"
+alias gpushu="git pushu"
+alias gpushf="git pf"
+
+# Status
+alias gst="git status"
+
+# Git Reset
+alias grsmr="git reset --hard origin/master"
+alias grsmn="git reset --hard origin/main"
+
+# Reset the current branch to the remote branch
+function grscb() {
+	git reset --hard origin/$(gcb)
+}
+
+### Auxiliary Functions / Methods
+
+# Creates a new GH PR - requires GitHub CLI (gh)
+function pr() { gh pr create -w }
+
+# Delete the current branch on the remote
+function grmbr() {
+	git push origin -d $(gcb)
+}
+
 # Run git pull in parallel for all repos in the current directory
 # Requires GNU Parallel
 alias updall="gfind . -maxdepth 8 -name '.git' -prune -type d -printf '%h\n' | parallel --eta 'echo {} && git -C {} pull'"
 
 # Count the number of commits between current branch and the selected branch
-function bcommits() {
+function gbcommits() {
   if [ -z "$1" ]; then
     echo "Usage: bcommits <branch>"
   else
