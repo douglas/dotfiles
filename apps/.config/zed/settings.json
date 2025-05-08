@@ -11,13 +11,13 @@
 		"diagnostics": false,
 		"metrics": false
 	},
+	"base_keymap": "VSCode",
 	"language_models": {
 		"ollama": {
 			"low_speed_timeout_in_seconds": 30
 		}
 	},
-	"base_keymap": "VSCode",
-	"assistant": {
+	"agent": {
 		"default_model": {
 			"provider": "copilot_chat",
 			"model": "gpt-4.1"

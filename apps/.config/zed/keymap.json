@@ -10,9 +10,17 @@
     }
   },
   {
-    "context": "ContextEditor > Editor",
+    "context": "!ContextEditor > Editor && mode == full",
+    "use_key_equivalents": true,
     "bindings": {
-      "cmd-k i": "assistant::Assist"
+      "alt-enter": "editor::OpenExcerpts",
+      "shift-enter": "editor::ExpandExcerpts",
+      "cmd-alt-enter": "editor::OpenExcerptsSplit",
+      "cmd-shift-e": "pane::RevealInProjectPanel",
+      "cmd-f8": "editor::GoToHunk",
+      "cmd-shift-f8": "editor::GoToPreviousHunk",
+      "cmd-k i": "assistant::InlineAssist",
+      "ctrl-:": "editor::ToggleInlayHints"
     }
-  }
+  },
 ]
