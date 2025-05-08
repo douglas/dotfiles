@@ -18,6 +18,8 @@ alias gcb="git branch --show-current"
 
 ### Commit
 alias gci="git ci -m "
+alias gciw="git ci -m 'wip'"
+alias gaciw="gadda & gciw"
 alias gcia="git cia --amend"
 
 ### Diff
@@ -67,6 +69,15 @@ alias gst="git status"
 # Git Reset
 alias grsmr="git reset --hard origin/master"
 alias grsmn="git reset --hard origin/main"
+alias grs="git reset HEAD~"
+
+function grsh() {
+  if [ -z "$1" ]; then
+    echo "Usage: grsh <num_of_commits>"
+  else
+    git reset HEAD~$1
+  fi
+}
 
 # Reset the current branch to the remote branch
 function grscb() {
