@@ -1,122 +1,195 @@
 {
-	"git_panel": {
-  "dock": "right"
- },
- "edit_predictions": {
-  "mode": "subtle"
- },
- "confirm_quit": true,
- "icon_theme": "Material Icon Theme",
- "telemetry": {
-		"diagnostics": false,
-		"metrics": false
-	},
-	"base_keymap": "VSCode",
-	"language_models": {
-		"ollama": {
-			"low_speed_timeout_in_seconds": 30
-		}
-	},
-	"agent": {
-		"default_model": {
-			"provider": "copilot_chat",
-			"model": "gpt-4.1"
-		},
-		"version": "2",
-		"provider": null
-	},
-	// "vim_mode": true,
-	"features": {
-		"edit_prediction_provider": "zed",
-  "copilot": true
-	},
-	"terminal": {
-		"dock": "bottom",
-		"font_family": "OperatorMono Nerd Font",
-		"font_size": 16,
-		"font_weight": 300,
-		"line_height": "standard"
+  "git_panel": {
+    "dock": "right"
   },
-	"show_edit_predictions": true,
-	"theme": "Catppuccin Frappé",
-	"ui_font_family": "Operator Mono SSm Book",
-	"ui_font_size": 16,
-	"buffer_font_family": "Operator Mono Book",
-	"buffer_font_size": 16,
-	"soft_wrap": "editor_width",
-	"hard_tabs": false,
-	"tab_size": 2,
-	"format_on_save": "off",
-	"indent_guides": {
-		"enabled": false
-	},
-	"experimental.theme_overrides": {
-	  "syntax": {
-	    "keyword": {
-	      "font_style": "italic",
-	    }
-	  }
-	},
-	"tab_bar": {
-		"show": true
-	},
-	"semantic_index": {
-		"enabled": true
-	},
-	"languages": {
-		"Ruby": {
-			"show_edit_predictions": true,
-			// "formatter": {
-			// 	"external": {
-			// 		"command": "./bin/bundle",
-			// 		"arguments": [
-			// 			"exec",
-			// 			"rubocop",
-			// 			"--server",
-			// 			"--autocorrect",
-			// 			"--fail-level",
-			// 			"error",
-			// 			"--stdin",
-			// 			"corrected.rb",
-			// 			"--stderr"
-			// 		]
-			// 	}
-			// },
-			"language_servers": [
-				"ruby-lsp",
-				"tailwindcss-language-server",
-				"!solargraph"
-			]
-		},
-		"Markdown": {
-			"soft_wrap": "preferred_line_length",
-			"preferred_line_length": 80,
-			"hard_tabs": false
-		},
-		"YAML": {
-			"hard_tabs": false
-		}
-	},
-	"lsp": {
-		"ruby-lsp": {
-			"initialization_options": {
-				"enabledFeatures": {
-					"diagnostics": false
-				}
-			}
-		},
-	  "languages": {
-	    "JavaScript": {
-	      "code_actions_on_format": {
-	        "source.fixAll.eslint": true
-	      }
-	    }
-	  },
-		"rubocop": {
-			"initialization_options": {
-				"safeAutocorrect": false
-			}
-		}
-	},
-	"file_scan_exclusions": ["*.git", "*.DS_Store"]
+  "edit_predictions": {
+    "mode": "subtle"
+  },
+  "confirm_quit": true,
+  "icon_theme": "Material Icon Theme",
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false
+  },
+  "base_keymap": "VSCode",
+  "language_models": {
+    "ollama": {
+      "low_speed_timeout_in_seconds": 30
+    }
+  },
+  "agent": {
+    "default_model": {
+      "provider": "copilot_chat",
+      "model": "gpt-4.1"
+    },
+    "version": "2",
+    "provider": null
+  },
+  // "vim_mode": true,
+  "features": {
+    "edit_prediction_provider": "none",
+    "copilot": true
+  },
+  "terminal": {
+    "dock": "bottom",
+    "font_family": "OperatorMono Nerd Font",
+    "font_size": 16,
+    "font_weight": 300,
+    "line_height": "standard"
+  },
+  "show_edit_predictions": true,
+  "theme": "Catppuccin Frappé",
+  "ui_font_family": "Operator Mono SSm Book",
+  "ui_font_size": 16,
+  "buffer_font_family": "Operator Mono Book",
+  "buffer_font_size": 16,
+  "soft_wrap": "editor_width",
+  "hard_tabs": false,
+  "tab_size": 2,
+  "format_on_save": "off",
+  "indent_guides": {
+    "enabled": false
+  },
+  "experimental.theme_overrides": {
+    "syntax": {
+      "keyword": {
+        "font_style": "italic"
+      }
+    }
+  },
+  // Set a preferred line lenth, showing a vertical gutter bar
+  "preferred_line_length": 120,
+  "tab_bar": {
+    "show": true,
+    "show_nav_history_buttons": false
+  },
+  // Show file type icons in the tab bar. Also color them according to the
+  // git status.
+  // "tabs": {
+  //    "file_icons": true,
+  //    "git_status": true
+  //  },
+  "semantic_index": {
+    "enabled": true
+  },
+  "languages": {
+    "JSONC": {
+      "format_on_save": "on"
+    },
+    "JavaScript": {
+      "formatter": [
+        {
+          "code_actions": {
+            "source.fixAll.eslint": true
+          }
+        },
+        {
+          "external": {
+            "command": "expand",
+            "arguments": ["-t", "2"]
+          }
+        }
+      ],
+      "format_on_save": "on"
+    },
+    "TypeScript": {
+      "formatter": [
+        {
+          "code_actions": {
+            "source.fixAll.eslint": true
+          }
+        },
+        {
+          "external": {
+            "command": "expand",
+            "arguments": ["-t", "2"]
+          }
+        }
+      ],
+      "format_on_save": "on"
+    },
+    "Vue.js": {
+      "formatter": [
+        {
+          "code_actions": {
+            "source.fixAll.eslint": true
+          }
+        },
+        {
+          "external": {
+            "command": "expand",
+            "arguments": ["-t", "2"]
+          }
+        }
+      ],
+      "format_on_save": "on"
+    },
+    "Ruby": {
+      "show_edit_predictions": true,
+      "format_on_save": "on",
+      "formatter": {
+        "external": {
+          "command": "bundle",
+          "arguments": [
+            "exec",
+            "rubocop",
+            "--server",
+            "--fail-level",
+            "error",
+            "--autocorrect",
+            "--stdin",
+            "corrected.rb",
+            "--stderr"
+          ]
+        }
+      },
+      "language_servers": ["ruby-lsp", "rubocop", "tailwindcss-language-server", "!solargraph"]
+    },
+    "Markdown": {
+      // Wrap text according to the previously defined preferred line length.
+      "soft_wrap": "preferred_line_length",
+
+      // do not remove any trailing whitespace since line breaks in
+      // lists (without adding a new punctuation) rely on whitespaces.
+      "remove_trailing_whitespace_on_save": false,
+      "hard_tabs": false
+    },
+    "YAML": {
+      "hard_tabs": false
+    }
+  },
+  "lsp": {
+    "tailwindcss-language-server": {
+      "settings": {
+        "includeLanguages": {
+          "erb": "html",
+          "ruby": "html"
+        },
+        "experimental": {
+          "classRegex": ["\\bclass:\\s*['\"]([^'\"]*)['\"]"]
+        }
+      }
+    },
+    "ruby-lsp": {
+      "initialization_options": {
+        "enabledFeatures": {
+          "diagnostics": false
+        }
+      }
+    },
+    "eslint": {
+      "settings": {
+        "nodePath": "/Users/douglas/.local/share/mise/installs/",
+        "workingDirectory": {
+          "mode": "auto"
+        }
+      }
+    },
+    "rubocop": {
+      "initialization_options": {
+        "safeAutocorrect": true
+      }
+    }
+  },
+  "file_scan_exclusions": ["*.git", "*.DS_Store"]
 }
