@@ -51,3 +51,11 @@ source ~/.zsh/themes/catppuccin-frappe.sh
 ## Work related configurations
 ##
 [[ -f ~/.zsh_private/load_environment.sh ]] && source ~/.zsh_private/load_environment.sh
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/douglas/.cache/lm-studio/bin"
+# End of LM Studio CLI section
+
+
+# Added by Windsurf
+export PATH="/Users/douglas/.codeium/windsurf/bin:$PATH"
