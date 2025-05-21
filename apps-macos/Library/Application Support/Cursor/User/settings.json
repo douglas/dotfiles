@@ -1,0 +1,68 @@
+{
+    "window.commandCenter": true,
+    "breadcrumbs.enabled": false,
+    "editor.stickyScroll.enabled": false,
+    "workbench.colorTheme": "Catppuccin Frappé",
+    "workbench.tree.renderIndentGuides": "none",
+    "editor.accessibilitySupport": "off",
+    "editor.fontFamily": "OperatorMonoSSm-Light",
+    "editor.fontSize": 15,
+    "[ruby]": {
+        "editor.defaultFormatter": "Shopify.ruby-lsp",
+        "editor.formatOnSave": true,
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "files.trimTrailingWhitespace": true,
+        "files.insertFinalNewline": true,
+        "files.trimFinalNewlines": true,
+        "editor.rulers": [
+            120
+        ],
+        "editor.semanticHighlighting.enabled": true
+    },
+    "rubyLsp.rubyVersionManager": {
+        "identifier": "mise"
+    },
+    "vue.server.includeLanguages": [
+        "vue",
+        "ts"
+    ],
+    "sqltools.connections": [
+    {
+        "mysqlOptions": {
+            "authProtocol": "default",
+            "enableSsl": "Disabled"
+        },
+        "previewLimit": 50,
+        "server": "localhost",
+        "port": 5021,
+        "driver": "MySQL",
+        "name": "Campaigns",
+        "database": "campaigns_development",
+        "username": "root",
+        "password": ""
+        }
+    ],
+    "docker.containers.label": "ContainerName",
+    "docker.volumes.label": "VolumeName",
+    "docker.containers.description": [
+        "State"
+    ],
+    // we try to make semantic highlighting look good
+    "editor.semanticHighlighting.enabled": true,
+    // prevent VSCode from modifying the terminal colors
+    "terminal.integrated.minimumContrastRatio": 1,
+    // make the window's titlebar use the workbench colors
+    "window.titleBarStyle": "custom",
+    "a-file-icon-vscode.folderTheme": "none",
+    "a-file-icon-vscode.arrowTheme": "none",
+    "workbench.iconTheme": "material-icon-theme",
+    "material-icon-theme.folders.theme": "classic",
+    "material-icon-theme.folders.color": "#90a4ae",
+    "material-icon-theme.saturation": 1,
+    "custom-ui-style.stylesheet": {
+        ".monaco-panel-view": "font-family: OperatorMono-Light; font-size: 16px !important;",
+        ".monaco-list-row": "font-family: OperatorMono-Light; font-size: 16px !important;",
+        ".monaco-workbench": "font-family: OperatorMono-Light; font-size: 16px !important;"
+    }
+}
