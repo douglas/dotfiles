@@ -10,6 +10,23 @@
     }
   },
   {
+    "context": "Pane",
+    "use_key_equivalents": true,
+    "bindings": {
+      "ctrl-1": ["pane::ActivateItem", 0],
+      "ctrl-2": ["pane::ActivateItem", 1],
+      "ctrl-3": ["pane::ActivateItem", 2],
+      "ctrl-4": ["pane::ActivateItem", 3],
+      "ctrl-5": ["pane::ActivateItem", 4],
+      "ctrl-6": ["pane::ActivateItem", 5],
+      "ctrl-7": ["pane::ActivateItem", 6],
+      "ctrl-8": ["pane::ActivateItem", 7],
+      "ctrl-9": ["pane::ActivateItem", 8],
+      "ctrl-0": "pane::ActivateLastItem",
+      "cmd-shift-f": "pane::DeploySearch"
+    }
+  },
+  {
     "context": "!ContextEditor > Editor && mode == full",
     "use_key_equivalents": true,
     "bindings": {
@@ -22,5 +39,5 @@
       "cmd-k i": "assistant::InlineAssist",
       "ctrl-:": "editor::ToggleInlayHints"
     }
-  },
+  }
 ]

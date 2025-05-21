@@ -1,9 +1,31 @@
 {
+  "agent": {
+    "default_profile": "ask",
+    "inline_assistant_model": {
+      "provider": "copilot_chat",
+      "model": "gpt-4"
+    },
+    "model_parameters": [],
+    "default_model": {
+      "provider": "copilot_chat",
+      "model": "gpt-4.1"
+    },
+    "version": "2"
+  },
   "git_panel": {
     "dock": "right"
   },
+  "project_panel": {
+    "indent_size": 25,
+    "entry_spacing": "standard"
+  },
   "edit_predictions": {
-    "mode": "subtle"
+    "mode": "eager"
+  },
+  "show_edit_predictions": false,
+  "base_keymap": "VSCode",
+  "features": {
+    "edit_prediction_provider": "copilot"
   },
   "confirm_quit": true,
   "icon_theme": "Material Icon Theme",
@@ -11,44 +33,34 @@
     "diagnostics": false,
     "metrics": false
   },
-  "base_keymap": "VSCode",
   "language_models": {
     "ollama": {
       "low_speed_timeout_in_seconds": 30
     }
   },
-  "agent": {
-    "default_model": {
-      "provider": "copilot_chat",
-      "model": "gpt-4.1"
-    },
-    "version": "2",
-    "provider": null
-  },
-  // "vim_mode": true,
-  "features": {
-    "edit_prediction_provider": "none",
-    "copilot": true
+  "inlay_hints": {
+    "enabled": true
   },
   "terminal": {
     "dock": "bottom",
     "font_family": "OperatorMono Nerd Font",
-    "font_size": 16,
+    "font_size": 15,
     "font_weight": 300,
     "line_height": "standard"
   },
-  "show_edit_predictions": true,
   "theme": "Catppuccin Frappé",
   "ui_font_family": "Operator Mono SSm Book",
   "ui_font_size": 16,
-  "buffer_font_family": "Operator Mono Book",
-  "buffer_font_size": 16,
+  "buffer_font_family": "Operator Mono SSm Book",
+  "buffer_font_size": 15,
   "soft_wrap": "editor_width",
   "hard_tabs": false,
   "tab_size": 2,
   "format_on_save": "off",
+  // Indentation, rainbow indentation
   "indent_guides": {
-    "enabled": false
+    "enabled": false,
+    "coloring": "indent_aware"
   },
   "experimental.theme_overrides": {
     "syntax": {
@@ -179,8 +191,8 @@
     },
     "eslint": {
       "settings": {
-        "nodePath": "/Users/douglas/.local/share/mise/installs/",
         "workingDirectory": {
+          "nodePath": "node_modules",
           "mode": "auto"
         }
       }
