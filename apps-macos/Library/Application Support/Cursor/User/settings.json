@@ -5,7 +5,7 @@
     "workbench.colorTheme": "Catppuccin Frappé",
     "workbench.tree.renderIndentGuides": "none",
     "editor.accessibilitySupport": "off",
-    "editor.fontFamily": "OperatorMonoSSm-Light",
+    "editor.fontFamily": "OperatorMono-Book",
     "editor.fontSize": 15,
     "[ruby]": {
         "editor.defaultFormatter": "Shopify.ruby-lsp",
@@ -61,8 +61,9 @@
     "material-icon-theme.folders.color": "#90a4ae",
     "material-icon-theme.saturation": 1,
     "custom-ui-style.stylesheet": {
-        ".monaco-panel-view": "font-family: OperatorMono-Light; font-size: 16px !important;",
-        ".monaco-list-row": "font-family: OperatorMono-Light; font-size: 16px !important;",
-        ".monaco-workbench": "font-family: OperatorMono-Light; font-size: 16px !important;"
-    }
+        ".monaco-panel-view": "font-family: OperatorMono-Light; font-size: 15px !important;",
+        ".monaco-list-row": "font-family: OperatorMono-Light; font-size: 15px !important;",
+        ".monaco-workbench": "font-family: OperatorMono-Light; font-size: 15px !important;"
+    },
+    "editor.guides.indentation": false
 }

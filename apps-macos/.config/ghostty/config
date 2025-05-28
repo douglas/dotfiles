@@ -18,7 +18,7 @@ scrollback-limit = 20000000
 # Font configurations
 font-family = OperatorMono Nerd Font
 font-style = Book
-font-size = 16
+font-size = 15
 
 # Move between tabs like iterm2
 keybind = cmd+right=next_tab
