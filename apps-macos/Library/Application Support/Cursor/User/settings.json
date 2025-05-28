@@ -65,5 +65,6 @@
         ".monaco-list-row": "font-family: OperatorMono-Light; font-size: 15px !important;",
         ".monaco-workbench": "font-family: OperatorMono-Light; font-size: 15px !important;"
     },
-    "editor.guides.indentation": false
+    "editor.guides.indentation": false,
+    "editor.scrollbar.verticalScrollbarSize": 5
 }
