@@ -28,3 +28,9 @@ tsconfig.json
 
 # Ignore yarn cache files
 .yarn/cache/*.*
+
+# Ignore Cursor config for now
+.cursor
+
+# Ignore snowflake private key file in .snowflake_key
+.snowflake_key
