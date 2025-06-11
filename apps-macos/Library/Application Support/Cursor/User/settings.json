@@ -66,5 +66,10 @@
         ".monaco-workbench": "font-family: OperatorMono-Light; font-size: 15px !important;"
     },
     "editor.guides.indentation": false,
-    "editor.scrollbar.verticalScrollbarSize": 5
+    "editor.scrollbar.verticalScrollbarSize": 5,
+    "workbench.colorCustomizations": {
+        // for the Explorer View, Source Control View, and tab handles
+        "gitDecoration.modifiedResourceForeground": "#E5C890",
+        "list.errorForeground": "#C7D1F5"
+    }
 }
