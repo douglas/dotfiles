@@ -109,6 +109,7 @@
   defaultBranch = main
 [absorb]
   maxStack=50
+  autoStageIfNothingStaged = true
 [fetch]
   prune = true
 [url "ssh://git@github.com/"]
