@@ -16,7 +16,7 @@
     "dock": "right"
   },
   "project_panel": {
-    "indent_size": 25,
+    // "indent_size": 25,
     "entry_spacing": "standard"
   },
   "edit_predictions": {
