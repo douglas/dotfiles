@@ -2,13 +2,13 @@
   "agent": {
     "default_profile": "ask",
     "inline_assistant_model": {
-      "provider": "copilot_chat",
-      "model": "gpt-4"
+      "provider": "zed.dev",
+      "model": "claude-sonnet-4"
     },
     "model_parameters": [],
     "default_model": {
-      "provider": "copilot_chat",
-      "model": "gpt-4.1"
+      "model": "claude-sonnet-4",
+      "provider": "zed.dev"
     },
     "version": "2"
   },
@@ -22,10 +22,9 @@
   "edit_predictions": {
     "mode": "eager"
   },
-  "show_edit_predictions": false,
   "base_keymap": "VSCode",
   "features": {
-    "edit_prediction_provider": "copilot"
+    "edit_prediction_provider": "zed"
   },
   "confirm_quit": true,
   "icon_theme": "Material Icon Theme",
@@ -137,7 +136,6 @@
       "format_on_save": "on"
     },
     "Ruby": {
-      "show_edit_predictions": true,
       "format_on_save": "on",
       "formatter": {
         "external": {
