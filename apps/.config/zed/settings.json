@@ -183,7 +183,8 @@
     "ruby-lsp": {
       "initialization_options": {
         "enabledFeatures": {
-          "diagnostics": false
+          "diagnostics": false,
+          "onTypeFormatting": false
         }
       }
     },

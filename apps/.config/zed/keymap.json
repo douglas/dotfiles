@@ -6,7 +6,14 @@
       "cmd-k g": ["task::Spawn", { "task_name": "open_repository_in_sublime_merge" }],
       "cmd-8": ["task::Spawn", { "task_name": "open_lazydocker" }],
       "cmd-k cmd-t": "workspace::NewTerminal",
-      "cmd-k t": "terminal_panel::ToggleFocus"
+      "cmd-k t": "terminal_panel::ToggleFocus",
+      "cmd-shift-t": [
+        "task::Spawn",
+        {
+          "task_name": "Toggle Test and Target",
+          "reevaluate_context": true
+        }
+      ]
     }
   },
   {

@@ -71,5 +71,24 @@
         // for the Explorer View, Source Control View, and tab handles
         "gitDecoration.modifiedResourceForeground": "#E5C890",
         "list.errorForeground": "#C7D1F5"
-    }
+    },
+    "containers.containers.description": [
+        "State"
+    ],
+    "containers.containers.label": "ContainerName",
+    "containers.volumes.label": "VolumeName",
+    "eslint.format.enable": true,
+    "vue.autoInsert.dotValue": true,
+    "vue.format.wrapAttributes": "force-expand-multiline",
+    "eslint.codeActionsOnSave.mode": "problems",
+    "[vue]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    "eslint.ignoreUntitled": true,
+    "eslint.codeActionsOnSave.rules": null,
+    "editor.formatOnSave": true,
+    "editor.wordWrap": "on",
 }

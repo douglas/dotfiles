@@ -27,7 +27,7 @@ tsconfig.json
 *.secrets.sh
 
 # Ignore yarn cache files
-.yarn/cache/*.*
+#.yarn/cache/*.*
 
 # Ignore Cursor config for now
 .cursor
