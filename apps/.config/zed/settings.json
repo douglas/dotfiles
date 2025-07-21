@@ -5,12 +5,10 @@
       "provider": "zed.dev",
       "model": "claude-sonnet-4"
     },
-    "model_parameters": [],
     "default_model": {
       "model": "claude-sonnet-4",
       "provider": "zed.dev"
-    },
-    "version": "2"
+    }
   },
   "git_panel": {
     "dock": "right"
@@ -31,11 +29,6 @@
   "telemetry": {
     "diagnostics": false,
     "metrics": false
-  },
-  "language_models": {
-    "ollama": {
-      "low_speed_timeout_in_seconds": 30
-    }
   },
   "inlay_hints": {
     "enabled": true
@@ -80,9 +73,6 @@
   //    "file_icons": true,
   //    "git_status": true
   //  },
-  "semantic_index": {
-    "enabled": true
-  },
   "languages": {
     "JSONC": {
       "format_on_save": "on"
@@ -137,22 +127,22 @@
     },
     "Ruby": {
       "format_on_save": "on",
-      "formatter": {
-        "external": {
-          "command": "bundle",
-          "arguments": [
-            "exec",
-            "rubocop",
-            "--server",
-            "--fail-level",
-            "error",
-            "--autocorrect",
-            "--stdin",
-            "corrected.rb",
-            "--stderr"
-          ]
-        }
-      },
+      // "formatter": {
+      //   "external": {
+      //     "command": "bundle",
+      //     "arguments": [
+      //       "exec",
+      //       "rubocop",
+      //       "--server",
+      //       "--fail-level",
+      //       "error",
+      //       "--autocorrect",
+      //       "--stdin",
+      //       "corrected.rb",
+      //       "--stderr"
+      //     ]
+      //   }
+      // },
       "language_servers": ["ruby-lsp", "rubocop", "tailwindcss-language-server", "!solargraph"]
     },
     "Markdown": {
@@ -186,6 +176,9 @@
           "diagnostics": false,
           "onTypeFormatting": false
         }
+      },
+      "settings": {
+        "use_bundler": true
       }
     },
     "eslint": {

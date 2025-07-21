@@ -64,7 +64,6 @@ brew "redis", restart_service: true
 brew "ripgrep"
 brew "rsync"
 brew "rubyfmt"
-brew "rustup"
 brew "selenium-server", restart_service: true
 brew "sk"
 brew "ssh-copy-id"

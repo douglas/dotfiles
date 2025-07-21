@@ -91,4 +91,5 @@
     "eslint.codeActionsOnSave.rules": null,
     "editor.formatOnSave": true,
     "editor.wordWrap": "on",
+    "git.blame.editorDecoration.enabled": true,
 }

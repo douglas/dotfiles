@@ -37,8 +37,7 @@ export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/b
 ##
 ## Rust
 ##
-export PATH="$PATH:/opt/homebrew/opt/rustup/bin"
-export PATH="$PATH:/Users/douglas/.cargo/bin"
+source "$HOME/.cargo/env"
 
 ##
 ## LM Studio
