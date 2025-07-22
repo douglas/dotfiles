@@ -38,20 +38,26 @@
     "tags": ["github"]
   },
   {
-    "label": "[Vitest] npx vitest run -t \"$ZED_SYMBOL\"",
+    "label": "npx vitest run -t \"$ZED_RELATIVE_FILE\"",
     "command": "npx vitest run -t",
-    "args": ["\"$ZED_SYMBOL\" $ZED_FILE"],
-    "tags": ["ts-test", "js-test"]
+    "args": ["\"$ZED_RELATIVE_FILE\""],
+    "tags": ["vitest"]
   },
   {
-    "label": "[RSpec] rspec $ZED_RELATIVE_FILE:$ZED_ROW",
+    "label": "npx vitest run -t \"$ZED_SYMBOL\"",
+    "command": "npx vitest run -t",
+    "args": ["\"$ZED_SYMBOL\" $ZED_FILE"],
+    "tags": ["vitest"]
+  },
+  {
+    "label": "rspec $ZED_RELATIVE_FILE:$ZED_ROW",
     "command": "./bin/rspec",
     "args": ["\"$ZED_RELATIVE_FILE:$ZED_ROW\""],
     "tags": ["rspec-test"]
   },
   {
     // Requires https://github.com/MoskitoHero/zed-test-toggle gem
-    "label": "[Rails] Toggle Test and Target",
+    "label": "Toggle Test and Target",
     "command": "zed-test-toggle",
     "args": ["lookup", "-p", "\"$ZED_RELATIVE_FILE\"", "-r", "\"$ZED_WORKTREE_ROOT\""],
     "hide": "always",
