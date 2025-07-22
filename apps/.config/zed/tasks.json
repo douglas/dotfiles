@@ -1,62 +1,98 @@
-// Static tasks configuration.
-//
-// Example:
+// Zed Tasks
 [
-  {
-    "label": "Example task",
-    "command": "for i in {1..5}; do echo \"Hello $i/5\"; sleep 1; done",
-    //"args": [],
-    // Env overrides for the command, will be appended to the terminal's environment from the settings.
-    "env": { "foo": "bar" },
-    // Current working directory to spawn the command into, defaults to current project root.
-    //"cwd": "/path/to/working/directory",
-    // Whether to use a new terminal tab or reuse the existing one to spawn the process, defaults to `false`.
-    "use_new_terminal": false,
-    // Whether to allow multiple instances of the same task to be run, or rather wait for the existing ones to finish, defaults to `false`.
-    "allow_concurrent_runs": false,
-    // What to do with the terminal pane and tab, after the command was started:
-    // * `always` — always show the terminal pane, add and focus the corresponding task's tab in it (default)
-    // * `never` — avoid changing current terminal pane focus, but still add/reuse the task's tab there
-    "reveal": "always"
-  },
   {
     "label": "Open repository in lazygit",
     "command": "lazygit",
     "use_new_terminal": true,
     "allow_concurrent_runs": false,
-    "reveal": "always"
+    "reveal": "always",
+    "tags": ["lazygit"]
   },
   {
     "label": "Open lazydocker",
     "command": "lazydocker",
     "use_new_terminal": true,
     "allow_concurrent_runs": false,
-    "reveal": "always"
+    "reveal": "always",
+    "tags": ["lazydocker"]
   },
   {
     "label": "Open repository in Sublime Merge",
     "command": "smerge $ZED_WORKTREE_ROOT",
-    "reveal": "never"
+    "reveal": "never",
+    "tags": ["sublime-merge"]
+  },
+  // Github related tasks
+  {
+    "label": "Open Current File in Github",
+    "command": "gh",
+    "args": ["browse", "\"$ZED_RELATIVE_FILE:$ZED_ROW\""],
+    "reveal": "never",
+    "tags": ["github"]
   },
   {
-    "label": "npx vitest run -t \"$ZED_SYMBOL\"",
+    "label": "Open Github PR",
+    "command": "gh",
+    "args": ["pr", "open", "--web"],
+    "reveal": "never",
+    "tags": ["github"]
+  },
+  {
+    "label": "[Vitest] npx vitest run -t \"$ZED_SYMBOL\"",
     "command": "npx vitest run -t",
     "args": ["\"$ZED_SYMBOL\" $ZED_FILE"],
     "tags": ["ts-test", "js-test"]
   },
   {
-    "label": "rspec $ZED_RELATIVE_FILE:$ZED_ROW",
+    "label": "[RSpec] rspec $ZED_RELATIVE_FILE:$ZED_ROW",
     "command": "./bin/rspec",
     "args": ["\"$ZED_RELATIVE_FILE:$ZED_ROW\""],
     "tags": ["rspec-test"]
   },
   {
-    "label": "Toggle Test and Target",
+    // Requires https://github.com/MoskitoHero/zed-test-toggle gem
+    "label": "[Rails] Toggle Test and Target",
     "command": "zed-test-toggle",
     "args": ["lookup", "-p", "\"$ZED_RELATIVE_FILE\"", "-r", "\"$ZED_WORKTREE_ROOT\""],
     "hide": "always",
     "allow_concurrent_runs": false,
     "use_new_terminal": false,
-    "reveal": "never"
+    "reveal": "never",
+    "tags": ["rails", "test-toggle"]
+  },
+  {
+    "label": "eslint current file",
+    "command": "./node_modules/.bin/eslint",
+    "args": ["\"$ZED_RELATIVE_FILE\"", "--fix"],
+    "tags": ["eslint"]
+  },
+  {
+    "label": "eslint changed files",
+    "command": "./node_modules/.bin/eslint",
+    "args": ["--fix", "(git diff --name-only master **/*.{js,ts,vue,jsx})"],
+    "tags": ["eslint"]
+  },
+  {
+    "label": "rubocop current file",
+    "command": "bundle exec rubocop -A",
+    "args": ["\"$ZED_RELATIVE_FILE\""],
+    "tags": ["rubocop"]
+  },
+  {
+    "label": "rubocop changed files",
+    "command": "bundle exec rubocop",
+    "args": [
+      "(git diff --diff-filter=ACMRTUX --name-only master)",
+      "--display-cop-names",
+      "--extra-details",
+      "-A",
+      "--force-exclusion"
+    ],
+    "tags": ["rubocop"]
+  },
+  {
+    "label": "rubocop all files",
+    "command": "bundle exec rubocop",
+    "args": ["--display-cop-names", "--extra-details", "-A", "--force-exclusion"]
   }
 ]
