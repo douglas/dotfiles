@@ -5,37 +5,32 @@
     "command": "lazygit",
     "use_new_terminal": true,
     "allow_concurrent_runs": false,
-    "reveal": "always",
-    "tags": ["lazygit"]
+    "reveal": "always"
   },
   {
     "label": "Open lazydocker",
     "command": "lazydocker",
     "use_new_terminal": true,
     "allow_concurrent_runs": false,
-    "reveal": "always",
-    "tags": ["lazydocker"]
+    "reveal": "always"
   },
   {
     "label": "Open repository in Sublime Merge",
     "command": "smerge $ZED_WORKTREE_ROOT",
-    "reveal": "never",
-    "tags": ["sublime-merge"]
+    "reveal": "never"
   },
   // Github related tasks
   {
     "label": "Open Current File in Github",
     "command": "gh",
     "args": ["browse", "\"$ZED_RELATIVE_FILE:$ZED_ROW\""],
-    "reveal": "never",
-    "tags": ["github"]
+    "reveal": "never"
   },
   {
     "label": "Open Github PR",
     "command": "gh",
     "args": ["pr", "open", "--web"],
-    "reveal": "never",
-    "tags": ["github"]
+    "reveal": "never"
   },
   {
     "label": "npx vitest run -t \"$ZED_RELATIVE_FILE\"",
@@ -46,14 +41,13 @@
   {
     "label": "npx vitest run -t \"$ZED_SYMBOL\"",
     "command": "npx vitest run -t",
-    "args": ["\"$ZED_SYMBOL\" $ZED_FILE"],
-    "tags": ["vitest"]
+    "args": ["\"$ZED_SYMBOL\" $ZED_FILE"]
   },
   {
-    "label": "rspec $ZED_RELATIVE_FILE:$ZED_ROW",
-    "command": "./bin/rspec",
-    "args": ["\"$ZED_RELATIVE_FILE:$ZED_ROW\""],
-    "tags": ["rspec-test"]
+    "label": "test $ZED_FILENAME:$ZED_ROW",
+    "command": "bundle",
+    "args": ["exec", "rspec", "\"$ZED_RELATIVE_FILE:$ZED_ROW\""],
+    "tags": ["ruby-test"]
   },
   {
     // Requires https://github.com/MoskitoHero/zed-test-toggle gem
@@ -63,8 +57,7 @@
     "hide": "always",
     "allow_concurrent_runs": false,
     "use_new_terminal": false,
-    "reveal": "never",
-    "tags": ["rails", "test-toggle"]
+    "reveal": "never"
   },
   {
     "label": "eslint current file",

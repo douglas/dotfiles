@@ -70,9 +70,9 @@
   // Show file type icons in the tab bar. Also color them according to the
   // git status.
   // "tabs": {
-  //    "file_icons": true,
-  //    "git_status": true
-  //  },
+  //   "file_icons": true,
+  //   "git_status": true
+  // },
   "languages": {
     "JSONC": {
       "format_on_save": "on"
@@ -143,7 +143,7 @@
       //     ]
       //   }
       // },
-      "language_servers": ["ruby-lsp", "rubocop", "tailwindcss-language-server", "!solargraph"]
+      "language_servers": ["ruby-lsp", "rubocop"]
     },
     "Markdown": {
       // Wrap text according to the previously defined preferred line length.
@@ -173,7 +173,6 @@
     "ruby-lsp": {
       "initialization_options": {
         "enabledFeatures": {
-          "diagnostics": false,
           "onTypeFormatting": false
         }
       },
@@ -181,14 +180,14 @@
         "use_bundler": true
       }
     },
-    "eslint": {
-      "settings": {
-        "workingDirectory": {
-          "nodePath": "node_modules",
-          "mode": "auto"
-        }
-      }
-    },
+    // "eslint": {
+    //   "settings": {
+    //     "workingDirectory": {
+    //       "nodePath": "node_modules",
+    //       "mode": "auto"
+    //     }
+    //   }
+    // },
     "rubocop": {
       "initialization_options": {
         "safeAutocorrect": true
