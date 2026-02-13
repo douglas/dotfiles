@@ -1,0 +1,3 @@
+[submodule "bin/.bin/wubular_src"]
+	path = bin/.bin/wubular_src
+	url = git@github.com:RubyElders/wubular.git
