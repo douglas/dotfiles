@@ -56,8 +56,8 @@ window-padding-x = 6,6
 window-width = 186
 window-height = 62
 
-# Save ghostty window state
-window-save-state = always
+# Let GNOME handle window placement (center-new-windows = true)
+window-save-state = never
 
 # Use a different titlebar configuration for macOS
 macos-titlebar-style = tabs
