@@ -1,0 +1,137 @@
+[user]
+  name = Douglas Soares de Andrade
+  email = contato@douglasandrade.com
+	signingkey = ~/.ssh/id_ed25519.pub
+[include]
+  path = ~/.config/delta/catppuccin.gitconfig
+[includeIf "gitdir:~/work/"]
+  path = ~/work/.gitconfig
+[core]
+  pager = delta
+[interactive]
+  diffFilter = delta --color-only --features=interactive
+[delta]
+  dark = true
+  navigate = true  # use n and N to move between diff sections
+  # side-by-side = true
+  line-numbers = true
+  features = line-numbers decorations catppuccin-frappe
+[delta "decorations"]
+  commit-decoration-style = bold yellow box ul
+  file-style = bold yellow ul
+  file-decoration-style = none
+  hunk-header-decoration-style = cyan box ul
+[delta "line-numbers"]
+  line-numbers-left-style = cyan
+  line-numbers-right-style = cyan
+  line-numbers-minus-style = 124
+  line-numbers-plus-style = 28
+[diff]
+  colorMoved = default
+[diff]
+  tool = difftastic
+[difftool]
+  prompt = false
+[difftool "difftastic"]
+  cmd = difft "$LOCAL" "$REMOTE"
+[pager]
+  difftool = true
+[merge]
+	conflictstyle = zdiff3
+[alias]
+  # commits
+  ci = commit
+  cia = commit --amend --no-edit
+
+  # checkout
+  co = checkout
+
+  # cherry-pick
+  cp = cherry-pick
+  cpa = cherry-pick --abort
+
+  # Difftastic aliases, so `git dlog` is `git log` with difftastic and so on.
+  dlog = -c diff.external=difft log --ext-diff
+  dshow = -c diff.external=difft show --ext-diff
+  ddiff = -c diff.external=difft diff
+
+  # `git log` with patches shown with difftastic.
+  dl = -c diff.external=difft log -p --ext-diff
+
+  # Show the most recent commit with difftastic.
+  ds = -c diff.external=difft show --ext-diff
+
+  # fixup
+  rfixup = "!f() { TARGET=$(git log --pretty=oneline | sk | awk {' print $1'}); git commit --no-verify --fixup=$TARGET ${@:2} && EDITOR=true git rebase -i --autostash --autosquash $TARGET^; }; f"
+  nfixup = "!git log -n 50 --pretty=format:'%h %s' --no-merges | fzf | cut -c -7 | xargs -o git commit --no-verify --fixup"
+
+  # push
+  pushu = push --set-upstream origin HEAD
+  pf = push --force-with-lease --force-if-includes
+
+  # rebase
+  ri = "!git rebase --interactive `git merge-base @ origin/master`"
+  rii = "!EDITOR=true git rebase --interactive `git merge-base @ origin/master`"
+
+  # stash
+  s = stash
+  sk = stash --keep-index
+  sp = stash pop
+  ss = show stash
+
+  # status
+  st = status -sb
+
+  # submodules
+  su = submodule update --init --recursive
+  suu = submodule update --init --recursive --remote
+
+  # tags
+  ptags = push --tags
+
+  # cleanup
+	cleanup-merged = "!git branch --merged | grep -E -v \"(master|main)\" | xargs git branch -d"
+	cleanup-gone = "!for branch in $(git for-each-ref --format '%(refname) %(upstream:track)' refs/heads | awk '$2 == \"[gone]\" {sub(\"refs/heads/\", \"\", $1); print $1}'); do git branch -D $branch; done"
+
+[core]
+	excludesFile = ~/.gitignore
+[rebase]
+  autosquash = true
+  autostash = true
+[pull]
+  rebase = true
+[filter "lfs"]
+  process = git-lfs filter-process
+  required = true
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+[init]
+  defaultBranch = main
+[absorb]
+  maxStack=50
+  autoStageIfNothingStaged = true
+[fetch]
+  prune = true
+[url "ssh://git@github.com/"]
+  insteadOf = https://github.com/
+[rerere]
+  enabled = true
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	allowedsignersfile = ~/.ssh/id_ed25519.pub
+[commit]
+	gpgsign = true
+[push]
+	autoSetupRemote = true
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[gitbutler]
+	aiOpenAIKeyOption = bringYourOwn
+	aiModelProvider = anthropic
+	aiAnthropicKeyOption = bringYourOwn
+	aiAnthropicModelName = claude-opus-4-0
