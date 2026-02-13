@@ -1,0 +1,86 @@
+keypress_delay_ms: 5
+
+modmap:
+  - name: Swap Alt and Super
+    remap:
+      Alt_L: Super_L
+      Super_L: Alt_L
+      Alt_R: Super_R
+      Super_R: Alt_R
+
+keymap:
+  - name: macOS-style shortcuts (Super as Cmd)
+    application:
+      not: [com.mitchellh.ghostty]
+    remap:
+      # Clipboard
+      Super-c: Ctrl-c          # copy
+      Super-v: Ctrl-v          # paste
+      Super-x: Ctrl-x          # cut
+
+      # Common actions
+      Super-z: Ctrl-z          # undo
+      Super-Shift-z: Ctrl-Shift-z  # redo
+      Super-a: Ctrl-a          # select all
+      Super-f: Ctrl-f          # find
+      Super-s: Ctrl-s          # save
+      Super-Shift-s: Ctrl-Shift-s  # save as
+      Super-o: Ctrl-o          # open file
+      Super-p: Ctrl-p          # print
+      Super-n: Ctrl-n          # new window
+      Super-q: Ctrl-q          # quit app
+      Super-w: Ctrl-w          # close tab
+      Super-t: Ctrl-t          # new tab
+      Super-Shift-t: Ctrl-Shift-t  # reopen closed tab
+      Super-Shift-n: Ctrl-Shift-n  # new incognito window
+      Super-Comma: Ctrl-Comma  # settings/preferences
+
+      # Text formatting
+      Super-b: Ctrl-b          # bold
+      Super-i: Ctrl-i          # italic
+      Super-u: Ctrl-u          # underline
+
+      # Editor shortcuts
+      Super-Slash: Ctrl-Slash              # toggle comment
+      Super-LeftBrace: Ctrl-LeftBrace      # outdent
+      Super-RightBrace: Ctrl-RightBrace    # indent
+      Super-g: Ctrl-g                      # go to line / find next
+      Super-h: Ctrl-h                      # find and replace
+      Super-Shift-p: Ctrl-Shift-p         # command palette
+      Super-Shift-f: Ctrl-Shift-f         # search in files
+      Super-Shift-o: Ctrl-Shift-o         # go to symbol
+      Super-Shift-k: Ctrl-Shift-k         # delete line
+      Super-Shift-l: Ctrl-Shift-l         # select all occurrences
+      Super-Shift-h: Ctrl-Shift-h         # replace in files
+      Super-Shift-Backslash: Ctrl-Shift-Backslash  # go to matching bracket
+
+      # Multi-cursor (Cmd+Option → Ctrl+Alt)
+      Super-Alt-Up: Ctrl-Alt-Up            # add cursor above
+      Super-Alt-Down: Ctrl-Alt-Down        # add cursor below
+
+      # Browser / links
+      Super-r: Ctrl-r          # reload
+      Super-l: Ctrl-l          # address bar / select line
+      Super-d: Ctrl-d          # bookmark / add to selection
+      Super-k: Ctrl-k          # insert link
+      Super-Shift-v: Ctrl-Shift-v  # paste without formatting
+
+      # Tab navigation
+      Super-Shift-RightBrace: Ctrl-PageDown  # next tab
+      Super-Shift-LeftBrace: Ctrl-PageUp     # previous tab
+
+      # Developer tools (Cmd+Option → Ctrl+Shift)
+      Super-Alt-i: Ctrl-Shift-i     # inspector / dev tools
+      Super-Alt-j: Ctrl-Shift-j     # console
+
+      # Text navigation (Cmd+arrow → Home/End)
+      Super-Left: Home                # beginning of line
+      Super-Right: End                # end of line
+      Super-Up: Ctrl-Home             # top of document
+      Super-Down: Ctrl-End            # bottom of document
+      Super-Shift-Left: Shift-Home    # select to line start
+      Super-Shift-Right: Shift-End    # select to line end
+      Super-Backspace: [Shift-Home, Delete]  # delete to line start
+      Super-e: Ctrl-e
+      Super-Enter: Ctrl-Enter    # super+enter → ctrl+enter
+      Super-BTN_LEFT: Ctrl-BTN_LEFT  # super+click → ctrl+click (open links)

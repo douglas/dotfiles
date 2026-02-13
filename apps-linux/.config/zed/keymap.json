@@ -1,0 +1,96 @@
+// Zed keymap — macOS-like Super shortcuts
+// Complements xremap (which maps Super→Ctrl for common keys).
+// Includes both xremap-covered basics (as backup) and Zed-specific shortcuts.
+[
+  {
+    "bindings": {
+      // Basics (also handled by xremap → Ctrl, listed here for completeness)
+      "super-s": "workspace::Save",
+      "super-shift-s": "workspace::SaveAs",
+      "super-n": "workspace::NewFile",
+      "super-shift-n": "workspace::NewWindow",
+      "super-z": "editor::Undo",
+      "super-shift-z": "editor::Redo",
+      "super-c": "editor::Copy",
+      "super-x": "editor::Cut",
+      "super-v": "editor::Paste",
+      "super-a": "editor::SelectAll",
+      "super-w": "pane::CloseActiveItem",
+      "super-q": "zed::Quit",
+      "super-,": "zed::OpenSettings",
+      "super-f": "buffer_search::Deploy",
+      "super-t": "workspace::NewFile",
+
+      // Comments
+      "super-/": "editor::ToggleComments",
+
+      // Command palette
+      "super-shift-p": "command_palette::Toggle",
+
+      // Search
+      "super-h": ["buffer_search::Deploy", { "replace_enabled": true }],
+      "super-shift-f": "pane::DeploySearch",
+
+      // Navigation
+      "super-g": "go_to_line::Toggle",
+      "super-shift-o": "outline::Toggle",
+      "super-shift-\\": "editor::MoveToEnclosingBracket",
+      "super-p": "file_finder::Toggle",
+
+      // Editing
+      "super-]": "editor::Indent",
+      "super-[": "editor::Outdent",
+      "super-shift-k": "editor::DeleteLine",
+      "ctrl-enter": "zed::ToggleFullScreen",  // super+enter via xremap
+      "super-shift-enter": "editor::NewlineAbove",
+
+      // Multi-cursor & selection
+      "super-d": "editor::SelectNext",
+      "super-shift-l": "editor::SelectAllMatches",
+      "super-alt-up": "editor::AddSelectionAbove",
+      "super-alt-down": "editor::AddSelectionBelow",
+      "super-l": "editor::SelectLine",
+
+      // Folding
+      "super-alt-[": "editor::Fold",
+      "super-alt-]": "editor::UnfoldLines",
+
+      // Panels & layout
+      "super-b": "workspace::ToggleLeftDock",
+      "super-j": "workspace::ToggleBottomDock",
+      "super-\\": "pane::SplitRight",
+
+      // Tab navigation
+      "ctrl-pagedown": "pane::ActivateNextItem",   // super+shift+] via xremap
+      "ctrl-pageup": "pane::ActivatePreviousItem", // super+shift+[ via xremap
+      "super-shift-t": "pane::ReopenClosedItem",
+      "super-1": ["pane::ActivateItem", 0],
+      "super-2": ["pane::ActivateItem", 1],
+      "super-3": ["pane::ActivateItem", 2],
+      "super-4": ["pane::ActivateItem", 3],
+      "super-5": ["pane::ActivateItem", 4],
+      "super-6": ["pane::ActivateItem", 5],
+      "super-7": ["pane::ActivateItem", 6],
+      "super-8": ["pane::ActivateItem", 7],
+      "super-9": "pane::ActivateLastItem",
+
+      // Text navigation (macOS Cmd+arrow style)
+      "super-left": "editor::MoveToBeginningOfLine",
+      "super-right": "editor::MoveToEndOfLine",
+      "super-up": "editor::MoveToBeginning",
+      "super-down": "editor::MoveToEnd",
+      "super-shift-left": "editor::SelectToBeginningOfLine",
+      "super-shift-right": "editor::SelectToEndOfLine",
+      "super-shift-up": "editor::SelectToBeginning",
+      "super-shift-down": "editor::SelectToEnd",
+      "super-backspace": "editor::DeleteToBeginningOfLine"
+    }
+  },
+  {
+    "context": "BufferSearchBar",
+    "bindings": {
+      "super-g": "search::SelectNextMatch",
+      "super-shift-g": "search::SelectPrevMatch"
+    }
+  }
+]

@@ -1,0 +1,3 @@
+# System-level configs tracked in this package but installed via reinstall script
+# (stow targets $HOME, these need sudo to install into /etc/)
+^etc$
