@@ -1,0 +1,67 @@
+# Console theme
+theme = Catppuccin Frappe
+# Font configurations
+#font-family = Operator Mono SSm
+#font-style = Book
+#font-size = 10.5
+
+font-family = CommitMono Nerd Font
+#font-style = Book
+font-size = 10.5
+
+# macOS-style keybindings (Ghostty is excluded from xremap, so we handle everything here)
+
+# Clipboard
+keybind = performable:super+c=copy_to_clipboard
+keybind = super+v=paste_from_clipboard
+
+# Tab & window management
+keybind = super+t=new_tab
+keybind = super+w=close_surface
+keybind = super+n=new_window
+keybind = super+q=quit
+keybind = super+left=previous_tab
+keybind = super+right=next_tab
+
+# Search
+keybind = super+f=start_search
+keybind = super+g=navigate_search:next
+
+# Font size
+keybind = super+equal=increase_font_size:1
+keybind = super+plus=increase_font_size:1
+keybind = super+minus=decrease_font_size:1
+keybind = super+zero=reset_font_size
+
+# Other actions
+keybind = super+a=select_all
+keybind = super+k=clear_screen
+keybind = super+comma=open_config
+
+# Text navigation (send terminal escape sequences)
+keybind = super+backspace=text:\x15
+keybind = alt+left=text:\x1bb
+keybind = alt+right=text:\x1bf
+keybind = alt+backspace=text:\x17
+
+# Scrollback
+keybind = super+up=scroll_to_top
+keybind = super+down=scroll_to_bottom
+
+# Increase the x padding so the text
+# is further away from the window border
+window-padding-x = 6,6
+
+# Default terminal size (Dell U4021QW ultrawide)
+window-width = 186
+window-height = 62
+
+# Save ghostty window state
+window-save-state = always
+
+# Use a different titlebar configuration for macOS
+macos-titlebar-style = tabs
+
+background-opacity = 0.99
+
+keybind = shift+enter=text:\x1b\r

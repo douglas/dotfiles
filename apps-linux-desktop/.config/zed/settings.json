@@ -1,0 +1,197 @@
+{
+  "context_servers": {
+    "rails-mcp-server": {
+      "enabled": true,
+      "command": "rails-mcp-server",
+      "args": [],
+      "env": {},
+    },
+  },
+  "agent": {
+    "default_profile": "write",
+    "inline_assistant_model": {
+      "provider": "zed.dev",
+      "model": "claude-sonnet-4",
+    },
+    "default_model": {
+      "model": "claude-sonnet-4-5-latest",
+      "provider": "anthropic",
+    },
+  },
+  "git_panel": {
+    "dock": "right",
+  },
+  "project_panel": {
+    // "indent_size": 25,
+    "entry_spacing": "standard",
+    "sticky_scroll": true,
+  },
+  "edit_predictions": {
+    "provider": "zed",
+    "mode": "eager",
+  },
+  "base_keymap": "VSCode",
+  "confirm_quit": true,
+  "icon_theme": "Catppuccin Frappé",
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false,
+  },
+  "inlay_hints": {
+    "enabled": false,
+  },
+  "terminal": {
+    "dock": "bottom",
+    "font_family": "OperatorMono Nerd Font",
+    "font_size": 18,
+    "font_weight": 300,
+    "line_height": "standard",
+  },
+  "theme": "Catppuccin Frappé",
+  "ui_font_family": "CommitMono Nerd Font",
+  "ui_font_size": 21.0,
+  "ui_font_weight": 200,
+  "buffer_font_family": "Operator Mono SSm",
+  "buffer_font_weight": 320,
+  "buffer_font_size": 18.0,
+  "soft_wrap": "editor_width",
+  "hard_tabs": false,
+  "tab_size": 2,
+  "format_on_save": "on",
+  // Indentation, rainbow indentation
+  "indent_guides": {
+    "enabled": false,
+    "coloring": "indent_aware",
+  },
+  "experimental.theme_overrides": {
+    "syntax": {
+      "keyword": {
+        "font_style": "italic",
+      },
+    },
+  },
+  // Set a preferred line lenth, showing a vertical gutter bar
+  "preferred_line_length": 120,
+  "tab_bar": {
+    "show": true,
+    "show_nav_history_buttons": false,
+  },
+  // Show file type icons in the tab bar. Also color them according to the
+  // git status.
+  // "tabs": {
+  //   "file_icons": true,
+  //   "git_status": true
+  // },
+  "languages": {
+    "JSONC": {
+      "format_on_save": "on",
+    },
+    "JavaScript": {
+      "formatter": [
+        { "code_action": "source.fixAll.eslint" },
+        {
+          "external": {
+            "command": "expand",
+            "arguments": ["-t", "2"],
+          },
+        },
+      ],
+      "format_on_save": "on",
+    },
+    "TypeScript": {
+      "formatter": [
+        { "code_action": "source.fixAll.eslint" },
+        {
+          "external": {
+            "command": "expand",
+            "arguments": ["-t", "2"],
+          },
+        },
+      ],
+      "format_on_save": "on",
+    },
+    "Vue.js": {
+      "formatter": [
+        { "code_action": "source.fixAll.eslint" },
+        {
+          "external": {
+            "command": "expand",
+            "arguments": ["-t", "2"],
+          },
+        },
+      ],
+      "format_on_save": "on",
+    },
+    "Ruby": {
+      "format_on_save": "on",
+      // "formatter": {
+      //   "external": {
+      //     "command": "bundle",
+      //     "arguments": [
+      //       "exec",
+      //       "rubocop",
+      //       "--server",
+      //       "--fail-level",
+      //       "error",
+      //       "--autocorrect",
+      //       "--stdin",
+      //       "corrected.rb",
+      //       "--stderr"
+      //     ]
+      //   }
+      // },
+      "language_servers": ["ruby-lsp", "rubocop"],
+    },
+    "Markdown": {
+      // Wrap text according to the previously defined preferred line length.
+      "soft_wrap": "preferred_line_length",
+
+      // do not remove any trailing whitespace since line breaks in
+      // lists (without adding a new punctuation) rely on whitespaces.
+      "remove_trailing_whitespace_on_save": false,
+      "hard_tabs": false,
+      "format_on_save": "off",
+    },
+    "YAML": {
+      "hard_tabs": false,
+      "format_on_save": "off",
+    },
+  },
+  "lsp": {
+    "tailwindcss-language-server": {
+      "settings": {
+        "includeLanguages": {
+          "erb": "html",
+          "ruby": "html",
+        },
+        "experimental": {
+          "classRegex": ["\\bclass:\\s*['\"]([^'\"]*)['\"]"],
+        },
+      },
+    },
+    "ruby-lsp": {
+      "initialization_options": {
+        "enabledFeatures": {
+          "onTypeFormatting": false,
+        },
+      },
+      "settings": {
+        "use_bundler": true,
+      },
+    },
+    // "eslint": {
+    //   "settings": {
+    //     "workingDirectory": {
+    //       "nodePath": "node_modules",
+    //       "mode": "auto"
+    //     }
+    //   }
+    // },
+    "rubocop": {
+      "initialization_options": {
+        "safeAutocorrect": true,
+      },
+    },
+  },
+  "file_scan_exclusions": ["*.git", "*.DS_Store"],
+}
