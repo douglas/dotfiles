@@ -1,0 +1,45 @@
+# Catppuccin Frappe theme
+theme = catppuccin-frappe
+
+# Search entire scrollback history in default text editor
+keybind = cmd+f=write_screen_file:open
+
+# Search Selection
+# HOWTO: Cmd+triple_click to select your last output then press cmd+shift+f to search it
+keybind = cmd+shift+f=write_selection_file:open
+
+# RECOMMENDED: Set this to something big so you can capture all of your scrollback
+scrollback-limit = 10000000
+
+# How to change your system-wide default text editor to Sublime
+# brew install duti
+# duti -s dev.zed.Zed public.plain-text all
+
+# Font configurations
+font-family = OperatorMono Nerd Font
+font-style = Book
+font-size = 15
+
+# Move between tabs like iterm2
+keybind = cmd+right=next_tab
+keybind = cmd+left=previous_tab
+
+# Increase the x padding so the text
+# is further away from the window border
+window-padding-x = 6,6
+
+# Default terminal height I normally use
+window-height = 34
+window-width = 127
+
+# Save ghostty window state
+window-save-state = always
+
+# Use a different titlebar configuration for macOS
+macos-titlebar-style = tabs
+
+macos-option-as-alt=left
+#keybind = cmd+right=text:\x05
+#keybind = cmd+left=text:\x01
+keybind = alt+left=esc:b
+keybind = alt+right=esc:f
