@@ -63,6 +63,11 @@ sudo chmod +x /etc/systemd/system-sleep/xremap-restart.sh
 sudo cp "$PUBLIC/apps-linux/etc/udev/rules.d/70-keychron.rules" /etc/udev/rules.d/
 sudo udevadm control --reload-rules
 
+# --- Enable GNOME Shell extensions ---
+
+echo "\n=> Enabling GNOME Shell extensions..."
+gnome-extensions enable center-ghostty@custom 2>/dev/null || true
+
 # --- Reload services ---
 
 echo "\n=> Reloading systemd user services..."

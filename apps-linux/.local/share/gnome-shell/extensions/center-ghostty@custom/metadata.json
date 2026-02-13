@@ -1,0 +1,7 @@
+{
+  "name": "Center Ghostty",
+  "description": "Centers Ghostty windows when they are created",
+  "uuid": "center-ghostty@custom",
+  "shell-version": ["49"],
+  "url": ""
+}
