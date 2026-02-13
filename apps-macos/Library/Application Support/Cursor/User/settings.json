@@ -27,22 +27,6 @@
         "vue",
         "ts"
     ],
-    "sqltools.connections": [
-        {
-            "mysqlOptions": {
-                "authProtocol": "default",
-                "enableSsl": "Disabled"
-            },
-            "previewLimit": 50,
-            "server": "localhost",
-            "port": 5021,
-            "driver": "MySQL",
-            "name": "Campaigns",
-            "database": "campaigns_development",
-            "username": "root",
-            "password": ""
-        }
-    ],
     "docker.containers.label": "ContainerName",
     "docker.volumes.label": "VolumeName",
     "docker.containers.description": [
