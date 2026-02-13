@@ -7,18 +7,18 @@
 ##   ./install.sh                   # macOS or Linux desktop
 ##
 
-stow stow
-stow bin
-stow git
-stow zsh
-stow apps
+stow -d ~/.public_dotfiles -t ~ stow
+stow -d ~/.public_dotfiles -t ~ bin
+stow -d ~/.public_dotfiles -t ~ git
+stow -d ~/.public_dotfiles -t ~ zsh
+stow -d ~/.public_dotfiles -t ~ apps
 
 if [[ $OPERATINGSYSTEM == 'macos' ]]; then
-  stow apps-macos
+  stow -d ~/.public_dotfiles -t ~ apps-macos
 else
-  stow apps-linux
+  stow -d ~/.public_dotfiles -t ~ apps-linux
   PROFILE="${PROFILE:-desktop}"
-  stow "apps-linux-${PROFILE}"
+  stow -d ~/.public_dotfiles -t ~ "apps-linux-${PROFILE}"
 fi
 
 # Install git-cob in /usr/local/bin so git can use it
