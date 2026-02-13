@@ -1,0 +1,7 @@
+# Downloaded binaries (installed via bin/install-tools.sh or package managers)
+aws-vault
+dox
+eza
+lazydocker
+mkcert
+rails-new

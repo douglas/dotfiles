@@ -1,0 +1,72 @@
+#!/usr/bin/env zsh
+##
+## Update Linux dotfiles: fetch latest changes, re-stow, and install system files.
+##
+## Detects laptop vs desktop via `hostnamectl chassis` and stows the
+## correct apps-linux-{laptop,desktop} package.
+##
+
+set -euo pipefail
+
+PUBLIC="$HOME/.public_dotfiles"
+PRIVATE="$HOME/.private_dotfiles"
+
+chassis=$(hostnamectl chassis)
+if [[ "$chassis" == "laptop" ]]; then
+  profile="laptop"
+elif [[ "$chassis" == "desktop" ]]; then
+  profile="desktop"
+else
+  echo "Unknown chassis type: $chassis"
+  exit 1
+fi
+
+echo "Detected profile: $profile"
+
+# --- Fetch latest changes ---
+
+echo "\n=> Pulling latest public dotfiles..."
+git -C "$PUBLIC" pull --rebase
+
+if [[ -d "$PRIVATE/.git" ]]; then
+  echo "\n=> Pulling latest private dotfiles..."
+  git -C "$PRIVATE" pull --rebase
+fi
+
+# --- Re-stow public dotfiles ---
+
+echo "\n=> Stowing public dotfiles..."
+cd "$PUBLIC"
+stow -R stow
+stow -R bin
+stow -R git
+stow -R zsh
+stow -R apps
+stow -R apps-linux
+stow -R "apps-linux-${profile}"
+
+# --- Re-stow private dotfiles ---
+
+if [[ -d "$PRIVATE" ]]; then
+  echo "\n=> Stowing private dotfiles..."
+  cd "$PRIVATE"
+  for pkg in */; do
+    stow -R "${pkg%/}"
+  done
+fi
+
+# --- Install system files (requires sudo) ---
+
+echo "\n=> Installing system files..."
+sudo cp "$PUBLIC/apps-linux/etc/systemd/system-sleep/xremap-restart.sh" /etc/systemd/system-sleep/
+sudo chmod +x /etc/systemd/system-sleep/xremap-restart.sh
+sudo cp "$PUBLIC/apps-linux/etc/udev/rules.d/70-keychron.rules" /etc/udev/rules.d/
+sudo udevadm control --reload-rules
+
+# --- Reload services ---
+
+echo "\n=> Reloading systemd user services..."
+systemctl --user daemon-reload
+systemctl --user restart xremap
+
+echo "\n=> Done!"

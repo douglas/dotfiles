@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd ~/.bin/wubular_src
+ruby -run -e httpd . -p 9999
