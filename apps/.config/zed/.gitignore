@@ -1,0 +1,12 @@
+# Display-specific (managed in apps-macos/, apps-linux-desktop/, apps-linux-laptop/)
+settings.json
+
+# Runtime and backup files
+*.bak
+*_backup.json
+.DS_Store
+conversations/
+debug.json
+development_credentials
+prompts/
+themes/

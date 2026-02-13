@@ -1,0 +1,93 @@
+// Zed Tasks
+[
+  {
+    "label": "Open repository in lazygit",
+    "command": "lazygit",
+    "use_new_terminal": true,
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "Open lazydocker",
+    "command": "lazydocker",
+    "use_new_terminal": true,
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "Open repository in Sublime Merge",
+    "command": "smerge $ZED_WORKTREE_ROOT",
+    "reveal": "never"
+  },
+  // Github related tasks
+  {
+    "label": "Open Current File in Github",
+    "command": "gh",
+    "args": ["browse", "\"$ZED_RELATIVE_FILE:$ZED_ROW\""],
+    "reveal": "never"
+  },
+  {
+    "label": "Open Github PR",
+    "command": "gh",
+    "args": ["pr", "open", "--web"],
+    "reveal": "never"
+  },
+  {
+    "label": "npx vitest run -t \"$ZED_RELATIVE_FILE\"",
+    "command": "npx vitest run -t",
+    "args": ["\"$ZED_RELATIVE_FILE\""],
+    "tags": ["vitest"]
+  },
+  {
+    "label": "npx vitest run -t \"$ZED_SYMBOL\"",
+    "command": "npx vitest run -t",
+    "args": ["\"$ZED_SYMBOL\" $ZED_FILE"]
+  },
+  {
+    "label": "test $ZED_FILENAME:$ZED_ROW",
+    "command": "bundle",
+    "args": ["exec", "rspec", "\"$ZED_RELATIVE_FILE:$ZED_ROW\""],
+    "tags": ["ruby-test"]
+  },
+  {
+    // Requires https://github.com/MoskitoHero/zed-test-toggle gem
+    "label": "Toggle Test and Target",
+    "command": "zed-test-toggle",
+    "args": ["lookup", "-p", "\"$ZED_RELATIVE_FILE\"", "-r", "\"$ZED_WORKTREE_ROOT\""],
+    "hide": "always",
+    "allow_concurrent_runs": false,
+    "use_new_terminal": false,
+    "reveal": "never"
+  },
+  {
+    "label": "eslint current file",
+    "command": "./node_modules/.bin/eslint",
+    "args": ["\"$ZED_RELATIVE_FILE\"", "--fix"]
+  },
+  {
+    "label": "eslint changed files",
+    "command": "./node_modules/.bin/eslint",
+    "args": ["--fix", "(git diff --name-only master **/*.{js,ts,vue,jsx})"]
+  },
+  {
+    "label": "rubocop current file",
+    "command": "bundle exec rubocop -A",
+    "args": ["\"$ZED_RELATIVE_FILE\""]
+  },
+  {
+    "label": "rubocop changed files",
+    "command": "bundle exec rubocop",
+    "args": [
+      "(git diff --diff-filter=ACMRTUX --name-only master)",
+      "--display-cop-names",
+      "--extra-details",
+      "-A",
+      "--force-exclusion"
+    ]
+  },
+  {
+    "label": "rubocop all files",
+    "command": "bundle exec rubocop",
+    "args": ["--display-cop-names", "--extra-details", "-A", "--force-exclusion"]
+  }
+]
