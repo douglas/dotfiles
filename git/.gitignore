@@ -32,3 +32,6 @@ tsconfig.json
 # Ignore Cursor config for now
 .cursor*
 .claude*
+
+# Mise (local Ruby version management)
+mise.toml
