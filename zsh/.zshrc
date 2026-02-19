@@ -65,3 +65,6 @@ fi
 
 # Entire CLI shell completion
 autoload -Uz compinit && compinit && source <(entire completion zsh)
+
+# Zoxide (must be initialized at the very end of .zshrc)
+eval "$(zoxide init --cmd cd zsh)"

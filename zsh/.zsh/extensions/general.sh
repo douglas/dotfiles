@@ -32,8 +32,3 @@ eval "$(mise activate zsh)"
 ##
 export GOPATH=$HOME
 export PATH="$PATH:$GOPATH/bin"
-
-##
-## Zoxide
-##
-eval "$(zoxide init --cmd cd zsh)"
