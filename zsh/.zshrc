@@ -64,7 +64,8 @@ elif [[ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; th
 fi
 
 # Entire CLI shell completion
-autoload -Uz compinit && compinit && source <(entire completion zsh)
+autoload -Uz compinit && compinit
+if (( $+commands[entire] )); then source <(entire completion zsh 2>/dev/null); fi
 
 # Zoxide (must be initialized at the very end of .zshrc)
 eval "$(zoxide init --cmd cd zsh)"
