@@ -6,6 +6,7 @@
 ## Environment
 ##
 export TMPDIR="$HOME/tmp"
+export _ZO_DOCTOR=0
 export PATH="$HOME/.local/bin:$HOME/.bin:$PATH"
 export PATH="$HOME/.lmstudio/bin:$HOME/.opencode/bin:$PATH"
 
