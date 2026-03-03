@@ -19,6 +19,11 @@ else
   stow -d ~/.public_dotfiles -t ~ apps-linux
   PROFILE="${PROFILE:-desktop}"
   stow -d ~/.public_dotfiles -t ~ "apps-linux-${PROFILE}"
+
+  if command -v omarchy &>/dev/null; then
+    stow -d ~/.public_dotfiles -t ~ apps-omarchy
+    stow -d ~/.public_dotfiles -t ~ "apps-omarchy-${PROFILE}"
+  fi
 fi
 
 # Install git-cob in /usr/local/bin so git can use it
