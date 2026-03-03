@@ -1,0 +1,21 @@
+#!/usr/bin/env zsh
+# Fix GPG keyboxd lock/corruption issues that block mise install, etc.
+
+set -euo pipefail
+
+echo "Killing keyboxd and gpg-agent..."
+gpgconf --kill keyboxd 2>/dev/null
+gpgconf --kill all 2>/dev/null
+
+# Remove stale lock files
+lock_dir="$HOME/.gnupg/public-keys.d"
+if [[ -d "$lock_dir" ]]; then
+  locks=("$lock_dir"/*.lock(N))
+  if (( ${#locks} )); then
+    echo "Removing stale lock files:"
+    printf "  %s\n" "${locks[@]}"
+    rm -f "${locks[@]}"
+  fi
+fi
+
+echo "GPG keyboxd reset complete. Retry your command."
