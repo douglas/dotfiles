@@ -70,3 +70,4 @@ if (( $+commands[entire] )); then source <(entire completion zsh 2>/dev/null); f
 
 # Zoxide (must be initialized at the very end of .zshrc)
 eval "$(zoxide init --cmd cd zsh)"
+alias spotify='spotify --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland'
