@@ -1,86 +1,136 @@
 keypress_delay_ms: 5
 
 modmap:
-  - name: Swap Alt and Super
+  - name: Key remaps
     remap:
-      Alt_L: Super_L
-      Super_L: Alt_L
-      Alt_R: Super_R
-      Super_R: Alt_R
+      KEY_102ND: Shift_L
+      CapsLock: Ctrl_L
 
 keymap:
-  - name: macOS-style shortcuts (Super as Cmd)
+  - name: Terminal shortcuts (Alt as Cmd)
+    application:
+      only: [com.mitchellh.ghostty]
+    remap:
+      # App launcher (Cmd+Space -> Super+Space for Walker)
+      Alt-Space: Super-Space
+      Alt-Shift-Space: Super-Alt-Space
+
+      # Clipboard (Ctrl+Shift to avoid terminal control chars)
+      Alt-c: Ctrl-Shift-c         # copy
+      Alt-v: Ctrl-Shift-v         # paste
+
+      # Tab & window management
+      Alt-t: Ctrl-Shift-t         # new tab
+      Alt-w: Ctrl-Shift-w         # close tab
+      Alt-n: Ctrl-Shift-n         # new window
+      Alt-q: Super-w               # close window (Hyprland killactive)
+
+      # Actions
+      Alt-a: Ctrl-Shift-a         # select all
+      Alt-f: Ctrl-Shift-f         # search
+      Alt-g: Ctrl-Shift-g         # next search match
+      Alt-k: Ctrl-Shift-k         # clear screen
+
+      # Text editing
+      Alt-Backspace: Ctrl-u       # kill line backward (Ctrl+U = \x15)
+
+      # Font size (no terminal conflict)
+      Alt-Equal: Ctrl-Equal
+      Alt-Minus: Ctrl-Minus
+      Alt-0: Ctrl-0
+
+      # Settings
+      Alt-Comma: Ctrl-Comma
+
+      # Tab navigation
+      Alt-Left: Ctrl-Shift-Left
+      Alt-Right: Ctrl-Shift-Right
+
+      # Workspace navigation (Shift+Alt -> Super for Hyprland)
+      Shift-Alt-Left: Super-Left
+      Shift-Alt-Right: Super-Right
+
+      # Scrollback
+      Alt-Up: Ctrl-Shift-Up
+      Alt-Down: Ctrl-Shift-Down
+
+      # Fullscreen & mouse
+      Alt-Enter: Ctrl-Enter
+      Alt-BTN_LEFT: Ctrl-BTN_LEFT
+
+  - name: macOS-style shortcuts (Alt as Cmd)
     application:
       not: [com.mitchellh.ghostty]
     remap:
+      # App launcher (Cmd+Space -> Super+Space for Walker)
+      Alt-Space: Super-Space
+      Alt-Shift-Space: Super-Alt-Space
+
       # Clipboard
-      Super-c: Ctrl-c          # copy
-      Super-v: Ctrl-v          # paste
-      Super-x: Ctrl-x          # cut
+      Alt-c: Ctrl-c          # copy
+      Alt-v: Ctrl-v          # paste
+      Alt-x: Ctrl-x          # cut
 
       # Common actions
-      Super-z: Ctrl-z          # undo
-      Super-Shift-z: Ctrl-Shift-z  # redo
-      Super-a: Ctrl-a          # select all
-      Super-f: Ctrl-f          # find
-      Super-s: Ctrl-s          # save
-      Super-Shift-s: Ctrl-Shift-s  # save as
-      Super-o: Ctrl-o          # open file
-      Super-p: Ctrl-p          # print
-      Super-n: Ctrl-n          # new window
-      Super-q: Ctrl-q          # quit app
-      Super-w: Ctrl-w          # close tab
-      Super-t: Ctrl-t          # new tab
-      Super-Shift-t: Ctrl-Shift-t  # reopen closed tab
-      Super-Shift-n: Ctrl-Shift-n  # new incognito window
-      Super-Comma: Ctrl-Comma  # settings/preferences
+      Alt-z: Ctrl-z          # undo
+      Alt-Shift-z: Ctrl-Shift-z  # redo
+      Alt-a: Ctrl-a          # select all
+      Alt-f: Ctrl-f          # find
+      Alt-s: Ctrl-s          # save
+      Alt-Shift-s: Ctrl-Shift-s  # save as
+      Alt-o: Ctrl-o          # open file
+      Alt-p: Ctrl-p          # print
+      Alt-n: Ctrl-n          # new window
+      Alt-q: Super-w         # close window (Hyprland killactive)
+      Alt-w: Ctrl-w          # close tab
+      Alt-t: Ctrl-t          # new tab
+      Alt-Shift-t: Ctrl-Shift-t  # reopen closed tab
+      Alt-Shift-n: Ctrl-Shift-n  # new incognito window
+      Alt-Comma: Ctrl-Comma  # settings/preferences
 
       # Text formatting
-      Super-b: Ctrl-b          # bold
-      Super-i: Ctrl-i          # italic
-      Super-u: Ctrl-u          # underline
+      Alt-b: Ctrl-b          # bold
+      Alt-i: Ctrl-i          # italic
+      Alt-u: Ctrl-u          # underline
 
       # Editor shortcuts
-      Super-Slash: Ctrl-Slash              # toggle comment
-      Super-LeftBrace: Ctrl-LeftBrace      # outdent
-      Super-RightBrace: Ctrl-RightBrace    # indent
-      Super-g: Ctrl-g                      # go to line / find next
-      Super-h: Ctrl-h                      # find and replace
-      Super-Shift-p: Ctrl-Shift-p         # command palette
-      Super-Shift-f: Ctrl-Shift-f         # search in files
-      Super-Shift-o: Ctrl-Shift-o         # go to symbol
-      Super-Shift-k: Ctrl-Shift-k         # delete line
-      Super-Shift-l: Ctrl-Shift-l         # select all occurrences
-      Super-Shift-h: Ctrl-Shift-h         # replace in files
-      Super-Shift-Backslash: Ctrl-Shift-Backslash  # go to matching bracket
-
-      # Multi-cursor (Cmd+Option → Ctrl+Alt)
-      Super-Alt-Up: Ctrl-Alt-Up            # add cursor above
-      Super-Alt-Down: Ctrl-Alt-Down        # add cursor below
+      Alt-Slash: Ctrl-Slash              # toggle comment
+      Alt-LeftBrace: Ctrl-LeftBrace      # outdent
+      Alt-RightBrace: Ctrl-RightBrace    # indent
+      Alt-g: Ctrl-g                      # go to line / find next
+      Alt-h: Ctrl-h                      # find and replace
+      Alt-Shift-p: Ctrl-Shift-p         # command palette
+      Alt-Shift-f: Ctrl-Shift-f         # search in files
+      Alt-Shift-o: Ctrl-Shift-o         # go to symbol
+      Alt-Shift-k: Ctrl-Shift-k         # delete line
+      Alt-Shift-l: Ctrl-Shift-l         # select all occurrences
+      Alt-Shift-h: Ctrl-Shift-h         # replace in files
+      Alt-Shift-Backslash: Ctrl-Shift-Backslash  # go to matching bracket
 
       # Browser / links
-      Super-r: Ctrl-r          # reload
-      Super-l: Ctrl-l          # address bar / select line
-      Super-d: Ctrl-d          # bookmark / add to selection
-      Super-k: Ctrl-k          # insert link
-      Super-Shift-v: Ctrl-Shift-v  # paste without formatting
+      Alt-r: Ctrl-r          # reload
+      Alt-l: Ctrl-l          # address bar / select line
+      Alt-d: Ctrl-d          # bookmark / add to selection
+      Alt-k: Ctrl-k          # insert link
+      Alt-Shift-v: Ctrl-Shift-v  # paste without formatting
 
       # Tab navigation
-      Super-Shift-RightBrace: Ctrl-PageDown  # next tab
-      Super-Shift-LeftBrace: Ctrl-PageUp     # previous tab
+      Alt-Shift-RightBrace: Ctrl-PageDown  # next tab
+      Alt-Shift-LeftBrace: Ctrl-PageUp     # previous tab
 
-      # Developer tools (Cmd+Option → Ctrl+Shift)
-      Super-Alt-i: Ctrl-Shift-i     # inspector / dev tools
-      Super-Alt-j: Ctrl-Shift-j     # console
+      # Text navigation (Cmd+arrow -> Home/End)
+      Alt-Left: Home                # beginning of line
+      Alt-Right: End                # end of line
+      Alt-Up: Ctrl-Home             # top of document
+      Alt-Down: Ctrl-End            # bottom of document
+      # Workspace navigation (Shift+Alt -> Super for Hyprland)
+      Alt-Shift-Left: Super-Left
+      Alt-Shift-Right: Super-Right
+      Alt-Backspace: [Shift-Home, Delete]  # delete to line start
+      Alt-e: Ctrl-e
+      Alt-Enter: Ctrl-Enter    # alt+enter -> ctrl+enter
+      Alt-BTN_LEFT: Ctrl-BTN_LEFT  # alt+click -> ctrl+click (open links)
 
-      # Text navigation (Cmd+arrow → Home/End)
-      Super-Left: Home                # beginning of line
-      Super-Right: End                # end of line
-      Super-Up: Ctrl-Home             # top of document
-      Super-Down: Ctrl-End            # bottom of document
-      Super-Shift-Left: Shift-Home    # select to line start
-      Super-Shift-Right: Shift-End    # select to line end
-      Super-Backspace: [Shift-Home, Delete]  # delete to line start
-      Super-e: Ctrl-e
-      Super-Enter: Ctrl-Enter    # super+enter → ctrl+enter
-      Super-BTN_LEFT: Ctrl-BTN_LEFT  # super+click → ctrl+click (open links)
+      # Note: Multi-cursor (Ctrl+Alt+Up/Down) and dev tools (Ctrl+Shift+I/J)
+      # already work natively on Linux — no remapping needed.
+      # Omarchy uses Super+Alt for group management, so we avoid that combo.
