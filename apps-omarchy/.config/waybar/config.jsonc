@@ -6,8 +6,8 @@
   "height": 26,
   "modules-left": ["custom/omarchy", "hyprland/workspaces"],
   "modules-center": [
-    "clock",
     "custom/calendar",
+    "clock",
     "custom/update",
     "custom/voxtype",
     "custom/screenrecording-indicator",
@@ -63,9 +63,13 @@
     "interval": 21600,
   },
   "custom/calendar": {
-    "format": " 󰃭 ",
-    "on-click": "lvsk-calendar-launcher",
-    "tooltip-format": "Click to open calendar",
+    "format": "󰃭",
+    "exec": "nextmeeting --max-title-length 30 --waybar --notify-min-before-events 10",
+    "on-click": "nextmeeting --open-meet-url",
+    "on-click-right": "setsid uwsm-app -- ghostty --class=org.omarchy.Calendar --title=Calendar -e bash -c 'gcalcli agenda; read -n1'",
+    "return-type": "json",
+    "tooltip": true,
+    "interval": 59,
   },
 
   "cpu": {

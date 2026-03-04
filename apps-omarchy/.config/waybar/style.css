@@ -103,3 +103,11 @@ tooltip {
   min-width: 12px;
   margin: 0 7.5px;
 }
+
+#custom-calendar {
+  margin: 0 7.5px;
+}
+
+#custom-calendar.soon {
+  color: #a55555;
+}
