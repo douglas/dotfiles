@@ -19,6 +19,7 @@
     "bluetooth",
     "network",
     "pulseaudio",
+    "custom/ddc_brightness",
     "cpu",
     "battery",
   ],
@@ -183,5 +184,17 @@
   "tray": {
     "icon-size": 12,
     "spacing": 17,
+  },
+  "custom/ddc_brightness": {
+    "format": "{icon}",
+    "format-icons": ["󰃞", "󰃟", "󰃠"],
+    "exec": "bash -c 'v=$(ddcutil getvcp 10 2>/dev/null | grep -oP \"current value =\\s*\\K[0-9]+\"); echo \"{\\\"percentage\\\": ${v:-0}}\"'",
+    "return-type": "json",
+    "on-scroll-up": "ddcutil setvcp 10 + 5",
+    "on-scroll-down": "ddcutil setvcp 10 - 5",
+    "on-click": "ddcutil setvcp 10 50",
+    "interval": 6,
+    "tooltip": true,
+    "tooltip-format": "Brightness: {percentage}%"
   },
 }
