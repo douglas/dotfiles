@@ -1,0 +1,45 @@
+# Dynamic theme colors
+config-file = ?"~/.config/omarchy/current/theme/ghostty.conf"
+
+# Font
+font-family = "CommitMono Nerd Font"
+font-style = Regular
+font-size = 11
+
+# Window
+window-theme = ghostty
+window-padding-x = 14
+window-padding-y = 14
+confirm-close-surface=false
+resize-overlay = never
+gtk-toolbar-style = flat
+
+# Cursor styling
+cursor-style = "block"
+cursor-style-blink = false
+
+# Cursor styling + SSH session terminfo
+# (all shell integration options must be passed together)
+shell-integration-features = no-cursor,ssh-env
+
+# Keyboard bindings
+keybind = shift+insert=paste_from_clipboard
+keybind = control+insert=copy_to_clipboard
+keybind = super+control+shift+alt+arrow_down=resize_split:down,100
+keybind = super+control+shift+alt+arrow_up=resize_split:up,100
+keybind = super+control+shift+alt+arrow_left=resize_split:left,100
+keybind = super+control+shift+alt+arrow_right=resize_split:right,100
+keybind = ctrl+k>arrow_right=new_split:right
+keybind = ctrl+k>arrow_left=new_split:left
+keybind = ctrl+k>arrow_up=new_split:up
+keybind = ctrl+k>arrow_down=new_split:down
+keybind = ctrl+k>shift+arrow_right=goto_split:right
+keybind = ctrl+k>shift+arrow_left=goto_split:left
+keybind = ctrl+k>shift+arrow_up=goto_split:up
+keybind = ctrl+k>shift+arrow_down=goto_split:down
+
+# Slowdown mouse scrolling
+mouse-scroll-multiplier = 0.95
+
+# Fix general slowness on hyprland (https://github.com/ghostty-org/ghostty/discussions/3224)
+async-backend = epoll
