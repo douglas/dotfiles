@@ -23,7 +23,7 @@ keymap:
       Alt-t: Ctrl-Shift-t         # new tab
       Alt-w: Ctrl-Shift-w         # close tab
       Alt-n: Ctrl-Shift-n         # new window
-      Alt-q: Super-w               # close window (Hyprland killactive)
+      Alt-q: { launch: ["hyprctl", "dispatch", "killactive"] }
 
       # Actions
       Alt-a: Ctrl-Shift-a         # select all
@@ -54,13 +54,28 @@ keymap:
       Alt-Up: Ctrl-Shift-Up
       Alt-Down: Ctrl-Shift-Down
 
+      # Window management (routed to Hyprland via Super)
+      Alt-h: Super-h               # hide/minimize window
+      Alt-m: Super-m               # minimize window
+      Alt-Grave: Super-Grave       # cycle windows
+
       # Fullscreen & mouse
       Alt-Enter: Ctrl-Enter
       Alt-BTN_LEFT: Ctrl-BTN_LEFT
 
+  - name: Spotify shortcuts (Alt as Cmd)
+    application:
+      only: [spotify]
+    remap:
+      Alt-q: Ctrl-Shift-q     # quit Spotify (native shortcut)
+      Alt-w: Ctrl-Shift-q     # also quit (Spotify has no tabs)
+      Alt-h: Super-h           # hide/minimize window
+      Alt-m: Super-m           # minimize window
+      Alt-Grave: Super-Grave   # cycle windows
+
   - name: macOS-style shortcuts (Alt as Cmd)
     application:
-      not: [com.mitchellh.ghostty]
+      not: [com.mitchellh.ghostty, spotify]
     remap:
       # App launcher (Cmd+Space -> Super+Space for Walker)
       Alt-Space: Super-Space
@@ -81,7 +96,7 @@ keymap:
       Alt-o: Ctrl-o          # open file
       Alt-p: Ctrl-p          # print
       Alt-n: Ctrl-n          # new window
-      Alt-q: Super-w         # close window (Hyprland killactive)
+      Alt-q: { launch: ["hyprctl", "dispatch", "killactive"] }
       Alt-w: Ctrl-w          # close tab
       Alt-t: Ctrl-t          # new tab
       Alt-Shift-t: Ctrl-Shift-t  # reopen closed tab
@@ -98,7 +113,7 @@ keymap:
       Alt-LeftBrace: Ctrl-LeftBrace      # outdent
       Alt-RightBrace: Ctrl-RightBrace    # indent
       Alt-g: Ctrl-g                      # go to line / find next
-      Alt-h: Ctrl-h                      # find and replace
+      Alt-h: Super-h                     # hide/minimize window (macOS Cmd+H)
       Alt-Shift-p: Ctrl-Shift-p         # command palette
       Alt-Shift-f: Ctrl-Shift-f         # search in files
       Alt-Shift-o: Ctrl-Shift-o         # go to symbol
@@ -106,6 +121,10 @@ keymap:
       Alt-Shift-l: Ctrl-Shift-l         # select all occurrences
       Alt-Shift-h: Ctrl-Shift-h         # replace in files
       Alt-Shift-Backslash: Ctrl-Shift-Backslash  # go to matching bracket
+
+      # Window management (routed to Hyprland via Super)
+      Alt-m: Super-m                             # minimize window
+      Alt-Grave: Super-Grave                     # cycle windows
 
       # Browser / links
       Alt-r: Ctrl-r          # reload
