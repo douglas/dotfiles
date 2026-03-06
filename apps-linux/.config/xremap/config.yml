@@ -59,6 +59,9 @@ keymap:
       Alt-m: Super-m               # minimize window
       Alt-Grave: Super-Grave       # cycle windows
 
+      # Clipboard manager (Omarchy)
+      Alt-Shift-v: Super-Ctrl-v
+
       # Fullscreen & mouse
       Alt-Enter: Ctrl-Enter
       Alt-BTN_LEFT: Ctrl-BTN_LEFT
@@ -131,7 +134,7 @@ keymap:
       Alt-l: Ctrl-l          # address bar / select line
       Alt-d: Ctrl-d          # bookmark / add to selection
       Alt-k: Ctrl-k          # insert link
-      Alt-Shift-v: Ctrl-Shift-v  # paste without formatting
+      Alt-Shift-v: Super-Ctrl-v  # clipboard manager (Omarchy)
 
       # Tab navigation
       Alt-Shift-RightBrace: Ctrl-PageDown  # next tab
