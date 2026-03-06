@@ -1,5 +1,17 @@
 keypress_delay_ms: 5
 
+# macOS Cmd key via F18 (xremap virtual_modifiers)
+#
+# Setup:
+#   1. Via (Keychron Q11): Map your "Cmd" thumb key to F18
+#   2. xremap virtual_modifiers: treats F18 as a custom modifier
+#   3. xremap keymap: translates Cmd combos to Ctrl (apps) or Super (WM)
+#   4. Hyprland: No changes needed
+#   5. Left ALT is free for native text navigation
+
+virtual_modifiers:
+  - F18
+
 modmap:
   - name: Key remaps
     remap:
@@ -7,152 +19,282 @@ modmap:
       CapsLock: Ctrl_L
 
 keymap:
-  - name: Terminal shortcuts (Alt as Cmd)
+  # ============================================================
+  # Terminal (Ghostty) — Cmd key (F18)
+  # ============================================================
+  - name: Terminal shortcuts (Cmd)
     application:
       only: [com.mitchellh.ghostty]
     remap:
-      # App launcher (Cmd+Space -> Super+Space for Walker)
-      Alt-Space: Super-Space
-      Alt-Shift-Space: Super-Alt-Space
+      # App launcher
+      F18-Space: Super-Space
+      F18-Shift-Space: Super-Alt-Space
 
       # Clipboard (Ctrl+Shift to avoid terminal control chars)
-      Alt-c: Ctrl-Shift-c         # copy
-      Alt-v: Ctrl-Shift-v         # paste
+      F18-c: Ctrl-Shift-c
+      F18-v: Ctrl-Shift-v
 
       # Tab & window management
-      Alt-t: Ctrl-Shift-t         # new tab
-      Alt-w: Ctrl-Shift-w         # close tab
-      Alt-n: Ctrl-Shift-n         # new window
-      Alt-q: { launch: ["hyprctl", "dispatch", "killactive"] }
+      F18-t: Ctrl-Shift-t
+      F18-w: Ctrl-Shift-w
+      F18-n: Ctrl-Shift-n
+      F18-q: { launch: ["hyprctl", "dispatch", "killactive"] }
 
       # Actions
-      Alt-a: Ctrl-Shift-a         # select all
-      Alt-f: Ctrl-Shift-f         # search
-      Alt-g: Ctrl-Shift-g         # next search match
-      Alt-k: Ctrl-Shift-k         # clear screen
+      F18-a: Ctrl-Shift-a
+      F18-f: Ctrl-Shift-f
+      F18-g: Ctrl-Shift-g
+      F18-k: Ctrl-Shift-k
 
       # Text editing
-      Alt-Backspace: Ctrl-u       # kill line backward (Ctrl+U = \x15)
+      F18-Backspace: Ctrl-u
 
-      # Font size (no terminal conflict)
-      Alt-Equal: Ctrl-Equal
-      Alt-Minus: Ctrl-Minus
-      Alt-0: Ctrl-0
+      # Font size
+      F18-Equal: Ctrl-Equal
+      F18-Minus: Ctrl-Minus
+      F18-0: Ctrl-0
 
       # Settings
-      Alt-Comma: Ctrl-Comma
+      F18-Comma: Ctrl-Comma
+
+      # Window focus (routed to Super for Hyprland)
+      F18-Left: Super-Left
+      F18-Right: Super-Right
+      F18-Up: Super-Up
+      F18-Down: Super-Down
+
+      # Workspace navigation (Cmd+Win+arrows or Cmd+Ctrl+arrows)
+      F18-Super-Left: Super-Shift-Tab
+      F18-Super-Right: Super-Tab
+      F18-Ctrl-Left: Super-Shift-Tab
+      F18-Ctrl-Right: Super-Tab
 
       # Tab navigation
       Alt-Left: Ctrl-Shift-Left
       Alt-Right: Ctrl-Shift-Right
-
-      # Workspace navigation (Shift+Alt -> Super for Hyprland)
-      Shift-Alt-Left: Super-Left
-      Shift-Alt-Right: Super-Right
-
-      # Scrollback
-      Alt-Up: Ctrl-Shift-Up
-      Alt-Down: Ctrl-Shift-Down
-
-      # Window management (routed to Hyprland via Super)
-      Alt-h: Super-h               # hide/minimize window
-      Alt-m: Super-m               # minimize window
-      Alt-Grave: Super-Grave       # cycle windows
-
-      # Clipboard manager (Omarchy)
-      Alt-Shift-v: Super-Ctrl-v
+      Ctrl-Left: Ctrl-Shift-Left
+      Ctrl-Right: Ctrl-Shift-Right
 
       # Fullscreen & mouse
-      Alt-Enter: Ctrl-Enter
-      Alt-BTN_LEFT: Ctrl-BTN_LEFT
+      F18-Enter: Ctrl-Enter
+      F18-BTN_LEFT: Ctrl-BTN_LEFT
 
-  - name: Spotify shortcuts (Alt as Cmd)
+      # --- WM shortcuts (routed to Super for Hyprland) ---
+      F18-h: Super-h
+      F18-m: Super-m
+      F18-Grave: Super-Grave
+      F18-Shift-v: Super-Ctrl-v
+
+      # Workspace switching
+      F18-1: Super-1
+      F18-2: Super-2
+      F18-3: Super-3
+      F18-4: Super-4
+      F18-5: Super-5
+      F18-6: Super-6
+      F18-7: Super-7
+      F18-8: Super-8
+      F18-9: Super-9
+
+      # Move window to workspace
+      F18-Shift-1: Super-Shift-1
+      F18-Shift-2: Super-Shift-2
+      F18-Shift-3: Super-Shift-3
+      F18-Shift-4: Super-Shift-4
+      F18-Shift-5: Super-Shift-5
+      F18-Shift-6: Super-Shift-6
+      F18-Shift-7: Super-Shift-7
+      F18-Shift-8: Super-Shift-8
+      F18-Shift-9: Super-Shift-9
+
+      # Window swap
+      F18-Shift-Left: Super-Shift-Left
+      F18-Shift-Right: Super-Shift-Right
+      F18-Shift-Up: Super-Shift-Up
+      F18-Shift-Down: Super-Shift-Down
+
+      # Workspace navigation
+      F18-Tab: Super-Tab
+      F18-Shift-Tab: Super-Shift-Tab
+
+      # Window management
+      F18-s: Super-s
+      F18-o: Super-o
+      F18-j: Super-j
+
+      # macOS-like screenshots (Cmd+Shift+3/4/5)
+      F18-Shift-3: { launch: ["omarchy-cmd-screenshot", "fullscreen"] }
+      F18-Shift-4: { launch: ["omarchy-cmd-screenshot", "region"] }
+      F18-Shift-5: { launch: ["omarchy-menu", "capture"] }
+
+  # ============================================================
+  # Spotify
+  # ============================================================
+  - name: Spotify shortcuts (Cmd)
     application:
       only: [spotify]
     remap:
-      Alt-q: Ctrl-Shift-q     # quit Spotify (native shortcut)
-      Alt-w: Ctrl-Shift-q     # also quit (Spotify has no tabs)
-      Alt-h: Super-h           # hide/minimize window
-      Alt-m: Super-m           # minimize window
-      Alt-Grave: Super-Grave   # cycle windows
+      F18-q: Ctrl-Shift-q
+      F18-w: Ctrl-Shift-q
+      F18-h: Super-h
+      F18-m: Super-m
+      F18-Grave: Super-Grave
 
-  - name: macOS-style shortcuts (Alt as Cmd)
+      # WM shortcuts
+      F18-1: Super-1
+      F18-2: Super-2
+      F18-3: Super-3
+      F18-4: Super-4
+      F18-5: Super-5
+      F18-6: Super-6
+      F18-7: Super-7
+      F18-8: Super-8
+      F18-9: Super-9
+      F18-Tab: Super-Tab
+      F18-Shift-Tab: Super-Shift-Tab
+      F18-Space: Super-Space
+      F18-Shift-Space: Super-Alt-Space
+      F18-Shift-v: Super-Ctrl-v
+
+      # Window focus
+      F18-Left: Super-Left
+      F18-Right: Super-Right
+      F18-Up: Super-Up
+      F18-Down: Super-Down
+
+      # Workspace navigation (Cmd+Win+arrows or Cmd+Ctrl+arrows)
+      F18-Super-Left: Super-Shift-Tab
+      F18-Super-Right: Super-Tab
+      F18-Ctrl-Left: Super-Shift-Tab
+      F18-Ctrl-Right: Super-Tab
+
+  # ============================================================
+  # All other apps — Cmd key (F18)
+  # ============================================================
+  - name: macOS-style shortcuts (Cmd)
     application:
       not: [com.mitchellh.ghostty, spotify]
     remap:
-      # App launcher (Cmd+Space -> Super+Space for Walker)
-      Alt-Space: Super-Space
-      Alt-Shift-Space: Super-Alt-Space
+      # App launcher
+      F18-Space: Super-Space
+      F18-Shift-Space: Super-Alt-Space
 
       # Clipboard
-      Alt-c: Ctrl-c          # copy
-      Alt-v: Ctrl-v          # paste
-      Alt-x: Ctrl-x          # cut
+      F18-c: Ctrl-c
+      F18-v: Ctrl-v
+      F18-x: Ctrl-x
 
       # Common actions
-      Alt-z: Ctrl-z          # undo
-      Alt-Shift-z: Ctrl-Shift-z  # redo
-      Alt-a: Ctrl-a          # select all
-      Alt-f: Ctrl-f          # find
-      Alt-s: Ctrl-s          # save
-      Alt-Shift-s: Ctrl-Shift-s  # save as
-      Alt-o: Ctrl-o          # open file
-      Alt-p: Ctrl-p          # print
-      Alt-n: Ctrl-n          # new window
-      Alt-q: { launch: ["hyprctl", "dispatch", "killactive"] }
-      Alt-w: Ctrl-w          # close tab
-      Alt-t: Ctrl-t          # new tab
-      Alt-Shift-t: Ctrl-Shift-t  # reopen closed tab
-      Alt-Shift-n: Ctrl-Shift-n  # new incognito window
-      Alt-Comma: Ctrl-Comma  # settings/preferences
+      F18-z: Ctrl-z
+      F18-Shift-z: Ctrl-Shift-z
+      F18-a: Ctrl-a
+      F18-f: Ctrl-f
+      F18-s: Ctrl-s
+      F18-Shift-s: Ctrl-Shift-s
+      F18-o: Ctrl-o
+      F18-p: Ctrl-p
+      F18-n: Ctrl-n
+      F18-q: { launch: ["hyprctl", "dispatch", "killactive"] }
+      F18-w: Ctrl-w
+      F18-t: Ctrl-t
+      F18-Shift-t: Ctrl-Shift-t
+      F18-Shift-n: Ctrl-Shift-n
+      F18-Comma: Ctrl-Comma
 
       # Text formatting
-      Alt-b: Ctrl-b          # bold
-      Alt-i: Ctrl-i          # italic
-      Alt-u: Ctrl-u          # underline
+      F18-b: Ctrl-b
+      F18-i: Ctrl-i
+      F18-u: Ctrl-u
 
       # Editor shortcuts
-      Alt-Slash: Ctrl-Slash              # toggle comment
-      Alt-LeftBrace: Ctrl-LeftBrace      # outdent
-      Alt-RightBrace: Ctrl-RightBrace    # indent
-      Alt-g: Ctrl-g                      # go to line / find next
-      Alt-h: Super-h                     # hide/minimize window (macOS Cmd+H)
-      Alt-Shift-p: Ctrl-Shift-p         # command palette
-      Alt-Shift-f: Ctrl-Shift-f         # search in files
-      Alt-Shift-o: Ctrl-Shift-o         # go to symbol
-      Alt-Shift-k: Ctrl-Shift-k         # delete line
-      Alt-Shift-l: Ctrl-Shift-l         # select all occurrences
-      Alt-Shift-h: Ctrl-Shift-h         # replace in files
-      Alt-Shift-Backslash: Ctrl-Shift-Backslash  # go to matching bracket
-
-      # Window management (routed to Hyprland via Super)
-      Alt-m: Super-m                             # minimize window
-      Alt-Grave: Super-Grave                     # cycle windows
+      F18-Slash: Ctrl-Slash
+      F18-LeftBrace: Ctrl-LeftBrace
+      F18-RightBrace: Ctrl-RightBrace
+      F18-g: Ctrl-g
+      F18-Shift-p: Ctrl-Shift-p
+      F18-Shift-f: Ctrl-Shift-f
+      F18-Shift-o: Ctrl-Shift-o
+      F18-Shift-k: Ctrl-Shift-k
+      F18-Shift-l: Ctrl-Shift-l
+      F18-Shift-h: Ctrl-Shift-h
+      F18-Shift-Backslash: Ctrl-Shift-Backslash
 
       # Browser / links
-      Alt-r: Ctrl-r          # reload
-      Alt-l: Ctrl-l          # address bar / select line
-      Alt-d: Ctrl-d          # bookmark / add to selection
-      Alt-k: Ctrl-k          # insert link
-      Alt-Shift-v: Super-Ctrl-v  # clipboard manager (Omarchy)
+      F18-r: Ctrl-r
+      F18-l: Ctrl-l
+      F18-d: Ctrl-d
+      F18-k: Ctrl-k
+      F18-e: Ctrl-e
+      F18-Enter: Ctrl-Enter
+      F18-BTN_LEFT: Ctrl-BTN_LEFT
 
       # Tab navigation
-      Alt-Shift-RightBrace: Ctrl-PageDown  # next tab
-      Alt-Shift-LeftBrace: Ctrl-PageUp     # previous tab
+      F18-Shift-RightBrace: Ctrl-PageDown
+      F18-Shift-LeftBrace: Ctrl-PageUp
 
-      # Text navigation (Cmd+arrow -> Home/End)
-      Alt-Left: Home                # beginning of line
-      Alt-Right: End                # end of line
-      Alt-Up: Ctrl-Home             # top of document
-      Alt-Down: Ctrl-End            # bottom of document
-      # Workspace navigation (Shift+Alt -> Super for Hyprland)
-      Alt-Shift-Left: Super-Left
-      Alt-Shift-Right: Super-Right
-      Alt-Backspace: [Shift-Home, Delete]  # delete to line start
-      Alt-e: Ctrl-e
-      Alt-Enter: Ctrl-Enter    # alt+enter -> ctrl+enter
-      Alt-BTN_LEFT: Ctrl-BTN_LEFT  # alt+click -> ctrl+click (open links)
+      # Window focus (routed to Super for Hyprland)
+      F18-Left: Super-Left
+      F18-Right: Super-Right
+      F18-Up: Super-Up
+      F18-Down: Super-Down
+      F18-Backspace: [Shift-Home, Delete]
 
-      # Note: Multi-cursor (Ctrl+Alt+Up/Down) and dev tools (Ctrl+Shift+I/J)
-      # already work natively on Linux — no remapping needed.
-      # Omarchy uses Super+Alt for group management, so we avoid that combo.
+      # Workspace navigation (Cmd+Win+arrows or Cmd+Ctrl+arrows)
+      F18-Super-Left: Super-Shift-Tab
+      F18-Super-Right: Super-Tab
+      F18-Ctrl-Left: Super-Shift-Tab
+      F18-Ctrl-Right: Super-Tab
+
+      # Tab navigation
+      Alt-Left: Ctrl-PageUp
+      Alt-Right: Ctrl-PageDown
+      Ctrl-Left: Ctrl-PageUp
+      Ctrl-Right: Ctrl-PageDown
+
+      # Clipboard manager (Omarchy)
+      F18-Shift-v: Super-Ctrl-v
+
+      # WM shortcuts (routed to Super for Hyprland)
+      F18-h: Super-h
+      F18-m: Super-m
+      F18-Grave: Super-Grave
+
+      # Workspace switching
+      F18-1: Super-1
+      F18-2: Super-2
+      F18-3: Super-3
+      F18-4: Super-4
+      F18-5: Super-5
+      F18-6: Super-6
+      F18-7: Super-7
+      F18-8: Super-8
+      F18-9: Super-9
+
+      # Move window to workspace
+      F18-Shift-1: Super-Shift-1
+      F18-Shift-2: Super-Shift-2
+      F18-Shift-3: Super-Shift-3
+      F18-Shift-4: Super-Shift-4
+      F18-Shift-5: Super-Shift-5
+      F18-Shift-6: Super-Shift-6
+      F18-Shift-7: Super-Shift-7
+      F18-Shift-8: Super-Shift-8
+      F18-Shift-9: Super-Shift-9
+
+      # Window swap
+      F18-Shift-Left: Super-Shift-Left
+      F18-Shift-Right: Super-Shift-Right
+      F18-Shift-Up: Super-Shift-Up
+      F18-Shift-Down: Super-Shift-Down
+
+      # Workspace navigation
+      F18-Tab: Super-Tab
+      F18-Shift-Tab: Super-Shift-Tab
+
+      # Window management
+      F18-j: Super-j
+
+      # macOS-like screenshots (Cmd+Shift+3/4/5)
+      F18-Shift-3: { launch: ["omarchy-cmd-screenshot", "fullscreen"] }
+      F18-Shift-4: { launch: ["omarchy-cmd-screenshot", "region"] }
+      F18-Shift-5: { launch: ["omarchy-menu", "capture"] }
