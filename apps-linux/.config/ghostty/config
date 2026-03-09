@@ -38,6 +38,9 @@ keybind = ctrl+k>shift+arrow_left=goto_split:left
 keybind = ctrl+k>shift+arrow_up=goto_split:up
 keybind = ctrl+k>shift+arrow_down=goto_split:down
 
+# Focus split on hover
+focus-follows-mouse = true
+
 # Slowdown mouse scrolling
 mouse-scroll-multiplier = 0.95
 
