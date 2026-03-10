@@ -116,8 +116,8 @@ update_starship() {
   local config="$HOME/.config/starship.toml"
   [[ -f "$config" ]] || return
 
-  if [[ -n "$palette" ]]; then
-    # Use a predefined palette
+  if [[ -n "$palette" ]] && grep -q "^\[palettes\.$palette\]" "$config"; then
+    # Use a predefined palette (only if the palette section exists in the config)
     if grep -q "^palette = " "$config"; then
       sed_inplace "s/^palette = .*/palette = '$palette'/" "$config"
     else
