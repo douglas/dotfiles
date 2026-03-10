@@ -1,0 +1,215 @@
+#!/bin/bash
+#
+# Omarchy theme-set hook
+#
+# Extends theme changes to apps not covered by Omarchy templates:
+# Zed, bat, delta, starship, zellij
+#
+# Usage: this hook is called by omarchy-theme-set with the theme name as $1
+
+THEME="$1"
+THEME_DIR="$HOME/.config/omarchy/current/theme"
+COLORS_TOML="$THEME_DIR/colors.toml"
+
+# ── Theme name mappings ──────────────────────────────────────────────────────
+# Map Omarchy theme names to app-specific theme names.
+# Apps are skipped for themes without a mapping.
+
+declare -A ZED_THEMES=(
+  [catppuccin]="Catppuccin Mocha"
+  [catppuccin-latte]="Catppuccin Latte"
+  [everforest]="Everforest Dark"
+  [gruvbox]="Gruvbox Dark"
+  [kanagawa]="Kanagawa"
+  [nord]="Nord"
+  [ristretto]="Monokai Pro Ristretto"
+  [rose-pine]="Rosé Pine Dawn"
+  [tokyo-night]="Tokyo Night"
+  [flexoki-light]="Flexoki Light"
+)
+
+declare -A BAT_THEMES=(
+  [catppuccin]="Catppuccin Mocha"
+  [catppuccin-latte]="Catppuccin Latte"
+  [gruvbox]="gruvbox-dark"
+  [nord]="Nord"
+  [tokyo-night]="base16"
+)
+
+declare -A DELTA_THEMES=(
+  [catppuccin]="catppuccin-mocha"
+  [catppuccin-latte]="catppuccin-latte"
+)
+
+declare -A STARSHIP_PALETTES=(
+  [catppuccin]="catppuccin_mocha"
+  [catppuccin-latte]="catppuccin_latte"
+)
+
+declare -A ZELLIJ_THEMES=(
+  [catppuccin]="catppuccin-mocha"
+  [catppuccin-latte]="catppuccin-latte"
+  [everforest]="everforest-dark"
+  [gruvbox]="gruvbox-dark"
+  [kanagawa]="kanagawa"
+  [nord]="nord"
+  [tokyo-night]="tokyo-night"
+)
+
+# ── Helpers ──────────────────────────────────────────────────────────────────
+
+sed_inplace() {
+  # Portable in-place sed (GNU sed)
+  sed -i "$@"
+}
+
+update_zed() {
+  local theme="${ZED_THEMES[$THEME]}"
+  [[ -z "$theme" ]] && return
+
+  local settings="$HOME/.config/zed/settings.json"
+  [[ -f "$settings" ]] || return
+
+  # Detect if this is a light theme
+  local is_light=false
+  [[ -f "$THEME_DIR/light.mode" ]] && is_light=true
+
+  # Handle object format: "theme": { "dark": "...", "light": "..." }
+  if grep -q '"dark":' "$settings"; then
+    if [[ "$is_light" == true ]]; then
+      sed_inplace "s/\"light\": \"[^\"]*\"/\"light\": \"$theme\"/" "$settings"
+    else
+      sed_inplace "s/\"dark\": \"[^\"]*\"/\"dark\": \"$theme\"/" "$settings"
+    fi
+  fi
+
+  # Handle flat format: "theme": "Name" (older Zed configs / dotfiles)
+  if grep -q '"theme": "[^{]' "$settings"; then
+    sed_inplace "s/\"theme\": \"[^\"]*\"/\"theme\": \"$theme\"/" "$settings"
+  fi
+
+  sed_inplace "s/\"icon_theme\": \"[^\"]*\"/\"icon_theme\": \"$theme\"/" "$settings"
+}
+
+update_bat() {
+  local theme="${BAT_THEMES[$THEME]}"
+  [[ -z "$theme" ]] && return
+
+  local config="$HOME/.config/bat/config"
+  [[ -f "$config" ]] || return
+
+  sed_inplace "s/--theme=\"[^\"]*\"/--theme=\"$theme\"/" "$config"
+}
+
+update_delta() {
+  local theme="${DELTA_THEMES[$THEME]}"
+  [[ -z "$theme" ]] && return
+
+  local config="$HOME/.gitconfig"
+  [[ -f "$config" ]] || return
+
+  sed_inplace "s/features = line-numbers decorations [a-z-]*/features = line-numbers decorations $theme/" "$config"
+}
+
+update_starship() {
+  local palette="${STARSHIP_PALETTES[$THEME]}"
+  local config="$HOME/.config/starship.toml"
+  [[ -f "$config" ]] || return
+
+  if [[ -n "$palette" ]]; then
+    # Use a predefined palette
+    if grep -q "^palette = " "$config"; then
+      sed_inplace "s/^palette = .*/palette = '$palette'/" "$config"
+    else
+      sed_inplace "1i palette = '$palette'" "$config"
+    fi
+  elif [[ -f "$COLORS_TOML" ]]; then
+    # Generate an 'omarchy' palette from the current theme's colors.toml
+    generate_starship_palette "$config"
+  fi
+}
+
+generate_starship_palette() {
+  local config="$1"
+
+  # Parse colors.toml into shell variables
+  local accent cursor foreground background
+  local color0 color1 color2 color3 color4 color5 color6 color7
+  local color8 color9 color10 color11 color12 color13 color14 color15
+
+  eval "$(sed 's/ = /=/; s/"//g' "$COLORS_TOML")"
+
+  # Map Catppuccin semantic names to available terminal colors
+  local palette_block
+  palette_block=$(printf '%s\n' \
+    '[palettes.omarchy]' \
+    "rosewater = \"$cursor\"" \
+    "flamingo = \"$cursor\"" \
+    "pink = \"$color5\"" \
+    "mauve = \"$color5\"" \
+    "red = \"$color1\"" \
+    "maroon = \"$color1\"" \
+    "peach = \"$color3\"" \
+    "yellow = \"$color3\"" \
+    "green = \"$color2\"" \
+    "teal = \"$color6\"" \
+    "sky = \"$color6\"" \
+    "sapphire = \"$color4\"" \
+    "blue = \"$color4\"" \
+    "lavender = \"$color4\"" \
+    "text = \"$foreground\"" \
+    "subtext1 = \"$color7\"" \
+    "subtext0 = \"$color15\"" \
+    "overlay2 = \"$color15\"" \
+    "overlay1 = \"$color8\"" \
+    "overlay0 = \"$color8\"" \
+    "surface2 = \"$color8\"" \
+    "surface1 = \"$color0\"" \
+    "surface0 = \"$color0\"" \
+    "base = \"$background\"" \
+    "mantle = \"$background\"" \
+    "crust = \"$background\"" \
+    "purple = \"$color5\"" \
+    "accent = \"$accent\"")
+
+  # Remove existing omarchy palette section if present
+  if grep -q '^\[palettes\.omarchy\]' "$config"; then
+    # Delete from [palettes.omarchy] to the next [section] or end of file
+    sed_inplace '/^\[palettes\.omarchy\]/,/^\[/{/^\[palettes\.omarchy\]/d;/^\[/!d}' "$config"
+    # Clean up trailing blank lines
+    sed_inplace -e :a -e '/^\n*$/{$d;N;ba' -e '}' "$config"
+  fi
+
+  # Append the new palette
+  printf '\n%s\n' "$palette_block" >> "$config"
+
+  # Switch to the omarchy palette
+  if grep -q "^palette = " "$config"; then
+    sed_inplace "s/^palette = .*/palette = 'omarchy'/" "$config"
+  else
+    sed_inplace "1i palette = 'omarchy'" "$config"
+  fi
+}
+
+update_zellij() {
+  local theme="${ZELLIJ_THEMES[$THEME]}"
+  [[ -z "$theme" ]] && return
+
+  local config="$HOME/.config/zellij/config.kdl"
+  [[ -f "$config" ]] || return
+
+  if grep -q '^theme "' "$config"; then
+    sed_inplace "s/^theme \"[^\"]*\"/theme \"$theme\"/" "$config"
+  else
+    # Add theme line at the top of the file
+    sed_inplace "1i theme \"$theme\"" "$config"
+  fi
+}
+
+# ── Apply all ────────────────────────────────────────────────────────────────
+
+update_zed
+update_bat
+update_delta
+update_starship
+update_zellij

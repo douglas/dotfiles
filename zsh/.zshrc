@@ -47,9 +47,13 @@ source ~/.zsh/extensions/ruby-on-rails.sh
 source ~/.zsh/extensions/fzf.sh
 
 ##
-## Load Theme
+## Load Theme (Omarchy-generated, with static fallback)
 ##
-source ~/.zsh/themes/catppuccin-macchiato.sh
+if [[ -f ~/.config/omarchy/current/theme/fzf.sh ]]; then
+	source ~/.config/omarchy/current/theme/fzf.sh
+else
+	source ~/.zsh/themes/catppuccin-macchiato.sh
+fi
 
 ##
 ## Work related configurations
@@ -57,6 +61,13 @@ source ~/.zsh/themes/catppuccin-macchiato.sh
 [[ -f ~/.zsh_private/load_environment.sh ]] && source ~/.zsh_private/load_environment.sh
 
 ## ─── Everything below must stay at the end of .zshrc ───
+
+# ZSH Syntax Highlighting theme (must be loaded before the plugin)
+if [[ -f ~/.config/omarchy/current/theme/zsh-syntax-highlighting.zsh ]]; then
+	source ~/.config/omarchy/current/theme/zsh-syntax-highlighting.zsh
+elif [[ -f ~/.zsh/themes/catppuccin_macchiato-zsh-syntax-highlighting.zsh ]]; then
+	source ~/.zsh/themes/catppuccin_macchiato-zsh-syntax-highlighting.zsh
+fi
 
 # ZSH Syntax Highlighting (must be sourced at the very end of .zshrc)
 if [[ -f /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
