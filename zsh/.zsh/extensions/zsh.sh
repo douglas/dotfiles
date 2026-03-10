@@ -39,7 +39,11 @@ ZSH_AUTOSUGGEST_ACCEPT_WIDGETS+=(complete-word)
 # ZSH Abbreviations (fish-like abbreviations that expand inline)
 if [[ -f /usr/share/zsh/plugins/zsh-abbr/zsh-abbr.plugin.zsh ]]; then
 	source /usr/share/zsh/plugins/zsh-abbr/zsh-abbr.plugin.zsh
+elif [[ -f /opt/homebrew/share/zsh-abbr/zsh-abbr.plugin.zsh ]]; then
+	source /opt/homebrew/share/zsh-abbr/zsh-abbr.plugin.zsh
+fi
 
+if (( $+commands[abbr] )) || (( $+functions[abbr] )); then
 	# General
 	abbr -q -S "zshconfig=zed ~/.public_dotfiles ~/.private_dotfiles"
 	abbr -q -S "zshreload=source ~/.zshrc"
@@ -50,7 +54,6 @@ if [[ -f /usr/share/zsh/plugins/zsh-abbr/zsh-abbr.plugin.zsh ]]; then
 	abbr -q -S "g=git"
 	abbr -q -S "gadd=git add"
 	abbr -q -S "gadda=git add ."
-	abbr -q -S "gbc=git branch --show-current | pbcopy"
 	abbr -q -S "gcb=git branch --show-current"
 	abbr -q -S "gci=git ci -m "
 	abbr -q -S "gciw=git ci -m 'wip'"
@@ -60,6 +63,7 @@ if [[ -f /usr/share/zsh/plugins/zsh-abbr/zsh-abbr.plugin.zsh ]]; then
 	abbr -q -S "gnfixup=git nfixup"
 	abbr -q -S "gcp=git cp"
 	abbr -q -S "gclean=git clean -fd"
+	abbr -q -S "gcleanup=git cleanup-merged && git cleanup-gone"
 	abbr -q -S "gcob=git cob"
 	abbr -q -S "gco=git co"
 	abbr -q -S "gnb=git checkout -b dsa/"

@@ -3,18 +3,9 @@
 ##
 
 ##
-## Lazydocker / Lazygit (abbreviations defined in zsh.sh)
-##
-
-##
 ## Enable starship
 ##
 eval "$(starship init zsh)"
-
-##
-## FNM
-##
-#eval "$(fnm env --use-on-cd)"
 
 ##
 ## Mise
