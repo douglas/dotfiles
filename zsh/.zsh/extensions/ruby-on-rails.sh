@@ -6,9 +6,7 @@
 export RUBY_YJIT_ENABLE="1"
 export RUBY_CONFIGURE_OPTS=--enable-yjit
 
-## Aliases
-alias bi="bundle install"
-alias bic="bundle install --conservative"
+## Abbreviations defined in zsh.sh
 
 ##
 ## RVM

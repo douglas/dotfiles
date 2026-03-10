@@ -26,15 +26,13 @@ else
 fi
 
 ##
-## Default aliases
+## Default aliases (transparent replacements)
 ##
 alias cat="bat"
 alias top="bottom"
 alias ls="eza"
 alias ll="eza -la"
 alias lt="eza -laT -I .git ."
-alias zshconfig="zed ~/.public_dotfiles ~/.private_dotfiles"
-alias zshreload="source ~/.zshrc"
 
 ##
 ## Load Extensions

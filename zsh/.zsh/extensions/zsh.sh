@@ -35,3 +35,49 @@ zstyle ':completion:*' menu select
 
 # Accept autosuggestion with Tab (in addition to right arrow)
 ZSH_AUTOSUGGEST_ACCEPT_WIDGETS+=(complete-word)
+
+# ZSH Abbreviations (fish-like abbreviations that expand inline)
+if [[ -f /usr/share/zsh/plugins/zsh-abbr/zsh-abbr.plugin.zsh ]]; then
+	source /usr/share/zsh/plugins/zsh-abbr/zsh-abbr.plugin.zsh
+
+	# General
+	abbr -q -S "zshconfig=zed ~/.public_dotfiles ~/.private_dotfiles"
+	abbr -q -S "zshreload=source ~/.zshrc"
+	abbr -q -S "lzd=lazydocker"
+	abbr -q -S "lzg=lazygit"
+
+	# Git
+	abbr -q -S "g=git"
+	abbr -q -S "gadd=git add"
+	abbr -q -S "gadda=git add ."
+	abbr -q -S "gbc=git branch --show-current | pbcopy"
+	abbr -q -S "gcb=git branch --show-current"
+	abbr -q -S "gci=git ci -m "
+	abbr -q -S "gciw=git ci -m 'wip'"
+	abbr -q -S "gcia=git cia --amend"
+	abbr -q -S "gdiff=git ddiff"
+	abbr -q -S "grfixup=git rfixup"
+	abbr -q -S "gnfixup=git nfixup"
+	abbr -q -S "gcp=git cp"
+	abbr -q -S "gclean=git clean -fd"
+	abbr -q -S "gcob=git cob"
+	abbr -q -S "gco=git co"
+	abbr -q -S "gnb=git checkout -b dsa/"
+	abbr -q -S "grbs=git rebase --skip"
+	abbr -q -S "grbc=git rebase --continue"
+	abbr -q -S "grba=git rebase --abort"
+	abbr -q -S "grbi=git rebase --interactive"
+	abbr -q -S "grbm=git rebase origin/master"
+	abbr -q -S "gpull=git pull"
+	abbr -q -S "gpush=git push"
+	abbr -q -S "gpushu=git pushu"
+	abbr -q -S "gpushf=git pf"
+	abbr -q -S "gst=git status"
+	abbr -q -S "grsmr=git reset --hard origin/master"
+	abbr -q -S "grsmn=git reset --hard origin/main"
+	abbr -q -S "grs=git reset HEAD~"
+
+	# Ruby on Rails
+	abbr -q -S "bi=bundle install"
+	abbr -q -S "bic=bundle install --conservative"
+fi

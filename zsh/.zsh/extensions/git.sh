@@ -2,48 +2,9 @@
 ## Git
 ##
 
-## Git Aliases
-alias g="git"
-
-### Add
-alias gadd="git add"
-alias gadda='git add .'
-
-# Branches
-alias gbc="git branch --show-current | pbcopy"
-alias gcb="git branch --show-current"
-
-### Commit
-alias gci="git ci -m "
-alias gciw="git ci -m 'wip'"
-alias gaciw="gadda & gciw"
-alias gcia="git cia --amend"
-
-### Diff
-alias gdiff="git ddiff"
-
-### Fixup
-alias grfixup="git rfixup"
-alias gnfixup="git nfixup"
-
-### Cherry Pick
-alias gcp="git cp"
-
-### Cleanup
-alias gclean="git clean -fd"
+## Git abbreviations (defined in zsh.sh)
+## Git aliases (complex commands that don't benefit from expansion)
 alias gcleanup="git cleanup-merged && git cleanup-gone"
-
-### Checkout / New Branch
-alias gcob="git cob"
-alias gco="git co"
-alias gnb="git checkout -b dsa/$1"
-
-### Rebase
-alias grbs="git rebase --skip"
-alias grbc="git rebase --continue"
-alias grba="git rebase --abort"
-alias grbi="git rebase --interactive"
-alias grbm="git rebase origin/master"
 
 # Rebase the current branch on top of master
 function grbmm() {
@@ -54,19 +15,6 @@ function grbmm() {
   fi
 }
 
-# Pull
-alias gpull="git pull"
-alias gpush="git push"
-alias gpushu="git pushu"
-alias gpushf="git pf"
-
-# Status
-alias gst="git status"
-
-# Git Reset
-alias grsmr="git reset --hard origin/master"
-alias grsmn="git reset --hard origin/main"
-alias grs="git reset HEAD~"
 
 function grsh() {
   if [ -z "$1" ]; then
@@ -91,8 +39,7 @@ function grmbr() {
 	git push origin -d $(gcb)
 }
 
-# Run git pull in parallel for all repos in the current directory
-# Requires GNU Parallel
+# Run git pull in parallel for all repos in the current directory (kept as alias — has pipes)
 alias updall="gfind . -maxdepth 8 -name '.git' -prune -type d -printf '%h\n' | parallel --eta 'echo {} && git -C {} pull'"
 
 # Count the number of commits between current branch and the selected branch

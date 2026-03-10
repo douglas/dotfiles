@@ -3,14 +3,8 @@
 ##
 
 ##
-## Lazydocker
+## Lazydocker / Lazygit (abbreviations defined in zsh.sh)
 ##
-alias lzd='lazydocker'
-
-##
-## Lazygit
-##
-alias lzg='Lazygit'
 
 ##
 ## Enable starship
