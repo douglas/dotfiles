@@ -4,6 +4,7 @@
 
 # However, .git must be in this list:
 \.git
+\.gitkeep
 /bin/git-deps
 
 \.DS_Store

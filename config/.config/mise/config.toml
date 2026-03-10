@@ -1,0 +1,10 @@
+[tools]
+go = "latest"
+node = "25.6.1"
+ruby = "latest"
+
+[settings]
+idiomatic_version_file_enable_tools = ["ruby"]
+
+[settings.ruby]
+compile = false
