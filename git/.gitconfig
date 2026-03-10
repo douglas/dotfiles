@@ -15,7 +15,7 @@
   navigate = true  # use n and N to move between diff sections
   # side-by-side = true
   line-numbers = true
-  features = line-numbers decorations catppuccin-frappe
+  features = line-numbers decorations catppuccin-macchiato
 [delta "decorations"]
   commit-decoration-style = bold yellow box ul
   file-style = bold yellow ul

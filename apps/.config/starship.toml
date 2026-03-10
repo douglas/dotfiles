@@ -29,7 +29,7 @@ $time\
 [ ](fg:purple)\
 $line_break$character"""
 
-palette = 'catppuccin_frappe'
+palette = 'catppuccin_macchiato'
 
 # Palette definitions
 [palettes.catppuccin_latte]

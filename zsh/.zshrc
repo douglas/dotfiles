@@ -7,6 +7,7 @@
 ##
 export TMPDIR="$HOME/tmp"
 export _ZO_DOCTOR=0
+export ENABLE_LSP_TOOL=1
 export PATH="$HOME/.local/bin:$HOME/.bin:$PATH"
 export PATH="$HOME/.lmstudio/bin:$HOME/.opencode/bin:$PATH"
 
@@ -48,7 +49,7 @@ source ~/.zsh/extensions/fzf.sh
 ##
 ## Load Theme
 ##
-source ~/.zsh/themes/catppuccin-frappe.sh
+source ~/.zsh/themes/catppuccin-macchiato.sh
 
 ##
 ## Work related configurations

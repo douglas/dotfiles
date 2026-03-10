@@ -32,7 +32,7 @@
   },
   "base_keymap": "VSCode",
   "confirm_quit": true,
-  "icon_theme": "Catppuccin Frappé",
+  "icon_theme": "Catppuccin Macchiato",
   "telemetry": {
     "diagnostics": false,
     "metrics": false,
@@ -47,7 +47,7 @@
     "font_weight": 300,
     "line_height": "standard",
   },
-  "theme": "Catppuccin Frappé",
+  "theme": "Catppuccin Macchiato",
   "ui_font_family": "CommitMono Nerd Font",
   "ui_font_size": 18.0,
   "ui_font_weight": 200,
