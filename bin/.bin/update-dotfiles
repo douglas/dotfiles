@@ -56,7 +56,7 @@ else
   if command -v omarchy &>/dev/null; then
     stow -R config-omarchy
     stow -R "config-omarchy-${profile}"
-  elif [[ "$XDG_CURRENT_DESKTOP" == "GNOME" ]]; then
+  elif [[ -f /etc/os-release ]] && source /etc/os-release && [[ "$ID" == "fedora" ]]; then
     stow -R "config-fedora-${profile}"
   fi
 fi

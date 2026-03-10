@@ -21,7 +21,7 @@ else
   if command -v omarchy &>/dev/null; then
     stow -d ~/.public_dotfiles -t ~ config-omarchy
     stow -d ~/.public_dotfiles -t ~ "config-omarchy-${PROFILE}"
-  elif [[ "$XDG_CURRENT_DESKTOP" == "GNOME" ]]; then
+  elif [[ -f /etc/os-release ]] && source /etc/os-release && [[ "$ID" == "fedora" ]]; then
     stow -d ~/.public_dotfiles -t ~ "config-fedora-${PROFILE}"
   fi
 fi
