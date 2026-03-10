@@ -2,9 +2,8 @@
 ## Install stow configurations
 ##
 ## Usage:
-##   PROFILE=desktop ./install.sh   # Linux desktop (default)
-##   PROFILE=laptop ./install.sh    # Linux laptop
-##   ./install.sh                   # macOS or Linux desktop
+##   ./install.sh                    # Auto-detects OS and profile
+##   PROFILE=laptop ./install.sh     # Override profile on Linux
 ##
 
 stow -d ~/.public_dotfiles -t ~ stow
@@ -13,11 +12,11 @@ stow -d ~/.public_dotfiles -t ~ git
 stow -d ~/.public_dotfiles -t ~ zsh
 stow -d ~/.public_dotfiles -t ~ apps
 
-if [[ $OPERATINGSYSTEM == 'macos' ]]; then
+if [[ $OSTYPE == darwin* ]]; then
   stow -d ~/.public_dotfiles -t ~ apps-macos
 else
+  PROFILE="${PROFILE:-$(hostnamectl chassis 2>/dev/null || echo desktop)}"
   stow -d ~/.public_dotfiles -t ~ apps-linux
-  PROFILE="${PROFILE:-desktop}"
   stow -d ~/.public_dotfiles -t ~ "apps-linux-${PROFILE}"
 
   if command -v omarchy &>/dev/null; then
@@ -29,3 +28,9 @@ fi
 # Install git-cob in /usr/local/bin so git can use it
 git_cob="/usr/local/bin/git-cob"
 [ ! -f "$git_cob" ] && sudo ln -s $HOME/.bin/git-cob "$git_cob"
+
+# Bootstrap private dotfiles if available
+if [[ -f ~/.private_dotfiles/install.sh ]]; then
+  echo "=> Stowing private dotfiles..."
+  source ~/.private_dotfiles/install.sh
+fi

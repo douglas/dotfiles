@@ -12,14 +12,9 @@ export PATH="$HOME/.local/bin:$HOME/.bin:$PATH"
 export PATH="$HOME/.lmstudio/bin:$HOME/.opencode/bin:$PATH"
 
 ##
-## Utils
-##
-source ~/.zsh/extensions/utils.sh
-
-##
 ## OS specific configs
 ##
-if [[ $OPERATINGSYSTEM == 'macos' ]]; then
+if [[ $OSTYPE == darwin* ]]; then
 	source ~/.zsh/extensions/macos.sh
 else
 	source ~/.zsh/extensions/linux.sh
@@ -39,10 +34,7 @@ alias lt="eza -laT -I .git ."
 ##
 source ~/.zsh/extensions/zsh.sh
 source ~/.zsh/extensions/general.sh
-source ~/.zsh/extensions/networking.sh
 source ~/.zsh/extensions/git.sh
-source ~/.zsh/extensions/ruby-on-rails.sh
-source ~/.zsh/extensions/fzf.sh
 
 ##
 ## Load Theme (Omarchy-generated, with static fallback)

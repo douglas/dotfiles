@@ -1,0 +1,87 @@
+#!/usr/bin/env zsh
+##
+## Update dotfiles: fetch latest changes and re-stow all packages.
+## Works on both macOS and Linux (Arch/Omarchy).
+##
+## On Linux, auto-detects laptop vs desktop via `hostnamectl chassis`.
+## Install system files (udev, systemd) when applicable.
+##
+
+set -euo pipefail
+
+PUBLIC="$HOME/.public_dotfiles"
+PRIVATE="$HOME/.private_dotfiles"
+
+# --- Detect OS and profile ---
+
+if [[ $OSTYPE == darwin* ]]; then
+  os="macos"
+  profile=""
+else
+  os="linux"
+  chassis=$(hostnamectl chassis)
+  case "$chassis" in
+    laptop)  profile="laptop" ;;
+    desktop) profile="desktop" ;;
+    *)       echo "Unknown chassis type: $chassis"; exit 1 ;;
+  esac
+  echo "Detected profile: $profile"
+fi
+
+# --- Fetch latest changes ---
+
+echo "\n=> Pulling latest public dotfiles..."
+git -C "$PUBLIC" pull --rebase
+
+if [[ -d "$PRIVATE/.git" ]]; then
+  echo "\n=> Pulling latest private dotfiles..."
+  git -C "$PRIVATE" pull --rebase
+fi
+
+# --- Re-stow public dotfiles ---
+
+echo "\n=> Stowing public dotfiles..."
+cd "$PUBLIC"
+stow -R stow
+stow -R bin
+stow -R git
+stow -R zsh
+stow -R apps
+
+if [[ "$os" == "macos" ]]; then
+  stow -R apps-macos
+else
+  stow -R apps-linux
+  stow -R "apps-linux-${profile}"
+
+  if command -v omarchy &>/dev/null; then
+    stow -R apps-omarchy
+    stow -R "apps-omarchy-${profile}"
+  fi
+fi
+
+# --- Re-stow private dotfiles ---
+
+if [[ -d "$PRIVATE" ]]; then
+  echo "\n=> Stowing private dotfiles..."
+  cd "$PRIVATE"
+  for pkg in */; do
+    stow -R "${pkg%/}"
+  done
+fi
+
+# --- Linux: install system files ---
+
+if [[ "$os" == "linux" ]]; then
+  echo "\n=> Installing system files..."
+  sudo cp "$PUBLIC/apps-linux/etc/systemd/system-sleep/xremap-restart.sh" /etc/systemd/system-sleep/
+  sudo chmod +x /etc/systemd/system-sleep/xremap-restart.sh
+  sudo cp "$PUBLIC/apps-linux/etc/udev/rules.d/70-keychron.rules" /etc/udev/rules.d/
+  sudo udevadm control --reload-rules
+
+  echo "\n=> Reloading systemd user services..."
+  systemctl --user daemon-reload
+  systemctl --user restart xremap 2>/dev/null || true
+fi
+
+echo "\n=> Done!"
