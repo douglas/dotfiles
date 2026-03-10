@@ -2,11 +2,11 @@
 ## ZSH Configuration
 #
 
-# ZSH Autosuggestions
-if [[ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
+# ZSH Autosuggestions (ghost-text from history)
+if [[ -f /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
+	source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+elif [[ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
 	source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-elif [[ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
-	source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 fi
 
 # ZSH_HISTORY
@@ -27,9 +27,11 @@ setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording en
 setopt HIST_VERIFY               # Don't execute immediately upon history expansion.
 setopt HIST_BEEP                 # Beep when accessing nonexistent history.
 setopt NO_NOMATCH                # Pass unmatched globs as literals (e.g. rake task[arg]).
-autoload -Uz compinit
 fpath+=~/.zfunc
+autoload -Uz compinit && compinit
 
 # ZSH Completion tweaks
 zstyle ':completion:*' menu select
 
+# Accept autosuggestion with Tab (in addition to right arrow)
+ZSH_AUTOSUGGEST_ACCEPT_WIDGETS+=(complete-word)

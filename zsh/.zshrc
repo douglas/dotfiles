@@ -72,12 +72,11 @@ fi
 # ZSH Syntax Highlighting (must be sourced at the very end of .zshrc)
 if [[ -f /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
 	source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-elif [[ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
-	source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+elif [[ -f /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+	source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
 
 # Entire CLI shell completion
-autoload -Uz compinit && compinit
 if (( $+commands[entire] )); then source <(entire completion zsh 2>/dev/null); fi
 
 # Zoxide (must be initialized at the very end of .zshrc)
