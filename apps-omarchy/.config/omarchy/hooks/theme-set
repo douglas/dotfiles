@@ -3,7 +3,7 @@
 # Omarchy theme-set hook
 #
 # Extends theme changes to apps not covered by Omarchy templates:
-# Zed, bat, delta, starship, zellij
+# Zed, bat, delta, starship, zellij, yazi, bottom
 #
 # Usage: this hook is called by omarchy-theme-set with the theme name as $1
 
@@ -206,6 +206,15 @@ update_zellij() {
   fi
 }
 
+deploy_template_output() {
+  # Copy a generated template file from omarchy/current/theme/ to its final location
+  local src="$THEME_DIR/$1"
+  local dest="$2"
+  [[ -f "$src" ]] || return
+  mkdir -p "$(dirname "$dest")"
+  cp "$src" "$dest"
+}
+
 # ── Apply all ────────────────────────────────────────────────────────────────
 
 update_zed
@@ -213,3 +222,7 @@ update_bat
 update_delta
 update_starship
 update_zellij
+
+# Deploy generated template outputs to app config dirs
+deploy_template_output "bottom.toml" "$HOME/.config/bottom/bottom.toml"
+deploy_template_output "yazi-theme.toml" "$HOME/.config/yazi/theme.toml"
