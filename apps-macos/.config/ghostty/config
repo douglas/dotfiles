@@ -1,5 +1,5 @@
-# Catppuccin Macchiato theme
-theme = catppuccin-macchiato
+# Catppuccin Mocha theme
+theme = catppuccin-mocha
 
 # Search entire scrollback history in default text editor
 keybind = cmd+f=write_screen_file:open

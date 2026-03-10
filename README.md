@@ -89,7 +89,7 @@ update-linux-dotfiles
 
 ## Theme
 
-[Catppuccin Macchiato](https://catppuccin.com/) is used consistently across all apps: Ghostty, bat, delta, nvim, zsh syntax highlighting, and fsh.
+[Catppuccin Mocha](https://catppuccin.com/) is used consistently across all apps: Ghostty, bat, delta, nvim, zsh syntax highlighting, and fsh.
 
 ## macOS extras
 

@@ -52,7 +52,7 @@ source ~/.zsh/extensions/fzf.sh
 if [[ -f ~/.config/omarchy/current/theme/fzf.sh ]]; then
 	source ~/.config/omarchy/current/theme/fzf.sh
 else
-	source ~/.zsh/themes/catppuccin-macchiato.sh
+	source ~/.zsh/themes/catppuccin-mocha.sh
 fi
 
 ##
@@ -65,8 +65,8 @@ fi
 # ZSH Syntax Highlighting theme (must be loaded before the plugin)
 if [[ -f ~/.config/omarchy/current/theme/zsh-syntax-highlighting.zsh ]]; then
 	source ~/.config/omarchy/current/theme/zsh-syntax-highlighting.zsh
-elif [[ -f ~/.zsh/themes/catppuccin_macchiato-zsh-syntax-highlighting.zsh ]]; then
-	source ~/.zsh/themes/catppuccin_macchiato-zsh-syntax-highlighting.zsh
+elif [[ -f ~/.zsh/themes/catppuccin_mocha-zsh-syntax-highlighting.zsh ]]; then
+	source ~/.zsh/themes/catppuccin_mocha-zsh-syntax-highlighting.zsh
 fi
 
 # ZSH Syntax Highlighting (must be sourced at the very end of .zshrc)
