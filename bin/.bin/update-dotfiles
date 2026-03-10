@@ -46,17 +46,18 @@ stow -R stow
 stow -R bin
 stow -R git
 stow -R zsh
-stow -R apps
+stow -R config
 
 if [[ "$os" == "macos" ]]; then
-  stow -R apps-macos
+  stow -R config-macos
 else
-  stow -R apps-linux
-  stow -R "apps-linux-${profile}"
+  stow -R config-linux
 
   if command -v omarchy &>/dev/null; then
-    stow -R apps-omarchy
-    stow -R "apps-omarchy-${profile}"
+    stow -R config-omarchy
+    stow -R "config-omarchy-${profile}"
+  elif [[ "$XDG_CURRENT_DESKTOP" == "GNOME" ]]; then
+    stow -R "config-fedora-${profile}"
   fi
 fi
 
@@ -74,9 +75,9 @@ fi
 
 if [[ "$os" == "linux" ]]; then
   echo "\n=> Installing system files..."
-  sudo cp "$PUBLIC/apps-linux/etc/systemd/system-sleep/xremap-restart.sh" /etc/systemd/system-sleep/
+  sudo cp "$PUBLIC/config-linux/etc/systemd/system-sleep/xremap-restart.sh" /etc/systemd/system-sleep/
   sudo chmod +x /etc/systemd/system-sleep/xremap-restart.sh
-  sudo cp "$PUBLIC/apps-linux/etc/udev/rules.d/70-keychron.rules" /etc/udev/rules.d/
+  sudo cp "$PUBLIC/config-linux/etc/udev/rules.d/70-keychron.rules" /etc/udev/rules.d/
   sudo udevadm control --reload-rules
 
   echo "\n=> Reloading systemd user services..."

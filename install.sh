@@ -10,18 +10,19 @@ stow -d ~/.public_dotfiles -t ~ stow
 stow -d ~/.public_dotfiles -t ~ bin
 stow -d ~/.public_dotfiles -t ~ git
 stow -d ~/.public_dotfiles -t ~ zsh
-stow -d ~/.public_dotfiles -t ~ apps
+stow -d ~/.public_dotfiles -t ~ config
 
 if [[ $OSTYPE == darwin* ]]; then
-  stow -d ~/.public_dotfiles -t ~ apps-macos
+  stow -d ~/.public_dotfiles -t ~ config-macos
 else
   PROFILE="${PROFILE:-$(hostnamectl chassis 2>/dev/null || echo desktop)}"
-  stow -d ~/.public_dotfiles -t ~ apps-linux
-  stow -d ~/.public_dotfiles -t ~ "apps-linux-${PROFILE}"
+  stow -d ~/.public_dotfiles -t ~ config-linux
 
   if command -v omarchy &>/dev/null; then
-    stow -d ~/.public_dotfiles -t ~ apps-omarchy
-    stow -d ~/.public_dotfiles -t ~ "apps-omarchy-${PROFILE}"
+    stow -d ~/.public_dotfiles -t ~ config-omarchy
+    stow -d ~/.public_dotfiles -t ~ "config-omarchy-${PROFILE}"
+  elif [[ "$XDG_CURRENT_DESKTOP" == "GNOME" ]]; then
+    stow -d ~/.public_dotfiles -t ~ "config-fedora-${PROFILE}"
   fi
 fi
 

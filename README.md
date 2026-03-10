@@ -7,14 +7,19 @@ Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/), s
 Each top-level directory is a **stow package** — running `stow <package>` symlinks its contents into `$HOME`. Configs are layered so shared settings live in one place while OS- and hardware-specific overrides stay separate:
 
 ```
-apps/                 # Shared app configs (bat, nvim, zellij, yazi, etc.)
-apps-linux/           # Linux-only system files (udev rules, systemd hooks)
-apps-linux-desktop/   # Desktop overrides (font size, window dimensions)
-apps-linux-laptop/    # Laptop overrides (font size, window dimensions)
-apps-macos/           # macOS-only configs (Cursor editor)
+config/                 # Shared app configs (bat, nvim, ghostty, zellij, yazi, etc.)
+config-linux/           # Linux-only system files (udev rules, systemd hooks)
+config-macos/           # macOS-only configs (Cursor editor)
+config-omarchy/         # Omarchy/Hyprland base (waybar, walker, keybindings)
+config-omarchy-desktop/ # Desktop overrides (font size, window dimensions)
+config-omarchy-laptop/  # Laptop overrides (font size, window dimensions)
+config-fedora-desktop/  # Fedora/GNOME desktop (future)
+config-fedora-laptop/   # Fedora/GNOME laptop (future)
 ```
 
-On Linux, profile detection uses `hostnamectl chassis` to determine whether to stow `apps-linux-desktop` or `apps-linux-laptop`.
+On Linux, profile detection uses `hostnamectl chassis` to determine whether to stow `config-omarchy-desktop` or `config-omarchy-laptop`.
+
+**Ghostty** uses `config-file = machine` in the shared config to include per-machine overrides (font size, window dimensions) from a separate `machine` file — avoiding Stow conflicts.
 
 ## Installation
 
@@ -33,7 +38,7 @@ The install script stows all packages and symlinks `git-cob` into `/usr/local/bi
 
 ## Updating (Linux)
 
-The `update-linux-dotfiles` script handles day-to-day updates:
+The `update-dotfiles` script handles day-to-day updates:
 
 1. Pulls latest changes from both public and private dotfiles repos
 2. Re-stows all packages (auto-detects desktop vs laptop)
@@ -41,7 +46,7 @@ The `update-linux-dotfiles` script handles day-to-day updates:
 4. Reloads udev rules and restarts the xremap service
 
 ```sh
-update-linux-dotfiles
+update-dotfiles
 ```
 
 ## Stow packages
@@ -49,14 +54,17 @@ update-linux-dotfiles
 | Package | Contents |
 |---|---|
 | `stow` | `.stow-global-ignore` — controls which files stow skips |
-| `bin` | Scripts in `~/.bin`: `git-cob`, `update-linux-dotfiles`, `install-tools.sh`, and others |
+| `bin` | Scripts in `~/.bin`: `git-cob`, `update-dotfiles`, `install-tools.sh`, and others |
 | `git` | `.gitconfig` and `.gitignore` — delta pager, difftastic, aliases, SSH signing |
 | `zsh` | `.zshrc` and `~/.zsh/` — extensions (git, fzf, networking, Rails), Catppuccin theme |
-| `apps` | Shared `~/.config/` for bat, bottom, btop, delta, nvim, yazi, zellij, starship, ghostty themes, zed |
-| `apps-linux` | System files: xremap sleep hook, Keychron udev rule |
-| `apps-linux-desktop` | Ghostty and Zed settings tuned for an external monitor |
-| `apps-linux-laptop` | Ghostty and Zed settings tuned for a laptop display |
-| `apps-macos` | Cursor editor settings and keybindings |
+| `config` | Shared `~/.config/` for bat, bottom, btop, delta, ghostty, nvim, yazi, zed, zellij, starship |
+| `config-linux` | System files: xremap config/service, sleep hook, Keychron udev rule |
+| `config-macos` | Cursor editor settings and keybindings |
+| `config-omarchy` | Hyprland base config, Waybar, Walker, Omarchy hooks and theming |
+| `config-omarchy-desktop` | Ghostty machine config, Zed settings, Hyprland envs for desktop |
+| `config-omarchy-laptop` | Ghostty machine config, Zed settings, Hyprland envs/monitors for laptop |
+| `config-fedora-desktop` | Fedora/GNOME desktop config (future) |
+| `config-fedora-laptop` | Fedora/GNOME laptop config (future) |
 
 ## Applications
 
