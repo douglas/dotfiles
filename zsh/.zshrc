@@ -8,8 +8,9 @@
 export TMPDIR="$HOME/tmp"
 export _ZO_DOCTOR=0
 export ENABLE_LSP_TOOL=1
-export PATH="$HOME/.local/bin:$HOME/.bin:$PATH"
-export PATH="$HOME/.lmstudio/bin:$HOME/.opencode/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.cache/.bun/bin:$PATH"
+export PATH="$HOME/.bin:$PATH"
 
 ##
 ## OS specific configs
@@ -71,3 +72,8 @@ if (( $+commands[entire] )); then source <(entire completion zsh 2>/dev/null); f
 
 # Zoxide (must be initialized at the very end of .zshrc)
 eval "$(zoxide init --cmd cd zsh)"
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/home/douglas/.lmstudio/bin"
+# End of LM Studio CLI section
+

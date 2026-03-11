@@ -23,6 +23,8 @@ source <(fzf --zsh)
 export RUBY_YJIT_ENABLE="1"
 export RUBY_CONFIGURE_OPTS=--enable-yjit
 
+export ENABLE_LSP_TOOL=1
+
 ##
 ## Golang
 ##
