@@ -57,11 +57,9 @@ keymap:
       # Settings
       F18-Comma: Ctrl-Comma
 
-      # Window focus (routed to Super for Hyprland)
-      F18-Left: Super-Left
-      F18-Right: Super-Right
-      F18-Up: Super-Up
-      F18-Down: Super-Down
+      # Text navigation (Cmd+arrows = Home/End like macOS)
+      F18-Left: Home
+      F18-Right: End
 
       # Workspace navigation (Cmd+Win+arrows or Cmd+Ctrl+arrows)
       F18-Super-Left: Super-Shift-Tab
@@ -156,11 +154,9 @@ keymap:
       F18-Shift-Space: Super-Alt-Space
       F18-Shift-v: Super-Ctrl-v
 
-      # Window focus
-      F18-Left: Super-Left
-      F18-Right: Super-Right
-      F18-Up: Super-Up
-      F18-Down: Super-Down
+      # Text navigation (Cmd+arrows = Home/End like macOS)
+      F18-Left: Home
+      F18-Right: End
 
       # Workspace navigation (Cmd+Win+arrows or Cmd+Ctrl+arrows)
       F18-Super-Left: Super-Shift-Tab
@@ -232,11 +228,9 @@ keymap:
       F18-Shift-RightBrace: Ctrl-PageDown
       F18-Shift-LeftBrace: Ctrl-PageUp
 
-      # Window focus (routed to Super for Hyprland)
-      F18-Left: Super-Left
-      F18-Right: Super-Right
-      F18-Up: Super-Up
-      F18-Down: Super-Down
+      # Text navigation (Cmd+arrows = Home/End like macOS)
+      F18-Left: Home
+      F18-Right: End
       F18-Backspace: [Shift-Home, Delete]
 
       # Workspace navigation (Cmd+Win+arrows or Cmd+Ctrl+arrows)

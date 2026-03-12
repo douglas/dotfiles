@@ -30,6 +30,10 @@ setopt NO_NOMATCH                # Pass unmatched globs as literals (e.g. rake t
 fpath+=~/.zfunc
 autoload -Uz compinit && compinit
 
+# Home/End key bindings
+bindkey '^[[H' beginning-of-line
+bindkey '^[[F' end-of-line
+
 # ZSH Completion tweaks
 zstyle ':completion:*' menu select
 
