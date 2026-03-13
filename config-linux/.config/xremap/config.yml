@@ -40,6 +40,17 @@ keymap:
       F18-n: Ctrl-Shift-n
       F18-q: { launch: ["hyprctl", "dispatch", "killactive"] }
 
+      # Split Creation
+      F18-Shift-t: Ctrl-Shift-O
+      F18-Ctrl-Right: Ctrl-Shift-O
+      F18-Ctrl-Down: Ctrl-Shift-E
+
+      # Split Navigation
+      F18-Shift-Left: Ctrl-Alt-Left
+      F18-Shift-Right: Ctrl-Alt-Right
+      F18-Shift-Up: Ctrl-Alt-Up
+      F18-Shift-Down: Ctrl-Alt-Down
+
       # Actions
       F18-a: Ctrl-Shift-a
       F18-f: Ctrl-Shift-f
@@ -56,6 +67,7 @@ keymap:
 
       # Settings
       F18-Comma: Ctrl-Comma
+      F18-Shift-Comma: Ctrl-Shift-Comma
 
       # Text navigation (Cmd+arrows = Home/End like macOS)
       F18-Left: Home
@@ -77,53 +89,16 @@ keymap:
       F18-Enter: Ctrl-Enter
       F18-BTN_LEFT: Ctrl-BTN_LEFT
 
-      # --- WM shortcuts (routed to Super for Hyprland) ---
-      F18-h: Super-h
-      F18-m: Super-m
-      F18-Grave: Super-Grave
-      F18-Shift-v: Super-Ctrl-v
-
       # Workspace switching
-      F18-1: Super-1
-      F18-2: Super-2
-      F18-3: Super-3
-      F18-4: Super-4
-      F18-5: Super-5
-      F18-6: Super-6
-      F18-7: Super-7
-      F18-8: Super-8
-      F18-9: Super-9
-
-      # Move window to workspace
-      F18-Shift-1: Super-Shift-1
-      F18-Shift-2: Super-Shift-2
-      F18-Shift-3: Super-Shift-3
-      F18-Shift-4: Super-Shift-4
-      F18-Shift-5: Super-Shift-5
-      F18-Shift-6: Super-Shift-6
-      F18-Shift-7: Super-Shift-7
-      F18-Shift-8: Super-Shift-8
-      F18-Shift-9: Super-Shift-9
-
-      # Window swap
-      F18-Shift-Left: Super-Shift-Left
-      F18-Shift-Right: Super-Shift-Right
-      F18-Shift-Up: Super-Shift-Up
-      F18-Shift-Down: Super-Shift-Down
-
-      # Workspace navigation
-      F18-Tab: Super-Tab
-      F18-Shift-Tab: Super-Shift-Tab
-
-      # Window management
-      F18-s: Super-s
-      F18-o: Super-o
-      F18-j: Super-j
-
-      # macOS-like screenshots (Cmd+Shift+3/4/5)
-      F18-Shift-3: { launch: ["omarchy-cmd-screenshot", "fullscreen"] }
-      F18-Shift-4: { launch: ["omarchy-cmd-screenshot", "region"] }
-      F18-Shift-5: { launch: ["omarchy-menu", "capture"] }
+      F18-1: Alt-1
+      F18-2: Alt-2
+      F18-3: Alt-3
+      F18-4: Alt-4
+      F18-5: Alt-5
+      F18-6: Alt-6
+      F18-7: Alt-7
+      F18-8: Alt-8
+      F18-9: Alt-9
 
   # ============================================================
   # Spotify
@@ -134,35 +109,6 @@ keymap:
     remap:
       F18-q: Ctrl-Shift-q
       F18-w: Ctrl-Shift-q
-      F18-h: Super-h
-      F18-m: Super-m
-      F18-Grave: Super-Grave
-
-      # WM shortcuts
-      F18-1: Super-1
-      F18-2: Super-2
-      F18-3: Super-3
-      F18-4: Super-4
-      F18-5: Super-5
-      F18-6: Super-6
-      F18-7: Super-7
-      F18-8: Super-8
-      F18-9: Super-9
-      F18-Tab: Super-Tab
-      F18-Shift-Tab: Super-Shift-Tab
-      F18-Space: Super-Space
-      F18-Shift-Space: Super-Alt-Space
-      F18-Shift-v: Super-Ctrl-v
-
-      # Text navigation (Cmd+arrows = Home/End like macOS)
-      F18-Left: Home
-      F18-Right: End
-
-      # Workspace navigation (Cmd+Win+arrows or Cmd+Ctrl+arrows)
-      F18-Super-Left: Super-Shift-Tab
-      F18-Super-Right: Super-Tab
-      F18-Ctrl-Left: Super-Shift-Tab
-      F18-Ctrl-Right: Super-Tab
 
   # ============================================================
   # All other apps — Cmd key (F18)
@@ -253,33 +199,11 @@ keymap:
       F18-m: Super-m
       F18-Grave: Super-Grave
 
-      # Workspace switching
-      F18-1: Super-1
-      F18-2: Super-2
-      F18-3: Super-3
-      F18-4: Super-4
-      F18-5: Super-5
-      F18-6: Super-6
-      F18-7: Super-7
-      F18-8: Super-8
-      F18-9: Super-9
-
-      # Move window to workspace
-      F18-Shift-1: Super-Shift-1
-      F18-Shift-2: Super-Shift-2
-      F18-Shift-3: Super-Shift-3
-      F18-Shift-4: Super-Shift-4
-      F18-Shift-5: Super-Shift-5
-      F18-Shift-6: Super-Shift-6
-      F18-Shift-7: Super-Shift-7
-      F18-Shift-8: Super-Shift-8
-      F18-Shift-9: Super-Shift-9
-
       # Window swap
-      F18-Shift-Left: Super-Shift-Left
-      F18-Shift-Right: Super-Shift-Right
-      F18-Shift-Up: Super-Shift-Up
-      F18-Shift-Down: Super-Shift-Down
+      # F18-Shift-Left: Shift-Home
+      # F18-Shift-Right: Shift-End
+      # F18-Shift-Up: Shift-PageUp
+      # F18-Shift-Down: Shift-PageDown
 
       # Workspace navigation
       F18-Tab: Super-Tab
