@@ -40,6 +40,7 @@ keymap:
       # Clipboard (Ctrl+Shift to avoid terminal control chars)
       F18-c: Ctrl-Shift-c
       F18-v: Ctrl-Shift-v
+      F18-Shift-v: Super-Ctrl-v
 
       # Tab & window management
       F18-t: Ctrl-Shift-t
