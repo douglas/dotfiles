@@ -1,4 +1,5 @@
 @import "../omarchy/current/theme/waybar.css";
+@import "../omarchy/current/theme/lcctop-waybar.css";
 
 * {
   background-color: @background;
@@ -89,6 +90,18 @@ tooltip {
 #custom-notification-silencing-indicator.active {
   color: #a55555;
 }
+
+#custom-lcctop {
+  min-width: 12px;
+  margin: 0 7.5px;
+}
+
+#custom-lcctop.disconnected { color: @lcctop-disconnected; }
+#custom-lcctop.permission   { color: @lcctop-permission;   }
+#custom-lcctop.attention    { color: @lcctop-attention;    }
+#custom-lcctop.working      { color: @lcctop-working;      }
+#custom-lcctop.idle         { color: @lcctop-idle;         }
+#custom-lcctop.compacting   { color: @lcctop-compacting;   }
 
 #custom-voxtype {
   min-width: 12px;

@@ -20,6 +20,7 @@
     "network",
     "pulseaudio",
     "custom/ddc_brightness",
+    "custom/lcctop",
     "cpu",
     "battery",
   ],
@@ -70,6 +71,16 @@
     "return-type": "json",
     "tooltip": true,
     "interval": 59,
+  },
+
+  "custom/lcctop": {
+    "exec": "/home/douglas/.local/bin/lcctop-waybar",
+    "return-type": "json",
+    "format": "󰚩{alt}",
+    "interval": 2,
+    "tooltip": true,
+    "on-click": "setsid uwsm-app -- ghostty --class=org.omarchy.Lcctop --title=lcctop -e /home/douglas/.local/bin/lcctop-pick",
+    "signal": 11,
   },
 
   "cpu": {
