@@ -20,6 +20,13 @@ modmap:
 
 keymap:
   # ============================================================
+  # Global — lcctop session picker
+  # ============================================================
+  - name: lcctop
+    remap:
+      F18-Home: { launch: ["setsid", "uwsm-app", "--", "ghostty", "--class=org.omarchy.Lcctop", "--title=lcctop", "-e", "/home/douglas/.local/bin/lcctop-pick"] }
+
+  # ============================================================
   # Terminal (Ghostty) — Cmd key (F18)
   # ============================================================
   - name: Terminal shortcuts (Cmd)
@@ -101,6 +108,18 @@ keymap:
       F18-9: Alt-9
 
   # ============================================================
+  # Terminal (Kitty) — split navigation via F18+Shift+arrows
+  # ============================================================
+  - name: Terminal shortcuts Kitty (Cmd)
+    application:
+      only: [kitty]
+    remap:
+      F18-Shift-Left:  Ctrl-Alt-Left
+      F18-Shift-Right: Ctrl-Alt-Right
+      F18-Shift-Up:    Ctrl-Alt-Up
+      F18-Shift-Down:  Ctrl-Alt-Down
+
+  # ============================================================
   # Spotify
   # ============================================================
   - name: Spotify shortcuts (Cmd)
@@ -120,6 +139,11 @@ keymap:
       # App launcher
       F18-Space: Super-Space
       F18-Shift-Space: Super-Alt-Space
+
+      # macOS-like screenshots (Cmd+Shift+3/4/5)
+      F18-Shift-3: { launch: ["omarchy-cmd-screenshot", "fullscreen"] }
+      F18-Shift-4: { launch: ["omarchy-cmd-screenshot", "region"] }
+      F18-Shift-5: { launch: ["omarchy-menu", "capture"] }
 
       # Clipboard
       F18-c: Ctrl-c
