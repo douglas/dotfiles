@@ -76,7 +76,8 @@
   "custom/lcctop": {
     "exec": "/home/douglas/.local/bin/lcctop-waybar",
     "return-type": "json",
-    "format": "󰚩{alt}",
+    "format": "{}",
+    "markup": true,
     "interval": 2,
     "tooltip": true,
     "on-click": "setsid uwsm-app -- ghostty --class=org.omarchy.Lcctop --title=lcctop -e /home/douglas/.local/bin/lcctop-pick",
