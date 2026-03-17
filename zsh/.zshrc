@@ -77,3 +77,10 @@ eval "$(zoxide init --cmd cd zsh)"
 export PATH="$PATH:/home/douglas/.lmstudio/bin"
 # End of LM Studio CLI section
 
+
+# dox-agent PATH
+export PATH="/home/douglas/work/agentic-dev/bin:$PATH"
+
+# >>> wt initialize >>>
+eval "$(wt shellenv)"
+# <<< wt initialize <<<
