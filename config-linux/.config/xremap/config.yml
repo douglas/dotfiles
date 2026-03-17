@@ -24,7 +24,7 @@ keymap:
   # ============================================================
   - name: lcctop
     remap:
-      F18-Home: { launch: ["setsid", "uwsm-app", "--", "ghostty", "--class=org.omarchy.Lcctop", "--title=lcctop", "-e", "/home/douglas/.local/bin/lcctop-pick"] }
+      F18-Home: { launch: ["setsid", "uwsm-app", "--", "ghostty", "--class=org.omarchy.Lcctop", "--title=lcctop", "-e", "/home/douglas/.local/bin/lcctop-pick-bt"] }
 
   # ============================================================
   # Terminal (Ghostty) — Cmd key (F18)
