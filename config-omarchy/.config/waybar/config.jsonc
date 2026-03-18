@@ -107,7 +107,7 @@
     "tooltip-format-disconnected": "Disconnected",
     "interval": 3,
     "spacing": 1,
-    "on-click": "xdg-terminal-exec --app-id=org.omarchy.Gazelle -e gazelle",
+    "on-click": "xdg-terminal-exec --app-id=org.omarchy.Impala -e impala",
   },
   "battery": {
     "format": "{capacity}% {icon}",
