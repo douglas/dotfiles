@@ -108,6 +108,11 @@ keymap:
       F18-8: Alt-8
       F18-9: Alt-9
 
+      # macOS-like screenshots (Cmd+Shift+3/4/5)
+      F18-Shift-3: { launch: ["omarchy-cmd-screenshot", "fullscreen"] }
+      F18-Shift-4: { launch: ["omarchy-cmd-screenshot", "region"] }
+      F18-Shift-5: { launch: ["omarchy-menu", "capture"] }
+
   # ============================================================
   # Terminal (Kitty) — split navigation via F18+Shift+arrows
   # ============================================================
