@@ -88,4 +88,7 @@ if (( $+commands[abbr] )) || (( $+functions[abbr] )); then
 	# Ruby on Rails
 	abbr -q -S "bi=bundle install"
 	abbr -q -S "bic=bundle install --conservative"
+
+	# Worktrees
+	abbr -q -S "wr=wt-zig"
 fi
