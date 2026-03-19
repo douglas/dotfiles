@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Auto-configure the Lenovo P40WD-40 ultrawide monitor
+# Usage: configure-monitor [--dry-run]
+
+set -euo pipefail
+
+MONITOR_DESC="Lenovo Group Limited P40WD-40"
+RESOLUTION="5120x2160"
+REFRESH="120"
+SCALE="2"
+CONFIG="$HOME/.config/hypr/monitors.conf"
+
+if ! command -v hyprctl &>/dev/null; then
+  echo "Error: hyprctl not found. Is Hyprland running?" >&2
+  exit 1
+fi
+
+# Find the monitor by description
+port=$(hyprctl monitors -j | jq -r --arg desc "$MONITOR_DESC" '.[] | select(.description | startswith($desc)) | .name')
+
+if [[ -z "$port" ]]; then
+  echo "Error: No monitor matching '$MONITOR_DESC' found." >&2
+  echo "Connected monitors:"
+  hyprctl monitors -j | jq -r '.[].description'
+  exit 1
+fi
+
+echo "Found monitor: $MONITOR_DESC on $port"
+
+config_line="monitor = desc:${MONITOR_DESC}, ${RESOLUTION}@${REFRESH}, auto, ${SCALE}"
+
+if [[ "${1:-}" == "--dry-run" ]]; then
+  echo "Would write to $CONFIG:"
+  echo "  $config_line"
+  exit 0
+fi
+
+printf '# See https://wiki.hyprland.org/Configuring/Monitors/\n# List current monitors and resolutions possible: hyprctl monitors\n# Format: monitor = [port], resolution, position, scale\n\n%s\n' "$config_line" > "$CONFIG"
+
+echo "Wrote $CONFIG"
+echo "Hyprland will auto-reload. Current state:"
+hyprctl monitors | rg -A1 'Monitor|@|scale:'
