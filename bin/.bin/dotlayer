@@ -1,1 +1,3 @@
-/home/douglas/src/dotlayer/exe/dotlayer
+#!/usr/bin/env bash
+
+exec "$HOME/src/dotlayer/exe/dotlayer" "$@"
