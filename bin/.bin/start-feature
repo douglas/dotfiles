@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if [[ $# -eq 0 ]]; then
+  echo "Usage: start-feature <description>" >&2
+  exit 1
+fi
+
+description="$*"
+
+repo_root="$(git rev-parse --show-toplevel 2>/dev/null)" || {
+  echo "Not in a git repository." >&2
+  exit 1
+}
+
+branch="$(git symbolic-ref --quiet --short HEAD 2>/dev/null || git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+if [[ -z "$branch" || "$branch" == "HEAD" ]]; then
+  echo "Could not determine current branch." >&2
+  exit 1
+fi
+
+repo_name="$(basename "$repo_root")"
+tracking_dir="$HOME/projects/$repo_name/$branch"
+tracking_file="$tracking_dir/work_log.md"
+
+mkdir -p "$tracking_dir"
+touch "$tracking_file"
+
+open_feature="$(
+  perl -0ne '
+    while (/^## Feature: (.+?)\n- \*\*Status:\*\* (.+?)\n- \*\*Started:\*\* .*?\n- \*\*Closed:\*\* .*?\n- \*\*Description:\*\* (.+?)(?:\n(?=## Feature: )|\z)/msg) {
+      next unless $2 eq "open";
+      print "$1\n$3\n";
+      exit 0;
+    }
+    exit 1;
+  ' "$tracking_file" 2>/dev/null || true
+)"
+
+if [[ -n "$open_feature" ]]; then
+  mapfile -t open_lines <<<"$open_feature"
+  echo "Open feature already exists."
+  echo "Title: ${open_lines[0]}"
+  echo "Description: ${open_lines[1]}"
+  echo "Tracking file: $tracking_file"
+  exit 1
+fi
+
+title="${description#"${description%%[![:space:]]*}"}"
+title="${title%"${title##*[![:space:]]}"}"
+title="${title%,}"
+title="${title%.}"
+title="${title:0:1}"${title:1}
+title="${title^}"
+timestamp="$(date -u --iso-8601=seconds)"
+
+printf '\n## Feature: %s\n- **Status:** open\n- **Started:** %s\n- **Closed:** —\n- **Description:** %s\n' \
+  "$title" \
+  "$timestamp" \
+  "$description" >> "$tracking_file"
+
+echo "Opened feature: $title"
+echo "Tracking file: $tracking_file"

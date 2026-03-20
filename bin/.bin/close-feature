@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+repo_root="$(git rev-parse --show-toplevel 2>/dev/null)" || {
+  echo "Not in a git repository." >&2
+  exit 1
+}
+
+branch="$(git symbolic-ref --quiet --short HEAD 2>/dev/null || git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+if [[ -z "$branch" || "$branch" == "HEAD" ]]; then
+  echo "Could not determine current branch." >&2
+  exit 1
+fi
+
+repo_name="$(basename "$repo_root")"
+tracking_file="$HOME/projects/$repo_name/$branch/work_log.md"
+
+if [[ ! -f "$tracking_file" ]]; then
+  echo "No open feature to close."
+  exit 0
+fi
+
+open_feature="$(
+  perl -0ne '
+    while (/^## Feature: (.+?)\n- \*\*Status:\*\* (.+?)\n- \*\*Started:\*\* .*?\n- \*\*Closed:\*\* .*?\n- \*\*Description:\*\* (.+?)(?:\n(?=## Feature: )|\z)/msg) {
+      next unless $2 eq "open";
+      print "$1\n$3\n";
+      exit 0;
+    }
+    exit 1;
+  ' "$tracking_file" 2>/dev/null || true
+)"
+
+if [[ -z "$open_feature" ]]; then
+  echo "No open feature to close."
+  exit 0
+fi
+
+timestamp="$(date -u --iso-8601=seconds)"
+export CLOSED_AT="$timestamp"
+
+perl -0pi -e '
+  my $closed_at = $ENV{CLOSED_AT};
+  my $done = 0;
+  s{^## Feature: (.+?)\n- \*\*Status:\*\* open\n- \*\*Started:\*\* ([^\n]+)\n- \*\*Closed:\*\* —\n- \*\*Description:\*\* ([^\n]+)}
+   {$done++ ? $& : "## Feature: $1\n- **Status:** closed\n- **Started:** $2\n- **Closed:** $closed_at\n- **Description:** $3"}mse;
+' "$tracking_file"
+
+mapfile -t open_lines <<<"$open_feature"
+echo "Closed feature: ${open_lines[0]}"
+echo "Tracking file: $tracking_file"
