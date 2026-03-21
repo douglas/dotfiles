@@ -1,1 +1,4 @@
 root = "/home/douglas/src/worktrees"
+
+[copy_files.campaigns]
+paths = [".env.local", ".env.test.local"]
