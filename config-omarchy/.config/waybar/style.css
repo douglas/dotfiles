@@ -117,6 +117,14 @@ tooltip {
   margin: 0 7.5px;
 }
 
+#custom-kef {
+  min-width: 12px;
+  margin: 0 7.5px;
+}
+
+#custom-kef.on  { color: @accent; }
+#custom-kef.off { opacity: 0.4; }
+
 #custom-calendar {
   margin: 0 7.5px;
 }

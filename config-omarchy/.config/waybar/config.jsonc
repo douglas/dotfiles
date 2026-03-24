@@ -19,6 +19,7 @@
     "bluetooth",
     "network",
     "pulseaudio",
+    "custom/kef",
     "custom/ddc_brightness",
     "custom/lcctop",
     "cpu",
@@ -201,6 +202,21 @@
     "icon-size": 12,
     "spacing": 17,
   },
+  "custom/kef": {
+    "exec": "/home/douglas/.bin/kefctl waybar",
+    "return-type": "json",
+    "interval": 30,
+    "signal": 12,
+    "on-click": "/home/douglas/.bin/kefctl toggle && pkill -RTMIN+12 waybar",
+    "on-click-right": "setsid uwsm-app -- ghostty --class=org.omarchy.Kefctl --title=kefctl -e /home/douglas/.bin/kefctl",
+    "format": "{icon}",
+    "format-icons": {
+      "on": "󰓃",
+      "off": "󰓄",
+    },
+    "tooltip": true,
+  },
+
   "custom/ddc_brightness": {
     "format": "{icon}",
     "format-icons": ["󰃞", "󰃟", "󰃠"],
