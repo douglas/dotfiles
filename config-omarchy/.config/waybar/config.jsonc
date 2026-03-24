@@ -203,12 +203,12 @@
     "spacing": 17,
   },
   "custom/kef": {
-    "exec": "/home/douglas/.bin/kefctl waybar",
+    "exec": "kefctl waybar",
     "return-type": "json",
     "interval": 30,
     "signal": 12,
-    "on-click": "/home/douglas/.bin/kefctl toggle && pkill -RTMIN+12 waybar",
-    "on-click-right": "setsid uwsm-app -- ghostty --class=org.omarchy.Kefctl --title=kefctl -e /home/douglas/.bin/kefctl",
+    "on-click": "kefctl toggle && pkill -RTMIN+12 waybar",
+    "on-click-right": "setsid uwsm-app -- ghostty --class=org.omarchy.Kefctl --title=kefctl -e kefctl",
     "format": "{icon}",
     "format-icons": {
       "on": "󰓃",
