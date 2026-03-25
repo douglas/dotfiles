@@ -22,6 +22,12 @@ else
 fi
 
 ##
+## Bose QC35 II Bluetooth profile switching
+##
+alias bose-mic='pactl set-card-profile bluez_card.4C_87_5D_CE_E0_96 headset-head-unit'
+alias bose-music='pactl set-card-profile bluez_card.4C_87_5D_CE_E0_96 a2dp-sink'
+
+##
 ## Default aliases (transparent replacements)
 ##
 alias cat="bat"
