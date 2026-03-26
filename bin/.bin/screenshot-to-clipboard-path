@@ -1,0 +1,68 @@
+#!/bin/bash
+# Take a screenshot and copy the saved file path (not image data) to clipboard.
+# Useful for pasting into Claude Code or Codex which accept file paths.
+# Uses the same smart-mode UX as omarchy-cmd-screenshot (hyprpicker freeze + slurp).
+
+[[ -f ~/.config/user-dirs.dirs ]] && source ~/.config/user-dirs.dirs
+OUTPUT_DIR="${OMARCHY_SCREENSHOT_DIR:-${XDG_PICTURES_DIR:-$HOME/Pictures}}"
+
+if [[ ! -d $OUTPUT_DIR ]]; then
+  notify-send "Screenshot directory does not exist: $OUTPUT_DIR" -u critical -t 3000
+  exit 1
+fi
+
+pkill slurp && exit 0
+
+JQ_MONITOR_GEO='
+  def format_geo:
+    .x as $x | .y as $y |
+    (.width / .scale | floor) as $w |
+    (.height / .scale | floor) as $h |
+    .transform as $t |
+    if $t == 1 or $t == 3 then
+      "\($x),\($y) \($h)x\($w)"
+    else
+      "\($x),\($y) \($w)x\($h)"
+    end;
+'
+
+get_rectangles() {
+  local active_workspace=$(hyprctl monitors -j | jq -r '.[] | select(.focused == true) | .activeWorkspace.id')
+  hyprctl monitors -j | jq -r --arg ws "$active_workspace" "${JQ_MONITOR_GEO} .[] | select(.activeWorkspace.id == (\$ws | tonumber)) | format_geo"
+  hyprctl clients -j | jq -r --arg ws "$active_workspace" '.[] | select(.workspace.id == ($ws | tonumber)) | "\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"'
+}
+
+RECTS=$(get_rectangles)
+hyprpicker -r -z >/dev/null 2>&1 &
+PID=$!
+sleep .1
+SELECTION=$(echo "$RECTS" | slurp 2>/dev/null)
+kill $PID 2>/dev/null
+
+if [[ $SELECTION =~ ^([0-9]+),([0-9]+)[[:space:]]([0-9]+)x([0-9]+)$ ]]; then
+  if ((${BASH_REMATCH[3]} * ${BASH_REMATCH[4]} < 20)); then
+    click_x="${BASH_REMATCH[1]}"
+    click_y="${BASH_REMATCH[2]}"
+    while IFS= read -r rect; do
+      if [[ $rect =~ ^([0-9]+),([0-9]+)[[:space:]]([0-9]+)x([0-9]+) ]]; then
+        rect_x="${BASH_REMATCH[1]}"
+        rect_y="${BASH_REMATCH[2]}"
+        rect_width="${BASH_REMATCH[3]}"
+        rect_height="${BASH_REMATCH[4]}"
+        if ((click_x >= rect_x && click_x < rect_x + rect_width && click_y >= rect_y && click_y < rect_y + rect_height)); then
+          SELECTION="${rect_x},${rect_y} ${rect_width}x${rect_height}"
+          break
+        fi
+      fi
+    done <<<"$RECTS"
+  fi
+fi
+
+[[ -z $SELECTION ]] && exit 0
+
+FILEPATH="$OUTPUT_DIR/screenshot-$(date +'%Y-%m-%d_%H-%M-%S').png"
+
+grim -g "$SELECTION" "$FILEPATH" || exit 1
+echo -n "$FILEPATH" | wl-copy
+
+notify-send "Screenshot path copied" "$FILEPATH" -t 5000 -i "$FILEPATH"
