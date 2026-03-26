@@ -30,6 +30,7 @@ alias bose-music='pactl set-card-profile bluez_card.4C_87_5D_CE_E0_96 a2dp-sink'
 ##
 ## Default aliases (transparent replacements)
 ##
+alias fix_term="stty sane"  # Restore terminal after Claude Code or other apps leave it in a broken state
 alias cat="bat"
 alias top="bottom"
 alias ls="eza"
