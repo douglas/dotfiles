@@ -1,0 +1,5 @@
+#!/bin/bash
+# Re-add personal.conf source if hyprland.conf was refreshed by a migration
+if ! grep -q 'personal.conf' ~/.config/hypr/hyprland.conf 2>/dev/null; then
+  echo 'source = ~/.config/hypr/personal.conf' >> ~/.config/hypr/hyprland.conf
+fi
