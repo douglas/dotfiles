@@ -25,3 +25,15 @@ if ! git diff --quiet 2>/dev/null; then
 fi
 
 git checkout -- .
+
+# Zscaler's ZSTray links against a pinned libvpx.so version that system
+# upgrades can bump.  Create a compat symlink so ZSTray keeps launching.
+zs_needed=$(readelf -d /opt/zscaler/bin/ZSTray.Deb 2>/dev/null \
+  | sed -n 's/.*\[libvpx\.so\.\([0-9]*\)\].*/\1/p')
+if [ -n "$zs_needed" ] && [ ! -e "/usr/lib/libvpx.so.${zs_needed}" ]; then
+  zs_current=$(ls /usr/lib/libvpx.so.* 2>/dev/null | head -1)
+  if [ -n "$zs_current" ]; then
+    sudo ln -sf "$zs_current" "/usr/lib/libvpx.so.${zs_needed}"
+    echo "Zscaler: symlinked libvpx.so.${zs_needed} -> $zs_current"
+  fi
+fi
