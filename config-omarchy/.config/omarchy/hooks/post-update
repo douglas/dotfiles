@@ -1,5 +1,17 @@
 #!/bin/bash
-# Re-add personal.conf source if hyprland.conf was refreshed by a migration
-if ! grep -q 'personal.conf' ~/.config/hypr/hyprland.conf 2>/dev/null; then
-  echo 'source = ~/.config/hypr/personal.conf' >> ~/.config/hypr/hyprland.conf
-fi
+# Restore dotfile symlinks after Omarchy update.
+#
+# Omarchy migrations can replace stow symlinks with real files or modify
+# config files through symlinks via sed. This hook:
+# 1. Re-stows with --adopt to reclaim any replaced symlinks
+# 2. git checkout restores committed versions over any Omarchy modifications
+
+cd ~/.public_dotfiles || exit 0
+
+profile="$(hostnamectl chassis 2>/dev/null || echo desktop)"
+
+for package in config-omarchy "config-omarchy-${profile}"; do
+  [ -d "$package" ] && stow --adopt -R -t ~ "$package" 2>/dev/null
+done
+
+git checkout -- .
