@@ -4,7 +4,8 @@
 # Omarchy migrations can replace stow symlinks with real files or modify
 # config files through symlinks via sed. This hook:
 # 1. Re-stows with --adopt to reclaim any replaced symlinks
-# 2. git checkout restores committed versions over any Omarchy modifications
+# 2. Logs what migrations changed (so you can selectively adopt)
+# 3. git checkout restores committed versions
 
 cd ~/.public_dotfiles || exit 0
 
@@ -13,5 +14,14 @@ profile="$(hostnamectl chassis 2>/dev/null || echo desktop)"
 for package in config-omarchy "config-omarchy-${profile}"; do
   [ -d "$package" ] && stow --adopt -R -t ~ "$package" 2>/dev/null
 done
+
+# Log migration changes before reverting
+if ! git diff --quiet 2>/dev/null; then
+  log="$HOME/.local/state/omarchy/migration-changes-$(date +%s).diff"
+  mkdir -p "$(dirname "$log")"
+  git diff > "$log"
+  echo "Omarchy migration changes saved to $log"
+  echo "Review with: bat $log"
+fi
 
 git checkout -- .
