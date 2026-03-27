@@ -31,7 +31,7 @@ keymap:
   # ============================================================
   - name: Terminal shortcuts (Cmd)
     application:
-      only: [com.mitchellh.ghostty]
+      only: [com.mitchellh.ghostty, io.github.douglas.cmux_gtk]
     remap:
       # App launcher
       F18-Space: Super-Space
@@ -140,7 +140,7 @@ keymap:
   # ============================================================
   - name: macOS-style shortcuts (Cmd)
     application:
-      not: [com.mitchellh.ghostty, spotify]
+      not: [com.mitchellh.ghostty, io.github.douglas.cmux_gtk, spotify]
     remap:
       # App launcher
       F18-Space: Super-Space
