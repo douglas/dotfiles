@@ -1,0 +1,4 @@
+# Block env files by default; only sample variants are commit-eligible.
+.env*
+!.env.sample*
+!.env*.sample

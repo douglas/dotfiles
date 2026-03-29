@@ -1,0 +1,118 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root="$(git rev-parse --show-toplevel)"
+cd "$repo_root"
+
+allowlist_file="$repo_root/.githooks/secret-allowlist.regex"
+
+if ! command -v rg >/dev/null 2>&1; then
+  echo "pre-commit: rg is required for secret scanning."
+  exit 1
+fi
+
+declare -a staged_files=()
+while IFS= read -r -d '' file; do
+  staged_files+=("$file")
+done < <(git diff --cached --name-only --diff-filter=ACMR -z)
+
+if [ "${#staged_files[@]}" -eq 0 ]; then
+  exit 0
+fi
+
+is_allowed_env_sample() {
+  local name="$1"
+  [[ "$name" == .env.sample* || "$name" == .env*.sample ]]
+}
+
+declare -a env_violations=()
+for path in "${staged_files[@]}"; do
+  base_name="$(basename "$path")"
+  if [[ "$base_name" == .env* ]] && ! is_allowed_env_sample "$base_name"; then
+    env_violations+=("$path")
+  fi
+done
+
+if [ "${#env_violations[@]}" -gt 0 ]; then
+  echo "pre-commit: blocked .env file(s). Only .env.sample* and .env*.sample are allowed:"
+  printf '  - %s\n' "${env_violations[@]}"
+  exit 1
+fi
+
+is_allowlisted_line() {
+  local text="$1"
+  local pattern
+
+  [ -f "$allowlist_file" ] || return 1
+
+  while IFS= read -r pattern; do
+    pattern="$(printf '%s' "$pattern" | sed 's/[[:space:]]*$//')"
+    [ -z "$pattern" ] && continue
+    [[ "$pattern" == \#* ]] && continue
+    if printf '%s\n' "$text" | rg -q -P -- "$pattern"; then
+      return 0
+    fi
+  done < "$allowlist_file"
+
+  return 1
+}
+
+collect_added_lines() {
+  git diff --cached --no-color -U0 | awk '
+    /^diff --git / {
+      file = $4
+      sub("^b/", "", file)
+      next
+    }
+    /^@@ / {
+      split($0, parts, " ")
+      plus = parts[3]
+      sub("^\\+", "", plus)
+      split(plus, seg, ",")
+      line = seg[1] - 1
+      next
+    }
+    /^\+/ && $0 !~ /^\+\+\+/ {
+      line++
+      printf "%s:%d:%s\n", file, line, substr($0, 2)
+    }
+  '
+}
+
+secret_patterns=(
+  '-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----'
+  'AKIA[0-9A-Z]{16}'
+  '(?i)authorization:\s*(bearer|basic)\s+[a-z0-9._~+\/=-]{10,}'
+  '(?i)(api[_-]?key|secret|token|password)\s*[:=]\s*["'"'"']?[a-z0-9\/+=._-]{12,}'
+)
+
+declare -a secret_violations=()
+while IFS= read -r entry; do
+  [ -z "$entry" ] && continue
+
+  file="${entry%%:*}"
+  rest="${entry#*:}"
+  line_no="${rest%%:*}"
+  text="${rest#*:}"
+
+  if is_allowlisted_line "$text"; then
+    continue
+  fi
+
+  for pattern in "${secret_patterns[@]}"; do
+    if printf '%s\n' "$text" | rg -q -P -- "$pattern"; then
+      snippet="$(printf '%s' "$text" | cut -c1-120)"
+      secret_violations+=("$file:$line_no:$snippet")
+      break
+    fi
+  done
+done < <(collect_added_lines)
+
+if [ "${#secret_violations[@]}" -gt 0 ]; then
+  echo "pre-commit: potential secret/privacy exposure in staged lines:"
+  printf '  - %s\n' "${secret_violations[@]}"
+  echo "Review and remove sensitive values before committing."
+  exit 1
+fi
+
+exit 0
