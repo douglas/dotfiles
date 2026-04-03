@@ -18,7 +18,7 @@ else
   PROFILE="${PROFILE:-$(hostnamectl chassis 2>/dev/null || echo desktop)}"
   stow --adopt -d ~/.public_dotfiles -t ~ config-linux
 
-  if command -v omarchy &>/dev/null; then
+  if command -v omarchy-version &>/dev/null; then
     stow --adopt -d ~/.public_dotfiles -t ~ config-omarchy
     stow --adopt -d ~/.public_dotfiles -t ~ "config-omarchy-${PROFILE}"
   elif [[ -f /etc/os-release ]] && source /etc/os-release && [[ "$ID" == "fedora" ]]; then
