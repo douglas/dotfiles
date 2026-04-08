@@ -132,3 +132,5 @@ tooltip {
 #custom-calendar.soon {
   color: #a55555;
 }
+
+@import "machine.css";
