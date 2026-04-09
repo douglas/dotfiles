@@ -40,55 +40,68 @@ zstyle ':completion:*' menu select
 # Accept autosuggestion with Tab (in addition to right arrow)
 ZSH_AUTOSUGGEST_ACCEPT_WIDGETS+=(complete-word)
 
-# ZSH Abbreviations (fish-like abbreviations that expand inline)
-if [[ -f /usr/share/zsh/plugins/zsh-abbr/zsh-abbr.plugin.zsh ]]; then
-	source /usr/share/zsh/plugins/zsh-abbr/zsh-abbr.plugin.zsh
-elif [[ -f /opt/homebrew/share/zsh-abbr/zsh-abbr.plugin.zsh ]]; then
-	source /opt/homebrew/share/zsh-abbr/zsh-abbr.plugin.zsh
-fi
+# Shell shortcuts
 
-if (( $+commands[abbr] )) || (( $+functions[abbr] )); then
-	# General
-	abbr -q -S "zshconfig=zed ~/.public_dotfiles ~/.private_dotfiles"
-	abbr -q -S "zshreload=source ~/.zshrc"
-	abbr -q -S "lzd=lazydocker"
-	abbr -q -S "lzg=lazygit"
+# General
+alias zshconfig='zed ~/.public_dotfiles ~/.private_dotfiles'
+alias zshreload='source ~/.zshrc'
+alias lzd='lazydocker'
+alias lzg='lazygit'
 
-	# Git
-	abbr -q -S "g=git"
-	abbr -q -S "gadd=git add"
-	abbr -q -S "gadda=git add ."
-	abbr -q -S "gcb=git branch --show-current"
-	abbr -q -S "gci=git ci -m "
-	abbr -q -S "gciw=git ci -m 'wip'"
-	abbr -q -S "gcia=git cia --amend"
-	abbr -q -S "gdiff=git ddiff"
-	abbr -q -S "grfixup=git rfixup"
-	abbr -q -S "gnfixup=git nfixup"
-	abbr -q -S "gcp=git cp"
-	abbr -q -S "gclean=git clean -fd"
-	abbr -q -S "gcleanup=git cleanup-merged && git cleanup-gone"
-	abbr -q -S "gcob=git cob"
-	abbr -q -S "gco=git co"
-	abbr -q -S "gnb=git checkout -b dsa/"
-	abbr -q -S "grbs=git rebase --skip"
-	abbr -q -S "grbc=git rebase --continue"
-	abbr -q -S "grba=git rebase --abort"
-	abbr -q -S "grbi=git rebase --interactive"
-	abbr -q -S "grbm=git rebase origin/master"
-	abbr -q -S "gpull=git pull"
-	abbr -q -S "gpush=git push"
-	abbr -q -S "gpushu=git pushu"
-	abbr -q -S "gpushf=git pf"
-	abbr -q -S "gst=git status"
-	abbr -q -S "grsmr=git reset --hard origin/master"
-	abbr -q -S "grsmn=git reset --hard origin/main"
-	abbr -q -S "grs=git reset HEAD~"
+# Git
+alias g='git'
+alias gadd='git add'
+alias gadda='git add .'
+alias gcb='git branch --show-current'
+alias gciw="git ci -m 'wip'"
+alias gcia='git cia --amend'
+alias gdiff='git ddiff'
+alias grfixup='git rfixup'
+alias gnfixup='git nfixup'
+alias gcp='git cp'
+alias gclean='git clean -fd'
+alias gcleanup='git cleanup-merged && git cleanup-gone'
+alias gcob='git cob'
+alias gco='git co'
+alias grbs='git rebase --skip'
+alias grbc='git rebase --continue'
+alias grba='git rebase --abort'
+alias grbi='git rebase --interactive'
+alias grbm='git rebase origin/master'
+alias gpull='git pull'
+alias gpush='git push'
+alias gpushu='git pushu'
+alias gpushf='git pf'
+alias gst='git status'
+alias grsmr='git reset --hard origin/master'
+alias grsmn='git reset --hard origin/main'
 
-	# Ruby on Rails
-	abbr -q -S "bi=bundle install"
-	abbr -q -S "bic=bundle install --conservative"
+# Ruby on Rails
+alias bi='bundle install'
+alias bic='bundle install --conservative'
 
-	# Worktrees
-	abbr -q -S "wr=wt-zig"
-fi
+# Worktrees
+alias wr='wt-zig'
+
+function gci() {
+	if [[ $# -eq 0 ]]; then
+		echo "Usage: gci <commit message>"
+		return 1
+	fi
+
+	git ci -m "$*"
+}
+
+function gnb() {
+	if [[ $# -eq 0 ]]; then
+		echo "Usage: gnb <branch-suffix>"
+		return 1
+	fi
+
+	git checkout -b "dsa/$1"
+}
+
+function grs() {
+	local commit_count="${1:-1}"
+	git reset "HEAD~${commit_count}"
+}

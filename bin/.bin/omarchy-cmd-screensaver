@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+exec "$HOME/.bin/omarchy-cmd-screensaver-matrix" "$@"
