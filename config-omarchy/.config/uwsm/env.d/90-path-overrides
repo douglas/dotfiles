@@ -1,0 +1,9 @@
+#!/bin/sh
+
+case ":${PATH}:" in
+  *:"$HOME/.bin":*)
+    ;;
+  *)
+    export PATH="$HOME/.bin:$PATH"
+    ;;
+esac
