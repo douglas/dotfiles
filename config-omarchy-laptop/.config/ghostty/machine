@@ -3,3 +3,12 @@ window-width = 145
 window-height = 45
 gtk-titlebar = false
 keybind = super+enter=toggle_fullscreen
+keybind = super+1=unbind
+keybind = super+2=unbind
+keybind = super+3=unbind
+keybind = super+4=unbind
+keybind = super+5=unbind
+keybind = super+6=unbind
+keybind = super+7=unbind
+keybind = super+8=unbind
+keybind = super+9=unbind
