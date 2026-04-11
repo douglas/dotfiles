@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+dropin_dir="/etc/systemd/resolved.conf.d"
+dropin_file="${dropin_dir}/20-disable-llmnr.conf"
+
+usage() {
+  cat <<'EOF'
+Usage: llmnr-mode <off|on|status>
+
+  off     Disable LLMNR via a systemd-resolved drop-in and restart resolved
+  on      Re-enable LLMNR by removing the drop-in and restarting resolved
+  status  Show current LLMNR-related config
+EOF
+}
+
+show_status() {
+  echo "Drop-in:"
+  if [[ -f "${dropin_file}" ]]; then
+    echo "  present: ${dropin_file}"
+    sed -n '1,80p' "${dropin_file}"
+  else
+    echo "  absent"
+  fi
+
+  echo
+  echo "Configured values:"
+  grep -n '^[[:space:]]*LLMNR=' /etc/systemd/resolved.conf "${dropin_dir}"/*.conf 2>/dev/null || \
+    echo "  no explicit LLMNR setting found"
+}
+
+case "${1:-}" in
+  off)
+    sudo install -d "${dropin_dir}"
+    printf '%s\n' '[Resolve]' 'LLMNR=no' | sudo tee "${dropin_file}" >/dev/null
+    sudo systemctl restart systemd-resolved.service
+    echo "LLMNR disabled."
+    show_status
+    ;;
+  on)
+    sudo rm -f "${dropin_file}"
+    sudo systemctl restart systemd-resolved.service
+    echo "LLMNR re-enabled."
+    show_status
+    ;;
+  status)
+    show_status
+    ;;
+  *)
+    usage
+    exit 1
+    ;;
+esac

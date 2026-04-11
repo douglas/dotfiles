@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+dropin_dir="/etc/systemd/resolved.conf.d"
+dropin_file="${dropin_dir}/30-dns-over-tls.conf"
+
+usage() {
+  cat <<'EOF'
+Usage: dnsot-mode <off|opportunistic|on|status>
+
+  off            Disable DNSOverTLS via a systemd-resolved drop-in
+  opportunistic  Restore opportunistic DNSOverTLS
+  on             Force DNSOverTLS on
+  status         Show current DNSOverTLS-related config
+EOF
+}
+
+show_status() {
+  echo "Drop-in:"
+  if [[ -f "${dropin_file}" ]]; then
+    echo "  present: ${dropin_file}"
+    sed -n '1,80p' "${dropin_file}"
+  else
+    echo "  absent"
+  fi
+
+  echo
+  echo "Configured values:"
+  grep -n '^[[:space:]]*DNSOverTLS=' /etc/systemd/resolved.conf "${dropin_dir}"/*.conf 2>/dev/null || \
+    echo "  no explicit DNSOverTLS setting found"
+}
+
+set_mode() {
+  local mode="$1"
+  sudo install -d "${dropin_dir}"
+  printf '%s\n' '[Resolve]' "DNSOverTLS=${mode}" | sudo tee "${dropin_file}" >/dev/null
+  sudo systemctl restart systemd-resolved.service
+  echo "DNSOverTLS set to ${mode}."
+  show_status
+}
+
+case "${1:-}" in
+  off)
+    set_mode no
+    ;;
+  opportunistic)
+    set_mode opportunistic
+    ;;
+  on)
+    set_mode yes
+    ;;
+  status)
+    show_status
+    ;;
+  *)
+    usage
+    exit 1
+    ;;
+esac
