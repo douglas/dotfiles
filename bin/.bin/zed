@@ -1,1 +1,2 @@
-/usr/bin/zeditor
+#!/usr/bin/env bash
+exec /usr/bin/zeditor "$@"
