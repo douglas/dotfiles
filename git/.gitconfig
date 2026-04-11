@@ -1,7 +1,7 @@
 [user]
   name = Douglas Soares de Andrade
   email = contato@douglasandrade.com
-	signingkey = ~/.ssh/id_ed25519.pub
+	signingkey = ~/.ssh/id_ed25519_signing.pub
 [include]
   path = ~/.config/delta/catppuccin.gitconfig
 [includeIf "gitdir:~/work/"]
@@ -119,7 +119,7 @@
 [gpg]
 	format = ssh
 [gpg "ssh"]
-	allowedsignersfile = ~/.ssh/id_ed25519.pub
+	allowedsignersfile = ~/.ssh/allowed_signers
 [commit]
 	gpgsign = true
 [push]
