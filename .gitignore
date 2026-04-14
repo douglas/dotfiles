@@ -2,3 +2,6 @@
 .env*
 !.env.sample*
 !.env*.sample
+
+# Local Codex artifact
+.codex
