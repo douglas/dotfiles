@@ -106,8 +106,6 @@ keymap:
       F18-Shift-9: Super-Shift-9
 
       # Window swap
-      F18-Shift-Left: Super-Shift-Left
-      F18-Shift-Right: Super-Shift-Right
       F18-Shift-Up: Super-Shift-Up
       F18-Shift-Down: Super-Shift-Down
 
@@ -276,8 +274,6 @@ keymap:
       F18-Shift-9: Super-Shift-9
 
       # Window swap
-      F18-Shift-Left: Super-Shift-Left
-      F18-Shift-Right: Super-Shift-Right
       F18-Shift-Up: Super-Shift-Up
       F18-Shift-Down: Super-Shift-Down
 

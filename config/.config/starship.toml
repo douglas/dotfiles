@@ -270,3 +270,10 @@ vimcmd_symbol = '[ <](bold fg:creen)'
 vimcmd_replace_one_symbol = '[ <](bold fg:purple)'
 vimcmd_replace_symbol = '[ <](bold fg:purple)'
 vimcmd_visual_symbol = '[ <](bold fg:lavender)'
+
+[custom.dox_sandbox]
+command = "dox-sandbox-info"
+when = true
+unsafe_no_escape = true
+format = "[$output](bold)"
+shell = ["bash", "--norc", "--noprofile"]
