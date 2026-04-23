@@ -1,4 +1,10 @@
 {
+  "outline_panel": {
+    "dock": "left"
+  },
+  "collaboration_panel": {
+    "dock": "left"
+  },
   "context_servers": {
     "rails-mcp-server": {
       "enabled": true,
@@ -8,6 +14,7 @@
     },
   },
   "agent": {
+    "dock": "right",
     "default_profile": "write",
     "inline_assistant_model": {
       "provider": "zed.dev",
@@ -23,6 +30,7 @@
   },
   "project_panel": {
     // "indent_size": 25,
+    "dock": "left",
     "entry_spacing": "standard",
     "sticky_scroll": true,
   },
