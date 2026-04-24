@@ -55,6 +55,10 @@ else
 	source ~/.zsh/themes/catppuccin-mocha.sh
 fi
 
+# Gum theme (Omarchy-generated)
+if [[ -f ~/.config/omarchy/current/theme/gum.sh ]]; then
+	source ~/.config/omarchy/current/theme/gum.sh
+fi
 ##
 ## Work related configurations
 ##
