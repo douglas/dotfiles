@@ -66,7 +66,6 @@ PanelWindow {
     property int    wifiScanTicks: 0
     property bool   wifiPasswordOpen: false
     property string wifiPasswordSsid: ""
-    property string wifiPasswordText: ""
     property string wifiPasswordError: ""
     property bool   wifiPasswordWorking: false
     property bool   wifiPasswordSecure: false
@@ -140,20 +139,11 @@ PanelWindow {
             Quickshell.execDetached(["nmcli"].concat(args))
     }
 
-    function shellQuote(value) {
-        return "'" + String(value).replace(/'/g, "'\\''") + "'"
-    }
-
-    function startWifiConnect(ssid, password) {
+    function startWifiConnect(ssid) {
         wifiPasswordWorking = true
-        wifiConnectProc.usedPassword = password !== ""
         wifiConnectProc.targetSsid = ssid
         wifiConnectProc.command = [
-            "bash",
-            "-lc",
-            "nmcli -t dev wifi connect " + shellQuote(ssid)
-                + (password !== "" ? " password " + shellQuote(password) : "")
-                + " 2>&1"
+            "nmcli", "-t", "device", "wifi", "connect", ssid
         ]
         wifiConnectProc.running = false
         wifiConnectProc.running = true
@@ -162,9 +152,30 @@ PanelWindow {
     function connectWifi(ssid, secure) {
         wifiPasswordSecure = secure
         wifiPasswordSsid = ssid
-        wifiPasswordText = ""
         wifiPasswordError = ""
-        startWifiConnect(ssid, "")
+
+        if (secure && savedWifiSsids.indexOf(ssid) < 0) {
+            wifiPasswordOpen = true
+            wifiPasswordError = "Use the system Wi-Fi tool to enter credentials securely."
+            return
+        }
+
+        startWifiConnect(ssid)
+    }
+
+    function openSecureWifiManager() {
+        wifiPasswordOpen = false
+        wifiPasswordError = ""
+        Quickshell.execDetached([
+            "bash", "-lc",
+            "if command -v omarchy-launch-wifi >/dev/null 2>&1; then " +
+            "  omarchy-launch-wifi; " +
+            "elif command -v nm-connection-editor >/dev/null 2>&1; then " +
+            "  nm-connection-editor; " +
+            "elif command -v nmtui >/dev/null 2>&1 && command -v xdg-terminal-exec >/dev/null 2>&1; then " +
+            "  xdg-terminal-exec nmtui-connect; " +
+            "fi"
+        ])
     }
 
     function forgetWifi(ssid) {
@@ -375,7 +386,6 @@ PanelWindow {
 
     Process {
         id: wifiConnectProc
-        property bool usedPassword: false
         property string targetSsid: ""
         command: ["bash", "-lc", "true"]
         running: false
@@ -389,7 +399,6 @@ PanelWindow {
             wifiPasswordWorking = false
             if (exitCode === 0) {
                 wifiPasswordOpen = false
-                wifiPasswordText = ""
                 wifiPasswordError = ""
                 refreshConnectivity()
                 refreshWifiScan()
@@ -397,7 +406,7 @@ PanelWindow {
             }
             if (wifiPasswordSecure) {
                 wifiPasswordOpen = true
-                wifiPasswordError = wifiConnectProc.usedPassword ? "Incorrect password" : "Password required"
+                wifiPasswordError = "Could not connect. Use the system Wi-Fi tool to manage credentials."
             } else {
                 wifiPasswordOpen = false
                 wifiPasswordError = msg
@@ -937,7 +946,6 @@ PanelWindow {
                 refreshWifiSaved()
             } else {
                 cc.wifiPasswordOpen = false
-                cc.wifiPasswordText = ""
                 cc.wifiPasswordError = ""
             }
         }
@@ -1254,18 +1262,12 @@ PanelWindow {
                 visible: cc.wifiPasswordOpen
                 color: Qt.alpha("#000000", 0.45)
                 z: 20
-                onVisibleChanged: {
-                    if (visible) {
-                        wifiPasswordInput.forceActiveFocus()
-                    }
-                }
 
                 MouseArea {
                     anchors.fill: parent
                     cursorShape: Qt.ArrowCursor
                     onClicked: {
                         cc.wifiPasswordOpen = false
-                        cc.wifiPasswordText = ""
                         cc.wifiPasswordError = ""
                     }
                 }
@@ -1284,7 +1286,7 @@ PanelWindow {
                         spacing: 8
 
                         Text {
-                            text: "Wi‑Fi Password"
+                            text: "Secure Wi‑Fi Network"
                             color: cc.theme.fg || "#cdd6f4"
                             font.pixelSize: 11
                             font.family: "JetBrainsMono Nerd Font Propo"
@@ -1299,40 +1301,16 @@ PanelWindow {
                             elide: Text.ElideRight
                         }
 
-                        Rectangle {
-                            width: parent.width
-                            height: 30
-                            radius: 8
-                            color: Qt.alpha(cc.theme.dim || "#45475a", 0.22)
-                            border.color: Qt.alpha(cc.theme.dim || "#45475a", 0.35)
-                            border.width: 1
-                            clip: true
-
-                            TextInput {
-                                id: wifiPasswordInput
-                                anchors.fill: parent
-                                anchors.leftMargin: 10
-                                anchors.rightMargin: 10
-                                anchors.verticalCenter: parent.verticalCenter
-                                text: cc.wifiPasswordText
-                                color: cc.theme.fg || "#cdd6f4"
-                                font.pixelSize: 10
-                                font.family: "JetBrainsMono Nerd Font Propo"
-                                echoMode: TextInput.Password
-                                onTextChanged: cc.wifiPasswordText = text
-                                Keys.onReturnPressed: {
-                                    if (!cc.wifiPasswordWorking)
-                                        cc.startWifiConnect(cc.wifiPasswordSsid, cc.wifiPasswordText)
-                                }
-                            }
-                        }
-
                         Text {
-                            visible: cc.wifiPasswordError !== ""
-                            text: cc.wifiPasswordError
-                            color: cc.theme.red || "#f38ba8"
-                            font.pixelSize: 8
+                            visible: true
+                            text: cc.wifiPasswordError !== ""
+                                ? cc.wifiPasswordError
+                                : "Credentials are handled outside Quickshell so passwords are not exposed through shell arguments."
+                            color: cc.theme.muted || "#585b70"
+                            font.pixelSize: 9
                             font.family: "JetBrainsMono Nerd Font Propo"
+                            wrapMode: Text.WordWrap
+                            width: parent.width
                         }
 
                         Row {
@@ -1356,7 +1334,6 @@ PanelWindow {
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: {
                                         cc.wifiPasswordOpen = false
-                                        cc.wifiPasswordText = ""
                                         cc.wifiPasswordError = ""
                                     }
                                 }
@@ -1370,7 +1347,7 @@ PanelWindow {
                                 border.width: 1
                                 Text {
                                     anchors.centerIn: parent
-                                    text: cc.wifiPasswordWorking ? "Connecting" : "Connect"
+                                    text: "Open Wi‑Fi"
                                     color: cc.theme.accent || "#89b4fa"
                                     font.pixelSize: 9
                                     font.family: "JetBrainsMono Nerd Font Propo"
@@ -1378,8 +1355,7 @@ PanelWindow {
                                 MouseArea {
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
-                                    enabled: !cc.wifiPasswordWorking
-                                    onClicked: cc.startWifiConnect(cc.wifiPasswordSsid, cc.wifiPasswordText)
+                                    onClicked: cc.openSecureWifiManager()
                                 }
                             }
                         }

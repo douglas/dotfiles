@@ -17,7 +17,6 @@ Item {
     property string previewMime: ""
     property bool hasImagePreview: false
     property bool depsReady: false
-    property bool watcherReady: false
     property string previewFilePath: ""
 
     signal copied()
@@ -163,7 +162,7 @@ Item {
         previewProc.stdout.buf = ""
         const line = shellQuote(entry.raw)
         const cmd = "line=" + line + "; "
-            + "tmp=$(mktemp /tmp/qs-clip-prev.XXXXXX.bin) || exit 1; "
+            + "tmp=$(mktemp \"${XDG_RUNTIME_DIR:-/tmp}/qs-clip-prev.XXXXXX.bin\") || exit 1; "
             + "if printf '%s\\n' \"$line\" | cliphist decode > \"$tmp\" 2>/dev/null; then "
             + "mime=$(file --mime-type -b \"$tmp\" 2>/dev/null || true); "
             + "if [[ \"$mime\" == image/* ]]; then "
@@ -246,7 +245,7 @@ Item {
         id: depCheckProc
         command: ["bash", "-lc",
             "missing=''; " +
-            "for c in cliphist wl-copy file base64; do " +
+            "for c in cliphist wl-copy file; do " +
             "command -v \"$c\" >/dev/null 2>&1 || missing=\"$missing $c\"; " +
             "done; " +
             "missing=${missing# }; " +
@@ -268,37 +267,16 @@ Item {
 
             if (exitCode === 0 && out.indexOf("__OK__") !== -1) {
                 depsReady = true
-                if (!watcherReady) {
-                    watcherReady = true
-                    seedProc.running = false
-                    seedProc.running = true
-                } else {
-                    refresh()
-                }
+                refresh()
                 return
             }
 
             depsReady = false
             backendError =
-                "Missing deps: " + out + "\nInstall: sudo pacman -S --needed cliphist wl-clipboard file coreutils"
+                "Missing deps: " + out + "\nInstall: sudo pacman -S --needed cliphist wl-clipboard file"
             loading = false
             clearPreview()
         }
-    }
-
-    Process {
-        id: seedProc
-        command: ["bash", "-lc", "wl-paste -n 2>/dev/null | cliphist store >/dev/null 2>&1 || true"]
-        running: false
-        onExited: {
-            refresh()
-        }
-    }
-
-    Process {
-        id: watcherProc
-        command: ["bash", "-lc", "wl-paste --watch cliphist store"]
-        running: depsReady && watcherReady
     }
 
     Process {

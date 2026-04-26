@@ -81,6 +81,12 @@ done | sort
         themeScanner.running = true
     }
 
+    function shellQuote(value) {
+        if (value === undefined || value === null)
+            return "''"
+        return "'" + String(value).replace(/'/g, "'\\''") + "'"
+    }
+
     Process {
         id: themeScanner
         command: ["bash", "-c", root.scanScript]
@@ -143,7 +149,7 @@ done | sort
         proc.onExited.connect(function() { proc.destroy() })
         proc.command = [
             "bash", "-c",
-            "export PATH=\"$HOME/.local/share/omarchy/bin:$PATH\"; omarchy-theme-set '" + name + "'"
+            "export PATH=\"$HOME/.local/share/omarchy/bin:$PATH\"; omarchy-theme-set " + shellQuote(name)
         ]
         proc.running = true
         root.showing = false

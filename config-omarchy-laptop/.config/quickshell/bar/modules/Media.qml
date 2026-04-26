@@ -111,7 +111,8 @@ Item {
     }
 
     function cavaCommand(inputMethod) {
-        return "CFG=/tmp/quickshell-media-cava.conf; " +
+        return "CFG=$(mktemp \"${XDG_RUNTIME_DIR:-/tmp}/quickshell-media-cava.XXXXXX.conf\") || exit 1; " +
+            "trap 'rm -f \"$CFG\"' EXIT; " +
             "cat > \"$CFG\" <<'EOF'\n" +
             "[general]\n" +
             "bars = 26\n" +

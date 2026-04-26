@@ -50,10 +50,48 @@ Item {
 
     function launchApp(app) {
         if (!app || !app.exec) return
-        const cmd = app.exec.replace(/%[uUfFdDnNickvm]/g, "").trim()
-        if (!cmd) return
-        Quickshell.execDetached(["bash", "-c", cmd])
+        const args = desktopExecArgs(app.exec)
+        if (args.length === 0) return
+        Quickshell.execDetached(args)
         list.launched()
+    }
+
+    function desktopExecArgs(exec) {
+        const cleaned = String(exec || "")
+            .replace(/%%/g, "__QS_LITERAL_PERCENT__")
+            .replace(/%[A-Za-z]/g, "")
+            .replace(/__QS_LITERAL_PERCENT__/g, "%")
+            .trim()
+        const args = []
+        let current = ""
+        let quote = ""
+        let escaped = false
+
+        for (let i = 0; i < cleaned.length; i++) {
+            const ch = cleaned[i]
+            if (escaped) {
+                current += ch
+                escaped = false
+            } else if (ch === "\\") {
+                escaped = true
+            } else if (quote !== "") {
+                if (ch === quote) quote = ""
+                else current += ch
+            } else if (ch === "'" || ch === "\"") {
+                quote = ch
+            } else if (/\s/.test(ch)) {
+                if (current !== "") {
+                    args.push(current)
+                    current = ""
+                }
+            } else {
+                current += ch
+            }
+        }
+
+        if (escaped) current += "\\"
+        if (current !== "") args.push(current)
+        return args
     }
 
     function reload() {

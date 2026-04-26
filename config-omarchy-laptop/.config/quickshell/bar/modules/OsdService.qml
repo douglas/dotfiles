@@ -122,7 +122,8 @@ Item {
     }
 
     function _cavaCommand(inputMethod) {
-        return "CFG=/tmp/quickshell-osd-cava.conf; " +
+        return "CFG=$(mktemp \"${XDG_RUNTIME_DIR:-/tmp}/quickshell-osd-cava.XXXXXX.conf\") || exit 1; " +
+            "trap 'rm -f \"$CFG\"' EXIT; " +
             "cat > \"$CFG\" <<'EOF'\n" +
             "[general]\n" +
             "bars = 22\n" +
