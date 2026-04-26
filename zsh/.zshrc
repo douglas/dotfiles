@@ -83,110 +83,14 @@ fi
 # Entire CLI shell completion
 if (( $+commands[entire] )); then source <(entire completion zsh 2>/dev/null); fi
 
-# Zoxide (must be initialized at the very end of .zshrc)
-eval "$(zoxide init --cmd cd zsh)"
-
 # Added by LM Studio CLI (lms)
 export PATH="$PATH:/home/douglas/.lmstudio/bin"
 # End of LM Studio CLI section
 
-
-# dox-agent PATH
-export PATH="/home/douglas/work/agentic-dev/bin:$PATH"
-
-# >>> wt initialize >>>
-eval "$(wt shellenv)"
-# <<< wt initialize <<<
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.Fyfhd3KoVV/bin:$PATH"
-
 # mise (tool version manager)
 eval "$(mise activate zsh)"
 
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.Sx5pdSIsYR/bin:$PATH"
+eval "$(wt shellenv)"
 
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.SKYzycBCQv/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.EalcSBUCzI/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.hIRypa7EK7/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.yMB8wAQaDZ/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.5KNT0KXxo7/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.Q2HGnhIANo/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.4upwUrWE9t/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.nKhZ4qhNRO/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.SEjz1eDfbC/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.8yTV33SFjt/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.rlpBhrYChi/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.sdskbPhLhK/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.ZkC18zFpxx/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.KH53HyNt4R/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.92KInDeh5Q/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.PP4sWxRwGA/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.ry95yICjFG/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.v6QHMVajOW/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.c0uAkrMa57/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.O0peB7eZcw/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.AJ7wWffQCN/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.OOlrTPfHDZ/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.pHjp7MZVya/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.bQ5buPt5eg/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.HU9Gv67WLV/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.9LpTt6W8Qd/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.NogVb6agKO/bin:$PATH"
-
-# dox-agent PATH
-export PATH="/home/douglas/tmp/tmp.ih4FWfvzag/bin:$PATH"
+# Zoxide (must be initialized at the very end of .zshrc)
+eval "$(zoxide init --cmd cd zsh)"
