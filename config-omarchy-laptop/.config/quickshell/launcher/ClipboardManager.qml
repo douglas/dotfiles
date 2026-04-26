@@ -9,7 +9,7 @@ PanelWindow {
 
     property bool showing: false
     property var theme: ({})
-    property real uiScale: 1.0
+    property real uiScale: Math.max(1.0, Math.min(1.4, Math.min(width / 1920, height / 1080) * 1.25))
 
     anchors { left: true; right: true; top: true; bottom: true }
     color: "transparent"
@@ -74,8 +74,10 @@ PanelWindow {
         Rectangle {
             id: card
             anchors.centerIn: parent
-            width: Math.round(700 * root.uiScale)
-            height: Math.round(440 * root.uiScale)
+            width: 700
+            height: 440
+            transformOrigin: Item.Center
+            scale: root.uiScale
             radius: 12
             color: theme.bg || "#1e1e2e"
             border.color: theme.dim || "#45475a"
