@@ -13,7 +13,42 @@ exit_screensaver() {
 
 trap exit_screensaver SIGINT SIGTERM SIGHUP SIGQUIT
 
-printf '\033]11;rgb:00/00/00\007'
+theme_file="$HOME/.config/omarchy/current/theme/colors.toml"
+
+theme_color() {
+  local key="$1"
+  local fallback="$2"
+  local value
+
+  value=$(
+    awk -F= -v key="$key" '
+      $1 ~ "^[[:space:]]*" key "[[:space:]]*$" {
+        gsub(/[[:space:]"]/, "", $2)
+        sub(/^#/, "", $2)
+        print $2
+        exit
+      }
+    ' "$theme_file" 2>/dev/null
+  )
+
+  if [[ $value =~ ^[[:xdigit:]]{6}$ ]]; then
+    printf '%s\n' "$value"
+  else
+    printf '%s\n' "$fallback"
+  fi
+}
+
+terminal_background=$(theme_color background 000000)
+highlight_color=$(theme_color cursor dbffdb)
+rain_color_start=$(theme_color accent 92be92)
+rain_color_end=$(theme_color color6 185318)
+final_gradient_start=$(theme_color accent 92be92)
+final_gradient_end=$(theme_color foreground 336b33)
+
+printf '\033]11;rgb:%s/%s/%s\007' \
+  "${terminal_background:0:2}" \
+  "${terminal_background:2:2}" \
+  "${terminal_background:4:2}"
 
 hyprctl keyword cursor:invisible true &>/dev/null
 
@@ -22,11 +57,24 @@ tty=$(tty 2>/dev/null)
 while true; do
   tte -i ~/.config/omarchy/branding/screensaver.txt \
     --frame-rate 120 --canvas-width 0 --canvas-height 0 --reuse-canvas --anchor-canvas c --anchor-text c \
+    --terminal-background-color "$terminal_background" \
     --no-eol --no-restore-cursor \
-    matrix &
+    matrix \
+    --highlight-color "$highlight_color" \
+    --rain-color-gradient "$rain_color_start" "$rain_color_end" \
+    --rain-fall-delay-range 2-15 \
+    --rain-column-delay-range 3-9 \
+    --rain-time 15 \
+    --symbol-swap-chance 0.005 \
+    --color-swap-chance 0.001 \
+    --resolve-delay 3 \
+    --final-gradient-stops "$final_gradient_start" "$final_gradient_end" \
+    --final-gradient-steps 12 \
+    --final-gradient-frames 3 \
+    --final-gradient-direction vertical &
 
   while pgrep -t "${tty#/dev/}" -x tte >/dev/null; do
-    if read -n1 -t 1 || ! screensaver_in_focus; then
+    if read -r -n1 -t 1 || ! screensaver_in_focus; then
       exit_screensaver
     fi
   done
