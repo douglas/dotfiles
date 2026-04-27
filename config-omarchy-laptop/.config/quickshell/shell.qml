@@ -19,7 +19,9 @@ ShellRoot {
     readonly property string omarchyCurrentDir: homeDir + "/.config/omarchy/current"
     readonly property string omarchyThemeNamePath: omarchyCurrentDir + "/theme.name"
     readonly property string omarchyThemeColorsPath: omarchyCurrentDir + "/theme/colors.toml"
-    readonly property real popupScale: Math.max(1.0, Math.min(1.4, Number(Quickshell.env("QS_POPUP_SCALE") || "1.15")))
+    readonly property real uiScale: Math.min(2.5, envScale("QS_UI_SCALE", 0.0))
+    readonly property real uiScaleMultiplier: Math.max(0.25, Math.min(2.5, envScale("QS_UI_SCALE_MULTIPLIER", 0.6)))
+    readonly property real popupScale: Math.max(1.0, Math.min(2.5, envScale("QS_POPUP_SCALE", uiScale > 0 ? uiScale : 1.0)))
     property bool overviewActive: false
 
     property string bg:        "#1e1e2e"
@@ -43,6 +45,11 @@ ShellRoot {
 
     SettingsState {
         id: settingsState
+    }
+
+    function envScale(name, fallback) {
+        const value = Number(Quickshell.env(name) || fallback)
+        return isNaN(value) ? fallback : value
     }
 
     QtObject {
@@ -173,10 +180,13 @@ ShellRoot {
     }
 
     Bar {
+        id: bar
         launcher:  appLauncher
         notifServer: notifServer
         powerActions: powerActions
         settings: settingsState
+        uiScale: shell.uiScale
+        uiScaleMultiplier: shell.uiScaleMultiplier
         bg:        shell.bg
         fg:        shell.fg
         accent:    shell.accent
@@ -194,6 +204,8 @@ ShellRoot {
         launcher: appLauncher
         notifServer: notifServer
         quietMode: shell.overviewActive
+        uiScale: shell.uiScale
+        uiScaleMultiplier: shell.uiScaleMultiplier
     }
 
     ControlCenter {
@@ -202,12 +214,16 @@ ShellRoot {
         notifServer: notifServer
         powerActions: powerActions
         settingsWindow: settingsWindow
+        uiScale: shell.uiScale
+        uiScaleMultiplier: shell.uiScaleMultiplier
     }
 
     Launcher {
         id: appLauncher
         theme: shell.palette
         powerActions: powerActions
+        uiScale: shell.uiScale
+        uiScaleMultiplier: shell.uiScaleMultiplier
     }
 
     ThemePicker {
@@ -251,6 +267,8 @@ ShellRoot {
         theme: shell.palette
         settings: settingsState
         quietMode: shell.overviewActive
+        uiScale: shell.uiScale
+        uiScaleMultiplier: shell.uiScaleMultiplier
     }
 
     CalendarWidget {
@@ -258,6 +276,8 @@ ShellRoot {
         theme: shell.palette
         settings: settingsState
         quietMode: shell.overviewActive
+        uiScale: shell.uiScale
+        uiScaleMultiplier: shell.uiScaleMultiplier
     }
 
     PomodoroWidget {
@@ -265,6 +285,8 @@ ShellRoot {
         theme: shell.palette
         settings: settingsState
         quietMode: shell.overviewActive
+        uiScale: shell.uiScale
+        uiScaleMultiplier: shell.uiScaleMultiplier
     }
 
     TodoWidget {
@@ -272,6 +294,8 @@ ShellRoot {
         theme: shell.palette
         settings: settingsState
         quietMode: shell.overviewActive
+        uiScale: shell.uiScale
+        uiScaleMultiplier: shell.uiScaleMultiplier
     }
 
     SettingsWindow {
@@ -284,6 +308,8 @@ ShellRoot {
     NotificationPanel {
         theme: shell.palette
         settings: settingsState
+        uiScale: shell.uiScale
+        uiScaleMultiplier: shell.uiScaleMultiplier
     }
 
     OsdService {
@@ -659,6 +685,8 @@ ShellRoot {
             || controlCenter.showing
             || controlCenter.wifiManagerOpen
             || controlCenter.btManagerOpen
+        topInset: controlCenter.showing && !bar.barOnBottom ? bar.exclusiveZone : 0
+        bottomInset: controlCenter.showing && bar.barOnBottom ? bar.exclusiveZone : 0
         onClicked: {
             appLauncher.showing   = false
             themePicker.showing   = false

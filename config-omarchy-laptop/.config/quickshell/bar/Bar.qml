@@ -14,6 +14,8 @@ PanelWindow {
     property var powerActions: null
     property var settings: null
     property bool quietMode: false
+    property real uiScale: 0.0
+    property real uiScaleMultiplier: 0.5
 
     property string bg:        "#1e1e2e"
     property string fg:        "#cdd6f4"
@@ -48,6 +50,14 @@ PanelWindow {
     readonly property int sideMargin: styleFlat ? 0 : 6
     readonly property int reservedSpace: styleFlat ? 30 : 33
     readonly property int barRadius: styleFlat ? 0 : 10
+    readonly property real detectedScale: screen && screen.devicePixelRatio > 0
+        ? screen.devicePixelRatio
+        : 1.0
+    readonly property real scaleFactor: Math.max(1.0, uiScale > 0 ? uiScale : detectedScale * uiScaleMultiplier)
+
+    function px(value) {
+        return Math.round(value * scaleFactor)
+    }
 
     anchors {
         top: !barOnBottom
@@ -56,17 +66,20 @@ PanelWindow {
         right: true
     }
     margins {
-        top: barOnBottom ? 0 : root.edgeMargin
-        bottom: barOnBottom ? root.edgeMargin : 0
-        left: root.sideMargin
-        right: root.sideMargin
+        top: barOnBottom ? 0 : root.px(root.edgeMargin)
+        bottom: barOnBottom ? root.px(root.edgeMargin) : 0
+        left: root.px(root.sideMargin)
+        right: root.px(root.sideMargin)
     }
-    implicitHeight: root.barHeight
+    implicitHeight: root.px(root.barHeight)
     color: "transparent"
-    exclusiveZone: root.reservedSpace
+    exclusiveZone: root.px(root.reservedSpace)
 
     Rectangle {
-        anchors.fill: parent
+        width: root.width / root.scaleFactor
+        height: root.barHeight
+        transformOrigin: Item.TopLeft
+        scale: root.scaleFactor
         radius: root.barRadius
         color: root.bg
         opacity: 1
@@ -177,17 +190,24 @@ PanelWindow {
                 spacing: 12
                 layoutDirection: Qt.RightToLeft
 
-                Text {
+                Item {
                     anchors.verticalCenter: parent.verticalCenter
-                    text: ""
-                    font.pixelSize: 13
-                    font.family: "JetBrainsMono Nerd Font Propo"
-                    color: controlCenter.showing ? root.accent : root.muted
+                    width: 22
+                    height: root.barHeight
 
-                    Behavior on color { ColorAnimation { duration: 150 } }
+                    Text {
+                        anchors.centerIn: parent
+                        text: ""
+                        font.pixelSize: 13
+                        font.family: "JetBrainsMono Nerd Font Propo"
+                        color: controlCenter.showing ? root.accent : root.muted
+
+                        Behavior on color { ColorAnimation { duration: 150 } }
+                    }
 
                     MouseArea {
                         anchors.fill: parent
+                        acceptedButtons: Qt.LeftButton
                         cursorShape: Qt.PointingHandCursor
                         onClicked: controlCenter.showing = !controlCenter.showing
                     }

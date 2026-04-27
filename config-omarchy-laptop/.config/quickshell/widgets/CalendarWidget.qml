@@ -9,6 +9,8 @@ PanelWindow {
     property var theme: ({})
     property var settings: null
     property bool quietMode: false
+    property real uiScale: 0.0
+    property real uiScaleMultiplier: 0.5
     readonly property bool enabled: settings ? settings.calendarWidgetEnabled : false
 
     property real posX: settings ? settings.calendarWidgetPosX : 0.7
@@ -22,7 +24,11 @@ PanelWindow {
     property real dragTop: 0
     readonly property int cardW: 220
     readonly property int cardH: 220
-    readonly property int safeMargin: 24
+    readonly property real detectedScale: screen && screen.devicePixelRatio > 0
+        ? screen.devicePixelRatio
+        : 1.0
+    readonly property real scaleFactor: Math.max(1.0, uiScale > 0 ? uiScale : detectedScale * uiScaleMultiplier)
+    readonly property int safeMargin: px(24)
 
     property date now: new Date()
 
@@ -33,8 +39,8 @@ PanelWindow {
     readonly property color cDim:    Qt.alpha(theme.fg || "#cdd6f4", 0.25)
     readonly property color cAccent: theme.accent || "#89b4fa"
 
-    implicitWidth: cardW
-    implicitHeight: cardH
+    implicitWidth: px(cardW)
+    implicitHeight: px(cardH)
 
     readonly property real posLeft: safeMargin + (screen.width  - width  - safeMargin * 2) * posX
     readonly property real posTop:  safeMargin + (screen.height - height - safeMargin * 2) * posY
@@ -58,6 +64,7 @@ PanelWindow {
     }
 
     function daysInMonth(y, m) { return new Date(y, m + 1, 0).getDate() }
+    function px(value) { return Math.round(value * scaleFactor) }
     function firstDayOffset(y, m) {
         const d = new Date(y, m, 1).getDay()
         return (d + 6) % 7
@@ -82,96 +89,103 @@ PanelWindow {
     onPosXChanged: if (!dragging) dragLeft = posLeft
     onPosYChanged: if (!dragging) dragTop = posTop
 
-    Rectangle {
-        anchors.fill: parent
-        radius: 18
-        color: cBg
-        border.color: cBorder
-        border.width: 1
+    Item {
+        width: root.cardW
+        height: root.cardH
+        transformOrigin: Item.TopLeft
+        scale: root.scaleFactor
 
-        ColumnLayout {
+        Rectangle {
             anchors.fill: parent
-            anchors.margins: 14
-            spacing: 8
+            radius: 18
+            color: cBg
+            border.color: cBorder
+            border.width: 1
 
-            RowLayout {
-                Layout.fillWidth: true
-                spacing: 10
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: 14
+                spacing: 8
 
-                Text {
-                    text: Qt.formatDate(root.now, "MMMM").toUpperCase()
-                    color: cFg
-                    font.pixelSize: 11
-                    font.family: "JetBrains Mono"
-                    font.weight: Font.DemiBold
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: 10
+
+                    Text {
+                        text: Qt.formatDate(root.now, "MMMM").toUpperCase()
+                        color: cFg
+                        font.pixelSize: 11
+                        font.family: "JetBrains Mono"
+                        font.weight: Font.DemiBold
+                    }
+
+                    Text {
+                        text: Qt.formatDate(root.now, "yyyy")
+                        color: cMuted
+                        font.pixelSize: 9
+                        font.family: "JetBrains Mono"
+                    }
+
+                    Item { Layout.fillWidth: true }
                 }
 
-                Text {
-                    text: Qt.formatDate(root.now, "yyyy")
-                    color: cMuted
-                    font.pixelSize: 9
-                    font.family: "JetBrains Mono"
-                }
-
-                Item { Layout.fillWidth: true }
-            }
-
-            RowLayout {
-                Layout.fillWidth: true
-                spacing: 0
-                Repeater {
-                    model: ["M","T","W","T","F","S","S"]
-                    Item {
-                        width: Math.floor((cardW - 28) / 7)
-                        height: 14
-                        Text {
-                            anchors.centerIn: parent
-                            text: modelData
-                            color: cDim
-                            font.pixelSize: 7
-                            font.family: "JetBrains Mono"
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: 0
+                    Repeater {
+                        model: ["M","T","W","T","F","S","S"]
+                        Item {
+                            width: Math.floor((cardW - 28) / 7)
+                            height: 14
+                            Text {
+                                anchors.centerIn: parent
+                                text: modelData
+                                color: cDim
+                                font.pixelSize: 7
+                                font.family: "JetBrains Mono"
+                            }
                         }
                     }
                 }
-            }
 
-            GridLayout {
-                Layout.fillWidth: true
-                columns: 7
-                rowSpacing: 6
-                columnSpacing: 0
+                GridLayout {
+                    Layout.fillWidth: true
+                    columns: 7
+                    rowSpacing: 6
+                    columnSpacing: 0
 
-                Repeater {
-                    model: 42
-                    Item {
-                        width: Math.floor((cardW - 28) / 7)
-                        height: 20
-
-                        property int yearVal:  root.now.getFullYear()
-                        property int monthVal: root.now.getMonth()
-                        property int offset:   root.firstDayOffset(yearVal, monthVal)
-                        property int day:      index - offset + 1
-                        property int maxDay:   root.daysInMonth(yearVal, monthVal)
-                        property bool inMonth: day >= 1 && day <= maxDay
-                        property bool isToday: inMonth && day === root.now.getDate()
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: inMonth ? String(day) : ""
-                            color: isToday ? cBg : (inMonth ? cFg : cDim)
-                            font.pixelSize: 10
-                            font.family: "JetBrains Mono"
-                        }
-
-                        Rectangle {
-                            anchors.centerIn: parent
-                            width: 20
+                    Repeater {
+                        model: 42
+                        Item {
+                            width: Math.floor((cardW - 28) / 7)
                             height: 20
-                            radius: 16
-                            color: isToday ? Qt.alpha(cAccent, 1) : "transparent"
-                            border.color: isToday ? Qt.alpha(cBg, 0.7) : "transparent"
-                            border.width: isToday ? 1 : 0
-                            z: -1
+
+                            property int yearVal:  root.now.getFullYear()
+                            property int monthVal: root.now.getMonth()
+                            property int offset:   root.firstDayOffset(yearVal, monthVal)
+                            property int day:      index - offset + 1
+                            property int maxDay:   root.daysInMonth(yearVal, monthVal)
+                            property bool inMonth: day >= 1 && day <= maxDay
+                            property bool isToday: inMonth && day === root.now.getDate()
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: inMonth ? String(day) : ""
+                                color: isToday ? cBg : (inMonth ? cFg : cDim)
+                                font.pixelSize: 10
+                                font.family: "JetBrains Mono"
+                            }
+
+                            Rectangle {
+                                anchors.centerIn: parent
+                                width: 20
+                                height: 20
+                                radius: 16
+                                color: isToday ? Qt.alpha(cAccent, 1) : "transparent"
+                                border.color: isToday ? Qt.alpha(cBg, 0.7) : "transparent"
+                                border.width: isToday ? 1 : 0
+                                z: -1
+                            }
                         }
                     }
                 }

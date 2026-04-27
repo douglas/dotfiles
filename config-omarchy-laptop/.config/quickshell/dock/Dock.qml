@@ -13,6 +13,8 @@ PanelWindow {
     property var launcher: null
     property var notifServer: null
     property bool quietMode: false
+    property real uiScale: 0.0
+    property real uiScaleMultiplier: 0.5
 
     property var apps: []
     property var clients: []
@@ -49,11 +51,19 @@ PanelWindow {
         ? "Omarchy"
         : "JetBrainsMono Nerd Font Propo"
     readonly property int launcherIconSizeDock: Math.max(12, Math.min(18, (settings?.launcherIconSize || 12) + 3))
+    readonly property real detectedScale: screen && screen.devicePixelRatio > 0
+        ? screen.devicePixelRatio
+        : 1.0
+    readonly property real scaleFactor: Math.max(1.0, uiScale > 0 ? uiScale : detectedScale * uiScaleMultiplier)
+
+    function px(value) {
+        return Math.round(value * scaleFactor)
+    }
 
     anchors { left: true; bottom: true }
     margins {
         left: Math.max(0, Math.round((screen.width - width) / 2))
-        bottom: 10
+        bottom: root.px(10)
     }
 
     color: "transparent"
@@ -67,10 +77,8 @@ PanelWindow {
     readonly property bool dockAutoHideActive:
         (settings && settings.dockAutoHide && hasFocusedWindow)
     readonly property bool dockCollapsed: dockAutoHideActive && !dockShown
-    width: dockWidth
-    height: dockHeight
-    implicitWidth: dockWidth
-    implicitHeight: dockHeight
+    implicitWidth: root.px(dockWidth)
+    implicitHeight: root.px(dockHeight)
 
     function _isDirectIconSource(icon) {
         const value = icon || ""
@@ -550,7 +558,10 @@ PanelWindow {
     }
 
     Rectangle {
-        anchors.fill: parent
+        width: root.dockWidth
+        height: root.dockHeight
+        transformOrigin: Item.TopLeft
+        scale: root.scaleFactor
         radius: 12
         color: cBg
         border.color: Qt.alpha(cBorder, 0.7)
@@ -659,7 +670,7 @@ PanelWindow {
             : false
         anchors { left: true; right: true; bottom: true }
         margins { bottom: 0 }
-        implicitHeight: 2
+        implicitHeight: root.px(2)
         color: "transparent"
         exclusiveZone: 0
         WlrLayershell.layer: WlrLayer.Overlay

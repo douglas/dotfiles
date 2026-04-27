@@ -13,12 +13,9 @@ Item {
 
     function updateTime() {
         const now  = new Date()
-        let   h    = now.getHours()
+        const h    = String(now.getHours()).padStart(2, "0")
         const min  = String(now.getMinutes()).padStart(2, "0")
-        const ampm = h >= 12 ? "PM" : "AM"
-        h = h % 12 || 12
-        timeText.text = String(h).padStart(2, "0") + ":" + min
-        ampmText.text = ampm
+        timeText.text = h + ":" + min
         dateText.text = Qt.formatDate(now, "ddd, d MMM")
     }
 
@@ -48,16 +45,6 @@ Item {
                 font.pixelSize: 13
                 font.family:    "JetBrainsMono Nerd Font"
                 font.weight:    Font.Medium
-            }
-
-            Text {
-                id:             ampmText
-                anchors.verticalCenter: parent.verticalCenter
-                color:          theme.accent || "#89b4fa"
-                font.pixelSize: 9
-                font.family:    "JetBrainsMono Nerd Font"
-                font.weight:    Font.Medium
-                bottomPadding:  1
             }
         }
 

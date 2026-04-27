@@ -12,7 +12,12 @@ PanelWindow {
     property var    theme:   ({})
     property var    powerActions: null
     property string mode:    "menu"
-    property real   launcherScale: Math.max(1.0, Math.min(1.4, Math.min(width / 1920, height / 1080) * 1.25))
+    property real   uiScale: 0.0
+    property real   uiScaleMultiplier: 0.5
+    readonly property real detectedScale: screen && screen.devicePixelRatio > 0
+        ? screen.devicePixelRatio
+        : 1.0
+    property real   launcherScale: Math.max(1.0, Math.min(2.5, uiScale > 0 ? uiScale : detectedScale * uiScaleMultiplier))
     readonly property int menuCardWidth: menuView.preferredWidth
     readonly property int menuCardHeight: Math.max(210, Math.min(520, menuView.preferredHeight + 20))
 

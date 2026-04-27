@@ -10,6 +10,8 @@ PanelWindow {
     property var theme: ({})
     property var settings: null
     property bool quietMode: false
+    property real uiScale: 0.0
+    property real uiScaleMultiplier: 0.5
     property real posX: settings ? settings.clockWidgetPosX : 0.8
     property real posY: settings ? settings.clockWidgetPosY : 0.8
     property bool autoPosition: false
@@ -24,7 +26,13 @@ PanelWindow {
     readonly property bool use24h: settings ? settings.clockUse24h : true
     property date now: new Date()
     property string lastWallpaper: ""
-    readonly property int safeMargin: 24
+    readonly property int cardW: 220
+    readonly property int cardH: 130
+    readonly property real detectedScale: screen && screen.devicePixelRatio > 0
+        ? screen.devicePixelRatio
+        : 1.0
+    readonly property real scaleFactor: Math.max(1.0, uiScale > 0 ? uiScale : detectedScale * uiScaleMultiplier)
+    readonly property int safeMargin: px(24)
 
     // Themed palette
     readonly property color nBg:     Qt.darker(theme.bg || "#1e1e2e", 1.08)
@@ -37,8 +45,8 @@ PanelWindow {
     readonly property color nDotOff: Qt.alpha(theme.fg || "#cdd6f4", 0.14)
     readonly property color nLine:   Qt.alpha(theme.fg || "#cdd6f4", 0.12)
 
-    implicitWidth: 220
-    implicitHeight: 130
+    implicitWidth: px(cardW)
+    implicitHeight: px(cardH)
 
     readonly property real posLeft: safeMargin + (screen.width  - width  - safeMargin * 2) * posX
     readonly property real posTop:  safeMargin + (screen.height - height - safeMargin * 2) * posY
@@ -67,6 +75,7 @@ PanelWindow {
     }
 
     function pad(n) { return n < 10 ? "0" + n : String(n) }
+    function px(value) { return Math.round(value * scaleFactor) }
     function hour12(h) {
         const v = h % 12
         return v === 0 ? 12 : v
@@ -214,104 +223,111 @@ PanelWindow {
     }
 
     // ── Card ─────────────────────────────────────────────────────────────────
-    Rectangle {
-        anchors.fill: parent
-        radius: 20
-        color: nBg
-        border.color: nBorder
-        border.width: 1
+    Item {
+        width: root.cardW
+        height: root.cardH
+        transformOrigin: Item.TopLeft
+        scale: root.scaleFactor
 
-        Column {
+        Rectangle {
             anchors.fill: parent
-            anchors.margins: 16
-            spacing: 10
+            radius: 20
+            color: nBg
+            border.color: nBorder
+            border.width: 1
 
-            // ── Glyph dot row (12 dots = 60 min, each dot = 5 min) ──────────
-            Row {
-                spacing: 4
-                Repeater {
-                    model: 12
-                    Rectangle {
-                        width: 5
-                        height: 5
-                        radius: 2.5
-                        color: index < filledDots() ? nDotOn : nDotOff
+            Column {
+                anchors.fill: parent
+                anchors.margins: 16
+                spacing: 10
 
-                        Behavior on color {
-                            ColorAnimation { duration: 400 }
+                // ── Glyph dot row (12 dots = 60 min, each dot = 5 min) ──────────
+                Row {
+                    spacing: 4
+                    Repeater {
+                        model: 12
+                        Rectangle {
+                            width: 5
+                            height: 5
+                            radius: 2.5
+                            color: index < filledDots() ? nDotOn : nDotOff
+
+                            Behavior on color {
+                                ColorAnimation { duration: 400 }
+                            }
                         }
                     }
                 }
-            }
 
-            // ── Time ────────────────────────────────────────────────────────
-            Row {
-                spacing: 0
+                // ── Time ────────────────────────────────────────────────────────
+                Row {
+                    spacing: 0
 
-                Text {
-                    text: pad(root.use24h ? root.now.getHours() : root.hour12(root.now.getHours()))
-                    color: nWhite
-                    font.pixelSize: 48
-                    font.family: "JetBrains Mono"
-                    font.weight: Font.Bold
-                    font.letterSpacing: -2
-                    lineHeight: 1
-                }
-
-                Text {
-                    text: ":"
-                    color: nDim
-                    font.pixelSize: 48
-                    font.family: "JetBrains Mono"
-                    font.weight: Font.Bold
-                    font.letterSpacing: -2
-                    lineHeight: 1
-
-                    // blink every second
-                    property bool visible2: true
-                    opacity: visible2 ? 1.0 : 0.0
-                    Timer {
-                        interval: 1000; repeat: true; running: true
-                        onTriggered: parent.visible2 = !parent.visible2
+                    Text {
+                        text: pad(root.use24h ? root.now.getHours() : root.hour12(root.now.getHours()))
+                        color: nWhite
+                        font.pixelSize: 48
+                        font.family: "JetBrains Mono"
+                        font.weight: Font.Bold
+                        font.letterSpacing: -2
+                        lineHeight: 1
                     }
-                    Behavior on opacity { NumberAnimation { duration: 80 } }
+
+                    Text {
+                        text: ":"
+                        color: nDim
+                        font.pixelSize: 48
+                        font.family: "JetBrains Mono"
+                        font.weight: Font.Bold
+                        font.letterSpacing: -2
+                        lineHeight: 1
+
+                        // blink every second
+                        property bool visible2: true
+                        opacity: visible2 ? 1.0 : 0.0
+                        Timer {
+                            interval: 1000; repeat: true; running: true
+                            onTriggered: parent.visible2 = !parent.visible2
+                        }
+                        Behavior on opacity { NumberAnimation { duration: 80 } }
+                    }
+
+                    Text {
+                        text: pad(root.now.getMinutes())
+                        color: nGray
+                        font.pixelSize: 48
+                        font.family: "JetBrains Mono"
+                        font.weight: Font.Bold
+                        font.letterSpacing: -2
+                        lineHeight: 1
+                    }
                 }
 
-                Text {
-                    text: pad(root.now.getMinutes())
-                    color: nGray
-                    font.pixelSize: 48
-                    font.family: "JetBrains Mono"
-                    font.weight: Font.Bold
-                    font.letterSpacing: -2
-                    lineHeight: 1
-                }
-            }
-
-            // ── Divider line ─────────────────────────────────────────────────
-            Item {
-                width: parent.width
-                height: 1
-
-                Rectangle {
+                // ── Divider line ─────────────────────────────────────────────────
+                Item {
                     width: parent.width
                     height: 1
-                    color: nLine
+
+                    Rectangle {
+                        width: parent.width
+                        height: 1
+                        color: nLine
+                    }
                 }
-            }
 
-            // ── Date row ────────────────────────────────────────────────────
-            Row {
-                width: parent.width
+                // ── Date row ────────────────────────────────────────────────────
+                Row {
+                    width: parent.width
 
-                Text {
-                    text: Qt.formatDate(root.now, "ddd").toUpperCase()
-                         + " · "
-                         + Qt.formatDate(root.now, "dd MMM").toUpperCase()
-                    color: nMuted
-                    font.pixelSize: 9
-                    font.family: "JetBrains Mono"
-                    font.letterSpacing: 1.5
+                    Text {
+                        text: Qt.formatDate(root.now, "ddd").toUpperCase()
+                             + " · "
+                             + Qt.formatDate(root.now, "dd MMM").toUpperCase()
+                        color: nMuted
+                        font.pixelSize: 9
+                        font.family: "JetBrains Mono"
+                        font.letterSpacing: 1.5
+                    }
                 }
             }
         }

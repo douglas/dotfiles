@@ -9,6 +9,8 @@ Item {
     id: root
     property var theme: ({})
     property var settings: null
+    property real uiScale: 0.0
+    property real uiScaleMultiplier: 0.5
     property string appFilter: ""
     property bool groupedView: true
     property var flatNotifications: notifServer ? notifServer.notificationsForApp(appFilter) : []
@@ -24,7 +26,13 @@ Item {
     readonly property bool dockRight: dockPosition.indexOf("right") >= 0
     readonly property bool dockCenter: dockPosition.indexOf("center") >= 0
 
+    readonly property real detectedScale: panelWin.screen && panelWin.screen.devicePixelRatio > 0
+        ? panelWin.screen.devicePixelRatio
+        : 1.0
+    readonly property real scaleFactor: Math.max(1.0, uiScale > 0 ? uiScale : detectedScale * uiScaleMultiplier)
+
     function t(key, fallback) { return theme[key] || fallback }
+    function px(value) { return Math.round(value * scaleFactor) }
 
     function appIcon(name) {
         const map = {
@@ -306,17 +314,20 @@ Item {
         color: "transparent"
 
         anchors { top: true; right: true }
-        margins { top: 44; right: 10 }
+        margins { top: root.px(44); right: root.px(10) }
 
-        implicitWidth: 284
-        implicitHeight: Math.min(460, panelWin.screen.height - 58)
+        implicitWidth: root.px(284)
+        implicitHeight: Math.min(root.px(460), panelWin.screen.height - root.px(58))
 
         exclusiveZone: -1
         WlrLayershell.layer: WlrLayer.Overlay
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
 
         Rectangle {
-            anchors.fill: parent
+            width: 284
+            height: parent.height / root.scaleFactor
+            transformOrigin: Item.TopLeft
+            scale: root.scaleFactor
             radius: 14
             color: t("bg", "#1e1e2e")
             border.color: t("dim", "#45475a")

@@ -9,6 +9,8 @@ PanelWindow {
     property var theme: ({})
     property var settings: null
     property bool quietMode: false
+    property real uiScale: 0.0
+    property real uiScaleMultiplier: 0.5
     readonly property bool enabled: settings ? settings.pomodoroWidgetEnabled : false
 
     property real posX: settings ? settings.pomodoroWidgetPosX : 0.6
@@ -22,7 +24,11 @@ PanelWindow {
     property real dragTop: 0
     readonly property int cardW: 220
     readonly property int cardH: 140
-    readonly property int safeMargin: 24
+    readonly property real detectedScale: screen && screen.devicePixelRatio > 0
+        ? screen.devicePixelRatio
+        : 1.0
+    readonly property real scaleFactor: Math.max(1.0, uiScale > 0 ? uiScale : detectedScale * uiScaleMultiplier)
+    readonly property int safeMargin: px(24)
 
     readonly property int focusSeconds: 25 * 60
     readonly property int breakSeconds: 5 * 60
@@ -39,8 +45,8 @@ PanelWindow {
     readonly property color cDim:    Qt.alpha(theme.fg || "#cdd6f4", 0.25)
     readonly property color cAccent: theme.accent || "#89b4fa"
 
-    implicitWidth: cardW
-    implicitHeight: cardH
+    implicitWidth: px(cardW)
+    implicitHeight: px(cardH)
 
     readonly property real posLeft: safeMargin + (screen.width  - width  - safeMargin * 2) * posX
     readonly property real posTop:  safeMargin + (screen.height - height - safeMargin * 2) * posY
@@ -76,6 +82,8 @@ PanelWindow {
         const ss = s < 10 ? "0" + s : String(s)
         return mm + ":" + ss
     }
+
+    function px(value) { return Math.round(value * scaleFactor) }
 
     function progress() {
         const total = root.mode === "focus" ? root.focusSeconds : root.breakSeconds
@@ -167,122 +175,129 @@ PanelWindow {
         }
     }
 
-    Rectangle {
-        anchors.fill: parent
-        radius: 18
-        color: cBg
-        border.color: cBorder
-        border.width: 1
+    Item {
+        width: root.cardW
+        height: root.cardH
+        transformOrigin: Item.TopLeft
+        scale: root.scaleFactor
 
-        ColumnLayout {
+        Rectangle {
             anchors.fill: parent
-            anchors.margins: 14
-            spacing: 10
+            radius: 18
+            color: cBg
+            border.color: cBorder
+            border.width: 1
 
-            RowLayout {
-                Layout.fillWidth: true
-                spacing: 8
-
-                Text {
-                    text: root.mode === "focus" ? "FOCUS" : "BREAK"
-                    color: root.mode === "focus" ? cAccent : cMuted
-                    font.pixelSize: 10
-                    font.family: "JetBrains Mono"
-                    font.weight: Font.DemiBold
-                    font.letterSpacing: 1.2
-                }
-
-                Item { Layout.fillWidth: true }
-
-                Text {
-                    text: root.cycleCount > 0 ? "x" + root.cycleCount : ""
-                    color: cDim
-                    font.pixelSize: 9
-                    font.family: "JetBrains Mono"
-                }
-            }
-
-            Text {
-                text: root.formatTime(root.remaining)
-                color: cFg
-                font.pixelSize: 34
-                font.family: "JetBrains Mono"
-                font.weight: Font.Bold
-                font.letterSpacing: -1.5
-            }
-
-            Rectangle {
-                Layout.fillWidth: true
-                height: 4
-                radius: 2
-                color: Qt.alpha(cDim, 0.45)
-
-                Rectangle {
-                    width: Math.max(6, parent.width * root.progress())
-                    height: 4
-                    radius: 2
-                    color: cAccent
-                }
-
-                Rectangle {
-                    width: 6
-                    height: 6
-                    radius: 3
-                    y: -1
-                    x: Math.max(0, Math.min(parent.width - width, parent.width * root.progress() - width / 2))
-                    color: cAccent
-                }
-            }
-
-            RowLayout {
-                Layout.fillWidth: true
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: 14
                 spacing: 10
+
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: 8
+
+                    Text {
+                        text: root.mode === "focus" ? "FOCUS" : "BREAK"
+                        color: root.mode === "focus" ? cAccent : cMuted
+                        font.pixelSize: 10
+                        font.family: "JetBrains Mono"
+                        font.weight: Font.DemiBold
+                        font.letterSpacing: 1.2
+                    }
+
+                    Item { Layout.fillWidth: true }
+
+                    Text {
+                        text: root.cycleCount > 0 ? "x" + root.cycleCount : ""
+                        color: cDim
+                        font.pixelSize: 9
+                        font.family: "JetBrains Mono"
+                    }
+                }
+
+                Text {
+                    text: root.formatTime(root.remaining)
+                    color: cFg
+                    font.pixelSize: 34
+                    font.family: "JetBrains Mono"
+                    font.weight: Font.Bold
+                    font.letterSpacing: -1.5
+                }
 
                 Rectangle {
                     Layout.fillWidth: true
-                    height: 26
-                    radius: 8
-                    color: root.running
-                        ? Qt.alpha(cAccent, 0.38)
-                        : Qt.alpha(cAccent, 0.26)
-                    border.color: root.running
-                        ? Qt.alpha(cAccent, 0.75)
-                        : Qt.alpha(cAccent, 0.55)
-                    border.width: 1
-                    Text {
-                        anchors.centerIn: parent
-                        text: root.running ? "Pause" : "Start"
-                        color: cFg
-                        font.pixelSize: 9
-                        font.family: "JetBrains Mono"
-                        font.weight: Font.DemiBold
+                    height: 4
+                    radius: 2
+                    color: Qt.alpha(cDim, 0.45)
+
+                    Rectangle {
+                        width: Math.max(6, parent.width * root.progress())
+                        height: 4
+                        radius: 2
+                        color: cAccent
                     }
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: root.running = !root.running
+
+                    Rectangle {
+                        width: 6
+                        height: 6
+                        radius: 3
+                        y: -1
+                        x: Math.max(0, Math.min(parent.width - width, parent.width * root.progress() - width / 2))
+                        color: cAccent
                     }
                 }
 
-                Rectangle {
-                    width: 52
-                    height: 26
-                    radius: 8
-                    color: Qt.alpha(cDim, 0.25)
-                    border.color: Qt.alpha(cDim, 0.6)
-                    border.width: 1
-                    Text {
-                        anchors.centerIn: parent
-                        text: "Reset"
-                        color: Qt.alpha(cFg, 0.75)
-                        font.pixelSize: 9
-                        font.family: "JetBrains Mono"
-                        font.weight: Font.DemiBold
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: 10
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        height: 26
+                        radius: 8
+                        color: root.running
+                            ? Qt.alpha(cAccent, 0.38)
+                            : Qt.alpha(cAccent, 0.26)
+                        border.color: root.running
+                            ? Qt.alpha(cAccent, 0.75)
+                            : Qt.alpha(cAccent, 0.55)
+                        border.width: 1
+                        Text {
+                            anchors.centerIn: parent
+                            text: root.running ? "Pause" : "Start"
+                            color: cFg
+                            font.pixelSize: 9
+                            font.family: "JetBrains Mono"
+                            font.weight: Font.DemiBold
+                        }
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.running = !root.running
+                        }
                     }
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: root.resetTimer()
+
+                    Rectangle {
+                        width: 52
+                        height: 26
+                        radius: 8
+                        color: Qt.alpha(cDim, 0.25)
+                        border.color: Qt.alpha(cDim, 0.6)
+                        border.width: 1
+                        Text {
+                            anchors.centerIn: parent
+                            text: "Reset"
+                            color: Qt.alpha(cFg, 0.75)
+                            font.pixelSize: 9
+                            font.family: "JetBrains Mono"
+                            font.weight: Font.DemiBold
+                        }
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.resetTimer()
+                        }
                     }
                 }
             }

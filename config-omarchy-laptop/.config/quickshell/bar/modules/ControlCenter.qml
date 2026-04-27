@@ -14,25 +14,34 @@ PanelWindow {
     property var  powerActions: null
     property var  settingsWindow: null
     property bool showing: false
-    property real btManagerScale: Math.max(1.0, Math.min(1.4, Math.min(screen.width / 1920, screen.height / 1080) * 1.25))
+    property real uiScale: 0.0
+    property real uiScaleMultiplier: 0.5
+    readonly property real detectedScale: screen && screen.devicePixelRatio > 0
+        ? screen.devicePixelRatio
+        : 1.0
+    property real btManagerScale: Math.max(1.0, Math.min(2.5, uiScale > 0 ? uiScale : detectedScale * uiScaleMultiplier))
     property real btManagerFontScale: Math.max(1.0, btManagerScale * 0.86)
+    readonly property int panelWidth: 284
+    readonly property int openAnimationMs: envDuration("QS_CC_OPEN_MS", 0)
+    readonly property int closeAnimationMs: envDuration("QS_CC_CLOSE_MS", 0)
+    readonly property int resizeAnimationMs: envDuration("QS_CC_RESIZE_MS", 0)
 
-    visible: showing
+    visible: true
 
-    implicitWidth:  284
-    implicitHeight: Math.min(mainCol.implicitHeight + 28, screen.height - 58)
+    implicitWidth:  showing ? btpx(panelWidth) : 1
+    implicitHeight: showing ? Math.min(btpx(mainCol.implicitHeight + 28), screen.height - btpx(58)) : 1
 
     anchors { top: true; right: true }
-    margins { top: 44; right: 10 }
+    margins { top: btpx(44); right: btpx(10) }
 
     WlrLayershell.exclusiveZone: -1
     WlrLayershell.layer:         WlrLayer.Overlay
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
+    WlrLayershell.keyboardFocus: showing ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
     color: "transparent"
 
     Behavior on implicitHeight {
-        NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
+        NumberAnimation { duration: cc.resizeAnimationMs; easing.type: Easing.OutCubic }
     }
 
     property bool   wifiEnabled:    false
@@ -90,6 +99,16 @@ PanelWindow {
 
     function btfont(value) {
         return Math.round(value * btManagerFontScale)
+    }
+
+    function envNumber(name, fallback) {
+        const raw = Quickshell.env(name)
+        const value = Number(raw || fallback)
+        return isNaN(value) ? fallback : value
+    }
+
+    function envDuration(name, fallback) {
+        return Math.max(0, Math.round(envNumber(name, fallback)))
     }
 
     function refreshConnectivity() {
@@ -597,6 +616,7 @@ PanelWindow {
 
     onShowingChanged: {
         if (showing) {
+            keyScope.forceActiveFocus()
             refreshConnectivity()
             refreshBrightness()
         }
@@ -628,9 +648,26 @@ PanelWindow {
         refreshBtScan()
     }
 
+    FocusScope {
+        id: keyScope
+        anchors.fill: parent
+        focus: cc.showing
+
+        Keys.onPressed: event => {
+            if (event.key === Qt.Key_Escape && cc.showing) {
+                cc.showing = false
+                event.accepted = true
+            }
+        }
+    }
+
     Rectangle {
         id: panel
-        anchors.fill: parent
+        visible: cc.showing
+        width: cc.panelWidth
+        height: parent.height / cc.btManagerScale
+        transformOrigin: Item.TopLeft
+        scale: cc.btManagerScale
         radius:       14
         color:        theme.bg  || "#1e1e2e"
         border.color: theme.dim || "#45475a"
@@ -650,11 +687,11 @@ PanelWindow {
         transitions: [
             Transition {
                 from: "closed"; to: "open"
-                NumberAnimation { target: slideX; property: "x"; duration: 240; easing.type: Easing.OutCubic }
+                NumberAnimation { target: slideX; property: "x"; duration: cc.openAnimationMs; easing.type: Easing.OutCubic }
             },
             Transition {
                 from: "open"; to: "closed"
-                NumberAnimation { target: slideX; property: "x"; duration: 200; easing.type: Easing.InCubic }
+                NumberAnimation { target: slideX; property: "x"; duration: cc.closeAnimationMs; easing.type: Easing.InCubic }
             }
         ]
 

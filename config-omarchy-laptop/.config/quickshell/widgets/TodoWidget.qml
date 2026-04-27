@@ -10,6 +10,8 @@ PanelWindow {
     property var theme: ({})
     property var settings: null
     property bool quietMode: false
+    property real uiScale: 0.0
+    property real uiScaleMultiplier: 0.5
     readonly property bool enabled: settings ? settings.todoWidgetEnabled : true
 
     property real posX: settings ? settings.todoWidgetPosX : 0.5
@@ -23,7 +25,12 @@ PanelWindow {
     property real dragStartTop: 0
 
     readonly property int cardW: 220
-    readonly property int safeMargin: 24
+    readonly property int cardH: 220
+    readonly property real detectedScale: screen && screen.devicePixelRatio > 0
+        ? screen.devicePixelRatio
+        : 1.0
+    readonly property real scaleFactor: Math.max(1.0, uiScale > 0 ? uiScale : detectedScale * uiScaleMultiplier)
+    readonly property int safeMargin: px(24)
 
     readonly property color cBg:     Qt.darker(theme.bg || "#1e1e2e", 1.08)
     readonly property color cBorder: Qt.alpha(theme.fg || "#cdd6f4", 0.12)
@@ -39,10 +46,9 @@ PanelWindow {
 
     readonly property string dataFile: (Quickshell.env("HOME") || "") + "/.config/quickshell/todo.json"
 
-    implicitWidth: cardW
-    implicitHeight: 220
-    height: implicitHeight
-    readonly property int contentH: height - 28
+    implicitWidth: px(cardW)
+    implicitHeight: px(cardH)
+    readonly property int contentH: cardH - 28
 
     readonly property real posLeft: safeMargin + (screen.width  - width  - safeMargin * 2) * posX
     readonly property real posTop:  safeMargin + (screen.height - height - safeMargin * 2) * posY
@@ -91,6 +97,8 @@ PanelWindow {
         if (typeof settings.todoWidgetPosY === "number") posY = settings.todoWidgetPosY
     }
 
+    function px(value) { return Math.round(value * scaleFactor) }
+
     Connections {
         target: settings
         function onLoadedChanged() {
@@ -138,20 +146,26 @@ PanelWindow {
     }
 
     // ── Card ─────────────────────────────────────────────────────────────────
-    Rectangle {
-        anchors.fill: parent
-        radius: 18
-        color: cBg
-        border.color: cBorder
-        border.width: 1
+    Item {
+        width: root.cardW
+        height: root.cardH
+        transformOrigin: Item.TopLeft
+        scale: root.scaleFactor
 
-        Column {
-            id: contentCol
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.margins: 14
-            spacing: 0
+        Rectangle {
+            anchors.fill: parent
+            radius: 18
+            color: cBg
+            border.color: cBorder
+            border.width: 1
+
+            Column {
+                id: contentCol
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.margins: 14
+                spacing: 0
 
             Item {
                 width: parent.width
@@ -496,6 +510,7 @@ PanelWindow {
                         onClicked: clearDone()
                     }
                 }
+            }
             }
         }
     }
