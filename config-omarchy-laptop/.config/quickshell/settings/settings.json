@@ -7,7 +7,7 @@
   "launcherIconPreset": "omarchy",
   "launcherIconSize": 12,
   "clockWidgetEnabled": false,
-  "clockUse24h": false,
+  "clockUse24h": true,
   "clockWidgetPosX": 0.00008182490892531877,
   "clockWidgetPosY": 0.3105270127118645,
   "calendarWidgetEnabled": false,
