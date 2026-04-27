@@ -215,6 +215,7 @@ ShellRoot {
     TaskManager {
         id: taskManager
         theme: shell.palette
+        uiScale: shell.popupScale
     }
 
     DynamicClock {
@@ -245,6 +246,7 @@ ShellRoot {
         id: settingsWindow
         theme: shell.palette
         state: settingsState
+        uiScale: shell.popupScale
     }
     
     NotificationPanel {
@@ -313,13 +315,14 @@ ShellRoot {
                 id: powerConfirmCard
                 width: 320
                 implicitHeight: contentColumn.implicitHeight + 32
+                transformOrigin: Item.Center
                 radius: 14
                 color: shell.bg
                 border.color: shell.dim
                 border.width: 1
                 anchors.centerIn: parent
                 opacity: powerActions.open ? 1 : 0
-                scale: powerActions.open ? 1 : 0.96
+                scale: shell.popupScale * (powerActions.open ? 1 : 0.96)
 
                 Behavior on opacity {
                     NumberAnimation { duration: 140; easing.type: Easing.OutCubic }

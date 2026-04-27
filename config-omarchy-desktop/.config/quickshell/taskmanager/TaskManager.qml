@@ -10,6 +10,7 @@ PanelWindow {
 
     property bool showing: false
     property var theme: ({})
+    property real uiScale: 1.0
 
     readonly property color cBg:      theme.bg     || "#1e1e2e"
     readonly property color cBorder:  theme.dim    || "#45475a"
@@ -29,8 +30,8 @@ PanelWindow {
         return root.cGreen
     }
 
-    implicitWidth:  860
-    implicitHeight: 560
+    implicitWidth:  Math.min(860, Math.max(680, (screen.width - 48) / uiScale))
+    implicitHeight: Math.min(560, Math.max(420, (screen.height - 48) / uiScale))
     anchors { left: true; right: true; top: true; bottom: true }
     margins { left: 0; right: 0; top: 0; bottom: 0 }
     color: "transparent"
@@ -532,7 +533,8 @@ PanelWindow {
         border.color: Qt.alpha(root.cAccent, 0.20); border.width: 1
         clip: true
         opacity: root.showing ? 1 : 0
-        scale:   root.showing ? 1 : 0.97
+        transformOrigin: Item.Center
+        scale:   root.uiScale * (root.showing ? 1 : 0.97)
 
         Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
         Behavior on scale   { NumberAnimation { duration: 170; easing.type: Easing.OutCubic } }

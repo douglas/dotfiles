@@ -14,6 +14,8 @@ PanelWindow {
     property var  powerActions: null
     property var  settingsWindow: null
     property bool showing: false
+    property real btManagerScale: Math.max(1.0, Math.min(1.4, Math.min(screen.width / 1920, screen.height / 1080) * 1.25))
+    property real btManagerFontScale: Math.max(1.0, btManagerScale * 0.86)
 
     visible: showing
 
@@ -76,6 +78,14 @@ PanelWindow {
     function restart(proc) {
         proc.running = false
         proc.running = true
+    }
+
+    function btpx(value) {
+        return Math.round(value * btManagerScale)
+    }
+
+    function btfont(value) {
+        return Math.round(value * btManagerFontScale)
     }
 
     function refreshConnectivity() {
@@ -187,6 +197,11 @@ PanelWindow {
     function runBluetoothctl(args) {
         if (hasBluetoothctl && hasBluetoothDevice)
             Quickshell.execDetached(["bluetoothctl"].concat(args))
+    }
+
+    function bluetoothUnavailableLabel(adapterLabel) {
+        if (!hasBluetoothctl) return "Install bluez-utils"
+        return adapterLabel
     }
 
     function runBrightnessctl(args) {
@@ -505,6 +520,11 @@ PanelWindow {
     }
 
     function openBtManager() {
+        if (!hasBluetoothctl) {
+            Quickshell.execDetached(["bash", "-lc", "omarchy-launch-bluetooth"])
+            return
+        }
+
         cc.showWifiList = false
         cc.showBtList = false
         cc.showing = false
@@ -723,7 +743,7 @@ PanelWindow {
                                 ? cc.btConnectedName + (cc.btConnectedBattery >= 0 ? " " + cc.btConnectedBattery + "%" : "")
                                 : (cc.hasBluetoothDevice
                                     ? (cc.btEnabled ? "Right-click for manager" : "Off")
-                                    : "No adapter")
+                                    : cc.bluetoothUnavailableLabel("No adapter"))
                             color: theme.muted || "#585b70"
                             font.pixelSize: 8; font.family: "JetBrainsMono Nerd Font Propo"
                             elide: Text.ElideRight
@@ -927,8 +947,8 @@ PanelWindow {
         anchors { top: true; right: true }
         margins { top: 44; right: 10 }
 
-        implicitWidth: 320
-        implicitHeight: Math.min(wifiManagerCol.implicitHeight + 24, cc.screen.height - 58)
+        implicitWidth: cc.btpx(340)
+        implicitHeight: Math.min(wifiManagerCol.implicitHeight + cc.btpx(24), cc.screen.height - cc.btpx(58))
 
         color: "transparent"
         exclusiveZone: -1
@@ -953,7 +973,7 @@ PanelWindow {
         Rectangle {
             id: wifiManagerCard
             anchors.fill: parent
-            radius: 14
+            radius: cc.btpx(14)
             color: cc.theme.bg || "#1e1e2e"
             border.color: cc.theme.dim || "#45475a"
             border.width: 1
@@ -961,7 +981,7 @@ PanelWindow {
             opacity: cc.wifiManagerOpen ? 1 : 0
 
             transform: Translate {
-                y: cc.wifiManagerOpen ? 0 : -14
+                y: cc.wifiManagerOpen ? 0 : -cc.btpx(14)
                 Behavior on y {
                     NumberAnimation { duration: 190; easing.type: Easing.OutCubic }
                 }
@@ -973,25 +993,26 @@ PanelWindow {
 
             Column {
                 id: wifiManagerCol
-                anchors { left: parent.left; right: parent.right; top: parent.top; margins: 12 }
-                spacing: 8
+                anchors { left: parent.left; right: parent.right; top: parent.top; margins: cc.btpx(12) }
+                spacing: cc.btpx(8)
 
-                Row {
+                RowLayout {
                     width: parent.width
-                    height: 24
+                    height: cc.btpx(24)
                     Text {
-                        anchors.verticalCenter: parent.verticalCenter
+                        Layout.fillWidth: true
+                        Layout.alignment: Qt.AlignVCenter
                         text: "Wi-Fi Manager"
                         color: cc.theme.fg || "#cdd6f4"
-                        font.pixelSize: 12
+                        font.pixelSize: cc.btfont(11)
                         font.family: "JetBrainsMono Nerd Font Propo"
                         font.weight: Font.Medium
                     }
                     Text {
-                        anchors { right: parent.right; verticalCenter: parent.verticalCenter }
+                        Layout.alignment: Qt.AlignVCenter
                         text: "✕"
                         color: wifiCloseMa.containsMouse ? (cc.theme.red || "#f38ba8") : (cc.theme.muted || "#585b70")
-                        font.pixelSize: 10
+                        font.pixelSize: cc.btfont(8)
                         font.family: "JetBrainsMono Nerd Font Propo"
                         MouseArea {
                             id: wifiCloseMa
@@ -1005,12 +1026,12 @@ PanelWindow {
 
                 Rectangle {
                     width: parent.width
-                    height: 36
-                    radius: 8
-                    color: btPowerMa.containsMouse
+                    height: cc.btpx(40)
+                    radius: cc.btpx(8)
+                    color: wifiPowerMa.containsMouse
                         ? Qt.alpha(cc.theme.accent || "#89b4fa", 0.16)
                         : Qt.alpha(cc.theme.dim || "#45475a", 0.22)
-                    border.color: btPowerMa.containsMouse
+                    border.color: wifiPowerMa.containsMouse
                         ? Qt.alpha(cc.theme.accent || "#89b4fa", 0.38)
                         : Qt.alpha(cc.theme.accent || "#89b4fa", 0.22)
                     border.width: 1
@@ -1018,14 +1039,14 @@ PanelWindow {
                     Behavior on border.color { ColorAnimation { duration: 140 } }
                     RowLayout {
                         anchors.fill: parent
-                        anchors.leftMargin: 10
-                        anchors.rightMargin: 10
-                        spacing: 8
+                        anchors.leftMargin: cc.btpx(10)
+                        anchors.rightMargin: cc.btpx(10)
+                        spacing: cc.btpx(8)
                         Text {
                             Layout.alignment: Qt.AlignVCenter
                             text: cc.wifiEnabled ? "󰤨" : "󰤭"
                             color: cc.wifiEnabled ? (cc.theme.accent || "#89b4fa") : (cc.theme.muted || "#585b70")
-                            font.pixelSize: 13
+                            font.pixelSize: cc.btfont(13)
                             font.family: "JetBrainsMono Nerd Font Propo"
                         }
                         Text {
@@ -1037,7 +1058,7 @@ PanelWindow {
                                     : cc.wifiStateLabel())
                                 : "Wi-Fi Off"
                             color: cc.theme.fg || "#cdd6f4"
-                            font.pixelSize: 10
+                            font.pixelSize: cc.btfont(11)
                             font.family: "JetBrainsMono Nerd Font Propo"
                             elide: Text.ElideRight
                         }
@@ -1045,12 +1066,14 @@ PanelWindow {
                             Layout.alignment: Qt.AlignVCenter
                             text: cc.wifiEnabled ? "Disable" : "Enable"
                             color: cc.theme.accent || "#89b4fa"
-                            font.pixelSize: 10
+                            font.pixelSize: cc.btfont(11)
                             font.family: "JetBrainsMono Nerd Font Propo"
                         }
                     }
                     MouseArea {
+                        id: wifiPowerMa
                         anchors.fill: parent
+                        hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
                         onClicked: {
                             cc.runNmcli(["radio", "wifi", cc.wifiEnabled ? "off" : "on"])
@@ -1063,34 +1086,34 @@ PanelWindow {
 
                 Rectangle {
                     width: parent.width
-                    height: 30
-                    radius: 8
+                    height: cc.btpx(34)
+                    radius: cc.btpx(8)
                     color: Qt.alpha(cc.theme.dim || "#45475a", 0.18)
                     border.color: Qt.alpha(cc.theme.dim || "#45475a", 0.3)
                     border.width: 1
                     RowLayout {
                         anchors.fill: parent
-                        anchors.leftMargin: 10
-                        anchors.rightMargin: 10
-                        spacing: 8
+                        anchors.leftMargin: cc.btpx(10)
+                        anchors.rightMargin: cc.btpx(10)
+                        spacing: cc.btpx(8)
                         Text {
                             Layout.fillWidth: true
                             Layout.alignment: Qt.AlignVCenter
                             text: "Rescan Networks"
                             color: cc.theme.muted || "#585b70"
-                            font.pixelSize: 9
+                            font.pixelSize: cc.btfont(11)
                             font.family: "JetBrainsMono Nerd Font Propo"
                         }
                         RowLayout {
                             Layout.alignment: Qt.AlignVCenter
-                            spacing: 6
+                            spacing: cc.btpx(6)
                             Row {
                                 visible: cc.wifiScanning
-                                spacing: 2
+                                spacing: cc.btpx(2)
                                 Repeater {
                                     model: 3
                                     delegate: Rectangle {
-                                        width: 4; height: 4; radius: 2
+                                        width: cc.btpx(4); height: cc.btpx(4); radius: cc.btpx(2)
                                         color: cc.theme.accent || "#89b4fa"
                                         opacity: cc.wifiScanTicks === (index + 1) ? 1 : 0.25
                                     }
@@ -1099,7 +1122,7 @@ PanelWindow {
                             Text {
                                 text: cc.wifiScanning ? "Scanning" : "Scan"
                                 color: cc.theme.accent || "#89b4fa"
-                                font.pixelSize: 10
+                                font.pixelSize: cc.btfont(11)
                                 font.family: "JetBrainsMono Nerd Font Propo"
                             }
                         }
@@ -1121,36 +1144,36 @@ PanelWindow {
 
                 Flickable {
                     width: parent.width
-                    height: 270
+                    height: Math.min(Math.max(wifiListCol.implicitHeight, cc.btpx(66)), cc.btpx(270))
                     contentHeight: wifiListCol.implicitHeight
                     clip: true
 
                     Column {
                         id: wifiListCol
                         width: parent.width
-                        spacing: 4
+                        spacing: cc.btpx(4)
 
                         Repeater {
                             model: cc.wifiNetworks
                             delegate: Rectangle {
                                 required property var modelData
                                 width: wifiListCol.width
-                                height: 38
-                                radius: 8
+                                height: cc.btpx(42)
+                                radius: cc.btpx(8)
                                 color: wifiMgrItemMa.containsMouse
                                     ? Qt.alpha(cc.theme.accent || "#89b4fa", 0.12)
                                     : Qt.alpha(cc.theme.dim || "#45475a", 0.22)
                                 border.color: Qt.alpha(cc.theme.dim || "#45475a", 0.35)
                                 border.width: 1
                                 RowLayout {
-                                    anchors { left: parent.left; right: parent.right; verticalCenter: parent.verticalCenter; leftMargin: 10; rightMargin: 10 }
-                                    spacing: 8
+                                    anchors { left: parent.left; right: parent.right; verticalCenter: parent.verticalCenter; leftMargin: cc.btpx(10); rightMargin: cc.btpx(10) }
+                                    spacing: cc.btpx(8)
 
                                     Text {
                                         Layout.alignment: Qt.AlignVCenter
                                         text: modelData.signal > 66 ? "󰤨" : modelData.signal > 33 ? "󰤢" : "󰤟"
                                         color: cc.theme.accent || "#89b4fa"
-                                        font.pixelSize: 12
+                                        font.pixelSize: cc.btfont(12)
                                         font.family: "JetBrainsMono Nerd Font Propo"
                                     }
                                     Text {
@@ -1158,7 +1181,7 @@ PanelWindow {
                                         Layout.fillWidth: true
                                         text: modelData.ssid
                                         color: modelData.ssid === cc.wifiSsid ? (cc.theme.accent || "#89b4fa") : (cc.theme.fg || "#cdd6f4")
-                                        font.pixelSize: 10
+                                        font.pixelSize: cc.btfont(11)
                                         font.family: "JetBrainsMono Nerd Font Propo"
                                         elide: Text.ElideRight
                                     }
@@ -1166,18 +1189,18 @@ PanelWindow {
                                         Layout.alignment: Qt.AlignVCenter
                                         text: modelData.ssid === cc.wifiSsid && cc.wifiState !== "" ? cc.wifiState : (modelData.secure ? "secure" : "")
                                         color: modelData.ssid === cc.wifiSsid ? cc.wifiStateColor() : (cc.theme.muted || "#585b70")
-                                        font.pixelSize: 8
+                                        font.pixelSize: cc.btfont(9)
                                         font.family: "JetBrainsMono Nerd Font Propo"
                                     }
                                     RowLayout {
                                         Layout.alignment: Qt.AlignVCenter
-                                        spacing: 6
+                                        spacing: cc.btpx(6)
                                         readonly property bool hasSaved: cc.savedWifiSsids.indexOf(modelData.ssid) >= 0
 
                                         Rectangle {
-                                            width: modelData.ssid === cc.wifiSsid ? 66 : 56
-                                            height: 20
-                                            radius: 6
+                                            width: modelData.ssid === cc.wifiSsid ? cc.btpx(72) : cc.btpx(62)
+                                            height: cc.btpx(20)
+                                            radius: cc.btpx(6)
                                             color: Qt.alpha(cc.theme.accent || "#89b4fa", 0.18)
                                             border.color: Qt.alpha(cc.theme.accent || "#89b4fa", 0.35)
                                             border.width: 1
@@ -1185,7 +1208,7 @@ PanelWindow {
                                                 anchors.centerIn: parent
                                                 text: modelData.ssid === cc.wifiSsid ? "Disconnect" : "Connect"
                                                 color: cc.theme.accent || "#89b4fa"
-                                                font.pixelSize: 8
+                                                font.pixelSize: cc.btfont(9)
                                                 font.family: "JetBrainsMono Nerd Font Propo"
                                             }
                                             MouseArea {
@@ -1205,9 +1228,9 @@ PanelWindow {
                                         }
 
                                         Rectangle {
-                                            width: 48
-                                            height: 20
-                                            radius: 6
+                                            width: cc.btpx(52)
+                                            height: cc.btpx(20)
+                                            radius: cc.btpx(6)
                                             visible: hasSaved
                                             color: Qt.alpha(cc.theme.dim || "#45475a", 0.25)
                                             border.color: Qt.alpha(cc.theme.dim || "#45475a", 0.35)
@@ -1216,7 +1239,7 @@ PanelWindow {
                                                 anchors.centerIn: parent
                                                 text: "Forget"
                                                 color: cc.theme.muted || "#585b70"
-                                                font.pixelSize: 8
+                                                font.pixelSize: cc.btfont(9)
                                                 font.family: "JetBrainsMono Nerd Font Propo"
                                             }
                                             MouseArea {
@@ -1243,12 +1266,12 @@ PanelWindow {
                         Item {
                             visible: cc.wifiNetworks.length === 0
                             width: parent.width
-                            height: 56
+                            height: cc.btpx(56)
                             Text {
                                 anchors.centerIn: parent
                                 text: "No networks found"
                                 color: cc.theme.muted || "#585b70"
-                                font.pixelSize: 10
+                                font.pixelSize: cc.btfont(11)
                                 font.family: "JetBrainsMono Nerd Font Propo"
                             }
                         }
@@ -1273,8 +1296,8 @@ PanelWindow {
                 }
 
                 Rectangle {
-                    width: parent.width - 36
-                    radius: 12
+                    width: parent.width - cc.btpx(36)
+                    radius: cc.btpx(12)
                     color: cc.theme.bg || "#1e1e2e"
                     border.color: cc.theme.dim || "#45475a"
                     border.width: 1
@@ -1282,13 +1305,13 @@ PanelWindow {
 
                     Column {
                         anchors.fill: parent
-                        anchors.margins: 14
-                        spacing: 8
+                        anchors.margins: cc.btpx(14)
+                        spacing: cc.btpx(8)
 
                         Text {
                             text: "Secure Wi‑Fi Network"
                             color: cc.theme.fg || "#cdd6f4"
-                            font.pixelSize: 11
+                            font.pixelSize: cc.btfont(11)
                             font.family: "JetBrainsMono Nerd Font Propo"
                             font.weight: Font.Medium
                         }
@@ -1296,7 +1319,7 @@ PanelWindow {
                         Text {
                             text: cc.wifiPasswordSsid
                             color: cc.theme.muted || "#585b70"
-                            font.pixelSize: 9
+                            font.pixelSize: cc.btfont(9)
                             font.family: "JetBrainsMono Nerd Font Propo"
                             elide: Text.ElideRight
                         }
@@ -1307,18 +1330,18 @@ PanelWindow {
                                 ? cc.wifiPasswordError
                                 : "Credentials are handled outside Quickshell so passwords are not exposed through shell arguments."
                             color: cc.theme.muted || "#585b70"
-                            font.pixelSize: 9
+                            font.pixelSize: cc.btfont(9)
                             font.family: "JetBrainsMono Nerd Font Propo"
                             wrapMode: Text.WordWrap
                             width: parent.width
                         }
 
                         Row {
-                            spacing: 8
+                            spacing: cc.btpx(8)
                             Rectangle {
-                                width: 70
-                                height: 24
-                                radius: 6
+                                width: cc.btpx(70)
+                                height: cc.btpx(24)
+                                radius: cc.btpx(6)
                                 color: Qt.alpha(cc.theme.dim || "#45475a", 0.25)
                                 border.color: Qt.alpha(cc.theme.dim || "#45475a", 0.35)
                                 border.width: 1
@@ -1326,7 +1349,7 @@ PanelWindow {
                                     anchors.centerIn: parent
                                     text: "Cancel"
                                     color: cc.theme.muted || "#585b70"
-                                    font.pixelSize: 9
+                                    font.pixelSize: cc.btfont(9)
                                     font.family: "JetBrainsMono Nerd Font Propo"
                                 }
                                 MouseArea {
@@ -1339,9 +1362,9 @@ PanelWindow {
                                 }
                             }
                             Rectangle {
-                                width: 80
-                                height: 24
-                                radius: 6
+                                width: cc.btpx(80)
+                                height: cc.btpx(24)
+                                radius: cc.btpx(6)
                                 color: Qt.alpha(cc.theme.accent || "#89b4fa", 0.18)
                                 border.color: Qt.alpha(cc.theme.accent || "#89b4fa", 0.35)
                                 border.width: 1
@@ -1349,7 +1372,7 @@ PanelWindow {
                                     anchors.centerIn: parent
                                     text: "Open Wi‑Fi"
                                     color: cc.theme.accent || "#89b4fa"
-                                    font.pixelSize: 9
+                                    font.pixelSize: cc.btfont(9)
                                     font.family: "JetBrainsMono Nerd Font Propo"
                                 }
                                 MouseArea {
@@ -1372,8 +1395,8 @@ PanelWindow {
         anchors { top: true; right: true }
         margins { top: 44; right: 10 }
 
-        implicitWidth: 320
-        implicitHeight: Math.min(btManagerCol.implicitHeight + 24, cc.screen.height - 58)
+        implicitWidth: cc.btpx(340)
+        implicitHeight: Math.min(btManagerCol.implicitHeight + cc.btpx(24), cc.screen.height - cc.btpx(58))
 
         color: "transparent"
         exclusiveZone: -1
@@ -1394,7 +1417,7 @@ PanelWindow {
         Rectangle {
             id: btManagerCard
             anchors.fill: parent
-            radius: 14
+            radius: cc.btpx(14)
             color: cc.theme.bg || "#1e1e2e"
             border.color: cc.theme.dim || "#45475a"
             border.width: 1
@@ -1402,7 +1425,7 @@ PanelWindow {
             opacity: cc.btManagerOpen ? 1 : 0
 
             transform: Translate {
-                y: cc.btManagerOpen ? 0 : -14
+                y: cc.btManagerOpen ? 0 : -cc.btpx(14)
                 Behavior on y {
                     NumberAnimation { duration: 190; easing.type: Easing.OutCubic }
                 }
@@ -1414,25 +1437,26 @@ PanelWindow {
 
             Column {
                 id: btManagerCol
-                anchors { left: parent.left; right: parent.right; top: parent.top; margins: 12 }
-                spacing: 8
+                anchors { left: parent.left; right: parent.right; top: parent.top; margins: cc.btpx(12) }
+                spacing: cc.btpx(8)
 
-                Row {
+                RowLayout {
                     width: parent.width
-                    height: 24
+                    height: cc.btpx(24)
                     Text {
-                        anchors.verticalCenter: parent.verticalCenter
+                        Layout.fillWidth: true
+                        Layout.alignment: Qt.AlignVCenter
                         text: "Bluetooth Manager"
                         color: cc.theme.fg || "#cdd6f4"
-                        font.pixelSize: 12
+                        font.pixelSize: cc.btfont(11)
                         font.family: "JetBrainsMono Nerd Font Propo"
                         font.weight: Font.Medium
                     }
                     Text {
-                        anchors { right: parent.right; verticalCenter: parent.verticalCenter }
+                        Layout.alignment: Qt.AlignVCenter
                         text: "✕"
                         color: btCloseMa.containsMouse ? (cc.theme.red || "#f38ba8") : (cc.theme.muted || "#585b70")
-                        font.pixelSize: 10
+                        font.pixelSize: cc.btfont(8)
                         font.family: "JetBrainsMono Nerd Font Propo"
                         MouseArea {
                             id: btCloseMa
@@ -1446,21 +1470,21 @@ PanelWindow {
 
                 Rectangle {
                     width: parent.width
-                    height: 36
-                    radius: 8
+                    height: cc.btpx(40)
+                    radius: cc.btpx(8)
                     color: Qt.alpha(cc.theme.dim || "#45475a", 0.22)
                     border.color: Qt.alpha(cc.theme.accent || "#89b4fa", 0.22)
                     border.width: 1
                     RowLayout {
                         anchors.fill: parent
-                        anchors.leftMargin: 10
-                        anchors.rightMargin: 10
-                        spacing: 8
+                        anchors.leftMargin: cc.btpx(10)
+                        anchors.rightMargin: cc.btpx(10)
+                        spacing: cc.btpx(8)
                         Text {
                             Layout.alignment: Qt.AlignVCenter
                             text: cc.btEnabled ? "󰂱" : "󰂲"
                             color: cc.btEnabled ? (cc.theme.accent || "#89b4fa") : (cc.theme.muted || "#585b70")
-                            font.pixelSize: 13
+                            font.pixelSize: cc.btfont(13)
                             font.family: "JetBrainsMono Nerd Font Propo"
                         }
                         Text {
@@ -1468,16 +1492,16 @@ PanelWindow {
                             Layout.alignment: Qt.AlignVCenter
                             text: cc.hasBluetoothDevice
                                 ? (cc.btEnabled ? "Bluetooth On" : "Bluetooth Off")
-                                : "Bluetooth adapter not found"
+                                : cc.bluetoothUnavailableLabel("Bluetooth adapter not found")
                             color: cc.theme.fg || "#cdd6f4"
-                            font.pixelSize: 10
+                            font.pixelSize: cc.btfont(11)
                             font.family: "JetBrainsMono Nerd Font Propo"
                         }
                         Text {
                             Layout.alignment: Qt.AlignVCenter
                             text: cc.hasBluetoothDevice ? (cc.btEnabled ? "Disable" : "Enable") : ""
                             color: cc.theme.accent || "#89b4fa"
-                            font.pixelSize: 10
+                            font.pixelSize: cc.btfont(11)
                             font.family: "JetBrainsMono Nerd Font Propo"
                         }
                     }
@@ -1497,8 +1521,8 @@ PanelWindow {
 
                 Rectangle {
                     width: parent.width
-                    height: 30
-                    radius: 8
+                    height: cc.btpx(34)
+                    radius: cc.btpx(8)
                     color: btScanMa.containsMouse
                         ? Qt.alpha(cc.theme.accent || "#89b4fa", 0.14)
                         : Qt.alpha(cc.theme.dim || "#45475a", 0.18)
@@ -1510,27 +1534,27 @@ PanelWindow {
                     Behavior on border.color { ColorAnimation { duration: 140 } }
                     RowLayout {
                         anchors.fill: parent
-                        anchors.leftMargin: 10
-                        anchors.rightMargin: 10
-                        spacing: 8
+                        anchors.leftMargin: cc.btpx(10)
+                        anchors.rightMargin: cc.btpx(10)
+                        spacing: cc.btpx(8)
                         Text {
                             Layout.fillWidth: true
                             Layout.alignment: Qt.AlignVCenter
-                            text: cc.hasBluetoothDevice ? "Scan nearby devices" : "No Bluetooth adapter found"
+                            text: cc.hasBluetoothDevice ? "Scan nearby devices" : cc.bluetoothUnavailableLabel("No Bluetooth adapter found")
                             color: cc.hasBluetoothDevice ? (cc.theme.muted || "#585b70") : (cc.theme.red || "#f38ba8")
-                            font.pixelSize: 9
+                            font.pixelSize: cc.btfont(11)
                             font.family: "JetBrainsMono Nerd Font Propo"
                         }
                         RowLayout {
                             Layout.alignment: Qt.AlignVCenter
-                            spacing: 6
+                            spacing: cc.btpx(6)
                             Row {
                                 visible: cc.hasBluetoothDevice && cc.btScanning
-                                spacing: 2
+                                spacing: cc.btpx(2)
                                 Repeater {
                                     model: 3
                                     delegate: Rectangle {
-                                        width: 4; height: 4; radius: 2
+                                        width: cc.btpx(4); height: cc.btpx(4); radius: cc.btpx(2)
                                         color: cc.theme.accent || "#89b4fa"
                                         opacity: cc.btScanTicks === (index + 1) ? 1 : 0.25
                                     }
@@ -1539,7 +1563,7 @@ PanelWindow {
                             Text {
                                 text: cc.hasBluetoothDevice ? (cc.btScanning ? "Scanning" : "Scan") : ""
                                 color: cc.theme.accent || "#89b4fa"
-                                font.pixelSize: 10
+                                font.pixelSize: cc.btfont(11)
                                 font.family: "JetBrainsMono Nerd Font Propo"
                             }
                         }
@@ -1564,22 +1588,22 @@ PanelWindow {
 
                 Flickable {
                     width: parent.width
-                    height: 270
+                    height: Math.min(Math.max(btListCol.implicitHeight, cc.btpx(86)), cc.btpx(270))
                     contentHeight: btListCol.implicitHeight
                     clip: true
 
                     Column {
                         id: btListCol
                         width: parent.width
-                        spacing: 4
+                        spacing: cc.btpx(4)
 
                         Repeater {
                             model: cc.btDevices
                             delegate: Rectangle {
                                 required property var modelData
                                 width: btListCol.width
-                                height: 62
-                                radius: 8
+                                height: cc.btpx(66)
+                                radius: cc.btpx(8)
                                 color: btMgrItemMa.containsMouse
                                     ? Qt.alpha(cc.theme.accent || "#89b4fa", 0.12)
                                     : Qt.alpha(cc.theme.dim || "#45475a", 0.22)
@@ -1588,21 +1612,21 @@ PanelWindow {
 
                                 ColumnLayout {
                                     anchors.fill: parent
-                                    anchors.leftMargin: 10
-                                    anchors.rightMargin: 10
-                                    anchors.topMargin: 8
-                                    anchors.bottomMargin: 8
-                                    spacing: 6
+                                    anchors.leftMargin: cc.btpx(10)
+                                    anchors.rightMargin: cc.btpx(10)
+                                    anchors.topMargin: cc.btpx(8)
+                                    anchors.bottomMargin: cc.btpx(8)
+                                    spacing: cc.btpx(6)
 
                                     RowLayout {
                                         Layout.fillWidth: true
-                                        spacing: 8
+                                        spacing: cc.btpx(8)
 
                                         Text {
                                             Layout.alignment: Qt.AlignVCenter
                                             text: "󰂯"
                                             color: cc.theme.accent || "#89b4fa"
-                                            font.pixelSize: 12
+                                            font.pixelSize: cc.btfont(12)
                                             font.family: "JetBrainsMono Nerd Font Propo"
                                         }
                                         Text {
@@ -1610,7 +1634,7 @@ PanelWindow {
                                             Layout.alignment: Qt.AlignVCenter
                                             text: modelData.name
                                             color: cc.theme.fg || "#cdd6f4"
-                                            font.pixelSize: 10
+                                            font.pixelSize: cc.btfont(11)
                                             font.family: "JetBrainsMono Nerd Font Propo"
                                             elide: Text.ElideRight
                                         }
@@ -1619,7 +1643,7 @@ PanelWindow {
                                             visible: modelData.battery >= 0
                                             text: "󰁹 " + modelData.battery + "%"
                                             color: cc.theme.muted || "#585b70"
-                                            font.pixelSize: 9
+                                            font.pixelSize: cc.btfont(9)
                                             font.family: "JetBrainsMono Nerd Font Propo"
                                         }
                                         Text {
@@ -1630,21 +1654,21 @@ PanelWindow {
                                                 : modelData.trusted
                                                     ? (cc.theme.green || "#a6e3a1")
                                                     : (cc.theme.red || "#f38ba8")
-                                            font.pixelSize: 8
+                                            font.pixelSize: cc.btfont(9)
                                             font.family: "JetBrainsMono Nerd Font Propo"
                                         }
                                     }
 
                                     RowLayout {
                                         Layout.fillWidth: true
-                                        spacing: 6
+                                        spacing: cc.btpx(6)
 
                                         Item { Layout.fillWidth: true }
 
                                         Rectangle {
-                                            width: actConnect.implicitWidth + 10
-                                            height: 18
-                                            radius: 9
+                                            width: actConnect.implicitWidth + cc.btpx(12)
+                                            height: cc.btpx(20)
+                                            radius: cc.btpx(10)
                                             visible: !modelData.connected
                                             color: Qt.alpha(cc.theme.accent || "#89b4fa", 0.16)
                                             Text {
@@ -1652,7 +1676,7 @@ PanelWindow {
                                                 anchors.centerIn: parent
                                                 text: "connect"
                                                 color: cc.theme.accent || "#89b4fa"
-                                                font.pixelSize: 8
+                                                font.pixelSize: cc.btfont(9)
                                                 font.family: "JetBrainsMono Nerd Font Propo"
                                             }
                                             MouseArea {
@@ -1665,9 +1689,9 @@ PanelWindow {
                                             }
                                         }
                                         Rectangle {
-                                            width: actDisconnect.implicitWidth + 10
-                                            height: 18
-                                            radius: 9
+                                            width: actDisconnect.implicitWidth + cc.btpx(12)
+                                            height: cc.btpx(20)
+                                            radius: cc.btpx(10)
                                             visible: modelData.connected
                                             color: Qt.alpha("#fab387", 0.16)
                                             Text {
@@ -1675,7 +1699,7 @@ PanelWindow {
                                                 anchors.centerIn: parent
                                                 text: "disconnect"
                                                 color: "#fab387"
-                                                font.pixelSize: 8
+                                                font.pixelSize: cc.btfont(9)
                                                 font.family: "JetBrainsMono Nerd Font Propo"
                                             }
                                             MouseArea {
@@ -1688,16 +1712,16 @@ PanelWindow {
                                             }
                                         }
                                         Rectangle {
-                                            width: actRemove.implicitWidth + 10
-                                            height: 18
-                                            radius: 9
+                                            width: actRemove.implicitWidth + cc.btpx(12)
+                                            height: cc.btpx(20)
+                                            radius: cc.btpx(10)
                                             color: Qt.alpha(cc.theme.red || "#f38ba8", 0.16)
                                             Text {
                                                 id: actRemove
                                                 anchors.centerIn: parent
                                                 text: "remove"
                                                 color: cc.theme.red || "#f38ba8"
-                                                font.pixelSize: 8
+                                                font.pixelSize: cc.btfont(9)
                                                 font.family: "JetBrainsMono Nerd Font Propo"
                                             }
                                             MouseArea {
@@ -1722,26 +1746,28 @@ PanelWindow {
                         Rectangle {
                             visible: cc.btDevices.length === 0
                             width: parent.width
-                            height: 76
-                            radius: 8
+                            height: cc.btpx(76)
+                            radius: cc.btpx(8)
                             color: Qt.alpha(cc.theme.dim || "#45475a", 0.18)
                             border.color: Qt.alpha(cc.theme.dim || "#45475a", 0.35)
                             border.width: 1
                             Column {
                                 anchors.centerIn: parent
-                                spacing: 4
+                                spacing: cc.btpx(4)
                                 Text {
                                     anchors.horizontalCenter: parent.horizontalCenter
-                                    text: cc.hasBluetoothDevice ? "No devices found" : "Bluetooth adapter not detected"
+                                    text: cc.hasBluetoothDevice ? "No devices found" : cc.bluetoothUnavailableLabel("Bluetooth adapter not detected")
                                     color: cc.hasBluetoothDevice ? (cc.theme.fg || "#cdd6f4") : (cc.theme.red || "#f38ba8")
-                                    font.pixelSize: 10
+                                    font.pixelSize: cc.btfont(11)
                                     font.family: "JetBrainsMono Nerd Font Propo"
                                 }
                                 Text {
                                     anchors.horizontalCenter: parent.horizontalCenter
-                                    text: cc.hasBluetoothDevice ? "Click Scan to discover" : "Enable Bluetooth in system"
+                                    text: cc.hasBluetoothDevice
+                                        ? "Click Scan to discover"
+                                        : (cc.hasBluetoothctl ? "Enable Bluetooth in system" : "Use Omarchy Bluetooth TUI")
                                     color: cc.theme.muted || "#585b70"
-                                    font.pixelSize: 9
+                                    font.pixelSize: cc.btfont(9)
                                     font.family: "JetBrainsMono Nerd Font Propo"
                                 }
                             }

@@ -11,6 +11,7 @@ PanelWindow {
     property var theme: ({})
     property bool showing: false
     property int pageIndex: 0
+    property real uiScale: 1.0
 
     readonly property var pages: [
         { label: "General", desc: "Shell identity and window behavior" },
@@ -111,16 +112,17 @@ PanelWindow {
 
         Rectangle {
             id: card
-            width: Math.min(parent.width - 48, 860)
-            height: Math.min(parent.height - 48, 520)
+            width: Math.min((parent.width - 48) / root.uiScale, 860)
+            height: Math.min((parent.height - 48) / root.uiScale, 520)
             x: root.cardX
             y: root.cardY
+            transformOrigin: Item.Center
             radius: 20
             color: Qt.darker(root.t("bg", "#0b100c"), 1.06)
             border.color: Qt.alpha(root.t("accent", "#9ccfa0"), 0.18)
             border.width: 1
             opacity: root.reveal
-            scale: 0.985 + (0.015 * root.reveal)
+            scale: root.uiScale * (0.985 + (0.015 * root.reveal))
             clip: true
 
             Behavior on opacity {

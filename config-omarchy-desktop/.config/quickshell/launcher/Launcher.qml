@@ -13,6 +13,8 @@ PanelWindow {
     property var    powerActions: null
     property string mode:    "menu"
     property real   launcherScale: Math.max(1.0, Math.min(1.4, Math.min(width / 1920, height / 1080) * 1.25))
+    readonly property int menuCardWidth: menuView.preferredWidth
+    readonly property int menuCardHeight: Math.max(210, Math.min(520, menuView.preferredHeight + 20))
 
     anchors { left: true; right: true; top: true; bottom: true }
 
@@ -69,8 +71,8 @@ PanelWindow {
         // card — centered on screen
         Rectangle {
             id:                       card
-            width:                    560
-            height:                   520
+            width:                    launcher.mode === "apps" ? 560 : launcher.menuCardWidth
+            height:                   launcher.mode === "apps" ? 520 : launcher.menuCardHeight
             anchors.verticalCenter:   parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
             transformOrigin:          Item.Center
@@ -90,6 +92,12 @@ PanelWindow {
             }
             Behavior on opacity {
                 NumberAnimation { duration: 180; easing.type: Easing.OutCubic }
+            }
+            Behavior on width {
+                NumberAnimation { duration: 170; easing.type: Easing.OutCubic }
+            }
+            Behavior on height {
+                NumberAnimation { duration: 170; easing.type: Easing.OutCubic }
             }
 
             // block clicks from reaching background MouseArea

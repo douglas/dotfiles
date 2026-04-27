@@ -11,7 +11,7 @@ PanelWindow {
     property bool showing: false
     property var theme: ({})
     property real uiScale: 1.0
-    property real panelScale: Math.max(1.0, Math.min(1.8, Math.max(1.0, Math.min(1.4, Math.min(width / 1920, height / 1080) * 1.25)) * root.uiScale))
+    property real panelScale: root.uiScale
     property string searchText: ""
     property int selectedIdx: 0
     property var allEmojis: []

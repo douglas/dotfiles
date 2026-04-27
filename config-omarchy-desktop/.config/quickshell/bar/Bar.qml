@@ -231,6 +231,16 @@ PanelWindow {
                     })
                 }
 
+                Kef {
+                    anchors.verticalCenter: parent.verticalCenter
+                    theme: ({
+                        fg: root.fg,
+                        accent: root.accent,
+                        dim: root.dim,
+                        bg: root.bg
+                    })
+                }
+
                 Rectangle {
                     width: 1
                     height: 12

@@ -20,6 +20,19 @@ Item {
 
     readonly property var    currentItems: navStack.length > 0 ? navStack[navStack.length - 1].items : menuRoot
     readonly property string currentTitle: navStack.length > 0 ? navStack[navStack.length - 1].title : "Go"
+    readonly property int    visibleItemCount: globalSearch
+        ? (globalPage.results ? globalPage.results.length : 0)
+        : (currentPage.filteredItems ? currentPage.filteredItems.length : currentItems.length)
+    readonly property int    visibleRowCount: Math.max(1, Math.min(visibleItemCount, 10))
+    readonly property int    topLabelHeight: (globalSearch || navStack.length > 0) ? 14 : 0
+    readonly property int    listRowHeight: globalSearch ? 38 : 32
+    readonly property int    listHeight: (visibleRowCount * listRowHeight) + (Math.max(0, visibleRowCount - 1) * 2)
+    readonly property int    preferredHeight: topLabelHeight
+        + 34
+        + 13
+        + listHeight
+        + ((topLabelHeight > 0 ? 3 : 2) * 6)
+    readonly property int    preferredWidth: globalSearch ? 560 : 420
 
     property var menuRoot: MenuData.buildTree()
     property var flatItems: []

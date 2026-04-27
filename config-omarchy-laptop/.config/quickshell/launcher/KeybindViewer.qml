@@ -15,8 +15,8 @@ PanelWindow {
 
     anchors { left: true; right: true; top: true; bottom: true }
 
-    implicitWidth:  Math.round(700 * root.uiScale)
-    implicitHeight: Math.round(420 * root.uiScale)
+    implicitWidth:  700
+    implicitHeight: 420
     color:          "transparent"
     exclusiveZone:  0
     visible:        showing
@@ -48,7 +48,13 @@ PanelWindow {
 
     Process {
         id: keybindLoader
-        command: [root.homeDir + "/.local/bin/qs-keybinds-list"]
+        command: ["bash", "-lc",
+            "omarchy-menu-keybindings --print 2>/dev/null | " +
+            "awk -F '→' 'NF>=2 { combo=$1; action=$2; " +
+            "gsub(/^[ \\t]+|[ \\t]+$/, \"\", combo); " +
+            "gsub(/^[ \\t]+|[ \\t]+$/, \"\", action); " +
+            "if (combo != \"\" && action != \"\") print combo \"|\" action }'"
+        ]
         running: true
         stdout: SplitParser {
             onRead: data => {
@@ -114,6 +120,8 @@ PanelWindow {
             anchors.centerIn: parent
             width:        root.implicitWidth
             height:       root.implicitHeight
+            transformOrigin: Item.Center
+            scale:        root.uiScale
             radius:       12
             color:        theme.bg || "#1e1e2e"
             border.color: theme.dim || "#45475a"

@@ -14,7 +14,7 @@ PanelWindow {
 
     anchors { left: true; right: true; top: true; bottom: true }
 
-    implicitWidth:  Math.round(380 * root.uiScale)
+    implicitWidth:  380
     color:          "transparent"
     exclusiveZone:  0
     visible:        showing
@@ -204,7 +204,9 @@ done | sort
             id:           card
             anchors.centerIn: parent
             width:        root.implicitWidth
-            height:       Math.min(parent.height - 10, Math.round(900 * root.uiScale))
+            height:       Math.min((parent.height - 10) / root.uiScale, 900)
+            transformOrigin: Item.Center
+            scale:        root.uiScale
             radius:       12
             color:        theme.bg || "#1e1e2e"
             border.color: theme.dim || "#45475a"
