@@ -18,7 +18,7 @@ fi
 cat > "$SETTINGS_FILE" <<'EOF'
 {
   "notificationPosition": "top-center",
-  "osdPosition": "bottom-center",
+  "osdPosition": "top-right",
   "barPosition": "top",
   "barStyle": "dock",
   "workspaceStyle": "og",

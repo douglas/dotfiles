@@ -262,6 +262,7 @@ ShellRoot {
         service: osdService
         settings: settingsState
         theme: shell.palette
+        uiScale: shell.popupScale
     }
 
     NotificationServer {

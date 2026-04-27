@@ -9,7 +9,7 @@ Item {
     readonly property string configDir: homeDir + "/.config/quickshell"
     readonly property string settingsDir: configDir + "/settings"
     property string notificationPosition: "top-center"
-    property string osdPosition: "bottom-center"
+    property string osdPosition: "top-right"
     property string barPosition: "top"
     property string barStyle: "dock"
     property string workspaceStyle: "og"
@@ -38,7 +38,7 @@ Item {
     property int saveDelayMs: 500
     readonly property var defaults: ({
         notificationPosition: "top-center",
-        osdPosition: "bottom-center",
+        osdPosition: "top-right",
         barPosition: "top",
         barStyle: "dock",
         workspaceStyle: "og",

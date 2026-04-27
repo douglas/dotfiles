@@ -19,7 +19,7 @@ Item {
     ]
 
     function currentPosition() {
-        return root.state ? root.state.osdPosition : "bottom-center"
+        return root.state ? root.state.osdPosition : "top-right"
     }
 
     function setPosition(key) {
@@ -128,7 +128,7 @@ Item {
                 }
 
                 Text {
-                    text: "Bottom center is the default OSD position."
+                    text: "Top right is the default OSD position."
                     color: Qt.alpha(t("muted", "#9fb29f"), 0.55)
                     font.pixelSize: 8
                     font.family: "JetBrains Mono"

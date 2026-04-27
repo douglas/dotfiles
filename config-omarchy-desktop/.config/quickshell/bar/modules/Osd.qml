@@ -9,15 +9,17 @@ Item {
     property var service: null
     property var settings: null
     property var theme: ({})
+    property real uiScale: 1.0
 
     function t(key, fallback) { return theme[key] || fallback }
+    function px(value) { return Math.round(value * uiScale) }
 
-    readonly property string osdPosition: settings?.osdPosition || "bottom-center"
+    readonly property string osdPosition: settings?.osdPosition || "top-right"
     readonly property real reveal: service && service.showing ? 1 : 0
-    readonly property int panelWidth: service && service.mediaMode ? 298 : 232
-    readonly property int panelHeight: service && service.mediaMode ? 78 : 52
-    readonly property int topOffset: 44
-    readonly property int edgeOffset: 16
+    readonly property int panelWidth: px(service && service.mediaMode ? 370 : 320)
+    readonly property int panelHeight: px(service && service.mediaMode ? 100 : 76)
+    readonly property int topOffset: px(58)
+    readonly property int edgeOffset: px(18)
 
     function toneColor() {
         if (!service) return t("accent", "#89b4fa")
@@ -34,7 +36,7 @@ Item {
         Rectangle {
             id: panel
             anchors.fill: parent
-            radius: 12
+            radius: root.px(18)
             color: root.t("bg", "#1e1e2e")
             border.color: Qt.rgba(1, 1, 1, 0.08)
             border.width: 1
@@ -127,21 +129,21 @@ Item {
 
             ColumnLayout {
                 anchors.fill: parent
-                anchors.leftMargin: 10
-                anchors.rightMargin: 10
-                anchors.topMargin: 7
-                anchors.bottomMargin: 7
-                spacing: 5
+                anchors.leftMargin: root.px(14)
+                anchors.rightMargin: root.px(14)
+                anchors.topMargin: root.px(11)
+                anchors.bottomMargin: root.px(11)
+                spacing: root.px(8)
 
                 RowLayout {
                     Layout.fillWidth: true
-                    spacing: 6
+                    spacing: root.px(10)
 
                     Rectangle {
                         visible: root.service && root.service.mediaMode
-                        Layout.preferredWidth: visible ? 42 : 0
-                        Layout.preferredHeight: visible ? 42 : 0
-                        radius: 10
+                        Layout.preferredWidth: visible ? root.px(54) : 0
+                        Layout.preferredHeight: visible ? root.px(54) : 0
+                        radius: root.px(14)
                         color: Qt.rgba(1, 1, 1, 0.08)
                         border.color: Qt.rgba(1, 1, 1, 0.08)
                         border.width: 1
@@ -162,23 +164,23 @@ Item {
                             visible: !coverArt.visible
                             text: "󰎆"
                             color: root.toneColor()
-                            font.pixelSize: 18
+                            font.pixelSize: root.px(20)
                             font.family: "JetBrainsMono Nerd Font"
                         }
                     }
 
                     ColumnLayout {
                         Layout.fillWidth: true
-                        spacing: root.service && root.service.subtitle ? 1 : 0
+                        spacing: root.service && root.service.subtitle ? root.px(2) : 0
 
                         RowLayout {
                             Layout.fillWidth: true
-                            spacing: 6
+                            spacing: root.px(8)
 
                             Text {
                                 text: root.service ? root.service.icon : "󰕾"
                                 color: root.toneColor()
-                                font.pixelSize: 11
+                                font.pixelSize: root.px(16)
                                 font.family: "JetBrainsMono Nerd Font"
                             }
 
@@ -186,18 +188,18 @@ Item {
                                 Layout.fillWidth: true
                                 text: root.service ? root.service.title : "OSD"
                                 color: root.t("fg", "#cdd6f4")
-                                font.pixelSize: 10
+                                font.pixelSize: root.px(13)
                                 font.weight: Font.DemiBold
-                                font.family: "JetBrains Mono"
+                                font.family: "JetBrainsMono Nerd Font"
                                 elide: Text.ElideRight
                             }
 
                             Text {
                                 text: root.service ? root.service.valueText : "0%"
                                 color: root.t("muted", "#585b70")
-                                font.pixelSize: 9
+                                font.pixelSize: root.px(11)
                                 font.weight: Font.Medium
-                                font.family: "JetBrains Mono"
+                                font.family: "JetBrainsMono Nerd Font"
                             }
                         }
 
@@ -206,8 +208,8 @@ Item {
                             Layout.fillWidth: true
                             text: root.service ? root.service.subtitle : ""
                             color: root.t("muted", "#585b70")
-                            font.pixelSize: 9
-                            font.family: "JetBrains Mono"
+                            font.pixelSize: root.px(10)
+                            font.family: "JetBrainsMono Nerd Font"
                             elide: Text.ElideRight
                         }
                     }
@@ -215,8 +217,8 @@ Item {
 
                 Rectangle {
                     Layout.fillWidth: true
-                    height: 3
-                    radius: 2
+                    height: root.px(5)
+                    radius: root.px(3)
                     color: Qt.rgba(1, 1, 1, 0.14)
                     clip: true
 
