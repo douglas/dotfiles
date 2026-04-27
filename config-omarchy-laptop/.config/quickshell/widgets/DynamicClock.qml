@@ -9,6 +9,7 @@ PanelWindow {
 
     property var theme: ({})
     property var settings: null
+    property bool quietMode: false
     property real posX: settings ? settings.clockWidgetPosX : 0.8
     property real posY: settings ? settings.clockWidgetPosY : 0.8
     property bool autoPosition: false
@@ -45,7 +46,7 @@ PanelWindow {
     WlrLayershell.anchors { left: true; top: true }
     WlrLayershell.margins { left: dragging ? dragLeft : posLeft; top: dragging ? dragTop : posTop }
     color: "transparent"
-    visible: clockEnabled
+    visible: clockEnabled && !quietMode
     exclusiveZone: 0
     WlrLayershell.layer: WlrLayer.Bottom
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
@@ -53,7 +54,7 @@ PanelWindow {
     Timer {
         interval: 1000
         repeat: true
-        running: true
+        running: !root.quietMode
         onTriggered: root.now = new Date()
     }
 
@@ -96,7 +97,7 @@ PanelWindow {
         id: wallpaperPoll
         interval: 4000
         repeat: true
-        running: autoPosition
+        running: autoPosition && !root.quietMode
         onTriggered: {
             wallpaperPathProbe.running = false
             wallpaperPathProbe.running = true

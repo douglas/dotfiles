@@ -8,6 +8,7 @@ PanelWindow {
 
     property var theme: ({})
     property var settings: null
+    property bool quietMode: false
     readonly property bool enabled: settings ? settings.pomodoroWidgetEnabled : false
 
     property real posX: settings ? settings.pomodoroWidgetPosX : 0.6
@@ -49,7 +50,7 @@ PanelWindow {
     WlrLayershell.anchors { left: true; top: true }
     WlrLayershell.margins { left: dragging ? dragLeft : posLeft; top: dragging ? dragTop : posTop }
     color: "transparent"
-    visible: enabled
+    visible: enabled && !quietMode
     exclusiveZone: 0
     WlrLayershell.layer: WlrLayer.Bottom
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None

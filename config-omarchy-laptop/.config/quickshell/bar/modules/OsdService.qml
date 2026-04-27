@@ -27,6 +27,7 @@ Item {
     property bool hasDdcBrightness: false
     property bool hasPlayerctl: false
     property bool hasCava: false
+    property bool quietMode: false
 
     function _clamp(v, lo, hi) {
         return Math.max(lo, Math.min(hi, v))
@@ -150,6 +151,28 @@ Item {
             "exec cava -p \"$CFG\" 2>/dev/null"
     }
 
+    function _shouldRunCava() {
+        return hasCava && showing && !quietMode
+    }
+
+    function _syncCava() {
+        if (_shouldRunCava()) {
+            if (!cavaProc.running) {
+                cavaProc.command = ["bash", "-lc", root._cavaCommand(root.cavaInputs[root.cavaInputIdx])]
+                cavaProc.running = true
+            }
+        } else {
+            cavaRestart.stop()
+            cavaProc.running = false
+            wave = _emptyWave()
+            _cavaCarry = ""
+            _cavaTokens = []
+        }
+    }
+
+    onShowingChanged: _syncCava()
+    onQuietModeChanged: _syncCava()
+
     function _parseWpctlVolume(raw) {
         const line = (raw || "").trim()
         const n = line.match(/([0-9]*\.?[0-9]+)/)
@@ -207,7 +230,7 @@ Item {
         if (hasBrightnessctl && hasBrightnessDevice)
             return "brightnessctl -m 2>/dev/null | cut -d, -f4 | tr -d '%'"
 
-        return "ddcutil getvcp 10 2>/dev/null | awk -F'current value = *|,' '/current value/{print $2; exit}'"
+        return "timeout 2s ddcutil getvcp 10 2>/dev/null | awk -F'current value = *|,' '/current value/{print $2; exit}'"
     }
 
     function _fetchMediaSnapshot(done) {
@@ -283,7 +306,6 @@ Item {
             "printf 'brightnessctl=%s\\n' \"$(command -v brightnessctl >/dev/null 2>&1 && echo 1 || echo 0)\"; " +
             "printf 'brightnessdevice=%s\\n' \"$(command -v brightnessctl >/dev/null 2>&1 && brightnessctl -l 2>/dev/null | awk '/backlight/{found=1} END{exit found ? 0 : 1}' && echo 1 || echo 0)\"; " +
             "printf 'ddcutil=%s\\n' \"$(command -v ddcutil >/dev/null 2>&1 && echo 1 || echo 0)\"; " +
-            "printf 'ddcbrightness=%s\\n' \"$(command -v ddcutil >/dev/null 2>&1 && ddcutil getvcp 10 >/dev/null 2>&1 && echo 1 || echo 0)\"; " +
             "printf 'playerctl=%s\\n' \"$(command -v playerctl >/dev/null 2>&1 && echo 1 || echo 0)\"; " +
             "printf 'cava=%s\\n' \"$(command -v cava >/dev/null 2>&1 && echo 1 || echo 0)\""
         ]
@@ -300,10 +322,10 @@ Item {
                     root.hasBrightnessctl = enabled
                 else if (parts[0] === "brightnessdevice")
                     root.hasBrightnessDevice = enabled
-                else if (parts[0] === "ddcutil")
+                else if (parts[0] === "ddcutil") {
                     root.hasDdcutil = enabled
-                else if (parts[0] === "ddcbrightness")
                     root.hasDdcBrightness = enabled
+                }
                 else if (parts[0] === "playerctl")
                     root.hasPlayerctl = enabled
                 else if (parts[0] === "cava")
@@ -311,8 +333,7 @@ Item {
             }
         }
         onExited: {
-            if (root.hasCava)
-                cavaProc.running = true
+            root._syncCava()
         }
     }
 
@@ -326,7 +347,7 @@ Item {
             }
         }
         onExited: {
-            if (!root.hasCava)
+            if (!root._shouldRunCava())
                 return
             root.wave = root._emptyWave()
             root._cavaCarry = ""
@@ -341,7 +362,7 @@ Item {
         interval: 1200
         repeat: false
         onTriggered: {
-            if (!root.hasCava)
+            if (!root._shouldRunCava())
                 return
             cavaProc.command = ["bash", "-lc", root._cavaCommand(root.cavaInputs[root.cavaInputIdx])]
             cavaProc.running = true
@@ -449,7 +470,7 @@ Item {
         const pct = Math.abs(Math.round(delta))
         const setCommand = hasBrightnessctl && hasBrightnessDevice
             ? "brightnessctl set " + pct + "%" + sign + " 2>/dev/null"
-            : "ddcutil setvcp 10 " + sign + " " + pct + " 2>/dev/null"
+            : "timeout 4s ddcutil setvcp 10 " + sign + " " + pct + " 2>/dev/null"
 
         _runShell(setCommand + "; " + _brightnessReadCommand(), function(out) {
             const v = parseInt((out || "").trim())

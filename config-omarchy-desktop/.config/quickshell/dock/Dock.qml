@@ -12,6 +12,7 @@ PanelWindow {
     property var settings: null
     property var launcher: null
     property var notifServer: null
+    property bool quietMode: false
 
     property var apps: []
     property var clients: []
@@ -57,7 +58,7 @@ PanelWindow {
 
     color: "transparent"
     exclusiveZone: 0
-    visible: settings ? ((settings.dockEnabled ?? true) && !fullscreenActive) : !fullscreenActive
+    visible: !quietMode && (settings ? ((settings.dockEnabled ?? true) && !fullscreenActive) : !fullscreenActive)
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
@@ -345,7 +346,7 @@ PanelWindow {
     Timer {
         interval: 200
         repeat: true
-        running: true
+        running: !root.quietMode
         onTriggered: {
             clientsProc.running = false
             clientsProc.running = true
@@ -355,7 +356,7 @@ PanelWindow {
     Timer {
         interval: 60000
         repeat: true
-        running: true
+        running: !root.quietMode
         onTriggered: {
             appsProc.running = false
             appsProc.running = true
@@ -365,8 +366,17 @@ PanelWindow {
     Timer {
         interval: 500
         repeat: true
-        running: root.hideOnFullscreen
+        running: root.hideOnFullscreen && !root.quietMode
         onTriggered: {
+            fullscreenProc.running = false
+            fullscreenProc.running = true
+        }
+    }
+
+    onQuietModeChanged: {
+        if (!quietMode) {
+            clientsProc.running = false
+            clientsProc.running = true
             fullscreenProc.running = false
             fullscreenProc.running = true
         }

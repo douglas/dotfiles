@@ -8,6 +8,7 @@ PanelWindow {
 
     property var theme: ({})
     property var settings: null
+    property bool quietMode: false
     readonly property bool enabled: settings ? settings.calendarWidgetEnabled : false
 
     property real posX: settings ? settings.calendarWidgetPosX : 0.7
@@ -46,13 +47,13 @@ PanelWindow {
     WlrLayershell.layer: WlrLayer.Bottom
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
     color: "transparent"
-    visible: enabled
+    visible: enabled && !quietMode
     exclusiveZone: 0
 
     Timer {
         interval: 1000
         repeat: true
-        running: true
+        running: !root.quietMode
         onTriggered: root.now = new Date()
     }
 

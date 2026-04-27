@@ -11,6 +11,7 @@ Item {
     property string red:    "#f38ba8"
     property string green:  "#a6e3a1"
     property string fg:     "#cdd6f4"
+    property bool quietMode: false
 
     implicitWidth:  indicatorRow.implicitWidth
     implicitHeight: 28
@@ -42,7 +43,7 @@ Item {
 
     Timer {
         interval: 21600000 // 6 hours
-        running:  true
+        running:  !root.quietMode
         repeat:   true
         onTriggered: {
             updateChecker.running = false
@@ -73,10 +74,12 @@ Item {
 
     Timer {
         interval: 3000
-        running:  true
+        running:  !root.quietMode
         repeat:   true
         onTriggered: refreshLiveStatus()
     }
+
+    onQuietModeChanged: if (!quietMode) refreshLiveStatus()
 
     // ── shell helpers ─────────────────────────────────────────────
     property int _cmdSeq: 0

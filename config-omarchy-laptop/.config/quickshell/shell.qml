@@ -20,6 +20,7 @@ ShellRoot {
     readonly property string omarchyThemeNamePath: omarchyCurrentDir + "/theme.name"
     readonly property string omarchyThemeColorsPath: omarchyCurrentDir + "/theme/colors.toml"
     readonly property real popupScale: Math.max(1.0, Math.min(1.4, Number(Quickshell.env("QS_POPUP_SCALE") || "1.15")))
+    property bool overviewActive: false
 
     property string bg:        "#1e1e2e"
     property string fg:        "#cdd6f4"
@@ -146,6 +147,31 @@ ShellRoot {
         }
     }
 
+    Process {
+        id: submapProbe
+        command: ["bash", "-lc", "hyprctl submap 2>/dev/null"]
+        running: true
+        stdout: SplitParser {
+            property string buf: ""
+            onRead: data => buf += data
+        }
+        onExited: {
+            const current = (submapProbe.stdout.buf || "").trim()
+            shell.overviewActive = current === "hyprtasking"
+            submapProbe.stdout.buf = ""
+        }
+    }
+
+    Timer {
+        interval: shell.overviewActive ? 250 : 500
+        repeat: true
+        running: true
+        onTriggered: {
+            if (!submapProbe.running)
+                submapProbe.running = true
+        }
+    }
+
     Bar {
         launcher:  appLauncher
         notifServer: notifServer
@@ -159,6 +185,7 @@ ShellRoot {
         red:       shell.red
         green:     shell.green
         muted:     shell.muted
+        quietMode: shell.overviewActive
     }
 
     Dock {
@@ -166,6 +193,7 @@ ShellRoot {
         settings: settingsState
         launcher: appLauncher
         notifServer: notifServer
+        quietMode: shell.overviewActive
     }
 
     ControlCenter {
@@ -222,24 +250,28 @@ ShellRoot {
         id: desktopClock
         theme: shell.palette
         settings: settingsState
+        quietMode: shell.overviewActive
     }
 
     CalendarWidget {
         id: desktopCalendar
         theme: shell.palette
         settings: settingsState
+        quietMode: shell.overviewActive
     }
 
     PomodoroWidget {
         id: pomodoroWidget
         theme: shell.palette
         settings: settingsState
+        quietMode: shell.overviewActive
     }
 
     TodoWidget {
         id: todoWidget
         theme: shell.palette
         settings: settingsState
+        quietMode: shell.overviewActive
     }
 
     SettingsWindow {
@@ -256,6 +288,7 @@ ShellRoot {
 
     OsdService {
         id: osdService
+        quietMode: shell.overviewActive
     }
 
     Osd {

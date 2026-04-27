@@ -13,6 +13,7 @@ PanelWindow {
     property var notifServer: null
     property var powerActions: null
     property var settings: null
+    property bool quietMode: false
 
     property string bg:        "#1e1e2e"
     property string fg:        "#cdd6f4"
@@ -144,12 +145,14 @@ PanelWindow {
                     green: root.green
                     muted: root.muted
                     dockBottom: root.barOnBottom
+                    quietMode: root.quietMode
                 }
             }
         }
 
         Clock {
             anchors.centerIn: parent
+            quietMode: root.quietMode
             theme: ({
                 fg: root.fg,
                 muted: root.muted,
@@ -252,6 +255,7 @@ PanelWindow {
 
                 Stats {
                     anchors.verticalCenter: parent.verticalCenter
+                    quietMode: root.quietMode
                     theme: ({
                         fg: root.fg,
                         accent: root.accent,
@@ -276,6 +280,7 @@ PanelWindow {
                 Indicators {
                     anchors.verticalCenter: parent.verticalCenter
                     notifServer: root.notifServer
+                    quietMode: root.quietMode
                     accent: root.accent
                     muted: root.muted
                     red: root.red

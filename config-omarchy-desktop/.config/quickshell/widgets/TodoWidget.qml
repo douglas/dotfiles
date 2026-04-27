@@ -9,6 +9,7 @@ PanelWindow {
 
     property var theme: ({})
     property var settings: null
+    property bool quietMode: false
     readonly property bool enabled: settings ? settings.todoWidgetEnabled : true
 
     property real posX: settings ? settings.todoWidgetPosX : 0.5
@@ -52,7 +53,7 @@ PanelWindow {
     WlrLayershell.layer: WlrLayer.Bottom
     WlrLayershell.keyboardFocus: showInput ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
     color: "transparent"
-    visible: enabled
+    visible: enabled && !quietMode
     exclusiveZone: 0
 
     // ── Persistence ───────────────────────────────────────────────────────────

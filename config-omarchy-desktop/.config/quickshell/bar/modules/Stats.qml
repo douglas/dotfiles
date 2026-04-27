@@ -5,6 +5,7 @@ Row {
     spacing: 10
     anchors.verticalCenter: parent ? parent.verticalCenter : undefined
     property var theme: ({})
+    property bool quietMode: false
 
     property real cpuVal: 0
     property real ramVal: 0
@@ -63,7 +64,9 @@ Row {
     }
 
     Timer {
-        interval: 3000; running: true; repeat: true
+        interval: 3000; running: !quietMode; repeat: true
         onTriggered: refreshStats()
     }
+
+    onQuietModeChanged: if (!quietMode) refreshStats()
 }

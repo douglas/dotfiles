@@ -6,6 +6,7 @@ Item {
     id: root
     anchors.verticalCenter: parent ? parent.verticalCenter : undefined
     property var theme: ({})
+    property bool quietMode: false
 
     implicitWidth:  clockRow.implicitWidth
     implicitHeight: 28
@@ -23,7 +24,7 @@ Item {
 
     Timer {
         interval: 15000
-        running:  true
+        running:  !root.quietMode
         repeat:   true
         onTriggered: updateTime()
     }
@@ -93,7 +94,7 @@ Item {
     // ── Calendar window ───────────────────────────
     PanelWindow {
         id:      calWindow
-        visible: true
+        visible: !root.quietMode
 
         property bool showing: false
 

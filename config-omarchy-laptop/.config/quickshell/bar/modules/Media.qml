@@ -58,6 +58,7 @@ Item {
     property var cavaTokens: []
     property bool hoverOpen: false
     property bool dockBottom: false
+    property bool quietMode: false
     property real progressPhase: 0
 
     implicitWidth: hasMedia ? 126 : 0
@@ -134,6 +135,24 @@ Item {
             "channels = mono\n" +
             "EOF\n" +
             "exec cava -p \"$CFG\" 2>/dev/null"
+    }
+
+    function shouldRunCava() {
+        return hasCava && hasMedia && !quietMode
+    }
+
+    function syncCava() {
+        if (shouldRunCava()) {
+            if (!cavaProc.running) {
+                cavaProc.command = ["bash", "-lc", root.cavaCommand(root.cavaInputs[root.cavaInputIdx])]
+                cavaProc.running = true
+            }
+        } else {
+            cavaRestart.stop()
+            cavaProc.running = false
+            cavaCarry = ""
+            cavaTokens = []
+        }
     }
 
     function syncPlayerState() {
@@ -317,6 +336,8 @@ Item {
     }
 
     onPlayerChanged: syncPlayerState()
+    onHasMediaChanged: syncCava()
+    onQuietModeChanged: syncCava()
 
     Connections {
         target: root.player
@@ -345,8 +366,7 @@ Item {
             onRead: data => root.hasCava = data.trim() === "1"
         }
         onExited: {
-            if (root.hasCava)
-                cavaProc.running = true
+            root.syncCava()
         }
     }
 
@@ -358,7 +378,7 @@ Item {
             onRead: data => root.applyCavaChunk(data)
         }
         onExited: {
-            if (!root.hasCava)
+            if (!root.shouldRunCava())
                 return
             root.cavaCarry = ""
             root.cavaTokens = []
@@ -372,7 +392,7 @@ Item {
         interval: 1200
         repeat: false
         onTriggered: {
-            if (!root.hasCava)
+            if (!root.shouldRunCava())
                 return
             cavaProc.command = ["bash", "-lc", root.cavaCommand(root.cavaInputs[root.cavaInputIdx])]
             cavaProc.running = true
