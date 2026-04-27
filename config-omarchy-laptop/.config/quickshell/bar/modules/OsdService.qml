@@ -22,6 +22,9 @@ Item {
     property var _cavaTokens: []
     property bool hasWpctl: false
     property bool hasBrightnessctl: false
+    property bool hasBrightnessDevice: false
+    property bool hasDdcutil: false
+    property bool hasDdcBrightness: false
     property bool hasPlayerctl: false
     property bool hasCava: false
 
@@ -192,6 +195,21 @@ Item {
         _show("󰧧", titleText, 0, "muted")
     }
 
+    function _hasBrightness() {
+        return (hasBrightnessctl && hasBrightnessDevice) || (hasDdcutil && hasDdcBrightness)
+    }
+
+    function _brightnessTitle() {
+        return hasBrightnessctl && hasBrightnessDevice ? "Brightness" : "Monitor Brightness"
+    }
+
+    function _brightnessReadCommand() {
+        if (hasBrightnessctl && hasBrightnessDevice)
+            return "brightnessctl -m 2>/dev/null | cut -d, -f4 | tr -d '%'"
+
+        return "ddcutil getvcp 10 2>/dev/null | awk -F'current value = *|,' '/current value/{print $2; exit}'"
+    }
+
     function _fetchMediaSnapshot(done) {
         _runShell(`
             players=$(playerctl -l 2>/dev/null)
@@ -263,6 +281,9 @@ Item {
         command: ["bash", "-lc",
             "printf 'wpctl=%s\\n' \"$(command -v wpctl >/dev/null 2>&1 && echo 1 || echo 0)\"; " +
             "printf 'brightnessctl=%s\\n' \"$(command -v brightnessctl >/dev/null 2>&1 && echo 1 || echo 0)\"; " +
+            "printf 'brightnessdevice=%s\\n' \"$(command -v brightnessctl >/dev/null 2>&1 && brightnessctl -l 2>/dev/null | awk '/backlight/{found=1} END{exit found ? 0 : 1}' && echo 1 || echo 0)\"; " +
+            "printf 'ddcutil=%s\\n' \"$(command -v ddcutil >/dev/null 2>&1 && echo 1 || echo 0)\"; " +
+            "printf 'ddcbrightness=%s\\n' \"$(command -v ddcutil >/dev/null 2>&1 && ddcutil getvcp 10 >/dev/null 2>&1 && echo 1 || echo 0)\"; " +
             "printf 'playerctl=%s\\n' \"$(command -v playerctl >/dev/null 2>&1 && echo 1 || echo 0)\"; " +
             "printf 'cava=%s\\n' \"$(command -v cava >/dev/null 2>&1 && echo 1 || echo 0)\""
         ]
@@ -277,6 +298,12 @@ Item {
                     root.hasWpctl = enabled
                 else if (parts[0] === "brightnessctl")
                     root.hasBrightnessctl = enabled
+                else if (parts[0] === "brightnessdevice")
+                    root.hasBrightnessDevice = enabled
+                else if (parts[0] === "ddcutil")
+                    root.hasDdcutil = enabled
+                else if (parts[0] === "ddcbrightness")
+                    root.hasDdcBrightness = enabled
                 else if (parts[0] === "playerctl")
                     root.hasPlayerctl = enabled
                 else if (parts[0] === "cava")
@@ -333,14 +360,14 @@ Item {
     }
 
     function showBrightness() {
-        if (!hasBrightnessctl) {
+        if (!_hasBrightness()) {
             _showUnavailable("Brightness unavailable")
             return
         }
-        _runShell("brightnessctl -m 2>/dev/null | cut -d, -f4 | tr -d '%'", function(out) {
+        _runShell(_brightnessReadCommand(), function(out) {
             const v = parseInt((out || "").trim())
             const pct = isNaN(v) ? 0 : _clamp(v, 0, 100)
-            _show("󰃠", "Brightness", pct, "highlight")
+            _show("󰃠", _brightnessTitle(), pct, "highlight")
         })
     }
 
@@ -414,21 +441,21 @@ Item {
     }
 
     function brightnessStep(delta) {
-        if (!hasBrightnessctl) {
+        if (!_hasBrightness()) {
             _showUnavailable("Brightness unavailable")
             return
         }
         const sign = delta >= 0 ? "+" : "-"
         const pct = Math.abs(Math.round(delta))
-        _runShell(
-            "brightnessctl set " + pct + "%" + sign + " 2>/dev/null; " +
-            "brightnessctl -m 2>/dev/null | cut -d, -f4 | tr -d '%'",
-            function(out) {
-                const v = parseInt((out || "").trim())
-                const valuePct = isNaN(v) ? 0 : _clamp(v, 0, 100)
-                _show("󰃠", "Brightness", valuePct, "highlight")
-            }
-        )
+        const setCommand = hasBrightnessctl && hasBrightnessDevice
+            ? "brightnessctl set " + pct + "%" + sign + " 2>/dev/null"
+            : "ddcutil setvcp 10 " + sign + " " + pct + " 2>/dev/null"
+
+        _runShell(setCommand + "; " + _brightnessReadCommand(), function(out) {
+            const v = parseInt((out || "").trim())
+            const valuePct = isNaN(v) ? 0 : _clamp(v, 0, 100)
+            _show("󰃠", _brightnessTitle(), valuePct, "highlight")
+        })
     }
 
     function mediaPlayPause() {

@@ -73,6 +73,9 @@ PanelWindow {
     property bool   wifiPasswordSecure: false
     property bool   hasBrightnessctl: false
     property bool   hasBrightnessDevice: false
+    property bool   hasDdcutil: false
+    property bool   hasDdcBrightness: false
+    property int    pendingDdcBrightness: -1
     property bool   hasIp:          false
 
     function restart(proc) {
@@ -122,8 +125,12 @@ PanelWindow {
         }
     }
 
+    function hasBrightness() {
+        return (hasBrightnessctl && hasBrightnessDevice) || (hasDdcutil && hasDdcBrightness)
+    }
+
     function refreshBrightness() {
-        if (hasBrightnessctl && hasBrightnessDevice)
+        if (hasBrightness())
             restart(briProc)
     }
 
@@ -204,9 +211,19 @@ PanelWindow {
         return adapterLabel
     }
 
-    function runBrightnessctl(args) {
+    function setBrightnessPercent(value) {
+        const pct = Math.max(1, Math.min(100, Math.round(value)))
+
         if (hasBrightnessctl && hasBrightnessDevice)
-            Quickshell.execDetached(["brightnessctl"].concat(args))
+            Quickshell.execDetached(["brightnessctl", "set", pct + "%"])
+        else if (hasDdcutil && hasDdcBrightness) {
+            pendingDdcBrightness = pct
+            ddcBrightnessSetTimer.restart()
+            return
+        } else
+            return
+
+        brightnessRefreshTimer.restart()
     }
 
     function wifiStateLabel() {
@@ -268,6 +285,32 @@ PanelWindow {
         onTriggered: cc.wifiScanTicks = (cc.wifiScanTicks + 1) % 4
     }
 
+    Timer {
+        id: brightnessRefreshTimer
+        interval: 350
+        repeat: false
+        onTriggered: refreshBrightness()
+    }
+
+    Timer {
+        id: ddcBrightnessSetTimer
+        interval: 250
+        repeat: false
+        onTriggered: {
+            if (cc.pendingDdcBrightness < 0)
+                return
+
+            Quickshell.execDetached([
+                "ddcutil",
+                "setvcp",
+                "10",
+                String(cc.pendingDdcBrightness)
+            ])
+            cc.pendingDdcBrightness = -1
+            brightnessRefreshTimer.restart()
+        }
+    }
+
     PwObjectTracker { objects: [Pipewire.defaultAudioSink, Pipewire.defaultAudioSource] }
 
     Process {
@@ -277,7 +320,9 @@ PanelWindow {
             "printf 'bluetoothctl=%s\\n' \"$(command -v bluetoothctl >/dev/null 2>&1 && echo 1 || echo 0)\"; " +
             "printf 'bluetoothdevice=%s\\n' \"$(command -v bluetoothctl >/dev/null 2>&1 && bluetoothctl list 2>/dev/null | grep -q 'Controller' && echo 1 || echo 0)\"; " +
             "printf 'brightnessctl=%s\\n' \"$(command -v brightnessctl >/dev/null 2>&1 && echo 1 || echo 0)\"; " +
-            "printf 'brightnessdevice=%s\\n' \"$(command -v brightnessctl >/dev/null 2>&1 && brightnessctl -l 2>/dev/null | grep -q 'backlight' && echo 1 || echo 0)\"; " +
+            "printf 'brightnessdevice=%s\\n' \"$(command -v brightnessctl >/dev/null 2>&1 && brightnessctl -l 2>/dev/null | awk '/backlight/{found=1} END{exit found ? 0 : 1}' && echo 1 || echo 0)\"; " +
+            "printf 'ddcutil=%s\\n' \"$(command -v ddcutil >/dev/null 2>&1 && echo 1 || echo 0)\"; " +
+            "printf 'ddcbrightness=%s\\n' \"$(command -v ddcutil >/dev/null 2>&1 && ddcutil getvcp 10 >/dev/null 2>&1 && echo 1 || echo 0)\"; " +
             "printf 'ip=%s\\n' \"$(command -v ip >/dev/null 2>&1 && echo 1 || echo 0)\""
         ]
         running: true
@@ -297,11 +342,18 @@ PanelWindow {
                     cc.hasBrightnessctl = enabled
                 else if (parts[0] === "brightnessdevice")
                     cc.hasBrightnessDevice = enabled
+                else if (parts[0] === "ddcutil")
+                    cc.hasDdcutil = enabled
+                else if (parts[0] === "ddcbrightness")
+                    cc.hasDdcBrightness = enabled
                 else if (parts[0] === "ip")
                     cc.hasIp = enabled
             }
         }
-        onExited: refreshConnectivity()
+        onExited: {
+            refreshConnectivity()
+            refreshBrightness()
+        }
     }
 
     Process {
@@ -486,7 +538,13 @@ PanelWindow {
 
     Process {
         id: briProc
-        command: ["bash", "-c", "brightnessctl -m | cut -d, -f4 | tr -d '%'"]
+        command: ["bash", "-c",
+            "if command -v brightnessctl >/dev/null 2>&1 && brightnessctl -l 2>/dev/null | awk '/backlight/{found=1} END{exit found ? 0 : 1}'; then " +
+            "  brightnessctl -m 2>/dev/null | cut -d, -f4 | tr -d '%'; " +
+            "elif command -v ddcutil >/dev/null 2>&1; then " +
+            "  ddcutil getvcp 10 2>/dev/null | awk -F'current value = *|,' '/current value/{print $2; exit}'; " +
+            "fi"
+        ]
         running: false
         stdout: SplitParser {
             onRead: data => {
@@ -928,11 +986,12 @@ PanelWindow {
             }
             CCSlider {
                 id: briSlider; width: parent.width
-                visible: cc.hasBrightnessctl && cc.hasBrightnessDevice
+                visible: cc.hasBrightness()
                 height: visible ? implicitHeight : 0
                 icon: "󰃞"; value: 0.5; theme: cc.theme
                 onMoved: v => {
-                    cc.runBrightnessctl(["set", Math.round(v * 100) + "%"])
+                    briSlider.value = v
+                    cc.setBrightnessPercent(v * 100)
                 }
             }
 
