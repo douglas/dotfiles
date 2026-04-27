@@ -6,16 +6,25 @@ Item {
     id: root
     anchors.verticalCenter: parent ? parent.verticalCenter : undefined
     property var theme: ({})
+    property var settings: null
     property bool quietMode: false
+    readonly property bool use24h: settings ? settings.clockUse24h : true
 
     implicitWidth:  clockRow.implicitWidth
     implicitHeight: 28
 
     function updateTime() {
         const now  = new Date()
-        const h    = String(now.getHours()).padStart(2, "0")
+        let h      = now.getHours()
         const min  = String(now.getMinutes()).padStart(2, "0")
-        timeText.text = h + ":" + min
+        if (use24h) {
+            timeText.text = String(h).padStart(2, "0") + ":" + min
+            ampmText.text = ""
+        } else {
+            ampmText.text = h >= 12 ? "PM" : "AM"
+            h = h % 12 || 12
+            timeText.text = String(h).padStart(2, "0") + ":" + min
+        }
         dateText.text = Qt.formatDate(now, "ddd, d MMM")
     }
 
@@ -27,6 +36,7 @@ Item {
     }
 
     Component.onCompleted: updateTime()
+    onUse24hChanged: updateTime()
 
     // ── Clock row ─────────────────────────────────
     Row {
@@ -45,6 +55,17 @@ Item {
                 font.pixelSize: 13
                 font.family:    "JetBrainsMono Nerd Font"
                 font.weight:    Font.Medium
+            }
+
+            Text {
+                id:             ampmText
+                visible:        !root.use24h
+                anchors.verticalCenter: parent.verticalCenter
+                color:          theme.accent || "#89b4fa"
+                font.pixelSize: 9
+                font.family:    "JetBrainsMono Nerd Font"
+                font.weight:    Font.Medium
+                bottomPadding:  1
             }
         }
 

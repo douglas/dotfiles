@@ -166,6 +166,7 @@ PanelWindow {
         Clock {
             anchors.centerIn: parent
             quietMode: root.quietMode
+            settings: root.settings
             theme: ({
                 fg: root.fg,
                 muted: root.muted,
