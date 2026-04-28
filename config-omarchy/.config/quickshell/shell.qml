@@ -346,146 +346,157 @@ ShellRoot {
 
         onVisibleChanged: {
             if (visible)
-                powerConfirm.forceActiveFocus()
+                powerConfirmKeyScope.forceActiveFocus()
         }
 
-        Keys.onPressed: event => {
-            if (!powerActions.open) return
-
-            if (event.key === Qt.Key_Left || event.key === Qt.Key_Up) {
-                powerActions.moveSelection(-1)
-                event.accepted = true
-            } else if (event.key === Qt.Key_Right || event.key === Qt.Key_Down || event.key === Qt.Key_Tab) {
-                powerActions.moveSelection(1)
-                event.accepted = true
-            } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space) {
-                powerActions.activateSelected()
-                event.accepted = true
-            } else if (event.key === Qt.Key_Escape) {
-                powerActions.close()
-                event.accepted = true
-            }
-        }
-
-        MouseArea {
+        FocusScope {
+            id: powerConfirmKeyScope
             anchors.fill: parent
-            onClicked: powerActions.close()
+            focus: powerActions.open
 
-            Rectangle {
-                id: powerConfirmCard
-                width: 320
-                implicitHeight: contentColumn.implicitHeight + 32
-                transformOrigin: Item.Center
-                radius: 14
-                color: shell.bg
-                border.color: shell.dim
-                border.width: 1
-                anchors.centerIn: parent
-                opacity: powerActions.open ? 1 : 0
-                scale: shell.popupScale * (powerActions.open ? 1 : 0.96)
+            Keys.onPressed: event => {
+                if (!powerActions.open) return
 
-                Behavior on opacity {
-                    NumberAnimation { duration: 140; easing.type: Easing.OutCubic }
+                if (event.key === Qt.Key_Left || event.key === Qt.Key_Up || event.key === Qt.Key_Backtab) {
+                    powerActions.moveSelection(-1)
+                    event.accepted = true
+                } else if (event.key === Qt.Key_Right || event.key === Qt.Key_Down || event.key === Qt.Key_Tab) {
+                    powerActions.moveSelection(1)
+                    event.accepted = true
+                } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space) {
+                    powerActions.activateSelected()
+                    event.accepted = true
+                } else if (event.key === Qt.Key_Escape) {
+                    powerActions.close()
+                    event.accepted = true
                 }
+            }
 
-                Behavior on scale {
-                    NumberAnimation { duration: 170; easing.type: Easing.OutCubic }
-                }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: powerActions.close()
 
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {}
-                }
+                Rectangle {
+                    id: powerConfirmCard
+                    width: 320
+                    implicitHeight: contentColumn.implicitHeight + 32
+                    transformOrigin: Item.Center
+                    radius: 14
+                    color: shell.bg
+                    border.color: shell.dim
+                    border.width: 1
+                    anchors.centerIn: parent
+                    opacity: powerActions.open ? 1 : 0
+                    scale: shell.popupScale * (powerActions.open ? 1 : 0.96)
 
-                ColumnLayout {
-                    id: contentColumn
-                    anchors.fill: parent
-                    anchors.margins: 16
-                    spacing: 12
-
-                    Text {
-                        text: powerActions.title
-                        color: shell.fg
-                        font.pixelSize: 14
-                        font.family: "JetBrainsMono Nerd Font Propo"
-                        font.weight: Font.DemiBold
+                    Behavior on opacity {
+                        NumberAnimation { duration: 140; easing.type: Easing.OutCubic }
                     }
 
-                    Text {
-                        text: powerActions.message
-                        color: shell.muted
-                        font.pixelSize: 10
-                        font.family: "JetBrainsMono Nerd Font Propo"
-                        wrapMode: Text.WordWrap
-                        Layout.fillWidth: true
+                    Behavior on scale {
+                        NumberAnimation { duration: 170; easing.type: Easing.OutCubic }
                     }
 
-                    RowLayout {
-                        Layout.fillWidth: true
-                        spacing: 8
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {}
+                    }
 
-                        Rectangle {
-                            id: cancelButton
-                            Layout.fillWidth: true
-                            height: 32
-                            radius: 9
-                            color: powerActions.selectedIndex === 0
-                                ? Qt.alpha(shell.accent, 0.16)
-                                : Qt.alpha(shell.dim, 0.45)
-                            border.color: powerActions.selectedIndex === 0
-                                ? Qt.alpha(shell.accent, 0.5)
-                                : Qt.alpha(shell.dim, 0.7)
-                            border.width: 1
-                            Behavior on color { ColorAnimation { duration: 120 } }
-                            Behavior on border.color { ColorAnimation { duration: 120 } }
+                    ColumnLayout {
+                        id: contentColumn
+                        anchors.fill: parent
+                        anchors.margins: 16
+                        spacing: 12
 
-                            Text {
-                                anchors.centerIn: parent
-                                text: "Cancel"
-                                color: powerActions.selectedIndex === 0 ? shell.accent : shell.fg
-                                font.pixelSize: 10
-                                font.family: "JetBrainsMono Nerd Font Propo"
-                            }
-
-                            MouseArea {
-                                anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                hoverEnabled: true
-                                onEntered: powerActions.selectedIndex = 0
-                                onClicked: powerActions.close()
-                            }
+                        Text {
+                            text: powerActions.title
+                            color: shell.fg
+                            font.pixelSize: 14
+                            font.family: "JetBrainsMono Nerd Font Propo"
+                            font.weight: Font.DemiBold
                         }
 
-                        Rectangle {
-                            id: confirmButton
+                        Text {
+                            text: powerActions.message
+                            color: shell.muted
+                            font.pixelSize: 10
+                            font.family: "JetBrainsMono Nerd Font Propo"
+                            wrapMode: Text.WordWrap
                             Layout.fillWidth: true
-                            height: 32
-                            radius: 9
-                            color: powerActions.selectedIndex === 1
-                                ? Qt.alpha(shell.red, 0.28)
-                                : Qt.alpha(shell.red, 0.2)
-                            border.color: powerActions.selectedIndex === 1
-                                ? Qt.alpha(shell.red, 0.72)
-                                : Qt.alpha(shell.red, 0.45)
-                            border.width: 1
-                            Behavior on color { ColorAnimation { duration: 120 } }
-                            Behavior on border.color { ColorAnimation { duration: 120 } }
+                        }
 
-                            Text {
-                                anchors.centerIn: parent
-                                text: "Confirm"
-                                color: powerActions.selectedIndex === 1 ? shell.fg : shell.red
-                                font.pixelSize: 10
-                                font.family: "JetBrainsMono Nerd Font Propo"
-                                font.weight: Font.DemiBold
+                        RowLayout {
+                            Layout.fillWidth: true
+                            spacing: 8
+
+                            Rectangle {
+                                id: cancelButton
+                                Layout.fillWidth: true
+                                height: 32
+                                radius: 9
+                                color: powerActions.selectedIndex === 0
+                                    ? Qt.alpha(shell.accent, 0.16)
+                                    : Qt.alpha(shell.dim, 0.45)
+                                border.color: powerActions.selectedIndex === 0
+                                    ? Qt.alpha(shell.accent, 0.5)
+                                    : Qt.alpha(shell.dim, 0.7)
+                                border.width: 1
+                                Behavior on color { ColorAnimation { duration: 120 } }
+                                Behavior on border.color { ColorAnimation { duration: 120 } }
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: "Cancel"
+                                    color: powerActions.selectedIndex === 0 ? shell.accent : shell.fg
+                                    font.pixelSize: 10
+                                    font.family: "JetBrainsMono Nerd Font Propo"
+                                }
+
+                                MouseArea {
+                                    anchors.fill: parent
+                                    cursorShape: Qt.PointingHandCursor
+                                    hoverEnabled: true
+                                    onEntered: powerActions.selectedIndex = 0
+                                    onClicked: powerActions.close()
+                                }
                             }
 
-                            MouseArea {
-                                anchors.fill: parent
-                                cursorShape: Qt.PointingHandCursor
-                                hoverEnabled: true
-                                onEntered: powerActions.selectedIndex = 1
-                                onClicked: powerActions.confirm()
+                            Rectangle {
+                                id: confirmButton
+                                readonly property bool armed: powerActions.selectedIndex === 1
+
+                                Layout.fillWidth: true
+                                height: 32
+                                radius: 9
+                                color: armed
+                                    ? Qt.alpha(shell.red, 0.28)
+                                    : Qt.alpha(shell.dim, 0.35)
+                                border.color: armed
+                                    ? Qt.alpha(shell.red, 0.72)
+                                    : Qt.alpha(shell.dim, 0.55)
+                                border.width: 1
+                                Behavior on color { ColorAnimation { duration: 120 } }
+                                Behavior on border.color { ColorAnimation { duration: 120 } }
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: "Confirm"
+                                    color: confirmButton.armed ? shell.fg : shell.muted
+                                    font.pixelSize: 10
+                                    font.family: "JetBrainsMono Nerd Font Propo"
+                                    font.weight: Font.DemiBold
+                                }
+
+                                MouseArea {
+                                    anchors.fill: parent
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: {
+                                        if (confirmButton.armed)
+                                            powerActions.confirm()
+                                        else
+                                            powerActions.selectedIndex = 1
+                                    }
+                                }
                             }
                         }
                     }
