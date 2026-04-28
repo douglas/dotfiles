@@ -59,9 +59,10 @@ Item {
     property bool hoverOpen: false
     property bool dockBottom: false
     property bool quietMode: false
+    property bool titleVisible: true
     property real progressPhase: 0
 
-    implicitWidth: hasMedia ? 126 : 0
+    implicitWidth: hasMedia ? (titleVisible ? 126 : 28) : 0
     implicitHeight: 28
     width: implicitWidth
     height: implicitHeight
@@ -83,6 +84,11 @@ Item {
 
     function closeCardSoon() {
         hideCardTimer.restart()
+    }
+
+    function toggleTitleVisible() {
+        titleVisible = !titleVisible
+        titleTxt.x = 0
     }
 
     function shellQuote(text) {
@@ -491,29 +497,43 @@ Item {
         anchors.leftMargin: 8
         spacing: 6
 
-        Rectangle {
-            width: 6
-            height: 6
-            radius: 99
+        Item {
+            width: 12
+            height: 14
             anchors.verticalCenter: parent.verticalCenter
-            color: root.isPlaying ? root.green : root.muted
 
-            Behavior on color {
-                ColorAnimation { duration: 200 }
+            Rectangle {
+                width: 6
+                height: 6
+                radius: 99
+                anchors.centerIn: parent
+                color: root.isPlaying ? root.green : root.muted
+
+                Behavior on color {
+                    ColorAnimation { duration: 200 }
+                }
+
+                SequentialAnimation on scale {
+                    running: root.isPlaying
+                    loops: Animation.Infinite
+                    NumberAnimation { to: 1.4; duration: 700; easing.type: Easing.InOutSine }
+                    NumberAnimation { to: 1.0; duration: 700; easing.type: Easing.InOutSine }
+                }
             }
 
-            SequentialAnimation on scale {
-                running: root.isPlaying
-                loops: Animation.Infinite
-                NumberAnimation { to: 1.4; duration: 700; easing.type: Easing.InOutSine }
-                NumberAnimation { to: 1.0; duration: 700; easing.type: Easing.InOutSine }
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.LeftButton
+                cursorShape: Qt.PointingHandCursor
+                onClicked: root.toggleTitleVisible()
             }
         }
 
         Item {
-            width: 94
+            width: root.titleVisible ? 94 : 0
             height: 14
             clip: true
+            visible: root.titleVisible
             anchors.verticalCenter: parent.verticalCenter
 
             Text {
@@ -528,7 +548,7 @@ Item {
 
                 SequentialAnimation on x {
                     loops: Animation.Infinite
-                    running: titleTxt.implicitWidth > 94
+                    running: root.titleVisible && titleTxt.implicitWidth > 94
 
                     NumberAnimation {
                         to: -(titleTxt.implicitWidth + 18)
