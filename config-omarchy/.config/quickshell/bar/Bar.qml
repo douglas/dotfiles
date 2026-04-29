@@ -165,6 +165,8 @@ PanelWindow {
 
         Clock {
             anchors.centerIn: parent
+            barWindow: root
+            barOnBottom: root.barOnBottom
             quietMode: root.quietMode
             settings: root.settings
             theme: ({
@@ -172,7 +174,9 @@ PanelWindow {
                 muted: root.muted,
                 accent: root.accent,
                 dim: root.dim,
-                bg: root.bg
+                bg: root.bg,
+                green: root.green,
+                red: root.red
             })
         }
 

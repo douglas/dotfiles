@@ -328,6 +328,16 @@ ShellRoot {
         id: notifServer
     }
 
+    Process {
+        id: googleCalendarWatcher
+        command: [
+            "bash",
+            "-lc",
+            "if command -v nika-google-calendar >/dev/null 2>&1; then exec nika-google-calendar watch --thresholds 10,5,1; else exec sleep infinity; fi"
+        ]
+        running: true
+    }
+
     IpcHandler {
         target: "openSettings"
         function handle() {

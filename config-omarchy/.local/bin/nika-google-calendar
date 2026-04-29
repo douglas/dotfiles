@@ -1,0 +1,262 @@
+#!/usr/bin/env python3
+
+import argparse
+import csv
+import json
+import os
+import shutil
+import subprocess
+import sys
+import time
+from datetime import date, datetime, time as dt_time, timedelta
+from pathlib import Path
+
+
+APP_NAME = "Nika"
+DEFAULT_THRESHOLDS = [10, 5, 1]
+
+
+def state_dir():
+    base = os.environ.get("XDG_STATE_HOME")
+    if base:
+        return Path(base) / "nika"
+    return Path.home() / ".local" / "state" / "nika"
+
+
+def run_gcalcli():
+    if not shutil.which("gcalcli"):
+        return None, "gcalcli is not installed"
+
+    cmd = [
+        "gcalcli",
+        "--nocolor",
+        "agenda",
+        "--tsv",
+        "--nodeclined",
+        "--details",
+        "all",
+        "today",
+        "tomorrow",
+    ]
+
+    try:
+        result = subprocess.run(
+            cmd,
+            check=False,
+            text=True,
+            capture_output=True,
+            timeout=35,
+        )
+    except subprocess.TimeoutExpired:
+        return None, "gcalcli timed out"
+
+    if result.returncode != 0:
+        error = (result.stderr or result.stdout or "gcalcli failed").strip()
+        return None, error
+
+    return result.stdout, None
+
+
+def parse_date(value):
+    return datetime.strptime(value, "%Y-%m-%d").date()
+
+
+def parse_time(value):
+    return datetime.strptime(value, "%H:%M").time()
+
+
+def event_intersects_today(row, today):
+    start_date = parse_date(row["start_date"])
+    end_date = parse_date(row["end_date"])
+
+    if row.get("start_time"):
+        return start_date == today
+
+    # Google all-day event end dates are exclusive.
+    return start_date <= today < end_date
+
+
+def normalize_event(row, index):
+    all_day = not row.get("start_time")
+    start_date = parse_date(row["start_date"])
+    end_date = parse_date(row["end_date"])
+
+    if all_day:
+        start = datetime.combine(start_date, dt_time.min)
+        end = datetime.combine(end_date, dt_time.min)
+    else:
+        start = datetime.combine(start_date, parse_time(row["start_time"]))
+        end = datetime.combine(end_date, parse_time(row["end_time"]))
+
+    conference_url = row.get("conference_uri") or row.get("hangout_link") or ""
+    html_link = row.get("html_link") or ""
+    title = (row.get("title") or "Untitled event").strip()
+
+    return {
+        "id": row.get("id") or f"event-{index}",
+        "title": title,
+        "location": (row.get("location") or "").strip(),
+        "calendar": (row.get("calendar") or "").strip(),
+        "description": (row.get("description") or "").strip(),
+        "allDay": all_day,
+        "start": start.isoformat(timespec="minutes"),
+        "end": end.isoformat(timespec="minutes"),
+        "startDate": start_date.isoformat(),
+        "endDate": end_date.isoformat(),
+        "startTime": "" if all_day else row.get("start_time", ""),
+        "endTime": "" if all_day else row.get("end_time", ""),
+        "timeLabel": "All day" if all_day else f"{row.get('start_time', '')}-{row.get('end_time', '')}",
+        "htmlLink": html_link,
+        "conferenceUrl": conference_url,
+        "openUrl": html_link or conference_url,
+    }
+
+
+def load_events():
+    output, error = run_gcalcli()
+    if error:
+        return {"ok": False, "error": error, "events": []}
+
+    rows = list(csv.DictReader(output.splitlines(), delimiter="\t"))
+    today = date.today()
+    events = [
+        normalize_event(row, index)
+        for index, row in enumerate(rows)
+        if row.get("start_date") and row.get("end_date") and event_intersects_today(row, today)
+    ]
+
+    events.sort(key=lambda event: (event["allDay"], event["start"], event["title"].lower()))
+
+    return {
+        "ok": True,
+        "date": today.isoformat(),
+        "generatedAt": datetime.now().isoformat(timespec="seconds"),
+        "events": events,
+    }
+
+
+def print_today(_args):
+    print(json.dumps(load_events(), ensure_ascii=False))
+    return 0
+
+
+def notification_state_path():
+    return state_dir() / "google-calendar-notifications.json"
+
+
+def load_notification_state():
+    path = notification_state_path()
+    try:
+        return json.loads(path.read_text())
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+
+def save_notification_state(state):
+    path = notification_state_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(state, indent=2, sort_keys=True))
+
+
+def notification_key(event, minutes):
+    return f"{date.today().isoformat()}:{event['id']}:{minutes}"
+
+
+def notify(event, minutes):
+    if not shutil.which("notify-send"):
+        return
+
+    title = f"{event['title']} in {minutes} minute{'s' if minutes != 1 else ''}"
+    body = event["timeLabel"]
+    if event.get("location"):
+        body = f"{body} - {event['location']}"
+
+    subprocess.run(
+        [
+            "notify-send",
+            "-a",
+            APP_NAME,
+            "-i",
+            "x-office-calendar",
+            title,
+            body,
+        ],
+        check=False,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+
+
+def parse_thresholds(raw):
+    thresholds = []
+    for piece in raw.split(","):
+        piece = piece.strip()
+        if piece:
+            thresholds.append(int(piece))
+    return sorted(set(thresholds), reverse=True)
+
+
+def check_notifications(thresholds, poll_interval):
+    payload = load_events()
+    if not payload.get("ok"):
+        return
+
+    now = datetime.now()
+    window_seconds = max(75, poll_interval + 15)
+    state = load_notification_state()
+    today_prefix = f"{date.today().isoformat()}:"
+
+    state = {
+        key: value
+        for key, value in state.items()
+        if key.startswith(today_prefix)
+    }
+
+    for event in payload["events"]:
+        if event["allDay"]:
+            continue
+
+        start = datetime.fromisoformat(event["start"])
+        remaining = (start - now).total_seconds()
+        if remaining <= 0:
+            continue
+
+        for minutes in thresholds:
+            target = minutes * 60
+            key = notification_key(event, minutes)
+            if key in state:
+                continue
+            if target - window_seconds < remaining <= target:
+                notify(event, minutes)
+                state[key] = datetime.now().isoformat(timespec="seconds")
+
+    save_notification_state(state)
+
+
+def watch(args):
+    thresholds = parse_thresholds(args.thresholds)
+    poll_interval = max(15, args.interval)
+
+    while True:
+        check_notifications(thresholds, poll_interval)
+        time.sleep(poll_interval)
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Nika Google Calendar helper")
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    today_parser = subparsers.add_parser("today", help="print today's events as JSON")
+    today_parser.set_defaults(func=print_today)
+
+    watch_parser = subparsers.add_parser("watch", help="notify before today's meetings")
+    watch_parser.add_argument("--thresholds", default="10,5,1")
+    watch_parser.add_argument("--interval", type=int, default=30)
+    watch_parser.set_defaults(func=watch)
+
+    args = parser.parse_args()
+    return args.func(args)
+
+
+if __name__ == "__main__":
+    sys.exit(main())

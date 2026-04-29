@@ -7,6 +7,8 @@ Item {
     anchors.verticalCenter: parent ? parent.verticalCenter : undefined
     property var theme: ({})
     property var settings: null
+    property var barWindow: null
+    property bool barOnBottom: false
     property bool quietMode: false
     readonly property bool use24h: settings ? settings.clockUse24h : true
 
@@ -80,14 +82,33 @@ Item {
         Text {
             id:             dateText
             anchors.verticalCenter: parent.verticalCenter
-            color:          theme.muted || "#585b70"
+            color:          theme.fg || "#cdd6f4"
             font.pixelSize: 11
             font.family:    "JetBrainsMono Nerd Font"
+        }
+
+        Rectangle {
+            width:                  1
+            height:                 10
+            color:                  theme.dim || "#45475a"
+            opacity:                0.5
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        GoogleCalendar {
+            anchors.verticalCenter: parent.verticalCenter
+            barWindow: root.barWindow
+            barOnBottom: root.barOnBottom
+            quietMode: root.quietMode
+            theme: root.theme
         }
     }
 
     MouseArea {
-        anchors.fill: parent
+        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+        width: Math.max(0, dateText.x + dateText.width)
+        height: parent.height
         hoverEnabled: true
         onEntered:    calWindow.showing = true
         onExited:     hideTimer.start()
