@@ -33,6 +33,8 @@ tsconfig.json
 .cursor*
 .claude*
 .codex*
+!.codex-plugin/
+!.codex-plugin/**
 
 # Mise (local Ruby version management)
 mise.toml
