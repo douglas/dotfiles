@@ -498,6 +498,7 @@ Item {
         spacing: 6
 
         Item {
+            id: compactDotSlot
             width: 12
             height: 14
             anchors.verticalCenter: parent.verticalCenter
@@ -531,7 +532,7 @@ Item {
 
         Item {
             width: root.titleVisible ? 94 : 0
-            height: 14
+            height: compactDotSlot.height
             clip: true
             visible: root.titleVisible
             anchors.verticalCenter: parent.verticalCenter
@@ -539,10 +540,13 @@ Item {
             Text {
                 id: titleTxt
                 anchors.verticalCenter: parent.verticalCenter
+                anchors.verticalCenterOffset: -1
+                height: parent.height
                 text: root.trackTitle
                 color: root.fg
                 font.pixelSize: 10
                 font.family: "JetBrainsMono Nerd Font"
+                verticalAlignment: Text.AlignVCenter
 
                 onTextChanged: x = 0
 
@@ -562,6 +566,13 @@ Item {
                         easing.type: Easing.Linear
                     }
                 }
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.LeftButton
+                cursorShape: Qt.PointingHandCursor
+                onClicked: root.toggleTitleVisible()
             }
         }
     }

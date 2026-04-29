@@ -21,6 +21,7 @@ ShellRoot {
     readonly property string omarchyThemeColorsPath: omarchyCurrentDir + "/theme/colors.toml"
     readonly property real uiScale: Math.min(2.5, envScale("QS_UI_SCALE", 0.0))
     readonly property real uiScaleMultiplier: Math.max(0.25, Math.min(2.5, envScale("QS_UI_SCALE_MULTIPLIER", 0.6)))
+    readonly property real barScaleMultiplier: Math.max(0.25, Math.min(2.5, envScale("QS_BAR_SCALE_MULTIPLIER", uiScaleMultiplier)))
     readonly property real popupScale: Math.max(1.0, Math.min(2.5, envScale("QS_POPUP_SCALE", uiScale > 0 ? uiScale : 1.0)))
     property bool overviewActive: false
 
@@ -186,7 +187,7 @@ ShellRoot {
         powerActions: powerActions
         settings: settingsState
         uiScale: shell.uiScale
-        uiScaleMultiplier: shell.uiScaleMultiplier
+        uiScaleMultiplier: shell.barScaleMultiplier
         bg:        shell.bg
         fg:        shell.fg
         accent:    shell.accent

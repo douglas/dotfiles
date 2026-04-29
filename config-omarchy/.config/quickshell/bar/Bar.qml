@@ -53,7 +53,7 @@ PanelWindow {
     readonly property real detectedScale: screen && screen.devicePixelRatio > 0
         ? screen.devicePixelRatio
         : 1.0
-    readonly property real scaleFactor: Math.max(1.0, uiScale > 0 ? uiScale : detectedScale * uiScaleMultiplier)
+    readonly property real scaleFactor: Math.max(0.88, uiScale > 0 ? uiScale : detectedScale * uiScaleMultiplier)
 
     function px(value) {
         return Math.round(value * scaleFactor)
