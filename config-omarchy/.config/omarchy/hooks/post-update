@@ -26,12 +26,78 @@ fi
 
 git checkout -- .
 
+rebuild_hyprtasking_if_needed() {
+  local repo="$HOME/src/hyprtasking"
+  local build="$repo/build"
+  local plugin="$build/libhyprtasking.so"
+  local state_dir="$HOME/.local/state/hyprtasking"
+  local stamp_file="$state_dir/hyprland-abi.stamp"
+
+  [ -d "$repo" ] || return 0
+
+  if ! command -v meson >/dev/null 2>&1; then
+    echo "Hyprtasking: meson not found; skipping rebuild"
+    return 0
+  fi
+
+  if ! command -v rg >/dev/null 2>&1; then
+    echo "Hyprtasking: rg not found; skipping unresolved library check"
+  fi
+
+  mkdir -p "$state_dir"
+
+  local stamp
+  stamp="$(
+    pacman -Q hyprland hyprutils hyprlang hyprgraphics hyprcursor aquamarine 2>/dev/null
+    git -C "$repo" rev-parse HEAD 2>/dev/null
+  )"
+
+  local old_stamp=""
+  [ -f "$stamp_file" ] && old_stamp="$(< "$stamp_file")"
+
+  local needs_rebuild=0
+  [ "$stamp" != "$old_stamp" ] && needs_rebuild=1
+  [ ! -x "$plugin" ] && needs_rebuild=1
+
+  if [ -x "$plugin" ] && command -v rg >/dev/null 2>&1 &&
+    ldd "$plugin" 2>/dev/null | rg -q "not found"; then
+    needs_rebuild=1
+  fi
+
+  [ "$needs_rebuild" = 1 ] || return 0
+
+  echo "Hyprtasking: rebuilding for current Hyprland stack"
+
+  if [ -f "$build/build.ninja" ]; then
+    meson setup "$build" "$repo" --reconfigure
+  else
+    meson setup "$build" "$repo"
+  fi
+
+  meson compile -C "$build"
+  meson test -C "$build"
+
+  printf '%s\n' "$stamp" > "$stamp_file"
+
+  if command -v hyprctl >/dev/null 2>&1 && hyprctl instances >/dev/null 2>&1; then
+    if command -v rg >/dev/null 2>&1 &&
+      hyprctl plugin list 2>/dev/null | rg -q "hyprtasking|$plugin"; then
+      hyprctl plugin unload "$plugin" || true
+    fi
+
+    hyprctl plugin load "$plugin" || true
+    hyprctl keyword source "$HOME/.config/hypr/personal-hyprtasking.conf" || true
+  fi
+}
+
+rebuild_hyprtasking_if_needed
+
 # Zscaler's ZSTray links against a pinned libvpx.so version that system
 # upgrades can bump.  Create a compat symlink so ZSTray keeps launching.
 zs_needed=$(readelf -d /opt/zscaler/bin/ZSTray.Deb 2>/dev/null \
   | sed -n 's/.*\[libvpx\.so\.\([0-9]*\)\].*/\1/p')
 if [ -n "$zs_needed" ] && [ ! -e "/usr/lib/libvpx.so.${zs_needed}" ]; then
-  zs_current=$(ls /usr/lib/libvpx.so.* 2>/dev/null | head -1)
+  zs_current=$(fd -a '^libvpx\.so\..+' /usr/lib -d 1 2>/dev/null | head -n 1)
   if [ -n "$zs_current" ]; then
     sudo ln -sf "$zs_current" "/usr/lib/libvpx.so.${zs_needed}"
     echo "Zscaler: symlinked libvpx.so.${zs_needed} -> $zs_current"
