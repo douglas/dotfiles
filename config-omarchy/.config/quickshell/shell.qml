@@ -254,6 +254,7 @@ ShellRoot {
     PicturesOverlay {
         id: picturesOverlay
         theme: shell.palette
+        settings: settingsState
         uiScale: shell.popupScale
     }
 

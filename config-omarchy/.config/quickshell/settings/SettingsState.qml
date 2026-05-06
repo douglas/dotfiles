@@ -33,6 +33,7 @@ Item {
     property bool dockAutoHide: false
     property bool rememberSettingsWindowPosition: false
     property bool openSettingsOnGeneralAlways: true
+    property int picturesImageLimit: 10
     property bool loaded: false
     property string settingsPath: settingsDir + "/settings.json"
     property int saveDelayMs: 500
@@ -61,7 +62,8 @@ Item {
         dockEnabled: true,
         dockAutoHide: false,
         rememberSettingsWindowPosition: false,
-        openSettingsOnGeneralAlways: true
+        openSettingsOnGeneralAlways: true,
+        picturesImageLimit: 10
     })
 
     function _applyDefaults() {
@@ -90,6 +92,7 @@ Item {
         dockAutoHide = defaults.dockAutoHide
         rememberSettingsWindowPosition = defaults.rememberSettingsWindowPosition
         openSettingsOnGeneralAlways = defaults.openSettingsOnGeneralAlways
+        picturesImageLimit = defaults.picturesImageLimit
     }
 
     function _apply(raw) {
@@ -153,6 +156,8 @@ Item {
                 rememberSettingsWindowPosition = data.rememberSettingsWindowPosition
             if (typeof data.openSettingsOnGeneralAlways === "boolean")
                 openSettingsOnGeneralAlways = data.openSettingsOnGeneralAlways
+            if (typeof data.picturesImageLimit === "number")
+                picturesImageLimit = Math.max(1, Math.min(50, Math.round(data.picturesImageLimit)))
         } catch (e) {
             // keep defaults when the file is missing or malformed
             _applyDefaults()
@@ -186,7 +191,8 @@ Item {
             dockEnabled: dockEnabled,
             dockAutoHide: dockAutoHide,
             rememberSettingsWindowPosition: rememberSettingsWindowPosition,
-            openSettingsOnGeneralAlways: openSettingsOnGeneralAlways
+            openSettingsOnGeneralAlways: openSettingsOnGeneralAlways,
+            picturesImageLimit: picturesImageLimit
         }, null, 2)
 
         Quickshell.execDetached([
@@ -237,6 +243,7 @@ Item {
     onDockAutoHideChanged: save()
     onRememberSettingsWindowPositionChanged: save()
     onOpenSettingsOnGeneralAlwaysChanged: save()
+    onPicturesImageLimitChanged: save()
 
     Timer {
         id: saveTimer

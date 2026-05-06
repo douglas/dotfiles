@@ -9,19 +9,17 @@ FloatingWindow {
 
     property bool showing: false
     property var theme: ({})
+    property var settings: null
     property real uiScale: 1.0
     property var images: []
     property int selectedIdx: 0
+    property bool settingsOpen: false
+    readonly property int imageLimit: settings && typeof settings.picturesImageLimit === "number"
+        ? Math.max(1, Math.min(50, Math.round(settings.picturesImageLimit)))
+        : 10
     readonly property var selectedImage: images.length > 0
         ? images[Math.max(0, Math.min(selectedIdx, images.length - 1))]
         : ({})
-
-    readonly property string scanScript: '
-fd -H -L -t f \
-  -e jpg -e jpeg -e png -e webp -e gif -e bmp -e heic -e avif \
-  . "$HOME/Pictures" \
-  -x stat -c "%Y|%n" 2>/dev/null | sort -t "|" -k 1,1nr | awk "NR <= 10"
-'
 
     title: "Quickshell Pictures"
     color: "transparent"
@@ -61,6 +59,21 @@ fd -H -L -t f \
         imageScanner.running = true
     }
 
+    function scanScript() {
+        return "fd -H -L -t f " +
+            "-e jpg -e jpeg -e png -e webp -e gif -e bmp -e heic -e avif " +
+            ". \"$HOME/Pictures\" " +
+            "-x stat -c \"%Y|%n\" 2>/dev/null | sort -t \"|\" -k 1,1nr | awk \"NR <= " +
+            imageLimit + "\""
+    }
+
+    function setImageLimit(value) {
+        const next = Math.max(1, Math.min(50, Math.round(value)))
+        if (settings)
+            settings.picturesImageLimit = next
+        reload()
+    }
+
     function openImage(path) {
         if (!path || path === "")
             return
@@ -77,7 +90,7 @@ fd -H -L -t f \
 
     Process {
         id: imageScanner
-        command: ["bash", "-lc", root.scanScript]
+        command: ["bash", "-lc", root.scanScript()]
         running: false
         stdout: SplitParser {
             property var buf: []
@@ -127,7 +140,7 @@ fd -H -L -t f \
         Rectangle {
             id: card
             anchors.fill: parent
-            radius: 12
+            radius: 0
             color: theme.bg || "#1e1e2e"
             border.color: theme.dim || "#45475a"
             border.width: 1
@@ -165,6 +178,33 @@ fd -H -L -t f \
                         color: Qt.alpha(theme.muted || "#585b70", 0.55)
                         font.pixelSize: 9
                         font.family: "JetBrainsMono Nerd Font"
+                    }
+
+                    Rectangle {
+                        Layout.preferredWidth: 22
+                        Layout.preferredHeight: 22
+                        radius: 0
+                        color: root.settingsOpen
+                            ? Qt.alpha(theme.accent || "#89b4fa", 0.18)
+                            : "transparent"
+                        border.width: root.settingsOpen ? 1 : 0
+                        border.color: Qt.alpha(theme.accent || "#89b4fa", 0.45)
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: ""
+                            color: root.settingsOpen
+                                ? (theme.accent || "#89b4fa")
+                                : Qt.alpha(theme.muted || "#585b70", 0.75)
+                            font.pixelSize: 10
+                            font.family: "JetBrainsMono Nerd Font"
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.settingsOpen = !root.settingsOpen
+                        }
                     }
 
                     Text {
@@ -206,7 +246,7 @@ fd -H -L -t f \
                         id: previewPane
                         Layout.fillWidth: true
                         Layout.fillHeight: true
-                        radius: 10
+                        radius: 0
                         color: Qt.alpha(theme.dim || "#45475a", 0.24)
                         border.width: 1
                         border.color: Qt.alpha(theme.dim || "#45475a", 0.65)
@@ -247,7 +287,7 @@ fd -H -L -t f \
 
                                     Rectangle {
                                         anchors.fill: parent
-                                        radius: 8
+                                        radius: 0
                                         color: theme.bg || "#1e1e2e"
                                         clip: true
 
@@ -313,7 +353,7 @@ fd -H -L -t f \
                         id: stripPane
                         Layout.preferredWidth: 214
                         Layout.fillHeight: true
-                        radius: 10
+                        radius: 0
                         color: Qt.alpha(theme.dim || "#45475a", 0.18)
                         border.width: 1
                         border.color: Qt.alpha(theme.dim || "#45475a", 0.55)
@@ -366,7 +406,7 @@ fd -H -L -t f \
 
                                     Rectangle {
                                         anchors.fill: parent
-                                        radius: 8
+                                        radius: 0
                                         color: selected
                                             ? Qt.alpha(theme.accent || "#89b4fa", 0.17)
                                             : Qt.alpha(theme.dim || "#45475a", hovered ? 0.34 : 0.22)
@@ -384,7 +424,7 @@ fd -H -L -t f \
                                             Rectangle {
                                                 Layout.preferredWidth: 82
                                                 Layout.fillHeight: true
-                                                radius: 6
+                                                radius: 0
                                                 color: theme.bg || "#1e1e2e"
                                                 clip: true
 
@@ -464,11 +504,98 @@ fd -H -L -t f \
                     }
                 }
             }
+
+            Rectangle {
+                id: settingsPanel
+                visible: root.settingsOpen
+                z: 20
+                width: 236
+                height: 86
+                anchors.top: parent.top
+                anchors.right: parent.right
+                anchors.topMargin: 42
+                anchors.rightMargin: 14
+                radius: 0
+                color: theme.bg || "#1e1e2e"
+                border.width: 1
+                border.color: Qt.alpha(theme.accent || "#89b4fa", 0.42)
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {}
+                }
+
+                ColumnLayout {
+                    anchors.fill: parent
+                    anchors.margins: 12
+                    spacing: 10
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 8
+
+                        Text {
+                            Layout.fillWidth: true
+                            text: "Images to load"
+                            color: theme.fg || "#cdd6f4"
+                            font.pixelSize: 10
+                            font.family: "JetBrainsMono Nerd Font"
+                            font.weight: Font.Medium
+                        }
+
+                        Text {
+                            text: root.imageLimit
+                            color: theme.accent || "#89b4fa"
+                            font.pixelSize: 12
+                            font.family: "JetBrainsMono Nerd Font"
+                            font.weight: Font.DemiBold
+                        }
+                    }
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 8
+
+                        Repeater {
+                            model: [
+                                { label: "-5", delta: -5 },
+                                { label: "-1", delta: -1 },
+                                { label: "+1", delta: 1 },
+                                { label: "+5", delta: 5 }
+                            ]
+
+                            Rectangle {
+                                Layout.fillWidth: true
+                                height: 28
+                                radius: 0
+                                color: Qt.alpha(theme.dim || "#45475a", 0.34)
+                                border.width: 1
+                                border.color: Qt.alpha(theme.dim || "#45475a", 0.7)
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: modelData.label
+                                    color: theme.fg || "#cdd6f4"
+                                    font.pixelSize: 9
+                                    font.family: "JetBrainsMono Nerd Font"
+                                }
+
+                                MouseArea {
+                                    anchors.fill: parent
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: root.setImageLimit(root.imageLimit + modelData.delta)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
     onShowingChanged: {
         if (showing) {
+            root.settingsOpen = false
             root.reload()
             focusTimer.start()
         }
