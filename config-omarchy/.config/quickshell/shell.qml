@@ -251,6 +251,12 @@ ShellRoot {
         uiScale: shell.popupScale
     }
 
+    PicturesOverlay {
+        id: picturesOverlay
+        theme: shell.palette
+        uiScale: shell.popupScale
+    }
+
     EmojiPicker {
         id: emojiPicker
         theme: shell.palette
@@ -590,6 +596,13 @@ ShellRoot {
         target: "openClipboard"
         function handle() {
             clipboardManager.showing = true
+        }
+    }
+
+    IpcHandler {
+        target: "openPictures"
+        function handle() {
+            picturesOverlay.showing = !picturesOverlay.showing
         }
     }
 
