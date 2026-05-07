@@ -9,6 +9,8 @@ Item {
     property var settings: null
     property var barWindow: null
     property bool barOnBottom: false
+    property int overlayBarOffset: 44
+    property real overlayScale: 1.18
     property bool quietMode: false
     readonly property bool use24h: settings ? settings.clockUse24h : true
 
@@ -99,6 +101,8 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             barWindow: root.barWindow
             barOnBottom: root.barOnBottom
+            overlayBarOffset: root.overlayBarOffset
+            overlayScale: root.overlayScale
             quietMode: root.quietMode
             theme: root.theme
         }

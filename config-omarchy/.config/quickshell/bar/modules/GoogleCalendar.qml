@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
+import Quickshell.Wayland
 
 Item {
     id: root
@@ -9,6 +10,8 @@ Item {
     property var theme: ({})
     property var barWindow: null
     property bool barOnBottom: false
+    property int overlayBarOffset: 44
+    property real overlayScale: 1.18
     property bool quietMode: false
     property bool showing: false
     property bool loading: false
@@ -28,8 +31,8 @@ Item {
     readonly property color cGreen: theme.green || "#a6e3a1"
     readonly property color cRed: theme.red || "#f38ba8"
     readonly property color cYellow: theme.yellow || "#f9e2af"
-    readonly property int popupW: 390
-    readonly property int popupH: Math.min(460, Math.max(170, 94 + displayEvents.length * 58))
+    readonly property int popupW: overlayPx(260)
+    readonly property int popupH: overlayPx(Math.min(408, Math.max(170, 120 + Math.max(1, displayEvents.length) * 48)))
     readonly property int nextSeconds: nextEventSeconds()
     readonly property int nextMinutes: nextEventMinutes()
     readonly property bool urgentMeeting: nextSeconds > 0 && nextSeconds < 600
@@ -43,6 +46,10 @@ Item {
 
     implicitWidth: iconRow.implicitWidth
     implicitHeight: 28
+
+    function overlayPx(value) {
+        return Math.round(value * Math.max(1.0, overlayScale))
+    }
 
     function refresh() {
         if (loading || quietMode)
@@ -283,82 +290,151 @@ Item {
         onClicked: root.showing = !root.showing
     }
 
-    PopupWindow {
+    WlrLayershell {
+        visible: root.showing && !root.quietMode
+        color: "transparent"
+        anchors {
+            left: true
+            right: true
+            top: true
+            bottom: true
+        }
+        margins {
+            top: !root.barOnBottom ? root.overlayBarOffset : 0
+            bottom: root.barOnBottom ? root.overlayBarOffset : 0
+        }
+        layer: WlrLayer.Top
+        keyboardFocus: WlrKeyboardFocus.None
+        exclusionMode: ExclusionMode.Ignore
+        namespace: "google-calendar-dismiss"
+
+        MouseArea {
+            anchors.fill: parent
+            acceptedButtons: Qt.LeftButton
+            onClicked: root.showing = false
+        }
+    }
+
+    WlrLayershell {
         id: popup
-        visible: root.showing && !root.quietMode && root.barWindow !== null
+        visible: root.showing && !root.quietMode
         color: "transparent"
         implicitWidth: root.popupW
         implicitHeight: root.popupH
-        anchor.window: root.barWindow
-        anchor.rect.x: root.barWindow
-            ? Math.max(12, Math.min(root.barWindow.width - width - 12, root.mapToItem(null, 0, 0).x + root.width / 2 - width / 2))
-            : 0
-        anchor.rect.y: root.barOnBottom ? -(height + 8) : ((root.barWindow ? root.barWindow.height : 0) + 8)
+
+        anchors {
+            top: !root.barOnBottom
+            bottom: root.barOnBottom
+            left: true
+            right: true
+        }
+        margins {
+            top: !root.barOnBottom ? root.overlayBarOffset : 0
+            bottom: root.barOnBottom ? root.overlayBarOffset : 0
+        }
+        layer: WlrLayer.Overlay
+        keyboardFocus: WlrKeyboardFocus.OnDemand
+        exclusionMode: ExclusionMode.Ignore
+        namespace: "google-calendar-overlay"
 
         Rectangle {
-            anchors.fill: parent
+            width: root.popupW
+            height: root.popupH
+            anchors.centerIn: parent
             radius: 12
             color: root.cBg
-            border.color: root.cDim
+            border.color: Qt.alpha(root.cDim, 0.8)
             border.width: 1
             clip: true
 
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.LeftButton
+                onClicked: {}
+            }
+
             ColumnLayout {
                 anchors.fill: parent
-                anchors.margins: 14
-                spacing: 10
+                anchors.margins: root.overlayPx(14)
+                spacing: root.overlayPx(10)
 
                 RowLayout {
                     Layout.fillWidth: true
+                    Layout.preferredWidth: parent.width
                     spacing: 10
+
+                    Text {
+                        text: "󰸗"
+                        color: root.cAccent
+                        font.pixelSize: root.overlayPx(18)
+                        font.family: "JetBrainsMono Nerd Font"
+                        Layout.alignment: Qt.AlignVCenter
+                    }
 
                     ColumnLayout {
                         Layout.fillWidth: true
-                        spacing: 2
+                        Layout.alignment: Qt.AlignVCenter
+                        spacing: 0
 
                         Text {
                             text: "Today"
                             color: root.cFg
-                            font.pixelSize: 14
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: root.overlayPx(12)
+                            font.family: "JetBrainsMono Nerd Font Propo"
                             font.weight: Font.DemiBold
                         }
 
                         Text {
                             text: root.statusText
                             color: root.ok ? root.cMuted : root.cRed
-                            font.pixelSize: 10
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: root.overlayPx(10)
+                            font.family: "JetBrainsMono Nerd Font Propo"
                             elide: Text.ElideRight
                             Layout.fillWidth: true
                         }
                     }
 
-                    Text {
-                        text: root.loading ? "󰔟" : "󰑐"
-                        color: root.cMuted
-                        font.pixelSize: 13
-                        font.family: "JetBrainsMono Nerd Font"
-
-                        MouseArea {
-                            anchors.fill: parent
-                            anchors.margins: -7
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: root.refresh()
-                        }
+                    Item {
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: 0
                     }
 
-                    Text {
-                        text: "󰅖"
-                        color: root.cMuted
-                        font.pixelSize: 13
-                        font.family: "JetBrainsMono Nerd Font"
+                    Row {
+                        Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                        spacing: root.overlayPx(12)
 
-                        MouseArea {
-                            anchors.fill: parent
-                            anchors.margins: -7
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: root.showing = false
+                        Text {
+                            text: root.loading ? "󰔟" : ""
+                            color: refreshHover.containsMouse ? root.cAccent : root.cMuted
+                            font.pixelSize: root.overlayPx(13)
+                            font.family: "JetBrainsMono Nerd Font"
+                            Behavior on color { ColorAnimation { duration: 120 } }
+
+                            MouseArea {
+                                id: refreshHover
+                                anchors.fill: parent
+                                anchors.margins: -7
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: root.refresh()
+                            }
+                        }
+
+                        Text {
+                            text: "󰅖"
+                            color: closeHover.containsMouse ? root.cRed : root.cMuted
+                            font.pixelSize: root.overlayPx(13)
+                            font.family: "JetBrainsMono Nerd Font"
+                            Behavior on color { ColorAnimation { duration: 120 } }
+
+                            MouseArea {
+                                id: closeHover
+                                anchors.fill: parent
+                                anchors.margins: -7
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: root.showing = false
+                            }
                         }
                     }
                 }
@@ -366,124 +442,128 @@ Item {
                 Rectangle {
                     Layout.fillWidth: true
                     height: 1
-                    color: Qt.alpha(root.cFg, 0.10)
+                    color: Qt.alpha(root.cDim, 0.55)
                 }
 
-                Flickable {
+                RowLayout {
+                    Layout.fillWidth: true
+
+                    Text {
+                        text: "Events"
+                        color: root.cFg
+                        font.pixelSize: root.overlayPx(12)
+                        font.family: "JetBrainsMono Nerd Font Propo"
+                        font.weight: Font.DemiBold
+                        Layout.fillWidth: true
+                    }
+                }
+
+                ListView {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     clip: true
-                    contentWidth: width
-                    contentHeight: eventColumn.implicitHeight
-                    boundsBehavior: Flickable.StopAtBounds
+                    spacing: root.overlayPx(6)
+                    model: root.displayEvents
 
-                    Column {
-                        id: eventColumn
-                        width: parent.width
-                        spacing: 6
+                    delegate: Rectangle {
+                        required property var modelData
 
-                        Item {
-                            width: parent.width
-                            height: 62
-                            visible: !root.ok || root.displayEvents.length === 0
+                        id: row
+                        width: ListView.view.width
+                        height: root.overlayPx(42)
+                        radius: 8
+                        color: rowHover.hovered ? Qt.rgba(1, 1, 1, 0.045) : Qt.rgba(1, 1, 1, 0.022)
+                        border.color: Qt.rgba(1, 1, 1, 0.045)
+                        border.width: 1
 
-                            Text {
-                                anchors.centerIn: parent
-                                width: parent.width - 20
-                                text: root.ok ? "No events scheduled for today" : root.errorText
-                                color: root.ok ? root.cMuted : root.cRed
-                                font.pixelSize: 10
-                                font.family: "JetBrainsMono Nerd Font"
-                                horizontalAlignment: Text.AlignHCenter
-                                wrapMode: Text.WordWrap
-                            }
+                        HoverHandler { id: rowHover }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            hoverEnabled: false
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.openUrl(row.modelData.openUrl)
                         }
 
-                        Repeater {
-                            model: root.displayEvents.length
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.leftMargin: root.overlayPx(10)
+                            anchors.rightMargin: root.overlayPx(8)
+                            spacing: root.overlayPx(8)
 
                             Rectangle {
-                                id: row
-                                width: eventColumn.width
-                                height: 52
-                                radius: 9
-                                color: rowMouse.containsMouse ? Qt.alpha(root.cFg, 0.06) : Qt.alpha(root.cFg, 0.025)
-                                border.color: Qt.alpha(root.cFg, rowMouse.containsMouse ? 0.16 : 0.08)
-                                border.width: 1
+                                Layout.preferredWidth: 4
+                                Layout.fillHeight: true
+                                Layout.topMargin: root.overlayPx(9)
+                                Layout.bottomMargin: root.overlayPx(9)
+                                radius: 2
+                                color: root.eventAccentColor(row.modelData)
+                            }
 
-                                property var event: root.displayEvents[index]
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 3
 
-                                MouseArea {
-                                    id: rowMouse
-                                    anchors.fill: parent
-                                    hoverEnabled: true
-                                    cursorShape: Qt.PointingHandCursor
-                                    onClicked: root.openUrl(row.event.openUrl)
+                                Text {
+                                    text: row.modelData.title
+                                    color: root.cFg
+                                    font.pixelSize: root.overlayPx(12)
+                                    font.family: "JetBrainsMono Nerd Font Propo"
+                                    font.weight: Font.Medium
+                                    elide: Text.ElideRight
+                                    Layout.fillWidth: true
                                 }
 
-                                RowLayout {
-                                    anchors.fill: parent
-                                    anchors.leftMargin: 10
-                                    anchors.rightMargin: 9
-                                    spacing: 10
-
-                                    Rectangle {
-                                        Layout.preferredWidth: 4
-                                        Layout.fillHeight: true
-                                        Layout.topMargin: 10
-                                        Layout.bottomMargin: 10
-                                        radius: 2
-                                        color: root.eventAccentColor(row.event)
-                                    }
-
-                                    ColumnLayout {
-                                        Layout.fillWidth: true
-                                        spacing: 3
-
-                                        Text {
-                                            text: row.event.title
-                                            color: root.cFg
-                                            font.pixelSize: 11
-                                            font.family: "JetBrainsMono Nerd Font"
-                                            font.weight: Font.Medium
-                                            elide: Text.ElideRight
-                                            Layout.fillWidth: true
-                                        }
-
-                                        Text {
-                                            text: root.rowSubtext(row.event)
-                                            color: root.cMuted
-                                            font.pixelSize: 9
-                                            font.family: "JetBrainsMono Nerd Font"
-                                            elide: Text.ElideRight
-                                            Layout.fillWidth: true
-                                        }
-                                    }
-
-                                    Text {
-                                        visible: row.event.conferenceUrl && row.event.conferenceUrl.length > 0
-                                        text: "󰍫"
-                                        color: root.cAccent
-                                        font.pixelSize: 13
-                                        font.family: "JetBrainsMono Nerd Font"
-
-                                        MouseArea {
-                                            anchors.fill: parent
-                                            anchors.margins: -8
-                                            cursorShape: Qt.PointingHandCursor
-                                            onClicked: root.openUrl(row.event.conferenceUrl)
-                                        }
-                                    }
-
-                                    Text {
-                                        text: "󰏌"
-                                        color: root.cMuted
-                                        font.pixelSize: 12
-                                        font.family: "JetBrainsMono Nerd Font"
-                                    }
+                                Text {
+                                    text: root.rowSubtext(row.modelData)
+                                    color: root.cMuted
+                                    font.pixelSize: root.overlayPx(10)
+                                    font.family: "JetBrainsMono Nerd Font Propo"
+                                    elide: Text.ElideRight
+                                    Layout.fillWidth: true
                                 }
                             }
+
+                            Text {
+                                visible: row.modelData.conferenceUrl && row.modelData.conferenceUrl.length > 0
+                                text: "󰍫"
+                                color: root.cAccent
+                                font.pixelSize: root.overlayPx(13)
+                                font.family: "JetBrainsMono Nerd Font"
+
+                                MouseArea {
+                                    anchors.fill: parent
+                                    anchors.margins: -7
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: root.openUrl(row.modelData.conferenceUrl)
+                                }
+                            }
+
+                            Text {
+                                text: "󰏌"
+                                color: root.cMuted
+                                font.pixelSize: root.overlayPx(13)
+                                font.family: "JetBrainsMono Nerd Font"
+                            }
                         }
+                    }
+                }
+
+                Item {
+                    visible: !root.ok || root.displayEvents.length === 0
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+                    Text {
+                        anchors.centerIn: parent
+                        width: parent.width - root.overlayPx(20)
+                        text: root.ok ? "No events scheduled for today" : root.errorText
+                        color: root.ok ? root.cMuted : root.cRed
+                        font.pixelSize: root.overlayPx(12)
+                        font.family: "JetBrainsMono Nerd Font Propo"
+                        horizontalAlignment: Text.AlignHCenter
+                        wrapMode: Text.WordWrap
+                        opacity: 0.65
                     }
                 }
             }

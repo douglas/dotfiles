@@ -167,6 +167,8 @@ PanelWindow {
             anchors.centerIn: parent
             barWindow: root
             barOnBottom: root.barOnBottom
+            overlayBarOffset: root.px(root.reservedSpace + 6)
+            overlayScale: root.scaleFactor
             quietMode: root.quietMode
             settings: root.settings
             theme: ({
