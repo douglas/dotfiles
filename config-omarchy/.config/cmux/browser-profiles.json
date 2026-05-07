@@ -1,0 +1,8 @@
+{
+  "profiles": [
+    {
+      "name": "Default",
+      "is_default": true
+    }
+  ]
+}

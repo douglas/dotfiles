@@ -1,0 +1,33 @@
+{
+  "name": "framework-desktop",
+  "created_at": "2026-04-13T21:07:56.220683037Z",
+  "updated_at": "2026-04-13T21:07:56.22116851Z",
+  "outputs": [
+    {
+      "key": "lenovo group limited|p40wd-40|vkvw7543",
+      "name": "DP-8",
+      "make": "Lenovo Group Limited",
+      "model": "P40WD-40",
+      "serial": "VKVW7543",
+      "enabled": true,
+      "mode": "5120x2160@120.00Hz",
+      "width": 5120,
+      "height": 2160,
+      "refresh": 120,
+      "x": 0,
+      "y": 0,
+      "scale": 2,
+      "vrr": 1,
+      "transform": 0
+    }
+  ],
+  "workspaces": {
+    "enabled": false,
+    "strategy": "sequential",
+    "max_workspaces": 9,
+    "group_size": 3,
+    "monitor_order": [
+      "lenovo group limited|p40wd-40|vkvw7543"
+    ]
+  }
+}

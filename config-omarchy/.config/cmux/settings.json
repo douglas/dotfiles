@@ -1,0 +1,46 @@
+{
+  "theme": "omarchy",
+  "focus_follows_mouse": true,
+  "confirm_before_close": true,
+  "new_workspace_placement": "end",
+  "notifications": {
+    "sound_enabled": false,
+    "sound_name": "default",
+    "custom_command": null,
+    "reorder_on_notification": false
+  },
+  "socket_access": "cmux_only",
+  "sidebar": {
+    "show_git_branch": true,
+    "show_directory": true,
+    "show_pr_status": true,
+    "show_ports": true,
+    "show_logs": true,
+    "show_progress": true,
+    "show_status_pills": true,
+    "hide_all_details": false,
+    "branch_vertical_layout": false,
+    "show_notification_message": true,
+    "focus_style": "solid_fill",
+    "width": 0,
+    "tint_color": "",
+    "tint_color_light": "",
+    "tint_color_dark": ""
+  },
+  "browser": {
+    "search_engine": "google",
+    "home_url": "https://google.com",
+    "search_suggestions": true,
+    "http_allowlist": [],
+    "browser_theme": "system"
+  },
+  "first_click_focus": false,
+  "pane_attention_ring": true,
+  "pane_flash_enabled": true,
+  "link_routing": {
+    "default_target": "cmux_browser",
+    "external_patterns": []
+  },
+  "remote_ssh_enabled": false,
+  "persist_scrollback": true
+}

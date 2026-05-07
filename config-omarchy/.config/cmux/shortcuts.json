@@ -1,0 +1,88 @@
+{
+  "bindings": {
+    "workspace.close": {
+      "key": "W",
+      "ctrl": true,
+      "shift": true,
+      "alt": false
+    },
+    "workspace.latest_unread": {
+      "key": "U",
+      "ctrl": true,
+      "shift": true,
+      "alt": false
+    },
+    "pane.split_horizontal": {
+      "key": "D",
+      "ctrl": true,
+      "shift": true,
+      "alt": false
+    },
+    "workspace.move_up": {
+      "key": "Page_Up",
+      "ctrl": true,
+      "shift": true,
+      "alt": false
+    },
+    "pane.close": {
+      "key": "Q",
+      "ctrl": true,
+      "shift": true,
+      "alt": false
+    },
+    "settings": {
+      "key": "comma",
+      "ctrl": true,
+      "shift": false,
+      "alt": false
+    },
+    "find": {
+      "key": "f",
+      "ctrl": true,
+      "shift": false,
+      "alt": false
+    },
+    "workspace.rename": {
+      "key": "R",
+      "ctrl": true,
+      "shift": true,
+      "alt": false
+    },
+    "pane.focus_prev": {
+      "key": "bracketleft",
+      "ctrl": true,
+      "shift": true,
+      "alt": false
+    },
+    "pane.split_vertical": {
+      "key": "E",
+      "ctrl": true,
+      "shift": true,
+      "alt": false
+    },
+    "pane.focus_next": {
+      "key": "bracketright",
+      "ctrl": true,
+      "shift": true,
+      "alt": false
+    },
+    "workspace.move_down": {
+      "key": "Page_Down",
+      "ctrl": true,
+      "shift": true,
+      "alt": false
+    },
+    "notifications.toggle": {
+      "key": "I",
+      "ctrl": true,
+      "shift": true,
+      "alt": false
+    },
+    "workspace.new": {
+      "key": "T",
+      "ctrl": true,
+      "shift": true,
+      "alt": false
+    }
+  }
+}
