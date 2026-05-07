@@ -152,10 +152,10 @@ Item {
         command: [
             "bash",
             "-lc",
-            "helper=\"$HOME/.local/bin/nika-google-calendar\"; " +
+            "helper=\"$HOME/.local/bin/susanoo-google-calendar\"; " +
             "if [ -x \"$helper\" ]; then \"$helper\" today; " +
-            "elif command -v nika-google-calendar >/dev/null 2>&1; then nika-google-calendar today; " +
-            "else printf '%s\\n' '{\"ok\":false,\"error\":\"nika-google-calendar is not installed\",\"events\":[]}'; fi"
+            "elif command -v susanoo-google-calendar >/dev/null 2>&1; then susanoo-google-calendar today; " +
+            "else printf '%s\\n' '{\"ok\":false,\"error\":\"susanoo-google-calendar is not installed\",\"events\":[]}'; fi"
         ]
         running: false
         stdout: SplitParser {

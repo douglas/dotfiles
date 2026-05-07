@@ -341,9 +341,9 @@ ShellRoot {
         command: [
             "bash",
             "-lc",
-            "helper=\"$HOME/.local/bin/nika-google-calendar\"; " +
+            "helper=\"$HOME/.local/bin/susanoo-google-calendar\"; " +
             "if [ -x \"$helper\" ]; then exec \"$helper\" watch --thresholds 10,5,1; " +
-            "elif command -v nika-google-calendar >/dev/null 2>&1; then exec nika-google-calendar watch --thresholds 10,5,1; " +
+            "elif command -v susanoo-google-calendar >/dev/null 2>&1; then exec susanoo-google-calendar watch --thresholds 10,5,1; " +
             "else exec sleep infinity; fi"
         ]
         running: true
