@@ -28,5 +28,6 @@
   "dockAutoHide": true,
   "rememberSettingsWindowPosition": false,
   "openSettingsOnGeneralAlways": true,
-  "picturesImageLimit": 5
+  "picturesImageLimit": 5,
+  "downloadsFileLimit": 10
 }

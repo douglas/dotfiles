@@ -8,20 +8,53 @@ FloatingWindow {
     id: root
 
     property bool showing: false
+    property string mode: "pictures"
     property var theme: ({})
     property var settings: null
     property real uiScale: 1.0
-    property var images: []
+    property var files: []
+    property var picturesFiles: []
+    property var downloadsFiles: []
     property int selectedIdx: 0
     property bool settingsOpen: false
-    readonly property int imageLimit: settings && typeof settings.picturesImageLimit === "number"
-        ? Math.max(1, Math.min(50, Math.round(settings.picturesImageLimit)))
+    readonly property var imageExtensions: ["jpg", "jpeg", "png", "webp", "gif", "bmp", "heic", "avif"]
+    readonly property var profiles: ({
+        pictures: {
+            title: "Recent Pictures",
+            icon: "",
+            dir: "$HOME/Pictures",
+            extensions: root.imageExtensions,
+            recursive: true,
+            singular: "image",
+            plural: "images",
+            loadingText: "Loading pictures...",
+            emptyText: "No images found in ~/Pictures",
+            settingLabel: "Images to load"
+        },
+        downloads: {
+            title: "Recent Downloads",
+            icon: "",
+            dir: "$HOME/Downloads",
+            extensions: [],
+            recursive: false,
+            singular: "file",
+            plural: "files",
+            loadingText: "Loading downloads...",
+            emptyText: "No files found in ~/Downloads",
+            settingLabel: "Files to load"
+        }
+    })
+    readonly property var activeProfile: mode === "downloads" ? profiles.downloads : profiles.pictures
+    readonly property int fileLimit: settings
+        ? Math.max(1, Math.min(50, Math.round(mode === "downloads"
+            ? settings.downloadsFileLimit
+            : settings.picturesImageLimit)))
         : 10
-    readonly property var selectedImage: images.length > 0
-        ? images[Math.max(0, Math.min(selectedIdx, images.length - 1))]
+    readonly property var selectedFile: files.length > 0
+        ? files[Math.max(0, Math.min(selectedIdx, files.length - 1))]
         : ({})
 
-    title: "Quickshell Pictures"
+    title: "Quickshell Recent Files"
     color: "transparent"
     visible: showing
     implicitWidth: 980
@@ -39,6 +72,51 @@ FloatingWindow {
         return path && path !== "" ? "file://" + encodeURI(path) : ""
     }
 
+    function extension(path) {
+        const value = String(path || "")
+        const idx = value.lastIndexOf(".")
+        return idx >= 0 ? value.substring(idx + 1).toLowerCase() : ""
+    }
+
+    function isImagePath(path) {
+        return imageExtensions.indexOf(extension(path)) !== -1
+    }
+
+    function fileObject(path) {
+        const nameParts = path.split("/")
+        const ext = extension(path)
+        const image = isImagePath(path)
+        return {
+            path: path,
+            name: nameParts[nameParts.length - 1],
+            extension: ext,
+            isImage: image,
+            source: image ? fileUrl(path) : ""
+        }
+    }
+
+    function fileFromScanLine(line) {
+        const sep = line.indexOf("|")
+        if (sep === -1)
+            return null
+        return fileObject(line.substring(sep + 1))
+    }
+
+    function fileIcon(file) {
+        const ext = file.extension || ""
+        if (ext === "pdf")
+            return ""
+        if (["zip", "gz", "xz", "7z", "rar", "tar"].indexOf(ext) !== -1)
+            return ""
+        if (["mp4", "mkv", "mov", "webm"].indexOf(ext) !== -1)
+            return ""
+        if (["mp3", "flac", "wav", "ogg"].indexOf(ext) !== -1)
+            return ""
+        if (["txt", "md", "json", "csv", "log"].indexOf(ext) !== -1)
+            return ""
+        return ""
+    }
+
     function dragMimeData(path) {
         const url = fileUrl(path)
         return {
@@ -53,28 +131,95 @@ FloatingWindow {
         }, Qt.size(width, height))
     }
 
+    function normalizeMode(requestedMode) {
+        return requestedMode === "downloads" ? "downloads" : "pictures"
+    }
+
+    function cachedFiles(requestedMode) {
+        return normalizeMode(requestedMode) === "downloads" ? downloadsFiles : picturesFiles
+    }
+
+    function setCachedFiles(requestedMode, nextFiles) {
+        if (normalizeMode(requestedMode) === "downloads")
+            downloadsFiles = nextFiles
+        else
+            picturesFiles = nextFiles
+    }
+
+    function setMode(requestedMode) {
+        const nextMode = normalizeMode(requestedMode)
+        if (mode !== nextMode) {
+            files = cachedFiles(nextMode).slice()
+            selectedIdx = 0
+            fileScanner.stdout.buf = []
+        }
+        mode = nextMode
+    }
+
+    function profileForMode(requestedMode) {
+        return normalizeMode(requestedMode) === "downloads" ? profiles.downloads : profiles.pictures
+    }
+
+    function toggleMode(requestedMode) {
+        const nextMode = normalizeMode(requestedMode)
+        if (showing && mode === nextMode) {
+            showing = false
+            return
+        }
+
+        if (showing) {
+            setMode(nextMode)
+            settingsOpen = false
+            reload()
+            focusTimer.start()
+            return
+        }
+
+        setMode(nextMode)
+        showing = true
+    }
+
     function reload() {
-        imageScanner.stdout.buf = []
-        imageScanner.running = false
-        imageScanner.running = true
+        fileScanner.stdout.buf = []
+        refreshMode(mode)
     }
 
-    function scanScript() {
-        return "fd -H -L -t f " +
-            "-e jpg -e jpeg -e png -e webp -e gif -e bmp -e heic -e avif " +
-            ". \"$HOME/Pictures\" " +
-            "-x stat -c \"%Y|%n\" 2>/dev/null | sort -t \"|\" -k 1,1nr | awk \"NR <= " +
-            imageLimit + "\""
+    function refreshMode(requestedMode) {
+        fileScanner.scanMode = normalizeMode(requestedMode)
+        fileScanner.running = false
+        fileScanner.running = true
     }
 
-    function setImageLimit(value) {
+    function extensionArgs(requestedMode) {
+        let args = ""
+        const extensions = profileForMode(requestedMode).extensions || []
+        for (let i = 0; i < extensions.length; i++)
+            args += "-e " + extensions[i] + " "
+        return args
+    }
+
+    function scanScript(requestedMode) {
+        const scanMode = normalizeMode(requestedMode)
+        const profile = profileForMode(scanMode)
+        const depthArg = profile.recursive ? "" : "--max-depth 1 "
+        return "fd -H -L -t f " + depthArg + extensionArgs(scanMode) +
+            "-0 . \"" + profile.dir + "\" 2>/dev/null | " +
+            "xargs -0 -r stat -c \"%Y|%n\" | sort -t \"|\" -k 1,1nr | head -n " +
+            fileLimit
+    }
+
+    function setFileLimit(value) {
         const next = Math.max(1, Math.min(50, Math.round(value)))
-        if (settings)
-            settings.picturesImageLimit = next
+        if (settings) {
+            if (mode === "downloads")
+                settings.downloadsFileLimit = next
+            else
+                settings.picturesImageLimit = next
+        }
         reload()
     }
 
-    function openImage(path) {
+    function openFile(path) {
         if (!path || path === "")
             return
         Quickshell.execDetached(["bash", "-lc", "xdg-open " + shellQuote(path)])
@@ -82,37 +227,36 @@ FloatingWindow {
     }
 
     function moveSelection(delta) {
-        if (images.length === 0)
+        if (files.length === 0)
             return
-        selectedIdx = Math.max(0, Math.min(selectedIdx + delta, images.length - 1))
+        selectedIdx = Math.max(0, Math.min(selectedIdx + delta, files.length - 1))
         filmstrip.positionViewAtIndex(selectedIdx, ListView.Contain)
     }
 
     Process {
-        id: imageScanner
-        command: ["bash", "-lc", root.scanScript()]
+        id: fileScanner
+        property string scanMode: root.mode
+        command: ["bash", "-lc", root.scanScript(fileScanner.scanMode)]
         running: false
         stdout: SplitParser {
             property var buf: []
             onRead: data => {
                 const line = data.trim()
-                const sep = line.indexOf("|")
-                if (sep === -1)
+                const file = root.fileFromScanLine(line)
+                if (!file)
                     return
 
-                const path = line.substring(sep + 1)
-                const nameParts = path.split("/")
-                buf.push({
-                    path: path,
-                    name: nameParts[nameParts.length - 1],
-                    source: root.fileUrl(path)
-                })
+                buf.push(file)
             }
         }
         onExited: {
-            root.images = imageScanner.stdout.buf.slice()
-            root.selectedIdx = 0
-            imageScanner.stdout.buf = []
+            const nextFiles = fileScanner.stdout.buf.slice()
+            root.setCachedFiles(fileScanner.scanMode, nextFiles)
+            if (fileScanner.scanMode === root.mode) {
+                root.files = nextFiles
+                root.selectedIdx = 0
+            }
+            fileScanner.stdout.buf = []
         }
     }
 
@@ -126,7 +270,7 @@ FloatingWindow {
                 root.showing = false
                 e.accepted = true
             } else if (e.key === Qt.Key_Return || e.key === Qt.Key_Enter) {
-                root.openImage(root.selectedImage.path)
+                root.openFile(root.selectedFile.path)
                 e.accepted = true
             } else if (e.key === Qt.Key_Right || e.key === Qt.Key_Down) {
                 root.moveSelection(1)
@@ -157,14 +301,14 @@ FloatingWindow {
                     spacing: 8
 
                     Text {
-                        text: ""
+                        text: root.activeProfile.icon
                         color: theme.accent || "#89b4fa"
                         font.pixelSize: 13
                         font.family: "JetBrainsMono Nerd Font"
                     }
 
                     Text {
-                        text: "Recent Pictures"
+                        text: root.activeProfile.title
                         color: theme.fg || "#cdd6f4"
                         font.pixelSize: 13
                         font.family: "JetBrainsMono Nerd Font"
@@ -174,7 +318,9 @@ FloatingWindow {
                     Item { Layout.fillWidth: true }
 
                     Text {
-                        text: root.images.length + " images"
+                        text: root.files.length + " " + (root.files.length === 1
+                            ? root.activeProfile.singular
+                            : root.activeProfile.plural)
                         color: Qt.alpha(theme.muted || "#585b70", 0.55)
                         font.pixelSize: 9
                         font.family: "JetBrainsMono Nerd Font"
@@ -225,11 +371,11 @@ FloatingWindow {
                 Item {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    visible: root.images.length === 0
+                    visible: root.files.length === 0
 
                     Text {
                         anchors.centerIn: parent
-                        text: imageScanner.running ? "Loading pictures..." : "No images found in ~/Pictures"
+                        text: fileScanner.running ? root.activeProfile.loadingText : root.activeProfile.emptyText
                         color: Qt.alpha(theme.muted || "#585b70", 0.6)
                         font.pixelSize: 10
                         font.family: "JetBrainsMono Nerd Font"
@@ -239,7 +385,7 @@ FloatingWindow {
                 RowLayout {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    visible: root.images.length > 0
+                    visible: root.files.length > 0
                     spacing: 12
 
                     Rectangle {
@@ -272,8 +418,8 @@ FloatingWindow {
                                     Drag.dragType: Drag.Automatic
                                     Drag.supportedActions: Qt.CopyAction
                                     Drag.proposedAction: Qt.CopyAction
-                                    Drag.mimeData: root.dragMimeData(root.selectedImage.path)
-                                    Drag.imageSource: root.selectedImage.source || ""
+                                    Drag.mimeData: root.dragMimeData(root.selectedFile.path)
+                                    Drag.imageSource: root.selectedFile.source || ""
                                     Drag.imageSourceSize: Qt.size(220, 140)
                                     Drag.hotSpot.x: width / 2
                                     Drag.hotSpot.y: height / 2
@@ -294,11 +440,49 @@ FloatingWindow {
                                         Image {
                                             anchors.fill: parent
                                             anchors.margins: 1
-                                            source: root.selectedImage.source || ""
+                                            visible: root.selectedFile.isImage === true
+                                            source: root.selectedFile.source || ""
                                             fillMode: Image.PreserveAspectFit
                                             asynchronous: true
                                             cache: false
                                             smooth: true
+                                        }
+
+                                        Column {
+                                            visible: root.selectedFile.isImage !== true
+                                            anchors.centerIn: parent
+                                            width: Math.min(parent.width - 48, 440)
+                                            spacing: 12
+
+                                            Text {
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                                text: root.fileIcon(root.selectedFile)
+                                                color: theme.accent || "#89b4fa"
+                                                font.pixelSize: 72
+                                                font.family: "JetBrainsMono Nerd Font"
+                                            }
+
+                                            Text {
+                                                width: parent.width
+                                                text: root.selectedFile.name || ""
+                                                color: theme.fg || "#cdd6f4"
+                                                horizontalAlignment: Text.AlignHCenter
+                                                elide: Text.ElideMiddle
+                                                font.pixelSize: 14
+                                                font.family: "JetBrainsMono Nerd Font"
+                                                font.weight: Font.DemiBold
+                                            }
+
+                                            Text {
+                                                width: parent.width
+                                                text: root.selectedFile.extension
+                                                    ? root.selectedFile.extension.toUpperCase() + " file"
+                                                    : "File"
+                                                color: Qt.alpha(theme.muted || "#585b70", 0.72)
+                                                horizontalAlignment: Text.AlignHCenter
+                                                font.pixelSize: 10
+                                                font.family: "JetBrainsMono Nerd Font"
+                                            }
                                         }
                                     }
                                 }
@@ -322,7 +506,7 @@ FloatingWindow {
                                         selectedDragItem.x = 0
                                         selectedDragItem.y = 0
                                     }
-                                    onDoubleClicked: root.openImage(root.selectedImage.path)
+                                    onDoubleClicked: root.openFile(root.selectedFile.path)
                                 }
                             }
 
@@ -332,7 +516,7 @@ FloatingWindow {
 
                                 Text {
                                     Layout.fillWidth: true
-                                    text: root.selectedImage.name || ""
+                                    text: root.selectedFile.name || ""
                                     color: theme.fg || "#cdd6f4"
                                     font.pixelSize: 11
                                     font.family: "JetBrainsMono Nerd Font"
@@ -340,7 +524,7 @@ FloatingWindow {
                                 }
 
                                 Text {
-                                    text: (root.selectedIdx + 1) + " / " + root.images.length
+                                    text: (root.selectedIdx + 1) + " / " + root.files.length
                                     color: Qt.alpha(theme.muted || "#585b70", 0.72)
                                     font.pixelSize: 9
                                     font.family: "JetBrainsMono Nerd Font"
@@ -363,7 +547,7 @@ FloatingWindow {
                             id: filmstrip
                             anchors.fill: parent
                             anchors.margins: 8
-                            model: root.images
+                            model: root.files
                             spacing: 8
                             clip: true
 
@@ -377,7 +561,7 @@ FloatingWindow {
                                 width: filmstrip.width
                                 height: 86
 
-                                property var imageData: root.images[index] || {}
+                                property var fileData: root.files[index] || {}
                                 property bool selected: index === root.selectedIdx
                                 property bool hovered: false
 
@@ -391,8 +575,8 @@ FloatingWindow {
                                     Drag.dragType: Drag.Automatic
                                     Drag.supportedActions: Qt.CopyAction
                                     Drag.proposedAction: Qt.CopyAction
-                                    Drag.mimeData: root.dragMimeData(delegateItem.imageData.path)
-                                    Drag.imageSource: delegateItem.imageData.source || ""
+                                    Drag.mimeData: root.dragMimeData(delegateItem.fileData.path)
+                                    Drag.imageSource: delegateItem.fileData.source || ""
                                     Drag.imageSourceSize: Qt.size(160, 90)
                                     Drag.hotSpot.x: width / 2
                                     Drag.hotSpot.y: height / 2
@@ -430,11 +614,21 @@ FloatingWindow {
 
                                                 Image {
                                                     anchors.fill: parent
-                                                    source: delegateItem.imageData.source || ""
+                                                    visible: delegateItem.fileData.isImage === true
+                                                    source: delegateItem.fileData.source || ""
                                                     fillMode: Image.PreserveAspectCrop
                                                     asynchronous: true
                                                     cache: false
                                                     smooth: true
+                                                }
+
+                                                Text {
+                                                    anchors.centerIn: parent
+                                                    visible: delegateItem.fileData.isImage !== true
+                                                    text: root.fileIcon(delegateItem.fileData)
+                                                    color: theme.accent || "#89b4fa"
+                                                    font.pixelSize: 28
+                                                    font.family: "JetBrainsMono Nerd Font"
                                                 }
                                             }
 
@@ -445,7 +639,7 @@ FloatingWindow {
 
                                                 Text {
                                                     Layout.fillWidth: true
-                                                    text: delegateItem.imageData.name || ""
+                                                    text: delegateItem.fileData.name || ""
                                                     color: selected
                                                         ? (theme.accent || "#89b4fa")
                                                         : (theme.fg || "#cdd6f4")
@@ -497,7 +691,7 @@ FloatingWindow {
                                         root.selectedIdx = index
                                         mouse.accepted = true
                                     }
-                                    onDoubleClicked: root.openImage(delegateItem.imageData.path)
+                                    onDoubleClicked: root.openFile(delegateItem.fileData.path)
                                 }
                             }
                         }
@@ -536,7 +730,7 @@ FloatingWindow {
 
                         Text {
                             Layout.fillWidth: true
-                            text: "Images to load"
+                            text: root.activeProfile.settingLabel
                             color: theme.fg || "#cdd6f4"
                             font.pixelSize: 10
                             font.family: "JetBrainsMono Nerd Font"
@@ -544,7 +738,7 @@ FloatingWindow {
                         }
 
                         Text {
-                            text: root.imageLimit
+                            text: root.fileLimit
                             color: theme.accent || "#89b4fa"
                             font.pixelSize: 12
                             font.family: "JetBrainsMono Nerd Font"
@@ -583,7 +777,7 @@ FloatingWindow {
                                 MouseArea {
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
-                                    onClicked: root.setImageLimit(root.imageLimit + modelData.delta)
+                                    onClicked: root.setFileLimit(root.fileLimit + modelData.delta)
                                 }
                             }
                         }

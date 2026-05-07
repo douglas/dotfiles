@@ -251,8 +251,8 @@ ShellRoot {
         uiScale: shell.popupScale
     }
 
-    PicturesOverlay {
-        id: picturesOverlay
+    RecentFilesOverlay {
+        id: recentFilesOverlay
         theme: shell.palette
         settings: settingsState
         uiScale: shell.popupScale
@@ -603,7 +603,29 @@ ShellRoot {
     IpcHandler {
         target: "openPictures"
         function handle() {
-            picturesOverlay.showing = !picturesOverlay.showing
+            recentFilesOverlay.toggleMode("pictures")
+        }
+    }
+
+    IpcHandler {
+        target: "openDownloads"
+        function handle() {
+            recentFilesOverlay.toggleMode("downloads")
+        }
+    }
+
+    IpcHandler {
+        target: "openRecentFiles"
+        function handle() {
+            recentFilesOverlay.toggleMode("pictures")
+        }
+
+        function pictures() {
+            recentFilesOverlay.toggleMode("pictures")
+        }
+
+        function downloads() {
+            recentFilesOverlay.toggleMode("downloads")
         }
     }
 
