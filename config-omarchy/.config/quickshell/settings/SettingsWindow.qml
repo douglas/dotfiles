@@ -218,7 +218,7 @@ PanelWindow {
                         spacing: 1
 
                         Text {
-                            text: "Susano’o Settings"
+                            text: "Kurama Settings"
                             color: root.t("fg", "#eef6ef")
                             font.pixelSize: 20
                             font.family: "JetBrainsMono Nerd Font Propo "
@@ -227,7 +227,7 @@ PanelWindow {
                         }
 
                         Text {
-                            text: "Setting Manager for Susano’o."
+                            text: "Setting Manager for Kurama."
                             color: Qt.alpha(root.t("muted", "#9fb29f"), 0.7)
                             font.pixelSize: 9
                             font.family: "JetBrains Mono"

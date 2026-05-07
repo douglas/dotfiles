@@ -12,15 +12,15 @@ from datetime import date, datetime, time as dt_time, timedelta
 from pathlib import Path
 
 
-APP_NAME = "Susano’o"
+APP_NAME = "Kurama"
 DEFAULT_THRESHOLDS = [10, 5, 1]
 
 
 def state_dir():
     base = os.environ.get("XDG_STATE_HOME")
     if base:
-        return Path(base) / "susanoo"
-    return Path.home() / ".local" / "state" / "susanoo"
+        return Path(base) / "kurama"
+    return Path.home() / ".local" / "state" / "kurama"
 
 
 def run_gcalcli():
@@ -243,7 +243,7 @@ def watch(args):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Susano’o Google Calendar helper")
+    parser = argparse.ArgumentParser(description="Kurama Google Calendar helper")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     today_parser = subparsers.add_parser("today", help="print today's events as JSON")
