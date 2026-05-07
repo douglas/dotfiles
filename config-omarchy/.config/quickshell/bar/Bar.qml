@@ -259,20 +259,6 @@ PanelWindow {
                     })
                 }
 
-                Battery {
-                    anchors.verticalCenter: parent.verticalCenter
-                    barOnBottom: root.barOnBottom
-                    overlayBarOffset: root.px(root.reservedSpace + 6)
-                    theme: ({
-                        fg: root.fg,
-                        accent: root.accent,
-                        dim: root.dim,
-                        muted: root.muted,
-                        bg: root.bg,
-                        red: root.red
-                    })
-                }
-
                 Kef {
                     anchors.verticalCenter: parent.verticalCenter
                     theme: ({
@@ -292,8 +278,29 @@ PanelWindow {
                     Behavior on color { ColorAnimation { duration: 400 } }
                 }
 
-                Stats {
+                Battery {
+                    id: batteryModule
                     anchors.verticalCenter: parent.verticalCenter
+                    barOnBottom: root.barOnBottom
+                    overlayBarOffset: root.px(root.reservedSpace + 6)
+                    overlayScale: root.scaleFactor
+                    theme: ({
+                        fg: root.fg,
+                        accent: root.accent,
+                        dim: root.dim,
+                        muted: root.muted,
+                        bg: root.bg,
+                        red: root.red
+                    })
+                    onOpened: statsModule.showing = false
+                }
+
+                Stats {
+                    id: statsModule
+                    anchors.verticalCenter: parent.verticalCenter
+                    barOnBottom: root.barOnBottom
+                    overlayBarOffset: root.px(root.reservedSpace + 6)
+                    overlayScale: root.scaleFactor
                     quietMode: root.quietMode
                     theme: ({
                         fg: root.fg,
@@ -305,6 +312,7 @@ PanelWindow {
                         muted: root.muted,
                         bg: root.bg
                     })
+                    onOpened: batteryModule.showing = false
                 }
 
                 Rectangle {

@@ -13,9 +13,11 @@ Item {
     property int overlayBarOffset: 44
     property real overlayScale: 1.18
     property bool showing: false
-    property bool hovered: false
+    readonly property bool hovered: batteryPill.hovered
     property string notice: ""
     property var processes: []
+    property bool showPids: false
+    signal opened()
 
     readonly property var device: UPower.displayDevice
     readonly property bool ready: device && device.ready
@@ -32,7 +34,7 @@ Item {
 
     visible: hasLaptopBattery
     enabled: hasLaptopBattery
-    implicitWidth: hasLaptopBattery ? batteryIcon.implicitWidth : 0
+    implicitWidth: hasLaptopBattery ? batteryPill.implicitWidth : 0
     implicitHeight: hasLaptopBattery ? 28 : 0
 
     function overlayPx(value) {
@@ -96,6 +98,13 @@ Item {
         notice = "Sent SIGTERM to " + (proc.name || proc.pid)
         noticeTimer.restart()
         refreshAfterKill.restart()
+    }
+
+    function copyPid(proc) {
+        if (!proc || !/^\d+$/.test(String(proc.pid || ""))) return
+        Quickshell.execDetached(["bash", "-lc", "printf '%s' \"" + proc.pid + "\" | wl-copy"])
+        notice = "Copied PID " + proc.pid
+        noticeTimer.restart()
     }
 
     onShowingChanged: if (showing) refreshImpact()
@@ -168,287 +177,46 @@ Item {
         }
     }
 
-    Text {
-        id: batteryIcon
+    StatPill {
+        id: batteryPill
         anchors.centerIn: parent
-        text: root.iconForLevel()
-        color: root.showing ? root.cAccent : root.levelColor()
-        opacity: root.hovered || root.showing ? 1.0 : (root.percentage <= 30 ? 0.95 : 0.4)
-        font.pixelSize: 14
-        font.family: "JetBrainsMono Nerd Font"
-
-        Behavior on color { ColorAnimation { duration: 150 } }
-        Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
-    }
-
-    Rectangle {
-        visible: root.hovered && !root.showing
-        opacity: visible ? 1 : 0
-        z: 99
-
-        width: tooltipText.implicitWidth + 16
-        height: 22
-        radius: 6
-        anchors.bottom: parent.top
-        anchors.bottomMargin: 6
-        anchors.horizontalCenter: parent.horizontalCenter
-
-        color: root.cBg
-        border.color: root.cDim
-        border.width: 1
-
-        Text {
-            id: tooltipText
-            anchors.centerIn: parent
-            text: root.ready ? (root.percentage + "% · " + root.stateLabel()) : root.stateLabel()
-            color: root.cFg
-            font.pixelSize: 10
-            font.family: "JetBrainsMono Nerd Font"
-        }
-    }
-
-    MouseArea {
-        anchors.fill: parent
-        anchors.margins: -4
-        hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        onEntered: root.hovered = true
-        onExited: root.hovered = false
-        onClicked: root.showing = !root.showing
-    }
-
-    WlrLayershell {
-        id: batteryPanel
-        visible: root.showing && root.hasLaptopBattery
-        color: "transparent"
-        implicitWidth: root.overlayPx(390)
-        implicitHeight: card.height + root.overlayBarOffset + 10
-        anchors {
-            top: !root.barOnBottom
-            bottom: root.barOnBottom
-            right: true
-        }
-        layer: WlrLayer.Overlay
-        keyboardFocus: WlrKeyboardFocus.OnDemand
-        exclusionMode: ExclusionMode.Ignore
-        namespace: "battery-impact"
-
-        Rectangle {
-            id: card
-            width: root.overlayPx(370)
-            height: root.overlayPx(356)
-            x: parent.width - width - 10
-            y: root.barOnBottom ? 10 : root.overlayBarOffset
-            radius: 12
-            color: root.cBg
-            border.color: Qt.alpha(root.cDim, 0.8)
-            border.width: 1
-            clip: true
-
-            ColumnLayout {
-                anchors.fill: parent
-                anchors.margins: root.overlayPx(14)
-                spacing: root.overlayPx(10)
-
-                RowLayout {
-                    Layout.fillWidth: true
-                    spacing: 10
-
-                    Text {
-                        text: root.iconForLevel()
-                        color: root.levelColor()
-                        font.pixelSize: root.overlayPx(24)
-                        font.family: "JetBrainsMono Nerd Font"
-                    }
-
-                    ColumnLayout {
-                        Layout.fillWidth: true
-                        spacing: 1
-
-                        Text {
-                            text: root.ready ? root.percentage + "% battery" : "Battery unavailable"
-                            color: root.cFg
-                            font.pixelSize: root.overlayPx(14)
-                            font.family: "JetBrainsMono Nerd Font Propo"
-                            font.weight: Font.DemiBold
-                        }
-
-                        Text {
-                            text: root.ready ? root.stateLabel() : "UPower is not reporting a display battery"
-                            color: root.cMuted
-                            font.pixelSize: root.overlayPx(10)
-                            font.family: "JetBrainsMono Nerd Font Propo"
-                            elide: Text.ElideRight
-                            Layout.fillWidth: true
-                        }
-                    }
-
-                    Text {
-                        text: ""
-                        color: refreshHover.containsMouse ? root.cAccent : root.cMuted
-                        font.pixelSize: root.overlayPx(13)
-                        font.family: "JetBrainsMono Nerd Font"
-                        Behavior on color { ColorAnimation { duration: 120 } }
-
-                        MouseArea {
-                            id: refreshHover
-                            anchors.fill: parent
-                            anchors.margins: -7
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: root.refreshImpact()
-                        }
-                    }
-
-                    Text {
-                        text: "󰅖"
-                        color: closeHover.containsMouse ? root.cRed : root.cMuted
-                        font.pixelSize: root.overlayPx(13)
-                        font.family: "JetBrainsMono Nerd Font"
-                        Behavior on color { ColorAnimation { duration: 120 } }
-
-                        MouseArea {
-                            id: closeHover
-                            anchors.fill: parent
-                            anchors.margins: -7
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: root.showing = false
-                        }
-                    }
-                }
-
-                Rectangle {
-                    Layout.fillWidth: true
-                    height: 1
-                    color: Qt.alpha(root.cDim, 0.55)
-                }
-
-                RowLayout {
-                    Layout.fillWidth: true
-                    spacing: 8
-
-                    Text {
-                        text: "Top battery impact"
-                        color: root.cFg
-                        font.pixelSize: root.overlayPx(11)
-                        font.family: "JetBrainsMono Nerd Font Propo"
-                        font.weight: Font.DemiBold
-                        Layout.fillWidth: true
-                    }
-
-                    Text {
-                        visible: root.notice !== ""
-                        text: root.notice
-                        color: root.cAccent
-                        font.pixelSize: root.overlayPx(9)
-                        font.family: "JetBrainsMono Nerd Font Propo"
-                        elide: Text.ElideRight
-                        Layout.maximumWidth: 180
-                    }
-                }
-
-                ListView {
-                    id: impactList
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    clip: true
-                    spacing: 6
-                    model: root.processes
-
-                    delegate: Rectangle {
-                        required property var modelData
-                        width: ListView.view.width
-                        height: root.overlayPx(34)
-                        radius: 8
-                        color: rowHover.hovered ? Qt.rgba(1, 1, 1, 0.045) : Qt.rgba(1, 1, 1, 0.022)
-                        border.color: Qt.rgba(1, 1, 1, 0.045)
-                        border.width: 1
-
-                        HoverHandler { id: rowHover }
-
-                        RowLayout {
-                            anchors.fill: parent
-                            anchors.leftMargin: 10
-                            anchors.rightMargin: 8
-                            spacing: 8
-
-                            Text {
-                                text: modelData.name || "process"
-                                color: root.cFg
-                                font.pixelSize: root.overlayPx(11)
-                                font.family: "JetBrainsMono Nerd Font Propo"
-                                elide: Text.ElideRight
-                                Layout.fillWidth: true
-                            }
-
-                            Text {
-                                text: Number(modelData.cpu || 0).toFixed(1) + "%"
-                                color: modelData.cpu >= 30 ? root.cRed : modelData.cpu >= 10 ? root.cYellow : root.cMuted
-                                font.pixelSize: root.overlayPx(10)
-                                font.family: "JetBrainsMono Nerd Font Propo"
-                                horizontalAlignment: Text.AlignRight
-                                Layout.preferredWidth: 48
-                            }
-
-                            Text {
-                                text: String(modelData.pid || "")
-                                color: root.cMuted
-                                font.pixelSize: root.overlayPx(9)
-                                font.family: "JetBrainsMono Nerd Font Propo"
-                                horizontalAlignment: Text.AlignRight
-                                Layout.preferredWidth: 48
-                            }
-
-                            Text {
-                                text: "󰆴"
-                                color: killHover.containsMouse ? root.cRed : root.cMuted
-                                font.pixelSize: root.overlayPx(13)
-                                font.family: "JetBrainsMono Nerd Font"
-                                Behavior on color { ColorAnimation { duration: 100 } }
-
-                                MouseArea {
-                                    id: killHover
-                                    anchors.fill: parent
-                                    anchors.margins: -7
-                                    hoverEnabled: true
-                                    cursorShape: Qt.PointingHandCursor
-                                    onClicked: root.requestKill(modelData)
-                                }
-                            }
-                        }
-                    }
-                }
-
-                Item {
-                    visible: root.processes.length === 0
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-
-                    Column {
-                        anchors.centerIn: parent
-                        spacing: 8
-
-                        Text {
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            text: "󰂑"
-                            color: root.cMuted
-                            font.pixelSize: root.overlayPx(28)
-                            font.family: "JetBrainsMono Nerd Font"
-                            opacity: 0.55
-                        }
-
-                        Text {
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            text: impactProc.running ? "loading" : "no process data"
-                            color: root.cMuted
-                            font.pixelSize: root.overlayPx(11)
-                            font.family: "JetBrainsMono Nerd Font Propo"
-                            opacity: 0.65
-                        }
-                    }
-                }
+        label: "BATT"
+        value: root.percentage
+        accent: root.cAccent
+        trackColor: root.cDim
+        textColor: root.cFg
+        interactive: true
+        onClicked: {
+            if (root.showing) {
+                root.showing = false
+                return
             }
+            root.showing = true
+            root.opened()
         }
+    }
+
+    ProcessOverlay {
+        showing: root.showing && root.hasLaptopBattery
+        barOnBottom: root.barOnBottom
+        overlayBarOffset: root.overlayBarOffset
+        overlayScale: root.overlayScale
+        namespaceName: "battery-impact"
+        icon: root.iconForLevel()
+        title: "Battery"
+        subtitle: root.ready
+            ? root.percentage + "% · " + root.stateLabel()
+            : "Unavailable"
+        notice: root.notice
+        listTitle: "Processes"
+        valueKey: "cpu"
+        accent: root.cAccent
+        processes: root.processes
+        emptyText: impactProc.running ? "loading" : "no process data"
+        theme: root.theme
+        onCloseRequested: root.showing = false
+        onRefreshRequested: root.refreshImpact()
+        onPidCopied: proc => root.copyPid(proc)
+        onKillRequested: proc => root.requestKill(proc)
     }
 }
