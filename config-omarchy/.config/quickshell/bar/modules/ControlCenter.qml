@@ -77,6 +77,7 @@ PanelWindow {
     property int    wifiScanTicks: 0
     property bool   wifiPasswordOpen: false
     property string wifiPasswordSsid: ""
+    property string wifiPasswordText: ""
     property string wifiPasswordError: ""
     property bool   wifiPasswordWorking: false
     property bool   wifiPasswordSecure: false
@@ -216,12 +217,14 @@ PanelWindow {
             Quickshell.execDetached(["nmcli"].concat(args))
     }
 
-    function startWifiConnect(ssid) {
+    function startWifiConnect(ssid, password) {
+        const hasPassword = (password || "") !== ""
         wifiPasswordWorking = true
         wifiConnectProc.targetSsid = ssid
-        wifiConnectProc.command = [
-            "nmcli", "-t", "device", "wifi", "connect", ssid
-        ]
+        wifiConnectProc.pendingPassword = password || ""
+        wifiConnectProc.command = hasPassword
+            ? ["nmcli", "--ask", "-t", "device", "wifi", "connect", ssid]
+            : ["nmcli", "-t", "device", "wifi", "connect", ssid]
         wifiConnectProc.running = false
         wifiConnectProc.running = true
     }
@@ -229,19 +232,29 @@ PanelWindow {
     function connectWifi(ssid, secure) {
         wifiPasswordSecure = secure
         wifiPasswordSsid = ssid
+        wifiPasswordText = ""
         wifiPasswordError = ""
 
         if (secure && savedWifiSsids.indexOf(ssid) < 0) {
             wifiPasswordOpen = true
-            wifiPasswordError = "Use the system Wi-Fi tool to enter credentials securely."
             return
         }
 
-        startWifiConnect(ssid)
+        startWifiConnect(ssid, "")
+    }
+
+    function submitWifiPassword() {
+        const password = wifiPasswordText
+        if (password.length === 0 || wifiPasswordWorking)
+            return
+
+        wifiPasswordError = ""
+        startWifiConnect(wifiPasswordSsid, password)
     }
 
     function openSecureWifiManager() {
         wifiPasswordOpen = false
+        wifiPasswordText = ""
         wifiPasswordError = ""
         Quickshell.execDetached([
             "bash", "-lc",
@@ -500,26 +513,42 @@ PanelWindow {
     Process {
         id: wifiConnectProc
         property string targetSsid: ""
+        property string pendingPassword: ""
         command: ["bash", "-lc", "true"]
         running: false
+        stdinEnabled: true
         stdout: SplitParser {
             property string buf: ""
             onRead: data => buf += data
         }
+        stderr: SplitParser {
+            property string buf: ""
+            onRead: data => buf += data
+        }
+        onStarted: {
+            if (pendingPassword !== "") {
+                write(pendingPassword + "\n")
+                pendingPassword = ""
+            }
+        }
         onExited: exitCode => {
-            const msg = (wifiConnectProc.stdout.buf || "").trim()
+            const msg = ((wifiConnectProc.stderr.buf || "") + "\n" + (wifiConnectProc.stdout.buf || "")).trim()
             wifiConnectProc.stdout.buf = ""
+            wifiConnectProc.stderr.buf = ""
+            wifiConnectProc.pendingPassword = ""
             wifiPasswordWorking = false
             if (exitCode === 0) {
                 wifiPasswordOpen = false
+                wifiPasswordText = ""
                 wifiPasswordError = ""
                 refreshConnectivity()
                 refreshWifiScan()
+                refreshWifiSaved()
                 return
             }
             if (wifiPasswordSecure) {
                 wifiPasswordOpen = true
-                wifiPasswordError = "Could not connect. Use the system Wi-Fi tool to manage credentials."
+                wifiPasswordError = msg || "Could not connect with that password."
             } else {
                 wifiPasswordOpen = false
                 wifiPasswordError = msg
@@ -674,29 +703,6 @@ PanelWindow {
         border.width: 1
         clip:         true
 
-        states: [
-            State {
-                name: "open"; when: cc.showing
-                PropertyChanges { target: slideX; x: 0 }
-            },
-            State {
-                name: "closed"; when: !cc.showing
-                PropertyChanges { target: slideX; x: 300 }
-            }
-        ]
-        transitions: [
-            Transition {
-                from: "closed"; to: "open"
-                NumberAnimation { target: slideX; property: "x"; duration: cc.openAnimationMs; easing.type: Easing.OutCubic }
-            },
-            Transition {
-                from: "open"; to: "closed"
-                NumberAnimation { target: slideX; property: "x"; duration: cc.closeAnimationMs; easing.type: Easing.InCubic }
-            }
-        ]
-
-        transform: Translate { id: slideX; x: 300 }
-
         Column {
             id: mainCol
             anchors {
@@ -796,9 +802,17 @@ PanelWindow {
                     border.color: (cc.ethernetActive || cc.wifiEnabled)
                         ? Qt.alpha(theme.accent || "#89b4fa", 0.4) : "transparent"
                     border.width: 1
+                    clip: true
                     Behavior on color { ColorAnimation { duration: 160 } }
-                    Column {
-                        anchors.centerIn: parent; spacing: 4
+                    Item {
+                        id: wifiCardBody
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+                        anchors.left: parent.left
+                        anchors.right: wifiPowerRail.left
+
+                        Column {
+                            anchors.centerIn: parent; spacing: 4
                         Text {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: cc.ethernetActive ? "󰈀" : cc.wifiEnabled ? "󰤨" : "󰤭"
@@ -809,37 +823,67 @@ PanelWindow {
                         }
                         Text {
                             anchors.horizontalCenter: parent.horizontalCenter
-                            text: cc.ethernetActive ? "Ethernet" : "Wi-Fi"
-                            color: (cc.ethernetActive || cc.wifiEnabled)
-                                ? (theme.fg || "#cdd6f4") : (theme.muted || "#585b70")
-                            font.pixelSize: 10; font.family: "JetBrainsMono Nerd Font Propo"
-                            font.weight: Font.Medium
-                        }
-                        Text {
-                            anchors.horizontalCenter: parent.horizontalCenter
                             text: cc.ethernetActive ? cc.ethernetIface
                                 : (cc.wifiSsid !== ""
-                                    ? cc.wifiSsid + (cc.wifiSignal > 0 ? " " + cc.wifiSignal + "%" : "") + (cc.wifiSecure ? " 󰌾" : "")
-                                    : cc.wifiStateLabel())
+                                    ? cc.wifiSsid
+                                    : (cc.wifiEnabled ? "Manage networks" : "Wi-Fi off"))
                             color: cc.ethernetActive ? (theme.muted || "#585b70") : cc.wifiStateColor()
                             font.pixelSize: 8; font.family: "JetBrainsMono Nerd Font Propo"
                             elide: Text.ElideRight; width: parent.parent.width - 10
                             horizontalAlignment: Text.AlignHCenter
                         }
+
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            acceptedButtons: Qt.LeftButton
+                            onClicked: cc.openWifiManager()
+                        }
                     }
-                    MouseArea {
-                        anchors.fill: parent; cursorShape: Qt.PointingHandCursor
-                        acceptedButtons: Qt.LeftButton | Qt.RightButton
-                        onClicked: mouse => {
-                                if (mouse.button === Qt.RightButton) {
-                                    cc.openWifiManager()
-                                } else {
-                                    if (cc.ethernetActive) return
-                                    cc.runNmcli(["radio", "wifi", cc.wifiEnabled ? "off" : "on"])
-                                    refreshConnectivity()
-                                }
+
+                    Rectangle {
+                        id: wifiPowerRail
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+                        anchors.right: parent.right
+                        width: 28
+                        radius: 0
+                        color: wifiPowerTileMa.containsMouse
+                            ? Qt.alpha(theme.accent || "#89b4fa", 0.18)
+                            : Qt.alpha(theme.dim || "#45475a", 0.18)
+
+                        Rectangle {
+                            anchors.left: parent.left
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            width: 1
+                            color: Qt.alpha(theme.fg || "#cdd6f4", 0.08)
+                        }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: cc.wifiEnabled ? "On" : "Off"
+                            color: cc.wifiEnabled
+                                ? (theme.accent || "#89b4fa")
+                                : (theme.muted || "#585b70")
+                            font.pixelSize: 8
+                            font.family: "JetBrainsMono Nerd Font Propo"
+                            font.weight: Font.DemiBold
+                        }
+
+                        MouseArea {
+                            id: wifiPowerTileMa
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                cc.runNmcli(["radio", "wifi", cc.wifiEnabled ? "off" : "on"])
+                                refreshConnectivity()
                             }
                         }
+                    }
                 }
 
                 // Bluetooth
@@ -851,9 +895,17 @@ PanelWindow {
                     border.color: cc.btEnabled
                         ? Qt.alpha(theme.accent || "#89b4fa", 0.4) : "transparent"
                     border.width: 1
+                    clip: true
                     Behavior on color { ColorAnimation { duration: 160 } }
-                    Column {
-                        anchors.centerIn: parent; spacing: 4
+                    Item {
+                        id: btCardBody
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+                        anchors.left: parent.left
+                        anchors.right: btPowerRail.left
+
+                        Column {
+                            anchors.centerIn: parent; spacing: 4
                         Text {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: cc.btEnabled ? "󰂱" : "󰂲"
@@ -863,17 +915,10 @@ PanelWindow {
                         }
                         Text {
                             anchors.horizontalCenter: parent.horizontalCenter
-                            text: "Bluetooth"
-                            color: cc.btEnabled ? (theme.fg || "#cdd6f4") : (theme.muted || "#585b70")
-                            font.pixelSize: 10; font.family: "JetBrainsMono Nerd Font Propo"
-                            font.weight: Font.Medium
-                        }
-                        Text {
-                            anchors.horizontalCenter: parent.horizontalCenter
                             text: cc.btConnectedName !== ""
                                 ? cc.btConnectedName + (cc.btConnectedBattery >= 0 ? " " + cc.btConnectedBattery + "%" : "")
                                 : (cc.hasBluetoothDevice
-                                    ? (cc.btEnabled ? "Right-click for manager" : "Off")
+                                    ? (cc.btEnabled ? "Manage devices" : "Bluetooth off")
                                     : cc.bluetoothUnavailableLabel("No adapter"))
                             color: theme.muted || "#585b70"
                             font.pixelSize: 8; font.family: "JetBrainsMono Nerd Font Propo"
@@ -881,15 +926,56 @@ PanelWindow {
                             width: parent.parent.width - 10
                             horizontalAlignment: Text.AlignHCenter
                         }
+
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent; cursorShape: Qt.PointingHandCursor
+                            acceptedButtons: Qt.LeftButton
+                            onClicked: {
+                                if (cc.hasBluetoothDevice)
+                                    cc.openBtManager()
+                            }
+                        }
                     }
-                    MouseArea {
-                        anchors.fill: parent; cursorShape: Qt.PointingHandCursor
-                        acceptedButtons: Qt.LeftButton | Qt.RightButton
-                        onClicked: mouse => {
-                            if (mouse.button === Qt.RightButton) {
-                                cc.openBtManager()
-                            } else {
-                                if (!cc.hasBluetoothDevice) return
+
+                    Rectangle {
+                        id: btPowerRail
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+                        anchors.right: parent.right
+                        width: cc.hasBluetoothDevice ? 28 : 0
+                        radius: 0
+                        visible: cc.hasBluetoothDevice
+                        color: btPowerTileMa.containsMouse
+                            ? Qt.alpha(theme.accent || "#89b4fa", 0.18)
+                            : Qt.alpha(theme.dim || "#45475a", 0.18)
+
+                        Rectangle {
+                            anchors.left: parent.left
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            width: 1
+                            color: Qt.alpha(theme.fg || "#cdd6f4", 0.08)
+                        }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: cc.btEnabled ? "On" : "Off"
+                            color: cc.btEnabled
+                                ? (theme.accent || "#89b4fa")
+                                : (theme.muted || "#585b70")
+                            font.pixelSize: 8
+                            font.family: "JetBrainsMono Nerd Font Propo"
+                            font.weight: Font.DemiBold
+                        }
+
+                        MouseArea {
+                            id: btPowerTileMa
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
                                 cc.runBluetoothctl(["power", cc.btEnabled ? "off" : "on"])
                                 refreshConnectivity()
                             }
@@ -1098,6 +1184,7 @@ PanelWindow {
                 refreshWifiSaved()
             } else {
                 cc.wifiPasswordOpen = false
+                cc.wifiPasswordText = ""
                 cc.wifiPasswordError = ""
             }
         }
@@ -1417,12 +1504,17 @@ PanelWindow {
                 visible: cc.wifiPasswordOpen
                 color: Qt.alpha("#000000", 0.45)
                 z: 20
+                onVisibleChanged: {
+                    if (visible)
+                        passwordInput.forceActiveFocus()
+                }
 
                 MouseArea {
                     anchors.fill: parent
                     cursorShape: Qt.ArrowCursor
                     onClicked: {
                         cc.wifiPasswordOpen = false
+                        cc.wifiPasswordText = ""
                         cc.wifiPasswordError = ""
                     }
                 }
@@ -1456,12 +1548,55 @@ PanelWindow {
                             elide: Text.ElideRight
                         }
 
+                        Rectangle {
+                            width: parent.width
+                            height: cc.btpx(32)
+                            radius: cc.btpx(8)
+                            color: Qt.alpha(cc.theme.fg || "#cdd6f4", 0.05)
+                            border.color: passwordInput.activeFocus
+                                ? Qt.alpha(cc.theme.accent || "#89b4fa", 0.55)
+                                : Qt.alpha(cc.theme.dim || "#45475a", 0.45)
+                            border.width: 1
+
+                            TextInput {
+                                id: passwordInput
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.leftMargin: cc.btpx(10)
+                                anchors.rightMargin: cc.btpx(10)
+                                text: cc.wifiPasswordText
+                                color: cc.theme.fg || "#cdd6f4"
+                                font.pixelSize: cc.btfont(10)
+                                font.family: "JetBrainsMono Nerd Font Propo"
+                                echoMode: TextInput.Password
+                                selectionColor: Qt.alpha(cc.theme.accent || "#89b4fa", 0.35)
+                                selectedTextColor: cc.theme.fg || "#cdd6f4"
+                                enabled: !cc.wifiPasswordWorking
+                                onTextChanged: cc.wifiPasswordText = text
+                                Keys.onReturnPressed: cc.submitWifiPassword()
+                                Keys.onEscapePressed: {
+                                    cc.wifiPasswordOpen = false
+                                    cc.wifiPasswordText = ""
+                                    cc.wifiPasswordError = ""
+                                }
+                            }
+
+                            Text {
+                                anchors.left: passwordInput.left
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: "Password"
+                                color: cc.theme.muted || "#585b70"
+                                font.pixelSize: cc.btfont(10)
+                                font.family: "JetBrainsMono Nerd Font Propo"
+                                visible: passwordInput.text.length === 0
+                            }
+                        }
+
                         Text {
-                            visible: true
-                            text: cc.wifiPasswordError !== ""
-                                ? cc.wifiPasswordError
-                                : "Credentials are handled outside Quickshell so passwords are not exposed through shell arguments."
-                            color: cc.theme.muted || "#585b70"
+                            visible: cc.wifiPasswordError !== ""
+                            text: cc.wifiPasswordError
+                            color: cc.theme.red || "#f38ba8"
                             font.pixelSize: cc.btfont(9)
                             font.family: "JetBrainsMono Nerd Font Propo"
                             wrapMode: Text.WordWrap
@@ -1489,20 +1624,21 @@ PanelWindow {
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: {
                                         cc.wifiPasswordOpen = false
+                                        cc.wifiPasswordText = ""
                                         cc.wifiPasswordError = ""
                                     }
                                 }
                             }
                             Rectangle {
-                                width: cc.btpx(80)
+                                width: cc.btpx(92)
                                 height: cc.btpx(24)
                                 radius: cc.btpx(6)
-                                color: Qt.alpha(cc.theme.accent || "#89b4fa", 0.18)
+                                color: Qt.alpha(cc.theme.accent || "#89b4fa", cc.wifiPasswordWorking ? 0.10 : 0.18)
                                 border.color: Qt.alpha(cc.theme.accent || "#89b4fa", 0.35)
                                 border.width: 1
                                 Text {
                                     anchors.centerIn: parent
-                                    text: "Open Wi‑Fi"
+                                    text: cc.wifiPasswordWorking ? "Connecting" : "Connect"
                                     color: cc.theme.accent || "#89b4fa"
                                     font.pixelSize: cc.btfont(9)
                                     font.family: "JetBrainsMono Nerd Font Propo"
@@ -1510,7 +1646,8 @@ PanelWindow {
                                 MouseArea {
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
-                                    onClicked: cc.openSecureWifiManager()
+                                    enabled: !cc.wifiPasswordWorking
+                                    onClicked: cc.submitWifiPassword()
                                 }
                             }
                         }

@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+sort_key="${1:-cpu}"
+sort_arg="-%cpu"
+if [[ "$sort_key" == "mem" ]]; then
+  sort_arg="-%mem"
+fi
+
+declare -A container_names=()
+
+if command -v docker >/dev/null 2>&1; then
+  while IFS=$'\t' read -r id name; do
+    [[ -z "${id:-}" || -z "${name:-}" ]] && continue
+    container_names["$id"]="$name"
+    container_names["${id:0:12}"]="$name"
+  done < <(docker ps --no-trunc --format '{{.ID}}\t{{.Names}}' 2>/dev/null || true)
+fi
+
+container_id_for_pid() {
+  local pid="$1"
+  local cgroup_file="/proc/$pid/cgroup"
+  local line match
+
+  [[ -r "$cgroup_file" ]] || return 0
+
+  while IFS= read -r line; do
+    if [[ "$line" =~ ([0-9a-f]{64}) ]]; then
+      match="${BASH_REMATCH[1]}"
+      printf '%s\n' "${match:0:12}"
+      return 0
+    fi
+  done < "$cgroup_file"
+}
+
+while read -r pid ppid name cpu mem _; do
+  [[ -z "${pid:-}" || -z "${name:-}" ]] && continue
+
+  container_id="$(container_id_for_pid "$pid")"
+  container_name=""
+  if [[ -n "$container_id" ]]; then
+    container_name="${container_names[$container_id]:-$container_id}"
+  fi
+
+  printf 'proc\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
+    "$pid" "$ppid" "$name" "$cpu" "$mem" "$container_id" "$container_name"
+done < <(ps -eo pid=,ppid=,comm=,%cpu=,%mem= --sort="$sort_arg" --no-headers)

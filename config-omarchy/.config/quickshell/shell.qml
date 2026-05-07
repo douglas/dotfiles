@@ -652,6 +652,28 @@ ShellRoot {
     }
 
     IpcHandler {
+        target: "openNotifications"
+        function handle() {
+            notifServer.panelOpen = true
+        }
+    }
+
+    IpcHandler {
+        target: "dismissLastNotification"
+        function handle() {
+            if (notifServer.notifications.length > 0)
+                notifServer.dismiss(notifServer.notifications[0])
+        }
+    }
+
+    IpcHandler {
+        target: "clearNotifications"
+        function handle() {
+            notifServer.clearAll()
+        }
+    }
+
+    IpcHandler {
         target: "osdPictureCopied"
         function handle() {
             osdService.showMessage("", "Picture path copied", "Ready to paste", "green", "Copied")

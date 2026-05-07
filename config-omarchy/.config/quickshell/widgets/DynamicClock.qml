@@ -1,16 +1,17 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import Quickshell.Wayland
 import Quickshell.Io
+import Quickshell.Wayland
 
 PanelWindow {
     id: root
 
-    property var theme: ({})
+    property var theme: ({
+    })
     property var settings: null
     property bool quietMode: false
-    property real uiScale: 0.0
+    property real uiScale: 0
     property real uiScaleMultiplier: 0.5
     property real posX: settings ? settings.clockWidgetPosX : 0.8
     property real posY: settings ? settings.clockWidgetPosY : 0.8
@@ -28,36 +29,88 @@ PanelWindow {
     property string lastWallpaper: ""
     readonly property int cardW: 220
     readonly property int cardH: 130
-    readonly property real detectedScale: screen && screen.devicePixelRatio > 0
-        ? screen.devicePixelRatio
-        : 1.0
-    readonly property real scaleFactor: Math.max(1.0, uiScale > 0 ? uiScale : detectedScale * uiScaleMultiplier)
+    readonly property string textFont: "JetBrainsMono Nerd Font Propo"
+    readonly property real detectedScale: screen && screen.devicePixelRatio > 0 ? screen.devicePixelRatio : 1
+    readonly property real scaleFactor: Math.max(1, uiScale > 0 ? uiScale : detectedScale * uiScaleMultiplier)
     readonly property int safeMargin: px(24)
-
     // Themed palette
-    readonly property color nBg:     Qt.darker(theme.bg || "#1e1e2e", 1.08)
-    readonly property color nBorder: Qt.alpha(theme.fg || "#cdd6f4", 0.10)
-    readonly property color nWhite:  theme.fg || "#cdd6f4"
-    readonly property color nGray:   Qt.alpha(theme.fg || "#cdd6f4", 0.70)
-    readonly property color nDim:    Qt.alpha(theme.fg || "#cdd6f4", 0.35)
-    readonly property color nMuted:  Qt.alpha(theme.fg || "#cdd6f4", 0.45)
-    readonly property color nDotOn:  theme.accent || theme.fg || "#89b4fa"
+    readonly property color nBg: Qt.darker(theme.bg || "#1e1e2e", 1.08)
+    readonly property color nBorder: Qt.alpha(theme.fg || "#cdd6f4", 0.1)
+    readonly property color nWhite: theme.fg || "#cdd6f4"
+    readonly property color nGray: Qt.alpha(theme.fg || "#cdd6f4", 0.7)
+    readonly property color nDim: Qt.alpha(theme.fg || "#cdd6f4", 0.35)
+    readonly property color nMuted: Qt.alpha(theme.fg || "#cdd6f4", 0.45)
+    readonly property color nDotOn: theme.accent || theme.fg || "#89b4fa"
     readonly property color nDotOff: Qt.alpha(theme.fg || "#cdd6f4", 0.14)
-    readonly property color nLine:   Qt.alpha(theme.fg || "#cdd6f4", 0.12)
+    readonly property color nLine: Qt.alpha(theme.fg || "#cdd6f4", 0.12)
+    readonly property real posLeft: safeMargin + (screen.width - width - safeMargin * 2) * posX
+    readonly property real posTop: safeMargin + (screen.height - height - safeMargin * 2) * posY
+
+    function syncPositionFromSettings() {
+        if (!settings)
+            return ;
+
+        if (typeof settings.clockWidgetPosX === "number")
+            posX = settings.clockWidgetPosX;
+
+        if (typeof settings.clockWidgetPosY === "number")
+            posY = settings.clockWidgetPosY;
+
+    }
+
+    function pad(n) {
+        return n < 10 ? "0" + n : String(n);
+    }
+
+    function px(value) {
+        return Math.round(value * scaleFactor);
+    }
+
+    function hour12(h) {
+        const v = h % 12;
+        return v === 0 ? 12 : v;
+    }
+
+    // How many dots to fill (0–12) based on minute (each dot = 5 min)
+    function filledDots() {
+        return Math.floor(root.now.getMinutes() / 5);
+    }
+
+    function scanWallpaper() {
+        if (!autoPosition)
+            return ;
+
+        wallpaperScan.running = false;
+        wallpaperScan.running = true;
+    }
 
     implicitWidth: px(cardW)
     implicitHeight: px(cardH)
-
-    readonly property real posLeft: safeMargin + (screen.width  - width  - safeMargin * 2) * posX
-    readonly property real posTop:  safeMargin + (screen.height - height - safeMargin * 2) * posY
-
-    WlrLayershell.anchors { left: true; top: true }
-    WlrLayershell.margins { left: dragging ? dragLeft : posLeft; top: dragging ? dragTop : posTop }
     color: "transparent"
     visible: clockEnabled && !quietMode
     exclusiveZone: 0
     WlrLayershell.layer: WlrLayer.Bottom
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+    onPosXChanged: {
+        if (!dragging)
+            dragLeft = posLeft;
+
+    }
+    onPosYChanged: {
+        if (!dragging)
+            dragTop = posTop;
+
+    }
+
+    WlrLayershell.anchors {
+        left: true
+        top: true
+    }
+
+    WlrLayershell.margins {
+        left: dragging ? dragLeft : posLeft
+        top: dragging ? dragTop : posTop
+    }
 
     Timer {
         interval: 1000
@@ -66,158 +119,123 @@ PanelWindow {
         onTriggered: root.now = new Date()
     }
 
-    function syncPositionFromSettings() {
-        if (!settings) return
-        if (typeof settings.clockWidgetPosX === "number")
-            posX = settings.clockWidgetPosX
-        if (typeof settings.clockWidgetPosY === "number")
-            posY = settings.clockWidgetPosY
-    }
-
-    function pad(n) { return n < 10 ? "0" + n : String(n) }
-    function px(value) { return Math.round(value * scaleFactor) }
-    function hour12(h) {
-        const v = h % 12
-        return v === 0 ? 12 : v
-    }
-
-    // How many dots to fill (0–12) based on minute (each dot = 5 min)
-    function filledDots() {
-        return Math.floor(root.now.getMinutes() / 5)
-    }
-
-    function scanWallpaper() {
-        if (!autoPosition) return
-        wallpaperScan.running = false
-        wallpaperScan.running = true
-    }
-
     Connections {
-        target: settings
         function onLoadedChanged() {
             if (settings && settings.loaded)
-                root.syncPositionFromSettings()
+                root.syncPositionFromSettings();
+
         }
+
+        target: settings
     }
 
-    onPosXChanged: if (!dragging) dragLeft = posLeft
-    onPosYChanged: if (!dragging) dragTop = posTop
     Timer {
         id: wallpaperPoll
+
         interval: 4000
         repeat: true
         running: autoPosition && !root.quietMode
         onTriggered: {
-            wallpaperPathProbe.running = false
-            wallpaperPathProbe.running = true
+            wallpaperPathProbe.running = false;
+            wallpaperPathProbe.running = true;
         }
     }
 
     Process {
         id: wallpaperPathProbe
-        command: ["bash", "-lc",
-            "BG_LINK=\"$HOME/.config/omarchy/current/background\"; " +
-            "if [ -L \"$BG_LINK\" ]; then readlink -f \"$BG_LINK\"; else echo \"$BG_LINK\"; fi"
-        ]
+
+        command: ["bash", "-lc", "BG_LINK=\"$HOME/.config/omarchy/current/background\"; " + "if [ -L \"$BG_LINK\" ]; then readlink -f \"$BG_LINK\"; else echo \"$BG_LINK\"; fi"]
         running: true
-        stdout: SplitParser {
-            property string buf: ""
-            onRead: data => buf += data
-        }
         onExited: {
-            const p = (wallpaperPathProbe.stdout.buf || "").trim()
-            wallpaperPathProbe.stdout.buf = ""
+            const p = (wallpaperPathProbe.stdout.buf || "").trim();
+            wallpaperPathProbe.stdout.buf = "";
             if (p && p !== root.lastWallpaper) {
-                root.lastWallpaper = p
-                scanWallpaper()
+                root.lastWallpaper = p;
+                scanWallpaper();
             }
         }
+
+        stdout: SplitParser {
+            property string buf: ""
+
+            onRead: (data) => {
+                return buf += data;
+            }
+        }
+
     }
 
     Process {
         id: wallpaperScan
-        command: ["bash", "-lc",
-            "ID=(identify); CV=(convert); " +
-            "command -v identify >/dev/null 2>&1 || ID=(magick identify); " +
-            "command -v convert  >/dev/null 2>&1 || CV=(magick); " +
-            "command -v ${ID[0]} >/dev/null 2>&1 || exit 0; " +
-            "command -v ${CV[0]} >/dev/null 2>&1 || exit 0; " +
-            "BG_LINK=\"$HOME/.config/omarchy/current/background\"; " +
-            "if [ -L \"$BG_LINK\" ]; then IMG=$(readlink -f \"$BG_LINK\"); else IMG=\"$BG_LINK\"; fi; " +
-            "[ -f \"$IMG\" ] || exit 0; " +
-            "read W H < <(\"${ID[@]}\" -format '%w %h' \"$IMG\" 2>/dev/null); " +
-            "[ -z \"$W\" ] && exit 0; " +
-            "GRID=5; CW=$((W/GRID)); CH=$((H/GRID)); " +
-            "best=1; bestx=0; besty=0; " +
-            "for iy in $(seq 0 $((GRID-1))); do " +
-            "  for ix in $(seq 0 $((GRID-1))); do " +
-            "    x=$((ix*CW)); y=$((iy*CH)); " +
-            "    m=$(${CV[@]} \"$IMG\" -crop ${CW}x${CH}+${x}+${y} -colorspace Gray -format '%[fx:mean]' info: 2>/dev/null); " +
-            "    [ -z \"$m\" ] && continue; " +
-            "    comp=$(awk -v a=\"$m\" -v b=\"$best\" 'BEGIN{print (a<b)?1:0}'); " +
-            "    if [ \"$comp\" -eq 1 ]; then best=\"$m\"; bestx=$ix; besty=$iy; fi; " +
-            "  done; " +
-            "done; " +
-            "cx=$(awk -v ix=$bestx -v cw=$CW -v w=$W 'BEGIN{print (ix*cw + cw/2)/w}'); " +
-            "cy=$(awk -v iy=$besty -v ch=$CH -v h=$H 'BEGIN{print (iy*ch + ch/2)/h}'); " +
-            "echo pos|$cx|$cy"
-        ]
+
+        command: ["bash", "-lc", "ID=(identify); CV=(convert); " + "command -v identify >/dev/null 2>&1 || ID=(magick identify); " + "command -v convert  >/dev/null 2>&1 || CV=(magick); " + "command -v ${ID[0]} >/dev/null 2>&1 || exit 0; " + "command -v ${CV[0]} >/dev/null 2>&1 || exit 0; " + "BG_LINK=\"$HOME/.config/omarchy/current/background\"; " + "if [ -L \"$BG_LINK\" ]; then IMG=$(readlink -f \"$BG_LINK\"); else IMG=\"$BG_LINK\"; fi; " + "[ -f \"$IMG\" ] || exit 0; " + "read W H < <(\"${ID[@]}\" -format '%w %h' \"$IMG\" 2>/dev/null); " + "[ -z \"$W\" ] && exit 0; " + "GRID=5; CW=$((W/GRID)); CH=$((H/GRID)); " + "best=1; bestx=0; besty=0; " + "for iy in $(seq 0 $((GRID-1))); do " + "  for ix in $(seq 0 $((GRID-1))); do " + "    x=$((ix*CW)); y=$((iy*CH)); " + "    m=$(${CV[@]} \"$IMG\" -crop ${CW}x${CH}+${x}+${y} -colorspace Gray -format '%[fx:mean]' info: 2>/dev/null); " + "    [ -z \"$m\" ] && continue; " + "    comp=$(awk -v a=\"$m\" -v b=\"$best\" 'BEGIN{print (a<b)?1:0}'); " + "    if [ \"$comp\" -eq 1 ]; then best=\"$m\"; bestx=$ix; besty=$iy; fi; " + "  done; " + "done; " + "cx=$(awk -v ix=$bestx -v cw=$CW -v w=$W 'BEGIN{print (ix*cw + cw/2)/w}'); " + "cy=$(awk -v iy=$besty -v ch=$CH -v h=$H 'BEGIN{print (iy*ch + ch/2)/h}'); " + "echo pos|$cx|$cy"]
         running: true
+        onExited: {
+            const nx = Number(wallpaperScan.stdout.px);
+            const ny = Number(wallpaperScan.stdout.py);
+            if (autoPosition && !isNaN(nx) && !isNaN(ny)) {
+                posX = Math.max(0, Math.min(1, nx));
+                posY = Math.max(0, Math.min(1, ny));
+            }
+            wallpaperScan.stdout.px = "";
+            wallpaperScan.stdout.py = "";
+        }
+
         stdout: SplitParser {
             property string px: ""
             property string py: ""
-            onRead: data => {
-                const line = data.trim()
-                if (!line) return
-                const parts = line.split("|")
-                if (parts.length !== 3 || parts[0] !== "pos") return
-                px = parts[1]
-                py = parts[2]
+
+            onRead: (data) => {
+                const line = data.trim();
+                if (!line)
+                    return ;
+
+                const parts = line.split("|");
+                if (parts.length !== 3 || parts[0] !== "pos")
+                    return ;
+
+                px = parts[1];
+                py = parts[2];
             }
         }
-        onExited: {
-            const nx = Number(wallpaperScan.stdout.px)
-            const ny = Number(wallpaperScan.stdout.py)
-            if (autoPosition && !isNaN(nx) && !isNaN(ny)) {
-                posX = Math.max(0, Math.min(1, nx))
-                posY = Math.max(0, Math.min(1, ny))
-            }
-            wallpaperScan.stdout.px = ""
-            wallpaperScan.stdout.py = ""
-        }
+
     }
 
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.RightButton
-        onPressed: mouse => {
-            if (mouse.button !== Qt.RightButton) return
-            dragging = true
-            pressOffsetX = mouse.x
-            pressOffsetY = mouse.y
-            dragStartLeft = posLeft
-            dragStartTop = posTop
-            dragLeft = posLeft
-            dragTop = posTop
+        onPressed: (mouse) => {
+            if (mouse.button !== Qt.RightButton)
+                return ;
+
+            dragging = true;
+            pressOffsetX = mouse.x;
+            pressOffsetY = mouse.y;
+            dragStartLeft = posLeft;
+            dragStartTop = posTop;
+            dragLeft = posLeft;
+            dragTop = posTop;
         }
-        onPositionChanged: mouse => {
-            if (!pressed) return
-            const maxLeft = Math.max(0, screen.width  - width  - safeMargin * 2)
-            const maxTop  = Math.max(0, screen.height - height - safeMargin * 2)
-            dragLeft = Math.max(0, Math.min(maxLeft, dragStartLeft + (mouse.x - pressOffsetX)))
-            dragTop = Math.max(0, Math.min(maxTop,  dragStartTop  + (mouse.y - pressOffsetY)))
+        onPositionChanged: (mouse) => {
+            if (!pressed)
+                return ;
+
+            const maxLeft = Math.max(0, screen.width - width - safeMargin * 2);
+            const maxTop = Math.max(0, screen.height - height - safeMargin * 2);
+            dragLeft = Math.max(0, Math.min(maxLeft, dragStartLeft + (mouse.x - pressOffsetX)));
+            dragTop = Math.max(0, Math.min(maxTop, dragStartTop + (mouse.y - pressOffsetY)));
         }
         onReleased: {
-            dragging = false
-            const maxLeft = Math.max(0, screen.width  - width  - safeMargin * 2)
-            const maxTop  = Math.max(0, screen.height - height - safeMargin * 2)
-            posX = maxLeft > 0 ? ((dragLeft - safeMargin) / maxLeft) : 0
-            posY = maxTop  > 0 ? ((dragTop - safeMargin) / maxTop)  : 0
-            dragLeft = posLeft
-            dragTop = posTop
+            dragging = false;
+            const maxLeft = Math.max(0, screen.width - width - safeMargin * 2);
+            const maxTop = Math.max(0, screen.height - height - safeMargin * 2);
+            posX = maxLeft > 0 ? ((dragLeft - safeMargin) / maxLeft) : 0;
+            posY = maxTop > 0 ? ((dragTop - safeMargin) / maxTop) : 0;
+            dragLeft = posLeft;
+            dragTop = posTop;
             if (settings) {
-                settings.clockWidgetPosX = posX
-                settings.clockWidgetPosY = posY
+                settings.clockWidgetPosX = posX;
+                settings.clockWidgetPosY = posY;
             }
         }
     }
@@ -244,8 +262,10 @@ PanelWindow {
                 // ── Glyph dot row (12 dots = 60 min, each dot = 5 min) ──────────
                 Row {
                     spacing: 4
+
                     Repeater {
                         model: 12
+
                         Rectangle {
                             width: 5
                             height: 5
@@ -253,10 +273,16 @@ PanelWindow {
                             color: index < filledDots() ? nDotOn : nDotOff
 
                             Behavior on color {
-                                ColorAnimation { duration: 400 }
+                                ColorAnimation {
+                                    duration: 400
+                                }
+
                             }
+
                         }
+
                     }
+
                 }
 
                 // ── Time ────────────────────────────────────────────────────────
@@ -267,40 +293,51 @@ PanelWindow {
                         text: pad(root.use24h ? root.now.getHours() : root.hour12(root.now.getHours()))
                         color: nWhite
                         font.pixelSize: 48
-                        font.family: "JetBrains Mono"
+                        font.family: root.textFont
                         font.weight: Font.Bold
-                        font.letterSpacing: -2
+                        font.letterSpacing: 0
                         lineHeight: 1
                     }
 
                     Text {
+                        // blink every second
+                        property bool visible2: true
+
                         text: ":"
                         color: nDim
                         font.pixelSize: 48
-                        font.family: "JetBrains Mono"
+                        font.family: root.textFont
                         font.weight: Font.Bold
-                        font.letterSpacing: -2
+                        font.letterSpacing: 0
                         lineHeight: 1
+                        opacity: visible2 ? 1 : 0
 
-                        // blink every second
-                        property bool visible2: true
-                        opacity: visible2 ? 1.0 : 0.0
                         Timer {
-                            interval: 1000; repeat: true; running: true
+                            interval: 1000
+                            repeat: true
+                            running: true
                             onTriggered: parent.visible2 = !parent.visible2
                         }
-                        Behavior on opacity { NumberAnimation { duration: 80 } }
+
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: 80
+                            }
+
+                        }
+
                     }
 
                     Text {
                         text: pad(root.now.getMinutes())
                         color: nGray
                         font.pixelSize: 48
-                        font.family: "JetBrains Mono"
+                        font.family: root.textFont
                         font.weight: Font.Bold
-                        font.letterSpacing: -2
+                        font.letterSpacing: 0
                         lineHeight: 1
                     }
+
                 }
 
                 // ── Divider line ─────────────────────────────────────────────────
@@ -313,6 +350,7 @@ PanelWindow {
                         height: 1
                         color: nLine
                     }
+
                 }
 
                 // ── Date row ────────────────────────────────────────────────────
@@ -320,16 +358,19 @@ PanelWindow {
                     width: parent.width
 
                     Text {
-                        text: Qt.formatDate(root.now, "ddd").toUpperCase()
-                             + " · "
-                             + Qt.formatDate(root.now, "dd MMM").toUpperCase()
+                        text: Qt.formatDate(root.now, "ddd").toUpperCase() + " · " + Qt.formatDate(root.now, "dd MMM").toUpperCase()
                         color: nMuted
                         font.pixelSize: 9
-                        font.family: "JetBrains Mono"
-                        font.letterSpacing: 1.5
+                        font.family: root.textFont
+                        font.letterSpacing: 0
                     }
+
                 }
+
             }
+
         }
+
     }
+
 }

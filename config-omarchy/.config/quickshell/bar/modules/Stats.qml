@@ -7,7 +7,8 @@ import Quickshell.Wayland
 Item {
     id: root
 
-    property var theme: ({})
+    property var theme: ({
+    })
     property bool barOnBottom: false
     property int overlayBarOffset: 44
     property real overlayScale: 1.18
@@ -17,11 +18,10 @@ Item {
     property string notice: ""
     property var cpuProcesses: []
     property var memProcesses: []
-
+    property var cpuProcessTree: []
+    property var memProcessTree: []
     property real cpuVal: 0
     property real ramVal: 0
-    signal opened()
-
     readonly property color cBg: theme.bg || "#1e1e2e"
     readonly property color cFg: theme.fg || "#cdd6f4"
     readonly property color cMuted: theme.muted || "#585b70"
@@ -32,119 +32,252 @@ Item {
     readonly property bool showingCpu: showing && activeView === "cpu"
     readonly property bool showingMem: showing && activeView === "mem"
     readonly property string panelTitle: activeView === "cpu" ? "Top CPU" : "Top Memory"
-    readonly property string panelSubtitle: activeView === "cpu"
-        ? "CPU " + Math.round(cpuVal) + "%"
-        : "RAM " + Math.round(ramVal) + "%"
+    readonly property string panelSubtitle: activeView === "cpu" ? "CPU " + Math.round(cpuVal) + "%" : "RAM " + Math.round(ramVal) + "%"
     readonly property string panelValueKey: activeView === "cpu" ? "cpu" : "mem"
     readonly property color panelAccent: cAccent
     readonly property var panelProcesses: activeView === "cpu" ? cpuProcesses : memProcesses
-    readonly property string panelEmptyText: activeView === "cpu"
-        ? (cpuProc.running ? "loading" : "no CPU data")
-        : (memProc.running ? "loading" : "no memory data")
+    readonly property var panelProcessTree: activeView === "cpu" ? cpuProcessTree : memProcessTree
+    readonly property string panelEmptyText: activeView === "cpu" ? (cpuProc.running ? "loading" : "no CPU data") : (memProc.running ? "loading" : "no memory data")
+    readonly property string processTreeScript: (Quickshell.env("HOME") || "") + "/.config/quickshell/scripts/quickshell-process-tree"
 
-    implicitWidth: statsRow.implicitWidth
-    implicitHeight: 28
-    anchors.verticalCenter: parent ? parent.verticalCenter : undefined
+    signal opened()
 
     function overlayPx(value) {
-        return Math.round(value * Math.max(1.0, overlayScale))
+        return Math.round(value * Math.max(1, overlayScale));
     }
 
     function refreshStats() {
-        statsProc.running = false
-        statsProc.running = true
+        statsProc.running = false;
+        statsProc.running = true;
     }
 
     function refreshProcesses() {
-        cpuProc.running = false
-        memProc.running = false
-        cpuProc.running = true
-        memProc.running = true
+        cpuProc.running = false;
+        memProc.running = false;
+        cpuProc.running = true;
+        memProc.running = true;
     }
 
     function toggleView(view) {
         if (showing && activeView === view) {
-            showing = false
-            return
+            showing = false;
+            return ;
         }
-
-        activeView = view
-        showing = true
-        opened()
-        refreshProcesses()
+        activeView = view;
+        showing = true;
+        opened();
+        refreshProcesses();
     }
 
     function parseProcessLine(line) {
-        const parts = line.trim().split(/\s+/)
-        if (parts.length < 4) return null
+        const parts = line.trim().split(/\s+/);
+        if (parts.length < 4)
+            return null;
+
         return {
-            pid: parts[0],
-            name: parts[1],
-            cpu: Number(parts[2]) || 0,
-            mem: Number(parts[3]) || 0
-        }
+            "pid": parts[0],
+            "name": parts[1],
+            "cpu": Number(parts[2]) || 0,
+            "mem": Number(parts[3]) || 0
+        };
     }
 
     function parseProcessList(text) {
-        const list = []
-        const lines = (text || "").split(/\r?\n/)
+        const list = [];
+        const lines = (text || "").split(/\r?\n/);
         for (let i = 0; i < lines.length; i++) {
-            const line = lines[i].trim()
-            if (!line) continue
-            const proc = parseProcessLine(line)
-            if (isProtectedProcess(proc)) continue
-            list.push(proc)
-            if (list.length >= 10) break
+            const line = lines[i].trim();
+            if (!line)
+                continue;
+
+            const proc = parseProcessLine(line);
+            if (isProtectedProcess(proc))
+                continue;
+
+            list.push(proc);
+            if (list.length >= 10)
+                break;
+
         }
-        return list
+        return list;
+    }
+
+    function processCountLabel(count) {
+        return count + " proc" + (count === 1 ? "" : "s");
+    }
+
+    function shortContainerName(name, id) {
+        let display = String(name || id || "");
+        display = display.replace(/^dox-compose_/, "");
+        display = display.replace(/_[0-9]+$/, "");
+        return display || String(id || "container");
+    }
+
+    function parseProcessTree(text) {
+        const systemRows = [];
+        const containers = ({
+        });
+        const containerOrder = [];
+        let systemCpu = 0;
+        let systemMem = 0;
+        let dockerCpu = 0;
+        let dockerMem = 0;
+        let dockerCount = 0;
+        const lines = (text || "").split(/\r?\n/);
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            if (!line)
+                continue;
+
+            const parts = line.split("\t");
+            if (parts.length < 8 || parts[0] !== "proc")
+                continue;
+
+            const proc = {
+                "pid": parts[1],
+                "ppid": parts[2],
+                "name": parts[3],
+                "cpu": Number(parts[4]) || 0,
+                "mem": Number(parts[5]) || 0,
+                "containerId": parts[6],
+                "containerName": parts[7]
+            };
+            if (isProtectedProcess(proc))
+                continue;
+
+            if (proc.containerId !== "") {
+                const key = "docker:" + (proc.containerName || proc.containerId);
+                if (!containers[key]) {
+                    const fullTitle = proc.containerName || proc.containerId;
+                    containers[key] = {
+                        "key": key,
+                        "rowType": "container",
+                        "title": shortContainerName(fullTitle, proc.containerId),
+                        "fullTitle": fullTitle,
+                        "rows": [],
+                        "cpu": 0,
+                        "mem": 0,
+                        "count": 0
+                    };
+                    containerOrder.push(key);
+                }
+                containers[key].rows.push(proc);
+                containers[key].cpu += proc.cpu;
+                containers[key].mem += proc.mem;
+                containers[key].count += 1;
+                dockerCpu += proc.cpu;
+                dockerMem += proc.mem;
+                dockerCount += 1;
+            } else {
+                systemRows.push(proc);
+                systemCpu += proc.cpu;
+                systemMem += proc.mem;
+            }
+        }
+        const groups = [{
+            "key": "system",
+            "rowType": "group",
+            "title": "System",
+            "subtitle": processCountLabel(systemRows.length),
+            "rows": systemRows,
+            "cpu": systemCpu,
+            "mem": systemMem
+        }];
+        if (containerOrder.length > 0) {
+            const children = [];
+            for (const key of containerOrder) {
+                const container = containers[key];
+                container.subtitle = processCountLabel(container.count);
+                children.push(container);
+            }
+            groups.push({
+                "key": "docker",
+                "rowType": "group",
+                "title": "Docker",
+                "subtitle": containerOrder.length + " containers",
+                "children": children,
+                "cpu": dockerCpu,
+                "mem": dockerMem,
+                "count": dockerCount
+            });
+        }
+        return groups;
     }
 
     function isProtectedProcess(proc) {
-        if (!proc) return true
-        const pid = Number(proc.pid || 0)
-        const name = String(proc.name || "").toLowerCase()
-        if (!Number.isFinite(pid) || pid <= 2) return true
-        const protectedNames = [
-            "quickshell", "hyprland", "systemd", "init", "dbus-daemon", "dbus-broker",
-            "xwayland", "sddm", "greetd", "pipewire", "wireplumber", "networkmanager",
-            "xdg-desktop-portal", "xdg-desktop-portal-hyprland", "ps"
-        ]
+        if (!proc)
+            return true;
+
+        const pid = Number(proc.pid || 0);
+        const name = String(proc.name || "").toLowerCase();
+        if (!Number.isFinite(pid) || pid <= 2)
+            return true;
+
+        const protectedNames = ["quickshell", "qs", "hyprland", "systemd", "init", "dbus-daemon", "dbus-broker", "xwayland", "sddm", "greetd", "pipewire", "wireplumber", "networkmanager", "xdg-desktop-portal", "xdg-desktop-portal-hyprland", "ps"];
         for (const protectedName of protectedNames) {
-            if (name === protectedName || name.startsWith(protectedName)) return true
+            if (name === protectedName || name.startsWith(protectedName))
+                return true;
+
         }
-        return false
+        return false;
     }
 
     function requestKill(proc) {
-        if (!proc || isProtectedProcess(proc)) return
-        killProc.kill(proc.pid)
-        notice = "Sent SIGTERM to " + (proc.name || proc.pid)
-        noticeTimer.restart()
-        refreshAfterKill.restart()
+        if (!proc || isProtectedProcess(proc))
+            return ;
+
+        killProc.kill(proc.pid);
+        notice = "Sent SIGTERM to " + (proc.name || proc.pid);
+        noticeTimer.restart();
+        refreshAfterKill.restart();
     }
 
     function copyPid(proc) {
-        if (!proc || !/^\d+$/.test(String(proc.pid || ""))) return
-        Quickshell.execDetached(["bash", "-lc", "printf '%s' \"" + proc.pid + "\" | wl-copy"])
-        notice = "Copied PID " + proc.pid
-        noticeTimer.restart()
+        if (!proc || !/^\d+$/.test(String(proc.pid || "")))
+            return ;
+
+        Quickshell.execDetached(["bash", "-lc", "printf '%s' \"" + proc.pid + "\" | wl-copy"]);
+        notice = "Copied PID " + proc.pid;
+        noticeTimer.restart();
     }
 
-    onShowingChanged: if (showing) refreshProcesses()
+    function copyBranch(branch) {
+        const fullTitle = String(branch.fullTitle || branch.title || "");
+        if (fullTitle === "")
+            return ;
+
+        Quickshell.execDetached(["wl-copy", fullTitle]);
+        notice = "Copied " + fullTitle;
+        noticeTimer.restart();
+    }
+
+    implicitWidth: statsRow.implicitWidth
+    implicitHeight: 28
+    anchors.verticalCenter: parent ? parent.verticalCenter : undefined
+    onShowingChanged: {
+        if (showing)
+            refreshProcesses();
+
+    }
+    onQuietModeChanged: {
+        if (!quietMode) {
+            refreshStats();
+            if (showing)
+                refreshProcesses();
+
+        }
+    }
 
     Row {
         id: statsRow
+
         anchors.verticalCenter: parent.verticalCenter
         spacing: 10
 
         StatPill {
             label: "CPU"
             value: cpuVal
-            accent: root.showingCpu
-                ? root.cAccent
-                : cpuVal > 85
-                    ? root.cRed
-                    : root.cAccent
+            accent: root.showingCpu ? root.cAccent : cpuVal > 85 ? root.cRed : root.cAccent
             trackColor: root.cDim
             textColor: root.cFg
             interactive: true
@@ -154,20 +287,18 @@ Item {
         StatPill {
             label: "RAM"
             value: ramVal
-            accent: root.showingMem
-                ? root.cAccent
-                : ramVal > 85
-                    ? root.cRed
-                    : root.cAccent
+            accent: root.showingMem ? root.cAccent : ramVal > 85 ? root.cRed : root.cAccent
             trackColor: root.cDim
             textColor: root.cFg
             interactive: true
             onClicked: root.toggleView("mem")
         }
+
     }
 
     Timer {
         id: noticeTimer
+
         interval: 2200
         repeat: false
         onTriggered: root.notice = ""
@@ -175,6 +306,7 @@ Item {
 
     Timer {
         id: refreshAfterKill
+
         interval: 300
         repeat: false
         onTriggered: root.refreshProcesses()
@@ -194,85 +326,111 @@ Item {
         onTriggered: refreshProcesses()
     }
 
-    onQuietModeChanged: if (!quietMode) {
-        refreshStats()
-        if (showing) refreshProcesses()
-    }
-
     Process {
         id: statsProc
-        command: ["bash", "-c", "printf '%s\n' \"$(cat /proc/stat | head -1)\"; free | awk '/^Mem/{printf \"%d\\n\",$3/$2*100}'"]
+
         property var last: null
+
+        command: ["bash", "-c", "printf '%s\n' \"$(cat /proc/stat | head -1)\"; free | awk '/^Mem/{printf \"%d\\n\",$3/$2*100}'"]
         running: true
+        onExited: statsProc.stdout.lineNo = 0
+
         stdout: SplitParser {
             property int lineNo: 0
-            onRead: data => {
-                const text = data.trim()
-                if (!text) return
+
+            onRead: (data) => {
+                const text = data.trim();
+                if (!text)
+                    return ;
 
                 if (lineNo === 0) {
-                    const p = text.split(/\s+/).slice(1).map(Number)
+                    const p = text.split(/\s+/).slice(1).map(Number);
                     if (statsProc.last) {
-                        const idle  = p[3] - statsProc.last[3]
-                        const total = p.reduce((a, b) => a + b, 0) - statsProc.last.reduce((a, b) => a + b, 0)
-                        cpuVal = total > 0 ? Math.round((1 - idle / total) * 100) : cpuVal
+                        const idle = p[3] - statsProc.last[3];
+                        const total = p.reduce((a, b) => {
+                            return a + b;
+                        }, 0) - statsProc.last.reduce((a, b) => {
+                            return a + b;
+                        }, 0);
+                        cpuVal = total > 0 ? Math.round((1 - idle / total) * 100) : cpuVal;
                     }
-                    statsProc.last = p
+                    statsProc.last = p;
                 } else {
-                    ramVal = parseInt(text) || 0
+                    ramVal = parseInt(text) || 0;
                 }
-                lineNo++
+                lineNo++;
             }
         }
-        onExited: statsProc.stdout.lineNo = 0
+
     }
 
     Process {
         id: cpuProc
-        command: ["ps", "-eo", "pid=,comm=,%cpu=,%mem=", "--sort=-%cpu", "--no-headers"]
+
+        command: ["bash", root.processTreeScript, "cpu"]
         running: false
+        onExited: {
+            root.cpuProcessTree = root.parseProcessTree(stdout.buf);
+            stdout.buf = "";
+        }
+        onRunningChanged: {
+            if (running)
+                stdout.buf = "";
+
+        }
+
         stdout: SplitParser {
             property string buf: ""
-            onRead: data => {
-                const chunk = String(data)
-                buf += chunk.indexOf("\n") >= 0 ? chunk : chunk + "\n"
+
+            onRead: (data) => {
+                const chunk = String(data);
+                buf += chunk.indexOf("\n") >= 0 ? chunk : chunk + "\n";
             }
         }
-        onExited: {
-            root.cpuProcesses = root.parseProcessList(stdout.buf)
-            stdout.buf = ""
-        }
-        onRunningChanged: if (running) stdout.buf = ""
+
     }
 
     Process {
         id: memProc
-        command: ["ps", "-eo", "pid=,comm=,%cpu=,%mem=", "--sort=-%mem", "--no-headers"]
+
+        command: ["bash", root.processTreeScript, "mem"]
         running: false
+        onExited: {
+            root.memProcessTree = root.parseProcessTree(stdout.buf);
+            stdout.buf = "";
+        }
+        onRunningChanged: {
+            if (running)
+                stdout.buf = "";
+
+        }
+
         stdout: SplitParser {
             property string buf: ""
-            onRead: data => {
-                const chunk = String(data)
-                buf += chunk.indexOf("\n") >= 0 ? chunk : chunk + "\n"
+
+            onRead: (data) => {
+                const chunk = String(data);
+                buf += chunk.indexOf("\n") >= 0 ? chunk : chunk + "\n";
             }
         }
-        onExited: {
-            root.memProcesses = root.parseProcessList(stdout.buf)
-            stdout.buf = ""
-        }
-        onRunningChanged: if (running) stdout.buf = ""
+
     }
 
     Process {
         id: killProc
+
         property string targetPid: ""
-        command: ["kill", "-TERM", targetPid]
+
         function kill(pid) {
-            targetPid = String(pid || "").trim()
-            if (!/^\d+$/.test(targetPid)) return
-            running = false
-            running = true
+            targetPid = String(pid || "").trim();
+            if (!/^\d+$/.test(targetPid))
+                return ;
+
+            running = false;
+            running = true;
         }
+
+        command: ["kill", "-TERM", targetPid]
     }
 
     ProcessOverlay {
@@ -289,11 +447,20 @@ Item {
         valueKey: root.panelValueKey
         accent: root.panelAccent
         processes: root.panelProcesses
+        treeGroups: root.panelProcessTree
         emptyText: root.panelEmptyText
         theme: root.theme
         onCloseRequested: root.showing = false
         onRefreshRequested: root.refreshProcesses()
-        onPidCopied: proc => root.copyPid(proc)
-        onKillRequested: proc => root.requestKill(proc)
+        onPidCopied: (proc) => {
+            return root.copyPid(proc);
+        }
+        onBranchCopied: (branch) => {
+            return root.copyBranch(branch);
+        }
+        onKillRequested: (proc) => {
+            return root.requestKill(proc);
+        }
     }
+
 }
