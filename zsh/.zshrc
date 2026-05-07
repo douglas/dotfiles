@@ -10,6 +10,7 @@ export VISUAL=zed
 export _ZO_DOCTOR=0
 export ENABLE_LSP_TOOL=1
 export CLAUDE_CODE_NO_FLICKER=1
+unset NO_COLOR
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.cache/.bun/bin:$PATH"
 export PATH="$HOME/.bin:$PATH"
