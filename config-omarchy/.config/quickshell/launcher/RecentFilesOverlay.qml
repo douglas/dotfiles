@@ -226,6 +226,23 @@ FloatingWindow {
         showing = false
     }
 
+    function copyImageMetadata(path) {
+        if (!path || path === "")
+            return
+        Quickshell.execDetached(["bash", "-lc", "printf '%s' " + shellQuote(path) + " | wl-copy"])
+        showing = false
+    }
+
+    function activateSelected() {
+        if (mode === "pictures" && selectedFile.isImage === true) {
+            settingsOpen = false
+            copyImageMetadata(selectedFile.path)
+            return
+        }
+
+        openFile(selectedFile.path)
+    }
+
     function moveSelection(delta) {
         if (files.length === 0)
             return
@@ -270,7 +287,7 @@ FloatingWindow {
                 root.showing = false
                 e.accepted = true
             } else if (e.key === Qt.Key_Return || e.key === Qt.Key_Enter) {
-                root.openFile(root.selectedFile.path)
+                root.activateSelected()
                 e.accepted = true
             } else if (e.key === Qt.Key_Right || e.key === Qt.Key_Down) {
                 root.moveSelection(1)
