@@ -259,6 +259,20 @@ PanelWindow {
                     })
                 }
 
+                Battery {
+                    anchors.verticalCenter: parent.verticalCenter
+                    barOnBottom: root.barOnBottom
+                    overlayBarOffset: root.px(root.reservedSpace + 6)
+                    theme: ({
+                        fg: root.fg,
+                        accent: root.accent,
+                        dim: root.dim,
+                        muted: root.muted,
+                        bg: root.bg,
+                        red: root.red
+                    })
+                }
+
                 Kef {
                     anchors.verticalCenter: parent.verticalCenter
                     theme: ({
