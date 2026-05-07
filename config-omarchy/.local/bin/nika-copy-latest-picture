@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -eu
+
+export PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
+
+latest="$(
+  fd -H -L -t f \
+    -e jpg -e jpeg -e png -e webp -e gif -e bmp -e heic -e avif \
+    -0 . "$HOME/Pictures" 2>/dev/null |
+    xargs -0 -r stat -c '%Y|%n' |
+    sort -t '|' -k 1,1nr |
+    head -n 1 |
+    cut -d '|' -f 2-
+)"
+
+if [[ -z "$latest" ]]; then
+  quickshell ipc -n call osdPictureMissing handle >/dev/null 2>&1 || true
+  exit 1
+fi
+
+quickshell ipc -n call osdPictureCopied handle >/dev/null 2>&1 || true
+
+wl-copy "$latest"

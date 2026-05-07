@@ -53,6 +53,20 @@ Item {
         hideTimer.restart()
     }
 
+    function showMessage(iconGlyph, titleText, subtitleText, toneName, valueLabel) {
+        icon = iconGlyph
+        title = titleText
+        subtitle = subtitleText || ""
+        value = 100
+        valueText = valueLabel || ""
+        artUrl = ""
+        mediaMode = false
+        tone = toneName || "accent"
+        hideTimer.interval = 1600
+        showing = true
+        hideTimer.restart()
+    }
+
     function _formatSeconds(totalSeconds) {
         const secs = Math.max(0, Math.floor(totalSeconds || 0))
         const minutes = Math.floor(secs / 60)

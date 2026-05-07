@@ -652,6 +652,20 @@ ShellRoot {
     }
 
     IpcHandler {
+        target: "osdPictureCopied"
+        function handle() {
+            osdService.showMessage("", "Picture path copied", "Ready to paste", "green", "Copied")
+        }
+    }
+
+    IpcHandler {
+        target: "osdPictureMissing"
+        function handle() {
+            osdService.showMessage("󰧧", "No recent picture found", "~/Pictures has no supported images", "red", "")
+        }
+    }
+
+    IpcHandler {
         target: "osdVolume"
         function handle() {
             osdService.showVolume()
