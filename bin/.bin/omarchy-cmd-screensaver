@@ -13,37 +13,12 @@ exit_screensaver() {
 
 trap exit_screensaver SIGINT SIGTERM SIGHUP SIGQUIT
 
-theme_file="$HOME/.config/omarchy/current/theme/colors.toml"
-
-theme_color() {
-  local key="$1"
-  local fallback="$2"
-  local value
-
-  value=$(
-    awk -F= -v key="$key" '
-      $1 ~ "^[[:space:]]*" key "[[:space:]]*$" {
-        gsub(/[[:space:]"]/, "", $2)
-        sub(/^#/, "", $2)
-        print $2
-        exit
-      }
-    ' "$theme_file" 2>/dev/null
-  )
-
-  if [[ $value =~ ^[[:xdigit:]]{6}$ ]]; then
-    printf '%s\n' "$value"
-  else
-    printf '%s\n' "$fallback"
-  fi
-}
-
-terminal_background=$(theme_color background 000000)
-highlight_color=$(theme_color cursor dbffdb)
-rain_color_start=$(theme_color accent 92be92)
-rain_color_end=$(theme_color color6 185318)
-final_gradient_start=$(theme_color accent 92be92)
-final_gradient_end=$(theme_color foreground 336b33)
+terminal_background=000000
+highlight_color=dbffdb
+rain_color_start=92be92
+rain_color_end=185318
+final_gradient_start=92be92
+final_gradient_end=336b33
 
 printf '\033]11;rgb:%s/%s/%s\007' \
   "${terminal_background:0:2}" \

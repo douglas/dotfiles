@@ -20,11 +20,11 @@ modmap:
 
 keymap:
   # ============================================================
-  # Terminal (Ghostty) — Cmd key (F18)
+  # Terminal (Ghostty/Alacritty) — Cmd key (F18)
   # ============================================================
   - name: Terminal shortcuts (Cmd)
     application:
-      only: [com.mitchellh.ghostty]
+      only: [com.mitchellh.ghostty, Alacritty]
     remap:
       # App launcher
       F18-Space: Super-Space
@@ -167,7 +167,7 @@ keymap:
   # ============================================================
   - name: macOS-style shortcuts (Cmd)
     application:
-      not: [com.mitchellh.ghostty, spotify]
+      not: [com.mitchellh.ghostty, Alacritty, spotify]
     remap:
       # App launcher
       F18-Space: Super-Space
