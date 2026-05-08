@@ -8,6 +8,7 @@ Item {
     id: root
     property var theme:      ({})
     property var trayWindow: null
+    property var notifServer: null
 
     function _isDirectIconSource(icon) {
         const value = icon || ""
@@ -45,13 +46,40 @@ Item {
         return false
     }
 
+    function _looksLikeSlackFallback(item, text) {
+        const id = (item?.id || "").toLowerCase()
+        return id.startsWith("chrome_status_icon") &&
+            text.includes("you have") &&
+            text.includes("notification")
+    }
+
+    function _isSlackItem(item, text) {
+        return _hasAny(text, ["slack"]) || _looksLikeSlackFallback(item, text)
+    }
+
+    function _hasWaitingSlackMessages(item) {
+        const text = _traySearchText(item)
+        return _isSlackItem(item, text) &&
+            root.notifServer &&
+            root.notifServer.hasSlackDirectOrMention()
+    }
+
+    function _glyphColor(item, hovered) {
+        if (_hasWaitingSlackMessages(item))
+            return root.theme.yellow || "#f9e2af"
+        return hovered
+            ? (root.theme.accent || "#89b4fa")
+            : (root.theme.fg || "#cdd6f4")
+    }
+
     function _customGlyph(item) {
         const text = _traySearchText(item)
         if (_hasAny(text, ["spotify"])) return ""
         if (_hasAny(text, ["discord", "vesktop"])) return ""
         if (_hasAny(text, ["telegram"])) return ""
         if (_hasAny(text, ["steam"])) return ""
-        if (_hasAny(text, ["slack"])) return "󰒱"
+        if (_isSlackItem(item, text)) return "󰒱"
+        if (_hasAny(text, ["1password", "onepassword", "one password"])) return "󰌾"
         if (_hasAny(text, ["obs", "obsidian"])) return text.includes("obsidian") ? "󰎚" : "󰐾"
         if (_hasAny(text, ["dropbox"])) return "󰇣"
         if (_hasAny(text, ["github", "gitkraken"])) return "󰊤"
@@ -255,9 +283,7 @@ Item {
                     anchors.centerIn: parent
                     text: root._customGlyph(modelData)
                     visible: text !== ""
-                    color: trayItem.hovered
-                        ? (root.theme.accent || "#89b4fa")
-                        : (root.theme.fg || "#cdd6f4")
+                    color: root._glyphColor(modelData, trayItem.hovered)
                     opacity: trayItem.hovered ? 1.0 : 0.68
                     font.pixelSize: 12
                     font.family: "JetBrainsMono Nerd Font"

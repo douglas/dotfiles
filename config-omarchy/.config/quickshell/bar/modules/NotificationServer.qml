@@ -91,6 +91,34 @@ Item {
         return root.notifications.filter(n => appNameFor(n) === appName)
     }
 
+    function isSlackNotification(notif) {
+        return appNameFor(notif).toLowerCase().includes("slack")
+    }
+
+    function isSlackDirectOrMention(notif) {
+        if (!isSlackNotification(notif)) return false
+
+        const summary = (notif?.summary || "").toLowerCase()
+        const body = (notif?.body || "").toLowerCase()
+        const text = [summary, body].join(" ")
+
+        if (text.includes("mentioned you") ||
+            text.includes("mention") ||
+            text.includes("@douglas") ||
+            text.includes("@here") ||
+            text.includes("@channel"))
+            return true
+
+        if (summary.startsWith("#") || summary.includes(" in #"))
+            return false
+
+        return summary !== "" && !summary.includes("#")
+    }
+
+    function hasSlackDirectOrMention() {
+        return root.notifications.some(n => isSlackDirectOrMention(n))
+    }
+
     function groupedNotifications(appName) {
         const groups = {}
         const order = []

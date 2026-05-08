@@ -24,6 +24,7 @@ PanelWindow {
     property string highlight: "#cba6f7"
     property string red:       "#f38ba8"
     property string green:     "#a6e3a1"
+    property string yellow:    "#f9e2af"
     property string muted:     "#585b70"
     readonly property string launcherIconPreset: settings?.launcherIconPreset || "omarchy"
     readonly property string launcherIconText: launcherIconPreset === "arch"
@@ -133,6 +134,7 @@ PanelWindow {
                         accent: root.accent,
                         dim: root.dim,
                         muted: root.muted,
+                        yellow: root.yellow,
                         bg: root.bg
                     })
                 }
@@ -252,6 +254,7 @@ PanelWindow {
                 Tray {
                     anchors.verticalCenter: parent.verticalCenter
                     trayWindow: root
+                    notifServer: root.notifServer
                     theme: ({
                         fg: root.fg,
                         accent: root.accent,
