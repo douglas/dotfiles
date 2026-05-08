@@ -11,7 +11,7 @@ Item {
     property bool barOnBottom: false
     property int overlayBarOffset: 44
     property real overlayScale: 1.18
-    property int overlayWidth: 340
+    property int overlayWidth: 236
     property int overlayHeight: 408
     property var theme: ({
     })
@@ -30,6 +30,10 @@ Item {
     property string emptyText: "no data"
     property bool loading: false
     property bool showPids: false
+    property bool settingsOpen: false
+    property int maxProcessRows: 3
+    property int processLimit: maxProcessRows
+    readonly property int effectiveProcessRows: Math.max(1, Math.min(10, Math.round(processLimit)))
     readonly property string textFont: Style.Typography.monoPropo
     readonly property string iconFont: Style.Typography.mono
     readonly property color cBg: theme.bg || "#1e1e2e"
@@ -44,6 +48,7 @@ Item {
     signal pidCopied(var proc)
     signal killRequested(var proc)
     signal branchCopied(var branch)
+    signal processLimitRequested(int limit)
 
     function overlayPx(value) {
         return Math.round(value * Math.max(1, overlayScale));
@@ -94,6 +99,16 @@ Item {
 
     function rebuildRows() {
         const rows = [];
+        let processRowsShown = 0;
+
+        function pushProcess(proc, level) {
+            if (processRowsShown >= root.effectiveProcessRows)
+                return false;
+
+            rows.push(processRow(proc, level));
+            processRowsShown++;
+            return true;
+        }
         if (treeGroups.length > 0) {
             for (const group of treeGroups) {
                 const groupKey = group.key || group.title;
@@ -109,15 +124,31 @@ Item {
                         continue;
 
                     const childRows = child.rows || [];
-                    for (const proc of childRows) rows.push(processRow(proc, 2))
+                    for (const proc of childRows) {
+                        if (!pushProcess(proc, 2))
+                            break;
+                    }
                 }
                 const processRows = group.rows || [];
-                for (const proc of processRows) rows.push(processRow(proc, 1))
+                for (const proc of processRows) {
+                    if (!pushProcess(proc, 1))
+                        break;
+                }
             }
         } else {
-            for (const proc of processes.slice(0, 10)) rows.push(processRow(proc, 0))
+            for (const proc of processes.slice(0, root.effectiveProcessRows)) rows.push(processRow(proc, 0))
         }
         displayRows = rows;
+    }
+
+    function setProcessLimit(value) {
+        const next = Math.max(1, Math.min(10, Math.round(value)));
+        if (root.processLimit === next)
+            return ;
+
+        root.maxProcessRows = next;
+        root.processLimitRequested(next);
+        root.rebuildRows();
     }
 
     function copyableBranch(row) {
@@ -131,6 +162,11 @@ Item {
     onProcessesChanged: rebuildRows()
     onTreeGroupsChanged: rebuildRows()
     onCollapsedKeysChanged: rebuildRows()
+    onEffectiveProcessRowsChanged: rebuildRows()
+    onShowingChanged: {
+        if (!showing)
+            settingsOpen = false;
+    }
 
     WlrLayershell {
         visible: root.showing
@@ -272,6 +308,31 @@ Item {
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: root.refreshRequested()
+                            }
+
+                            Behavior on color {
+                                ColorAnimation {
+                                    duration: 120
+                                }
+
+                            }
+
+                        }
+
+                        Text {
+                            text: ""
+                            color: settingsHover.containsMouse || root.settingsOpen ? root.accent : root.cMuted
+                            font.pixelSize: Style.Typography.scaledCalendarIcon(root.overlayScale)
+                            font.family: root.iconFont
+
+                            MouseArea {
+                                id: settingsHover
+
+                                anchors.fill: parent
+                                anchors.margins: -7
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: root.settingsOpen = !root.settingsOpen
                             }
 
                             Behavior on color {
@@ -576,6 +637,104 @@ Item {
                         font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
                         font.family: root.textFont
                         opacity: 0.65
+                    }
+
+                }
+
+            }
+
+            Rectangle {
+                id: settingsPanel
+
+                visible: root.settingsOpen
+                z: 20
+                width: root.overlayPx(178)
+                height: root.overlayPx(86)
+                anchors.top: parent.top
+                anchors.right: parent.right
+                anchors.topMargin: root.overlayPx(48)
+                anchors.rightMargin: root.overlayPx(14)
+                radius: 8
+                color: root.cBg
+                border.width: 1
+                border.color: Qt.alpha(root.accent, 0.42)
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                    }
+                }
+
+                ColumnLayout {
+                    anchors.fill: parent
+                    anchors.margins: root.overlayPx(12)
+                    spacing: root.overlayPx(10)
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: root.overlayPx(8)
+
+                        Text {
+                            Layout.fillWidth: true
+                            text: "Top processes"
+                            color: root.cFg
+                            font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
+                            font.family: root.textFont
+                            font.weight: Font.Medium
+                        }
+
+                        Text {
+                            text: root.effectiveProcessRows
+                            color: root.accent
+                            font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
+                            font.family: root.textFont
+                            font.weight: Font.DemiBold
+                        }
+
+                    }
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: root.overlayPx(8)
+
+                        Repeater {
+                            model: [{
+                                "label": "-1",
+                                "delta": -1
+                            }, {
+                                "label": "+1",
+                                "delta": 1
+                            }, {
+                                "label": "+5",
+                                "delta": 5
+                            }]
+
+                            Rectangle {
+                                Layout.fillWidth: true
+                                height: root.overlayPx(30)
+                                radius: 6
+                                color: Qt.alpha(root.cDim, 0.34)
+                                border.width: 1
+                                border.color: Qt.alpha(root.cDim, 0.7)
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: modelData.label
+                                    color: root.cFg
+                                    font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
+                                    font.family: root.textFont
+                                }
+
+                                MouseArea {
+                                    anchors.fill: parent
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: root.setProcessLimit(root.effectiveProcessRows + modelData.delta)
+                                }
+
+                            }
+
+                        }
+
                     }
 
                 }

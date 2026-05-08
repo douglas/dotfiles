@@ -30,5 +30,8 @@
   "rememberSettingsWindowPosition": false,
   "openSettingsOnGeneralAlways": true,
   "picturesImageLimit": 5,
-  "downloadsFileLimit": 10
+  "downloadsFileLimit": 10,
+  "processOverlayCpuLimit": 3,
+  "processOverlayMemoryLimit": 3,
+  "processOverlayBatteryLimit": 3
 }

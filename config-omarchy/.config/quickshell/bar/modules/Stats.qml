@@ -9,6 +9,7 @@ Item {
 
     property var theme: ({
     })
+    property var settings: null
     property bool barOnBottom: false
     property int overlayBarOffset: 44
     property real overlayScale: 1.18
@@ -35,14 +36,20 @@ Item {
     readonly property color cYellow: theme.yellow || "#f9e2af"
     readonly property bool showingCpu: showing && activeView === "cpu"
     readonly property bool showingMem: showing && activeView === "mem"
-    readonly property string panelTitle: activeView === "cpu" ? "Top CPU" : "Top Memory"
-    readonly property string panelSubtitle: activeView === "cpu" ? "CPU " + Math.round(cpuVal) + "%" : "RAM " + Math.round(ramVal) + "%"
+    readonly property string cpuIcon: "󰒋"
+    readonly property string memIcon: ""
+    readonly property string panelIcon: activeView === "cpu" ? cpuIcon : memIcon
+    readonly property string panelTitle: activeView === "cpu" ? "CPU Usage" : "Memory Usage"
+    readonly property string panelSubtitle: activeView === "cpu" ? Math.round(cpuVal) + "%" : Math.round(ramVal) + "%"
     readonly property string panelValueKey: activeView === "cpu" ? "cpu" : "mem"
     readonly property color panelAccent: cAccent
     readonly property var panelProcesses: activeView === "cpu" ? cpuProcesses : memProcesses
     readonly property var panelProcessTree: activeView === "cpu" ? cpuProcessTree : memProcessTree
     readonly property bool panelLoading: activeView === "cpu" ? cpuProcessesFirstLoading : memProcessesFirstLoading
     readonly property string panelEmptyText: activeView === "cpu" ? "no CPU data" : "no memory data"
+    readonly property int cpuProcessLimit: Math.max(1, Math.min(10, Math.round(settings && typeof settings.processOverlayCpuLimit === "number" ? settings.processOverlayCpuLimit : 3)))
+    readonly property int memoryProcessLimit: Math.max(1, Math.min(10, Math.round(settings && typeof settings.processOverlayMemoryLimit === "number" ? settings.processOverlayMemoryLimit : 3)))
+    readonly property int panelProcessLimit: activeView === "cpu" ? cpuProcessLimit : memoryProcessLimit
     readonly property string processTreeScript: (Quickshell.env("HOME") || "") + "/.config/quickshell/scripts/quickshell-process-tree"
 
     signal opened()
@@ -120,10 +127,6 @@ Item {
         return list;
     }
 
-    function processCountLabel(count) {
-        return count + " proc" + (count === 1 ? "" : "s");
-    }
-
     function shortContainerName(name, id) {
         let display = String(name || id || "");
         display = display.replace(/^[a-z0-9-]+-compose_/, "");
@@ -140,7 +143,6 @@ Item {
         let systemMem = 0;
         let dockerCpu = 0;
         let dockerMem = 0;
-        let dockerCount = 0;
         const lines = (text || "").split(/\r?\n/);
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i];
@@ -175,17 +177,14 @@ Item {
                         "rows": [],
                         "cpu": 0,
                         "mem": 0,
-                        "count": 0
                     };
                     containerOrder.push(key);
                 }
                 containers[key].rows.push(proc);
                 containers[key].cpu += proc.cpu;
                 containers[key].mem += proc.mem;
-                containers[key].count += 1;
                 dockerCpu += proc.cpu;
                 dockerMem += proc.mem;
-                dockerCount += 1;
             } else {
                 systemRows.push(proc);
                 systemCpu += proc.cpu;
@@ -196,7 +195,6 @@ Item {
             "key": "system",
             "rowType": "group",
             "title": "System",
-            "subtitle": processCountLabel(systemRows.length),
             "rows": systemRows,
             "cpu": systemCpu,
             "mem": systemMem
@@ -205,18 +203,15 @@ Item {
             const children = [];
             for (const key of containerOrder) {
                 const container = containers[key];
-                container.subtitle = processCountLabel(container.count);
                 children.push(container);
             }
             groups.push({
                 "key": "docker",
                 "rowType": "group",
                 "title": "Docker",
-                "subtitle": containerOrder.length + " containers",
                 "children": children,
                 "cpu": dockerCpu,
-                "mem": dockerMem,
-                "count": dockerCount
+                "mem": dockerMem
             });
         }
         return groups;
@@ -293,7 +288,7 @@ Item {
         spacing: 10
 
         StatPill {
-            label: "CPU"
+            icon: root.cpuIcon
             value: cpuVal
             accent: root.showingCpu ? root.cAccent : cpuVal > 85 ? root.cRed : root.cAccent
             trackColor: root.cDim
@@ -303,7 +298,7 @@ Item {
         }
 
         StatPill {
-            label: "RAM"
+            icon: root.memIcon
             value: ramVal
             accent: root.showingMem ? root.cAccent : ramVal > 85 ? root.cRed : root.cAccent
             trackColor: root.cDim
@@ -497,15 +492,16 @@ Item {
         overlayBarOffset: root.overlayBarOffset
         overlayScale: root.overlayScale
         namespaceName: "stats-impact"
-        icon: "󰍛"
+        icon: root.panelIcon
         title: root.panelTitle
         subtitle: root.panelSubtitle
         notice: root.notice
-        listTitle: "Processes"
+        listTitle: "Top Processes"
         valueKey: root.panelValueKey
         accent: root.panelAccent
         processes: root.panelProcesses
         treeGroups: root.panelProcessTree
+        processLimit: root.panelProcessLimit
         emptyText: root.panelEmptyText
         loading: root.panelLoading
         theme: root.theme
@@ -516,6 +512,15 @@ Item {
         }
         onBranchCopied: (branch) => {
             return root.copyBranch(branch);
+        }
+        onProcessLimitRequested: (limit) => {
+            if (!root.settings)
+                return ;
+
+            if (root.activeView === "cpu")
+                root.settings.processOverlayCpuLimit = limit;
+            else
+                root.settings.processOverlayMemoryLimit = limit;
         }
         onKillRequested: (proc) => {
             return root.requestKill(proc);

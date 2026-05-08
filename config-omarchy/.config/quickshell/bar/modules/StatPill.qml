@@ -5,6 +5,7 @@ Item {
     id: root
 
     property string label: ""
+    property string icon: ""
     property real value: 0
     property color accent: "#89b4fa"
     property color trackColor: "#45475a"
@@ -34,13 +35,22 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         spacing: 5
 
-        Text {
+        Item {
             anchors.verticalCenter: parent.verticalCenter
-            text: label
-            color: textColor
-            font.pixelSize: Style.Typography.componentSubtitle
-            font.family: Style.Typography.text
-            opacity: 0.5
+            width: Style.Typography.rightClusterIcon
+            height: Style.Typography.rightClusterIcon
+
+            Text {
+                anchors.centerIn: parent
+                text: root.icon !== "" ? root.icon : root.label
+                color: textColor
+                font.pixelSize: root.icon !== "" ? Math.max(1, Style.Typography.rightClusterIcon - 2) : Style.Typography.componentSubtitle
+                font.family: root.icon !== "" ? Style.Typography.mono : Style.Typography.text
+                font.weight: Font.Normal
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                opacity: 0.5
+            }
         }
 
         Text {

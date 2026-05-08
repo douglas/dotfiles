@@ -23,7 +23,7 @@ Item {
         actionProc.running = true;
     }
 
-    implicitWidth: iconText.implicitWidth
+    implicitWidth: Style.Typography.rightClusterIcon
     implicitHeight: 28
 
     Process {
@@ -84,8 +84,9 @@ Item {
         text: root.icon
         color: root.statusClass.indexOf("on") !== -1 ? (root.theme.accent || "#89b4fa") : (root.theme.fg || "#cdd6f4")
         opacity: root.statusClass.indexOf("on") !== -1 ? (root.hovered ? 1 : 0.95) : (root.hovered ? 0.75 : 0.4)
-        font.pixelSize: Style.Typography.rightClusterIcon
+        font.pixelSize: Math.max(1, Style.Typography.rightClusterIcon - 1)
         font.family: Style.Typography.mono
+        font.weight: Font.Normal
 
         Behavior on color {
             ColorAnimation {

@@ -296,6 +296,7 @@ PanelWindow {
 
                 Battery {
                     id: batteryModule
+                    settings: root.settings
                     anchors.verticalCenter: parent.verticalCenter
                     barOnBottom: root.barOnBottom
                     overlayBarOffset: root.px(root.reservedSpace + 6)
@@ -316,6 +317,7 @@ PanelWindow {
 
                 Stats {
                     id: statsModule
+                    settings: root.settings
                     anchors.verticalCenter: parent.verticalCenter
                     barOnBottom: root.barOnBottom
                     overlayBarOffset: root.px(root.reservedSpace + 6)

@@ -36,17 +36,16 @@ Item {
     readonly property color cTextDimmed: cLightTheme ? Qt.alpha(cTextPrimary, 0.42) : Qt.alpha(cTextPrimary, 0.35)
     readonly property color cAccent: useOmarchyTheme ? theme.accent : "#89B4FA"
     readonly property color cPermission: useOmarchyTheme ? theme.red : "#F7768E"
-    readonly property color cAttention: useOmarchyTheme ? theme.yellow : "#FF9E64"
-    readonly property color cWorking: useOmarchyTheme ? theme.green : "#9ECE6A"
-    readonly property color cCompacting: useOmarchyTheme ? theme.highlight : "#BB9AF7"
-    readonly property color cIdle: useOmarchyTheme ? theme.muted : "#565D78"
+    readonly property color cAttention: useOmarchyTheme ? theme.red : "#F7768E"
+    readonly property color cWorking: useOmarchyTheme ? theme.yellow : "#E0AF68"
+    readonly property color cCompacting: cWorking
+    readonly property color cIdle: useOmarchyTheme ? theme.green : "#9ECE6A"
     readonly property var orderedSessions: sortedSessions()
     readonly property int permissionCount: countStatus("permission")
-    readonly property int attentionCount: countStatus("attention")
     readonly property int workingCount: countStatus("working")
     readonly property int idleCount: countStatus("idle")
-    readonly property int totalCount: permissionCount + attentionCount + workingCount + idleCount
-    readonly property int needsActionCount: permissionCount + attentionCount
+    readonly property int totalCount: permissionCount + workingCount + idleCount
+    readonly property int needsActionCount: permissionCount
     readonly property bool showTabs: recentProjects.length > 0
     readonly property int overlayWidth: 340
 
@@ -133,10 +132,8 @@ Item {
 
     function statusGroup(session) {
         const status = String(session.status || "idle");
-        if (status === "waiting_permission")
+        if (status === "waiting_permission" || status === "waiting_input" || status === "needs_attention")
             return "permission";
-        if (status === "waiting_input" || status === "needs_attention")
-            return "attention";
         if (status === "working" || status === "compacting")
             return "working";
         return "idle";
@@ -144,10 +141,8 @@ Item {
 
     function statusPriority(session) {
         const status = String(session.status || "idle");
-        if (status === "waiting_permission")
+        if (status === "waiting_permission" || status === "waiting_input" || status === "needs_attention")
             return 0;
-        if (status === "waiting_input" || status === "needs_attention")
-            return 1;
         if (status === "working")
             return 2;
         if (status === "compacting")
@@ -167,8 +162,6 @@ Item {
     function topbarStatusColor() {
         if (permissionCount > 0)
             return cPermission;
-        if (attentionCount > 0)
-            return cAttention;
         if (workingCount > 0)
             return cWorking;
         if (idleCount > 0)
@@ -178,23 +171,17 @@ Item {
     }
 
     function topbarStatusDots() {
-        const dots = [{ color: cPermission, count: permissionCount }];
-        if (attentionCount > 0)
-            dots.push({ color: cAttention, count: attentionCount });
-        if (workingCount > 0)
-            dots.push({ color: cWorking, count: workingCount });
-        if (idleCount > 0)
-            dots.push({ color: cIdle, count: idleCount });
-
-        return dots;
+        return [
+            { color: cPermission, count: permissionCount },
+            { color: cWorking, count: workingCount },
+            { color: cIdle, count: idleCount }
+        ];
     }
 
     function statusColor(session) {
         const status = String(session.status || "idle");
-        if (status === "waiting_permission")
+        if (status === "waiting_permission" || status === "waiting_input" || status === "needs_attention")
             return cPermission;
-        if (status === "waiting_input" || status === "needs_attention")
-            return cAttention;
         if (status === "working")
             return cWorking;
         if (status === "compacting")
@@ -505,15 +492,22 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             spacing: 6
 
-            Text {
+            Item {
                 anchors.verticalCenter: parent.verticalCenter
-                anchors.verticalCenterOffset: -1
+                width: Style.Typography.rightClusterIcon
                 height: Style.Typography.rightClusterIcon
-                text: "󰚩"
-                color: root.totalCount > 0 ? root.statusDisplayColor(root.topbarStatusColor()) : root.cTextMuted
-                font.pixelSize: Style.Typography.rightClusterIcon
-                font.family: Style.Typography.mono
-                verticalAlignment: Text.AlignVCenter
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "󰚩"
+                    color: root.cTextPrimary
+                    opacity: 0.5
+                    font.pixelSize: Style.Typography.rightClusterIcon
+                    font.family: Style.Typography.mono
+                    font.weight: Font.Medium
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
             }
 
             Repeater {
@@ -964,21 +958,21 @@ Item {
         }
     }
 
-    component TopbarChip: Rectangle {
+    component TopbarChip: Item {
         property int count: 0
         property color chipColor: root.cTextMuted
 
         anchors.verticalCenter: parent ? parent.verticalCenter : undefined
-        width: chipText.implicitWidth + 16
+        width: dot.width + chipText.implicitWidth + 3
         height: 18
-        radius: 4
-        color: Qt.alpha(chipColor, root.cLightTheme ? 0.11 : 0.07)
 
         Row {
             anchors.centerIn: parent
-            spacing: 4
+            spacing: 3
 
             Rectangle {
+                id: dot
+
                 anchors.verticalCenter: parent.verticalCenter
                 width: 5
                 height: 5

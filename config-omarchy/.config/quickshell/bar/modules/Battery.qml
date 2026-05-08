@@ -10,6 +10,7 @@ Item {
 
     property var theme: ({
     })
+    property var settings: null
     property bool barOnBottom: false
     property int overlayBarOffset: 44
     property real overlayScale: 1.18
@@ -34,6 +35,7 @@ Item {
     readonly property color cYellow: "#f9e2af"
     readonly property color cRed: theme.red || "#f38ba8"
     readonly property string processTreeScript: (Quickshell.env("HOME") || "") + "/.config/quickshell/scripts/quickshell-process-tree"
+    readonly property int processLimit: Math.max(1, Math.min(10, Math.round(settings && typeof settings.processOverlayBatteryLimit === "number" ? settings.processOverlayBatteryLimit : 3)))
 
     signal opened()
 
@@ -115,10 +117,6 @@ Item {
         impactRefreshDelay.restart();
     }
 
-    function processCountLabel(count) {
-        return count + " proc" + (count === 1 ? "" : "s");
-    }
-
     function shortContainerName(name, id) {
         let display = String(name || id || "");
         display = display.replace(/^[a-z0-9-]+-compose_/, "");
@@ -135,7 +133,6 @@ Item {
         let systemMem = 0;
         let dockerCpu = 0;
         let dockerMem = 0;
-        let dockerCount = 0;
         const lines = (text || "").split(/\r?\n/);
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i];
@@ -170,17 +167,14 @@ Item {
                         "rows": [],
                         "cpu": 0,
                         "mem": 0,
-                        "count": 0
                     };
                     containerOrder.push(key);
                 }
                 containers[key].rows.push(proc);
                 containers[key].cpu += proc.cpu;
                 containers[key].mem += proc.mem;
-                containers[key].count += 1;
                 dockerCpu += proc.cpu;
                 dockerMem += proc.mem;
-                dockerCount += 1;
             } else {
                 systemRows.push(proc);
                 systemCpu += proc.cpu;
@@ -191,7 +185,6 @@ Item {
             "key": "system",
             "rowType": "group",
             "title": "System",
-            "subtitle": processCountLabel(systemRows.length),
             "rows": systemRows,
             "cpu": systemCpu,
             "mem": systemMem
@@ -200,18 +193,15 @@ Item {
             const children = [];
             for (const key of containerOrder) {
                 const container = containers[key];
-                container.subtitle = processCountLabel(container.count);
                 children.push(container);
             }
             groups.push({
                 "key": "docker",
                 "rowType": "group",
                 "title": "Docker",
-                "subtitle": containerOrder.length + " containers",
                 "children": children,
                 "cpu": dockerCpu,
-                "mem": dockerMem,
-                "count": dockerCount
+                "mem": dockerMem
             });
         }
         return groups;
@@ -373,7 +363,7 @@ Item {
         id: batteryPill
 
         anchors.centerIn: parent
-        label: "BAT"
+        icon: root.iconForLevel()
         value: root.percentage
         accent: root.cAccent
         trackColor: root.cDim
@@ -399,11 +389,12 @@ Item {
         title: "Battery"
         subtitle: root.ready ? root.percentage + "% · " + root.stateLabel() : "Unavailable"
         notice: root.notice
-        listTitle: "Processes"
+        listTitle: "Top Processes"
         valueKey: "cpu"
         accent: root.cAccent
         processes: root.processes
         treeGroups: root.processTree
+        processLimit: root.processLimit
         emptyText: "no process data"
         loading: root.impactFirstLoading
         theme: root.theme
@@ -414,6 +405,10 @@ Item {
         }
         onBranchCopied: (branch) => {
             return root.copyBranch(branch);
+        }
+        onProcessLimitRequested: (limit) => {
+            if (root.settings)
+                root.settings.processOverlayBatteryLimit = limit;
         }
         onKillRequested: (proc) => {
             return root.requestKill(proc);

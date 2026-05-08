@@ -36,6 +36,9 @@ Item {
     property bool openSettingsOnGeneralAlways: true
     property int picturesImageLimit: 10
     property int downloadsFileLimit: 10
+    property int processOverlayCpuLimit: 3
+    property int processOverlayMemoryLimit: 3
+    property int processOverlayBatteryLimit: 3
     property bool loaded: false
     property string settingsPath: settingsDir + "/settings.json"
     property int saveDelayMs: 500
@@ -67,7 +70,10 @@ Item {
         "rememberSettingsWindowPosition": false,
         "openSettingsOnGeneralAlways": true,
         "picturesImageLimit": 10,
-        "downloadsFileLimit": 10
+        "downloadsFileLimit": 10,
+        "processOverlayCpuLimit": 3,
+        "processOverlayMemoryLimit": 3,
+        "processOverlayBatteryLimit": 3
     })
 
     function _applyDefaults() {
@@ -99,6 +105,9 @@ Item {
         openSettingsOnGeneralAlways = defaults.openSettingsOnGeneralAlways;
         picturesImageLimit = defaults.picturesImageLimit;
         downloadsFileLimit = defaults.downloadsFileLimit;
+        processOverlayCpuLimit = defaults.processOverlayCpuLimit;
+        processOverlayMemoryLimit = defaults.processOverlayMemoryLimit;
+        processOverlayBatteryLimit = defaults.processOverlayBatteryLimit;
     }
 
     function _apply(raw) {
@@ -194,6 +203,22 @@ Item {
             if (typeof data.downloadsFileLimit === "number")
                 downloadsFileLimit = Math.max(1, Math.min(50, Math.round(data.downloadsFileLimit)));
 
+            const legacyProcessOverlayLimit = typeof data.processOverlayLimit === "number" ? Math.max(1, Math.min(10, Math.round(data.processOverlayLimit))) : null;
+            if (typeof data.processOverlayCpuLimit === "number")
+                processOverlayCpuLimit = Math.max(1, Math.min(10, Math.round(data.processOverlayCpuLimit)));
+            else if (legacyProcessOverlayLimit !== null)
+                processOverlayCpuLimit = legacyProcessOverlayLimit;
+
+            if (typeof data.processOverlayMemoryLimit === "number")
+                processOverlayMemoryLimit = Math.max(1, Math.min(10, Math.round(data.processOverlayMemoryLimit)));
+            else if (legacyProcessOverlayLimit !== null)
+                processOverlayMemoryLimit = legacyProcessOverlayLimit;
+
+            if (typeof data.processOverlayBatteryLimit === "number")
+                processOverlayBatteryLimit = Math.max(1, Math.min(10, Math.round(data.processOverlayBatteryLimit)));
+            else if (legacyProcessOverlayLimit !== null)
+                processOverlayBatteryLimit = legacyProcessOverlayLimit;
+
         } catch (e) {
             // keep defaults when the file is missing or malformed
             _applyDefaults();
@@ -230,7 +255,10 @@ Item {
             "rememberSettingsWindowPosition": rememberSettingsWindowPosition,
             "openSettingsOnGeneralAlways": openSettingsOnGeneralAlways,
             "picturesImageLimit": picturesImageLimit,
-            "downloadsFileLimit": downloadsFileLimit
+            "downloadsFileLimit": downloadsFileLimit,
+            "processOverlayCpuLimit": processOverlayCpuLimit,
+            "processOverlayMemoryLimit": processOverlayMemoryLimit,
+            "processOverlayBatteryLimit": processOverlayBatteryLimit
         }, null, 2);
         Quickshell.execDetached(["bash", "-lc", "mkdir -p " + root.settingsDir + " && tmp=" + root.settingsPath + ".tmp && cat > \"$tmp\" <<'EOF'\n" + payload + "\nEOF\nmv \"$tmp\" " + root.settingsPath]);
     }
@@ -278,6 +306,9 @@ Item {
     onOpenSettingsOnGeneralAlwaysChanged: save()
     onPicturesImageLimitChanged: save()
     onDownloadsFileLimitChanged: save()
+    onProcessOverlayCpuLimitChanged: save()
+    onProcessOverlayMemoryLimitChanged: save()
+    onProcessOverlayBatteryLimitChanged: save()
 
     Timer {
         id: saveTimer
