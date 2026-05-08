@@ -439,32 +439,6 @@ Item {
         onClicked: root.toggleFromTrigger()
     }
 
-    PanelWindow {
-        visible: root.showing && !root.quietMode
-        color: "transparent"
-        exclusiveZone: -1
-        WlrLayershell.layer: WlrLayer.Top
-
-        anchors {
-            left: true
-            right: true
-            top: true
-            bottom: true
-        }
-
-        margins {
-            top: !root.barOnBottom ? root.overlayBarOffset : 0
-            bottom: root.barOnBottom ? root.overlayBarOffset : 0
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            acceptedButtons: Qt.AllButtons
-            onClicked: root.dismissFromOutside()
-        }
-
-    }
-
     WlrLayershell {
         id: popup
 
@@ -480,19 +454,11 @@ Item {
         anchors {
             top: !root.barOnBottom
             bottom: root.barOnBottom
-            left: true
-            right: true
         }
 
         margins {
             top: !root.barOnBottom ? root.overlayBarOffset : 0
             bottom: root.barOnBottom ? root.overlayBarOffset : 0
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            acceptedButtons: Qt.AllButtons
-            onClicked: root.dismissFromOutside()
         }
 
         Rectangle {

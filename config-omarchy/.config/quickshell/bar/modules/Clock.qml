@@ -21,6 +21,12 @@ Item {
         return Math.round(value * popupScale);
     }
 
+    function registerCalendarPopup() {
+        if (barWindow)
+            barWindow.calendarPopup = agendaCalendar;
+
+    }
+
     function updateTime() {
         const now = new Date();
         let h = now.getHours();
@@ -39,7 +45,11 @@ Item {
     anchors.verticalCenter: parent ? parent.verticalCenter : undefined
     implicitWidth: clockRow.implicitWidth
     implicitHeight: 28
-    Component.onCompleted: updateTime()
+    Component.onCompleted: {
+        updateTime();
+        registerCalendarPopup();
+    }
+    onBarWindowChanged: registerCalendarPopup()
     onUse24hChanged: updateTime()
 
     Timer {

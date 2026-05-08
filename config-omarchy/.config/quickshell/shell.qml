@@ -873,9 +873,11 @@ ShellRoot {
 
     // Click Catcher Here
     ClickCatcher {
-        active: appLauncher.showing || themePicker.showing || bgPicker.showing || keybindViewer.showing || clipboardManager.showing || notifServer.panelOpen || controlCenter.showing || controlCenter.wifiManagerOpen || controlCenter.btManagerOpen
-        topInset: controlCenter.showing && !bar.barOnBottom ? bar.exclusiveZone : 0
-        bottomInset: controlCenter.showing && bar.barOnBottom ? bar.exclusiveZone : 0
+        id: globalClickCatcher
+
+        active: appLauncher.showing || themePicker.showing || bgPicker.showing || keybindViewer.showing || clipboardManager.showing || notifServer.panelOpen || controlCenter.showing || controlCenter.wifiManagerOpen || controlCenter.btManagerOpen || (bar.calendarPopup && bar.calendarPopup.showing)
+        topInset: globalClickCatcher.active && !bar.barOnBottom ? bar.exclusiveZone : 0
+        bottomInset: globalClickCatcher.active && bar.barOnBottom ? bar.exclusiveZone : 0
         onClicked: {
             appLauncher.showing = false;
             themePicker.showing = false;
@@ -886,6 +888,9 @@ ShellRoot {
             controlCenter.showing = false;
             controlCenter.wifiManagerOpen = false;
             controlCenter.btManagerOpen = false;
+            if (bar.calendarPopup)
+                bar.calendarPopup.closeFromTrigger();
+
         }
     }
 
