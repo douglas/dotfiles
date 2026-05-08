@@ -1,10 +1,10 @@
 import "."
+import "../style" as Style
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
-import "../style" as Style
 
 PanelWindow {
     id: launcher
@@ -229,7 +229,7 @@ PanelWindow {
                     Text {
                         text: ""
                         color: Qt.alpha(theme.accent || "#89b4fa", 0.7)
-                        font.pixelSize: Style.Typography.caption
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.mono
 
                         MouseArea {
@@ -279,6 +279,7 @@ PanelWindow {
 
                             Text {
                                 id: appSearchLabel
+
                                 anchors.left: parent.left
                                 anchors.verticalCenter: parent.verticalCenter
                                 width: parent.width
@@ -313,15 +314,18 @@ PanelWindow {
                                         duration: 530
                                         easing.type: Easing.InOutSine
                                     }
+
                                 }
+
                             }
+
                         }
 
                         Text {
                             visible: appSearchText !== ""
                             text: "✕"
                             color: Qt.alpha(theme.muted || "#585b70", 0.5)
-                            font.pixelSize: Style.Typography.label
+                            font.pixelSize: Style.Typography.componentSubtitle
 
                             MouseArea {
                                 anchors.fill: parent
@@ -345,7 +349,7 @@ PanelWindow {
                     Text {
                         text: appList.filteredApps.length + " apps"
                         color: Qt.alpha(theme.muted || "#585b70", 0.62)
-                        font.pixelSize: Style.Typography.bodySmall
+                        font.pixelSize: Style.Typography.componentSubtitle
                         font.family: Style.Typography.mono
                     }
 
@@ -358,7 +362,7 @@ PanelWindow {
                     Text {
                         text: "↑↓  ↵ open  ⌫/esc back"
                         color: Qt.alpha(theme.muted || "#585b70", 0.42)
-                        font.pixelSize: Style.Typography.label
+                        font.pixelSize: Style.Typography.componentSubtitle
                         font.family: Style.Typography.mono
                     }
 

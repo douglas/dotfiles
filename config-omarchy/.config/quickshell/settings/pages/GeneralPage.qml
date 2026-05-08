@@ -1,86 +1,139 @@
+import "../../style" as Style
 import QtQuick
 import QtQuick.Layouts
-import "../../style" as Style
 
 Item {
     id: root
 
     property var state: null
-    property var theme: ({})
+    property var theme: ({
+    })
     property var settingsWindow: null
+    readonly property var iconSizeOptions: [{
+        "value": 10,
+        "label": "Small",
+        "desc": "Tighter launcher mark."
+    }, {
+        "value": 12,
+        "label": "Default",
+        "desc": "Balanced with the bar text."
+    }, {
+        "value": 14,
+        "label": "Large",
+        "desc": "More visible in the left cluster."
+    }]
+    readonly property var workspaceStyleOptions: [{
+        "key": "og",
+        "label": "OG",
+        "preview": "IV",
+        "desc": "Roman numerals with the original underline feel."
+    }, {
+        "key": "strip",
+        "label": "Omarchy",
+        "preview": "4",
+        "desc": "Number row with the active workspace shown as a clean block."
+    }, {
+        "key": "pulse",
+        "label": "Pulse",
+        "preview": "•",
+        "desc": "Minimal dots and capsules with a soft glow."
+    }]
+    readonly property var iconOptions: [{
+        "key": "omarchy",
+        "label": "Omarchy",
+        "preview": "\ue900",
+        "family": "Omarchy",
+        "desc": "Use the original Omarchy mark."
+    }, {
+        "key": "arch",
+        "label": "Arch",
+        "preview": "",
+        "family": "JetBrainsMono Nerd Font Propo",
+        "desc": "Use the Arch Linux icon."
+    }, {
+        "key": "hyprland",
+        "label": "Hyprland",
+        "preview": "",
+        "family": "JetBrainsMono Nerd Font Propo",
+        "desc": "Use the Hyprland glyph."
+    }, {
+        "key": "nix",
+        "label": "Tux",
+        "preview": "",
+        "family": "JetBrainsMono Nerd Font Propo",
+        "desc": "Use the Classic Linux Tux."
+    }, {
+        "key": "command",
+        "label": "Command",
+        "preview": "󰘳",
+        "family": "JetBrainsMono Nerd Font Propo",
+        "desc": "Use the Classic Mac Command icon."
+    }, {
+        "key": "windows",
+        "label": "Windows",
+        "preview": "󰖳",
+        "family": "JetBrainsMono Nerd Font Propo",
+        "desc": "Use the Windows icon."
+    }]
 
-    function t(key, fallback) { return theme[key] || fallback }
+    function t(key, fallback) {
+        return theme[key] || fallback;
+    }
 
     function currentIcon() {
-        return root.state ? root.state.launcherIconPreset : "omarchy"
+        return root.state ? root.state.launcherIconPreset : "omarchy";
     }
 
     function setIcon(key) {
         if (root.state)
-            root.state.launcherIconPreset = key
+            root.state.launcherIconPreset = key;
+
     }
 
     function launcherIconSize() {
-        return root.state ? root.state.launcherIconSize : 12
+        return root.state ? root.state.launcherIconSize : 12;
     }
 
     function setLauncherIconSize(size) {
         if (root.state)
-            root.state.launcherIconSize = Math.max(10, Math.min(18, Math.round(size)))
+            root.state.launcherIconSize = Math.max(10, Math.min(18, Math.round(size)));
+
     }
 
     function rememberWindowPosition() {
-        return root.state ? root.state.rememberSettingsWindowPosition : true
+        return root.state ? root.state.rememberSettingsWindowPosition : true;
     }
 
     function setRememberWindowPosition(enabled) {
         if (!root.state)
-            return
-        root.state.rememberSettingsWindowPosition = enabled
+            return ;
+
+        root.state.rememberSettingsWindowPosition = enabled;
         if (!enabled && root.settingsWindow) {
-            root.settingsWindow.centerCard()
-            root.settingsWindow.cardPositioned = false
+            root.settingsWindow.centerCard();
+            root.settingsWindow.cardPositioned = false;
         }
     }
 
     function openOnGeneralAlways() {
-        return root.state ? root.state.openSettingsOnGeneralAlways : false
+        return root.state ? root.state.openSettingsOnGeneralAlways : false;
     }
 
     function setOpenOnGeneralAlways(enabled) {
         if (root.state)
-            root.state.openSettingsOnGeneralAlways = enabled
+            root.state.openSettingsOnGeneralAlways = enabled;
+
     }
 
     function currentWorkspaceStyle() {
-        return root.state ? root.state.workspaceStyle : "og"
+        return root.state ? root.state.workspaceStyle : "og";
     }
 
     function setWorkspaceStyle(style) {
         if (root.state)
-            root.state.workspaceStyle = style
+            root.state.workspaceStyle = style;
+
     }
-
-    readonly property var iconSizeOptions: [
-        { value: 10, label: "Small", desc: "Tighter launcher mark." },
-        { value: 12, label: "Default", desc: "Balanced with the bar text." },
-        { value: 14, label: "Large", desc: "More visible in the left cluster." }
-    ]
-
-    readonly property var workspaceStyleOptions: [
-        { key: "og", label: "OG", preview: "IV", desc: "Roman numerals with the original underline feel." },
-        { key: "strip", label: "Omarchy", preview: "4", desc: "Number row with the active workspace shown as a clean block." },
-        { key: "pulse", label: "Pulse", preview: "•", desc: "Minimal dots and capsules with a soft glow." }
-    ]
-
-    readonly property var iconOptions: [
-        { key: "omarchy", label: "Omarchy", preview: "\ue900", family: "Omarchy", desc: "Use the original Omarchy mark." },
-        { key: "arch", label: "Arch", preview: "", family: "JetBrainsMono Nerd Font Propo", desc: "Use the Arch Linux icon." },
-        { key: "hyprland", label: "Hyprland", preview: "", family: "JetBrainsMono Nerd Font Propo", desc: "Use the Hyprland glyph." },
-        { key: "nix", label: "Tux", preview: "", family: "JetBrainsMono Nerd Font Propo", desc: "Use the Classic Linux Tux." },
-        { key: "command", label: "Command", preview: "󰘳", family: "JetBrainsMono Nerd Font Propo", desc: "Use the Classic Mac Command icon." },
-        { key: "windows", label: "Windows", preview: "󰖳", family: "JetBrainsMono Nerd Font Propo", desc: "Use the Windows icon." }
-    ]
 
     Flickable {
         anchors.fill: parent
@@ -90,6 +143,7 @@ Item {
 
         Column {
             id: contentColumn
+
             width: root.width
             spacing: 10
 
@@ -109,7 +163,7 @@ Item {
                     Text {
                         text: "Launcher icon"
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                        font.pixelSize: Style.Typography.caption
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.text
                     }
 
@@ -118,15 +172,12 @@ Item {
 
                         delegate: Rectangle {
                             required property var modelData
+
                             Layout.fillWidth: true
                             Layout.preferredHeight: 42
                             radius: 10
-                            color: root.currentIcon() === modelData.key
-                                ? Qt.alpha(t("accent", "#9ccfa0"), 0.18)
-                                : Qt.alpha(t("dim", "#45475a"), 0.14)
-                            border.color: root.currentIcon() === modelData.key
-                                ? Qt.alpha(t("accent", "#9ccfa0"), 0.34)
-                                : Qt.alpha(t("accent", "#9ccfa0"), 0.08)
+                            color: root.currentIcon() === modelData.key ? Qt.alpha(t("accent", "#9ccfa0"), 0.18) : Qt.alpha(t("dim", "#45475a"), 0.14)
+                            border.color: root.currentIcon() === modelData.key ? Qt.alpha(t("accent", "#9ccfa0"), 0.34) : Qt.alpha(t("accent", "#9ccfa0"), 0.08)
                             border.width: 1
 
                             RowLayout {
@@ -150,7 +201,7 @@ Item {
                                     Text {
                                         text: modelData.label
                                         color: t("fg", "#eef6ef")
-                                        font.pixelSize: Style.Typography.caption
+                                        font.pixelSize: Style.Typography.componentMeta
                                         font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
@@ -158,11 +209,13 @@ Item {
                                     Text {
                                         text: modelData.desc
                                         color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                        font.pixelSize: Style.Typography.nano
+                                        font.pixelSize: Style.Typography.componentMeta
                                         font.family: Style.Typography.text
                                         Layout.fillWidth: true
                                     }
+
                                 }
+
                             }
 
                             MouseArea {
@@ -170,9 +223,13 @@ Item {
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: root.setIcon(modelData.key)
                             }
+
                         }
+
                     }
+
                 }
+
             }
 
             Rectangle {
@@ -191,7 +248,7 @@ Item {
                     Text {
                         text: "Workspace style"
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                        font.pixelSize: Style.Typography.caption
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.text
                     }
 
@@ -200,15 +257,12 @@ Item {
 
                         delegate: Rectangle {
                             required property var modelData
+
                             Layout.fillWidth: true
                             Layout.preferredHeight: 42
                             radius: 10
-                            color: root.currentWorkspaceStyle() === modelData.key
-                                ? Qt.alpha(t("accent", "#9ccfa0"), 0.18)
-                                : Qt.alpha(t("dim", "#45475a"), 0.14)
-                            border.color: root.currentWorkspaceStyle() === modelData.key
-                                ? Qt.alpha(t("accent", "#9ccfa0"), 0.34)
-                                : Qt.alpha(t("accent", "#9ccfa0"), 0.08)
+                            color: root.currentWorkspaceStyle() === modelData.key ? Qt.alpha(t("accent", "#9ccfa0"), 0.18) : Qt.alpha(t("dim", "#45475a"), 0.14)
+                            border.color: root.currentWorkspaceStyle() === modelData.key ? Qt.alpha(t("accent", "#9ccfa0"), 0.34) : Qt.alpha(t("accent", "#9ccfa0"), 0.08)
                             border.width: 1
 
                             RowLayout {
@@ -221,22 +275,19 @@ Item {
                                     Layout.preferredWidth: 34
                                     Layout.preferredHeight: 18
                                     radius: 8
-                                    color: root.currentWorkspaceStyle() === modelData.key
-                                        ? Qt.alpha(t("accent", "#9ccfa0"), 0.18)
-                                        : Qt.alpha(t("fg", "#eef6ef"), 0.05)
+                                    color: root.currentWorkspaceStyle() === modelData.key ? Qt.alpha(t("accent", "#9ccfa0"), 0.18) : Qt.alpha(t("fg", "#eef6ef"), 0.05)
                                     border.color: Qt.alpha(t("accent", "#9ccfa0"), 0.14)
                                     border.width: 1
 
                                     Text {
                                         anchors.centerIn: parent
                                         text: modelData.preview
-                                        color: root.currentWorkspaceStyle() === modelData.key
-                                            ? t("accent", "#9ccfa0")
-                                            : Qt.alpha(t("fg", "#eef6ef"), 0.68)
-                                        font.pixelSize: modelData.key === "pulse" ? Style.Typography.body : Style.Typography.micro
+                                        color: root.currentWorkspaceStyle() === modelData.key ? t("accent", "#9ccfa0") : Qt.alpha(t("fg", "#eef6ef"), 0.68)
+                                        font.pixelSize: modelData.key === "pulse" ? Style.Typography.body : Style.Typography.componentMeta
                                         font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
+
                                 }
 
                                 ColumnLayout {
@@ -246,7 +297,7 @@ Item {
                                     Text {
                                         text: modelData.label
                                         color: t("fg", "#eef6ef")
-                                        font.pixelSize: Style.Typography.caption
+                                        font.pixelSize: Style.Typography.componentMeta
                                         font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
@@ -254,11 +305,13 @@ Item {
                                     Text {
                                         text: modelData.desc
                                         color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                        font.pixelSize: Style.Typography.nano
+                                        font.pixelSize: Style.Typography.componentMeta
                                         font.family: Style.Typography.text
                                         Layout.fillWidth: true
                                     }
+
                                 }
+
                             }
 
                             MouseArea {
@@ -266,9 +319,13 @@ Item {
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: root.setWorkspaceStyle(modelData.key)
                             }
+
                         }
+
                     }
+
                 }
+
             }
 
             Rectangle {
@@ -287,7 +344,7 @@ Item {
                     Text {
                         text: "Launcher icon size"
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                        font.pixelSize: Style.Typography.caption
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.text
                     }
 
@@ -296,15 +353,12 @@ Item {
 
                         delegate: Rectangle {
                             required property var modelData
+
                             Layout.fillWidth: true
                             Layout.preferredHeight: 42
                             radius: 10
-                            color: root.launcherIconSize() === modelData.value
-                                ? Qt.alpha(t("accent", "#9ccfa0"), 0.18)
-                                : Qt.alpha(t("dim", "#45475a"), 0.14)
-                            border.color: root.launcherIconSize() === modelData.value
-                                ? Qt.alpha(t("accent", "#9ccfa0"), 0.34)
-                                : Qt.alpha(t("accent", "#9ccfa0"), 0.08)
+                            color: root.launcherIconSize() === modelData.value ? Qt.alpha(t("accent", "#9ccfa0"), 0.18) : Qt.alpha(t("dim", "#45475a"), 0.14)
+                            border.color: root.launcherIconSize() === modelData.value ? Qt.alpha(t("accent", "#9ccfa0"), 0.34) : Qt.alpha(t("accent", "#9ccfa0"), 0.08)
                             border.width: 1
 
                             RowLayout {
@@ -328,7 +382,7 @@ Item {
                                     Text {
                                         text: modelData.label
                                         color: t("fg", "#eef6ef")
-                                        font.pixelSize: Style.Typography.caption
+                                        font.pixelSize: Style.Typography.componentMeta
                                         font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
@@ -336,19 +390,21 @@ Item {
                                     Text {
                                         text: modelData.desc
                                         color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                        font.pixelSize: Style.Typography.nano
+                                        font.pixelSize: Style.Typography.componentMeta
                                         font.family: Style.Typography.text
                                         Layout.fillWidth: true
                                     }
+
                                 }
 
                                 Text {
                                     text: modelData.value + "px"
                                     color: Qt.alpha(t("muted", "#9fb29f"), 0.72)
-                                    font.pixelSize: Style.Typography.micro
+                                    font.pixelSize: Style.Typography.componentMeta
                                     font.family: Style.Typography.text
                                     font.weight: Font.Medium
                                 }
+
                             }
 
                             MouseArea {
@@ -356,9 +412,13 @@ Item {
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: root.setLauncherIconSize(modelData.value)
                             }
+
                         }
+
                     }
+
                 }
+
             }
 
             Rectangle {
@@ -377,7 +437,7 @@ Item {
                     Text {
                         text: "Window behavior"
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                        font.pixelSize: Style.Typography.caption
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.text
                     }
 
@@ -385,12 +445,8 @@ Item {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 42
                         radius: 10
-                        color: root.rememberWindowPosition()
-                            ? Qt.alpha(t("accent", "#9ccfa0"), 0.18)
-                            : Qt.alpha(t("dim", "#45475a"), 0.14)
-                        border.color: root.rememberWindowPosition()
-                            ? Qt.alpha(t("accent", "#9ccfa0"), 0.34)
-                            : Qt.alpha(t("accent", "#9ccfa0"), 0.08)
+                        color: root.rememberWindowPosition() ? Qt.alpha(t("accent", "#9ccfa0"), 0.18) : Qt.alpha(t("dim", "#45475a"), 0.14)
+                        border.color: root.rememberWindowPosition() ? Qt.alpha(t("accent", "#9ccfa0"), 0.34) : Qt.alpha(t("accent", "#9ccfa0"), 0.08)
                         border.width: 1
 
                         RowLayout {
@@ -402,7 +458,7 @@ Item {
                             Text {
                                 text: root.rememberWindowPosition() ? "On" : "Off"
                                 color: t("accent", "#9ccfa0")
-                                font.pixelSize: Style.Typography.micro
+                                font.pixelSize: Style.Typography.componentMeta
                                 font.family: Style.Typography.text
                                 font.weight: Font.DemiBold
                             }
@@ -414,7 +470,7 @@ Item {
                                 Text {
                                     text: "Remember window position"
                                     color: t("fg", "#eef6ef")
-                                    font.pixelSize: Style.Typography.caption
+                                    font.pixelSize: Style.Typography.componentMeta
                                     font.family: Style.Typography.text
                                     font.weight: Font.DemiBold
                                 }
@@ -422,10 +478,12 @@ Item {
                                 Text {
                                     text: "Keep the dragged settings window where you left it."
                                     color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                    font.pixelSize: Style.Typography.nano
+                                    font.pixelSize: Style.Typography.componentMeta
                                     font.family: Style.Typography.text
                                 }
+
                             }
+
                         }
 
                         MouseArea {
@@ -433,18 +491,15 @@ Item {
                             cursorShape: Qt.PointingHandCursor
                             onClicked: root.setRememberWindowPosition(!root.rememberWindowPosition())
                         }
+
                     }
 
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 42
                         radius: 10
-                        color: root.openOnGeneralAlways()
-                            ? Qt.alpha(t("accent", "#9ccfa0"), 0.18)
-                            : Qt.alpha(t("dim", "#45475a"), 0.14)
-                        border.color: root.openOnGeneralAlways()
-                            ? Qt.alpha(t("accent", "#9ccfa0"), 0.34)
-                            : Qt.alpha(t("accent", "#9ccfa0"), 0.08)
+                        color: root.openOnGeneralAlways() ? Qt.alpha(t("accent", "#9ccfa0"), 0.18) : Qt.alpha(t("dim", "#45475a"), 0.14)
+                        border.color: root.openOnGeneralAlways() ? Qt.alpha(t("accent", "#9ccfa0"), 0.34) : Qt.alpha(t("accent", "#9ccfa0"), 0.08)
                         border.width: 1
 
                         RowLayout {
@@ -456,7 +511,7 @@ Item {
                             Text {
                                 text: root.openOnGeneralAlways() ? "On" : "Off"
                                 color: t("accent", "#9ccfa0")
-                                font.pixelSize: Style.Typography.micro
+                                font.pixelSize: Style.Typography.componentMeta
                                 font.family: Style.Typography.text
                                 font.weight: Font.DemiBold
                             }
@@ -468,7 +523,7 @@ Item {
                                 Text {
                                     text: "Open settings on General tab always"
                                     color: t("fg", "#eef6ef")
-                                    font.pixelSize: Style.Typography.caption
+                                    font.pixelSize: Style.Typography.componentMeta
                                     font.family: Style.Typography.text
                                     font.weight: Font.DemiBold
                                 }
@@ -476,10 +531,12 @@ Item {
                                 Text {
                                     text: "Always start on General instead of the last tab you used."
                                     color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                    font.pixelSize: Style.Typography.nano
+                                    font.pixelSize: Style.Typography.componentMeta
                                     font.family: Style.Typography.text
                                 }
+
                             }
+
                         }
 
                         MouseArea {
@@ -487,6 +544,7 @@ Item {
                             cursorShape: Qt.PointingHandCursor
                             onClicked: root.setOpenOnGeneralAlways(!root.openOnGeneralAlways())
                         }
+
                     }
 
                     RowLayout {
@@ -505,7 +563,7 @@ Item {
                                 anchors.centerIn: parent
                                 text: "Center Window Now"
                                 color: Qt.alpha(t("fg", "#eef6ef"), 0.8)
-                                font.pixelSize: Style.Typography.caption
+                                font.pixelSize: Style.Typography.componentMeta
                                 font.family: Style.Typography.text
                                 font.weight: Font.Medium
                             }
@@ -515,15 +573,23 @@ Item {
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: {
                                     if (!root.settingsWindow)
-                                        return
-                                    root.settingsWindow.centerCard()
-                                    root.settingsWindow.cardPositioned = root.rememberWindowPosition()
+                                        return ;
+
+                                    root.settingsWindow.centerCard();
+                                    root.settingsWindow.cardPositioned = root.rememberWindowPosition();
                                 }
                             }
+
                         }
+
                     }
+
                 }
+
             }
+
         }
+
     }
+
 }

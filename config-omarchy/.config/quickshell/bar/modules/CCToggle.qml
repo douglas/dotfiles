@@ -1,27 +1,21 @@
+import "../../style" as Style
 import QtQuick
 import QtQuick.Layouts
-import "../../style" as Style
 
 Rectangle {
-    property string icon:   ""
-    property string label:  ""
-    property bool   active: false
-    property var    theme:  ({})
+    property string icon: ""
+    property string label: ""
+    property bool active: false
+    property var theme: ({
+    })
 
     signal toggled()
 
     implicitHeight: 56
-    radius:         10
-    color:          active
-        ? Qt.alpha(theme.accent || "#89b4fa", 0.15)
-        : Qt.alpha(theme.dim   || "#45475a",  0.3)
-    border.color:   active
-        ? Qt.alpha(theme.accent || "#89b4fa", 0.4)
-        : "transparent"
+    radius: 10
+    color: active ? Qt.alpha(theme.accent || "#89b4fa", 0.15) : Qt.alpha(theme.dim || "#45475a", 0.3)
+    border.color: active ? Qt.alpha(theme.accent || "#89b4fa", 0.4) : "transparent"
     border.width: 1
-
-    Behavior on color        { ColorAnimation { duration: 200 } }
-    Behavior on border.color { ColorAnimation { duration: 200 } }
 
     Column {
         anchors.centerIn: parent
@@ -29,29 +23,59 @@ Rectangle {
 
         Text {
             anchors.horizontalCenter: parent.horizontalCenter
-            text:           icon
-            color:          active ? (theme.accent || "#89b4fa") : (theme.muted || "#585b70")
+            text: icon
+            color: active ? (theme.accent || "#89b4fa") : (theme.muted || "#585b70")
             font.pixelSize: Style.Typography.heading
             font.family: Style.Typography.mono
-            Behavior on color { ColorAnimation { duration: 200 } }
+
+            Behavior on color {
+                ColorAnimation {
+                    duration: 200
+                }
+
+            }
+
         }
 
         Text {
             anchors.horizontalCenter: parent.horizontalCenter
-            text:           label
-            color:          active ? (theme.fg || "#cdd6f4") : (theme.muted || "#585b70")
-            font.pixelSize: Style.Typography.caption
+            text: label
+            color: active ? (theme.fg || "#cdd6f4") : (theme.muted || "#585b70")
+            font.pixelSize: Style.Typography.componentMeta
             font.family: Style.Typography.mono
-            elide:          Text.ElideRight
-            width:          parent.parent.width - 16
+            elide: Text.ElideRight
+            width: parent.parent.width - 16
             horizontalAlignment: Text.AlignHCenter
-            Behavior on color { ColorAnimation { duration: 200 } }
+
+            Behavior on color {
+                ColorAnimation {
+                    duration: 200
+                }
+
+            }
+
         }
+
     }
 
     MouseArea {
         anchors.fill: parent
-        cursorShape:  Qt.PointingHandCursor
-        onClicked:    toggled()
+        cursorShape: Qt.PointingHandCursor
+        onClicked: toggled()
     }
+
+    Behavior on color {
+        ColorAnimation {
+            duration: 200
+        }
+
+    }
+
+    Behavior on border.color {
+        ColorAnimation {
+            duration: 200
+        }
+
+    }
+
 }

@@ -549,7 +549,7 @@ Item {
                 height: parent.height
                 text: root.trackTitle
                 color: root.fg
-                font.pixelSize: Style.Typography.label
+                font.pixelSize: Style.Typography.componentSubtitle
                 font.family: Style.Typography.mono
                 verticalAlignment: Text.AlignVCenter
 
@@ -793,7 +793,7 @@ Item {
                         width: parent.width
                         text: root.trackTitle
                         color: root.strongText
-                        font.pixelSize: Style.Typography.bodySmall
+                        font.pixelSize: Style.Typography.componentSubtitle
                         font.family: Style.Typography.text
                         font.weight: Font.DemiBold
                         elide: Text.ElideRight
@@ -803,7 +803,7 @@ Item {
                         width: parent.width
                         text: root.trackArtist !== "" ? root.trackArtist : (root.trackAlbum !== "" ? root.trackAlbum : "Media")
                         color: root.mutedText
-                        font.pixelSize: Style.Typography.caption
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.text
                         elide: Text.ElideRight
                     }
@@ -812,7 +812,7 @@ Item {
                         width: parent.width
                         text: root.elapsedLabel + " / " + root.durationLabel
                         color: root.softText
-                        font.pixelSize: Style.Typography.label
+                        font.pixelSize: Style.Typography.componentSubtitle
                         font.family: Style.Typography.text
                     }
 
@@ -828,7 +828,7 @@ Item {
                         Text {
                             text: "󰒮"
                             color: root.mutedText
-                            font.pixelSize: Style.Typography.label
+                            font.pixelSize: Style.Typography.componentSubtitle
                             font.family: Style.Typography.mono
 
                             MouseArea {
@@ -892,7 +892,7 @@ Item {
                         Text {
                             text: "󰒭"
                             color: root.mutedText
-                            font.pixelSize: Style.Typography.label
+                            font.pixelSize: Style.Typography.componentSubtitle
                             font.family: Style.Typography.mono
 
                             MouseArea {

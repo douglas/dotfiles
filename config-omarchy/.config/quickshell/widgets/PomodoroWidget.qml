@@ -1,8 +1,8 @@
+import "../style" as Style
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
-import "../style" as Style
 
 PanelWindow {
     // no easing for direct drag
@@ -213,7 +213,7 @@ PanelWindow {
                     Text {
                         text: root.mode === "focus" ? "FOCUS" : "BREAK"
                         color: root.mode === "focus" ? cAccent : cMuted
-                        font.pixelSize: Style.Typography.label
+                        font.pixelSize: Style.Typography.componentSubtitle
                         font.family: root.textFont
                         font.weight: Font.DemiBold
                         font.letterSpacing: 0
@@ -226,7 +226,7 @@ PanelWindow {
                     Text {
                         text: root.cycleCount > 0 ? "x" + root.cycleCount : ""
                         color: cDim
-                        font.pixelSize: Style.Typography.caption
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: root.textFont
                     }
 
@@ -281,7 +281,7 @@ PanelWindow {
                             anchors.centerIn: parent
                             text: root.running ? "Pause" : "Start"
                             color: cFg
-                            font.pixelSize: Style.Typography.caption
+                            font.pixelSize: Style.Typography.componentMeta
                             font.family: root.textFont
                             font.weight: Font.DemiBold
                         }
@@ -306,7 +306,7 @@ PanelWindow {
                             anchors.centerIn: parent
                             text: "Reset"
                             color: Qt.alpha(cFg, 0.75)
-                            font.pixelSize: Style.Typography.caption
+                            font.pixelSize: Style.Typography.componentMeta
                             font.family: root.textFont
                             font.weight: Font.DemiBold
                         }

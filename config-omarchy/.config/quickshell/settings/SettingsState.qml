@@ -40,194 +40,214 @@ Item {
     property string settingsPath: settingsDir + "/settings.json"
     property int saveDelayMs: 500
     readonly property var defaults: ({
-        notificationPosition: "top-center",
-        osdPosition: "top-right",
-        barPosition: "top",
-        barStyle: "dock",
-        workspaceStyle: "og",
-        launcherIconPreset: "command",
-        launcherIconSize: 12,
-        clockWidgetEnabled: true,
-        clockUse24h: true,
-        clockWidgetPosX: 0.8,
-        clockWidgetPosY: 0.8,
-        calendarWidgetEnabled: false,
-        googleCalendarEventsEnabled: false,
-        calendarWidgetPosX: 0.7,
-        calendarWidgetPosY: 0.7,
-        pomodoroWidgetEnabled: false,
-        pomodoroWidgetPosX: 0.6,
-        pomodoroWidgetPosY: 0.6,
-        todoWidgetEnabled: false,
-        todoWidgetPosX: 0.5,
-        todoWidgetPosY: 0.5,
-        dockPinnedApps: [],
-        dockEnabled: true,
-        dockAutoHide: false,
-        rememberSettingsWindowPosition: false,
-        openSettingsOnGeneralAlways: true,
-        picturesImageLimit: 10,
-        downloadsFileLimit: 10
+        "notificationPosition": "top-center",
+        "osdPosition": "top-right",
+        "barPosition": "top",
+        "barStyle": "dock",
+        "workspaceStyle": "og",
+        "launcherIconPreset": "command",
+        "launcherIconSize": 12,
+        "clockWidgetEnabled": true,
+        "clockUse24h": true,
+        "clockWidgetPosX": 0.8,
+        "clockWidgetPosY": 0.8,
+        "calendarWidgetEnabled": false,
+        "googleCalendarEventsEnabled": false,
+        "calendarWidgetPosX": 0.7,
+        "calendarWidgetPosY": 0.7,
+        "pomodoroWidgetEnabled": false,
+        "pomodoroWidgetPosX": 0.6,
+        "pomodoroWidgetPosY": 0.6,
+        "todoWidgetEnabled": false,
+        "todoWidgetPosX": 0.5,
+        "todoWidgetPosY": 0.5,
+        "dockPinnedApps": [],
+        "dockEnabled": true,
+        "dockAutoHide": false,
+        "rememberSettingsWindowPosition": false,
+        "openSettingsOnGeneralAlways": true,
+        "picturesImageLimit": 10,
+        "downloadsFileLimit": 10
     })
 
     function _applyDefaults() {
-        notificationPosition = defaults.notificationPosition
-        osdPosition = defaults.osdPosition
-        barPosition = defaults.barPosition
-        barStyle = defaults.barStyle
-        workspaceStyle = defaults.workspaceStyle
-        launcherIconPreset = defaults.launcherIconPreset
-        launcherIconSize = defaults.launcherIconSize
-        clockWidgetEnabled = defaults.clockWidgetEnabled
-        clockUse24h = defaults.clockUse24h
-        clockWidgetPosX = defaults.clockWidgetPosX
-        clockWidgetPosY = defaults.clockWidgetPosY
-        calendarWidgetEnabled = defaults.calendarWidgetEnabled
-        googleCalendarEventsEnabled = defaults.googleCalendarEventsEnabled
-        calendarWidgetPosX = defaults.calendarWidgetPosX
-        calendarWidgetPosY = defaults.calendarWidgetPosY
-        pomodoroWidgetEnabled = defaults.pomodoroWidgetEnabled
-        pomodoroWidgetPosX = defaults.pomodoroWidgetPosX
-        pomodoroWidgetPosY = defaults.pomodoroWidgetPosY
-        todoWidgetEnabled = defaults.todoWidgetEnabled
-        todoWidgetPosX = defaults.todoWidgetPosX
-        todoWidgetPosY = defaults.todoWidgetPosY
-        dockPinnedApps = defaults.dockPinnedApps
-        dockEnabled = defaults.dockEnabled
-        dockAutoHide = defaults.dockAutoHide
-        rememberSettingsWindowPosition = defaults.rememberSettingsWindowPosition
-        openSettingsOnGeneralAlways = defaults.openSettingsOnGeneralAlways
-        picturesImageLimit = defaults.picturesImageLimit
-        downloadsFileLimit = defaults.downloadsFileLimit
+        notificationPosition = defaults.notificationPosition;
+        osdPosition = defaults.osdPosition;
+        barPosition = defaults.barPosition;
+        barStyle = defaults.barStyle;
+        workspaceStyle = defaults.workspaceStyle;
+        launcherIconPreset = defaults.launcherIconPreset;
+        launcherIconSize = defaults.launcherIconSize;
+        clockWidgetEnabled = defaults.clockWidgetEnabled;
+        clockUse24h = defaults.clockUse24h;
+        clockWidgetPosX = defaults.clockWidgetPosX;
+        clockWidgetPosY = defaults.clockWidgetPosY;
+        calendarWidgetEnabled = defaults.calendarWidgetEnabled;
+        googleCalendarEventsEnabled = defaults.googleCalendarEventsEnabled;
+        calendarWidgetPosX = defaults.calendarWidgetPosX;
+        calendarWidgetPosY = defaults.calendarWidgetPosY;
+        pomodoroWidgetEnabled = defaults.pomodoroWidgetEnabled;
+        pomodoroWidgetPosX = defaults.pomodoroWidgetPosX;
+        pomodoroWidgetPosY = defaults.pomodoroWidgetPosY;
+        todoWidgetEnabled = defaults.todoWidgetEnabled;
+        todoWidgetPosX = defaults.todoWidgetPosX;
+        todoWidgetPosY = defaults.todoWidgetPosY;
+        dockPinnedApps = defaults.dockPinnedApps;
+        dockEnabled = defaults.dockEnabled;
+        dockAutoHide = defaults.dockAutoHide;
+        rememberSettingsWindowPosition = defaults.rememberSettingsWindowPosition;
+        openSettingsOnGeneralAlways = defaults.openSettingsOnGeneralAlways;
+        picturesImageLimit = defaults.picturesImageLimit;
+        downloadsFileLimit = defaults.downloadsFileLimit;
     }
 
     function _apply(raw) {
         try {
-            const data = JSON.parse(raw || "{}")
+            const data = JSON.parse(raw || "{}");
             if (data.notificationPosition)
-                notificationPosition = data.notificationPosition
+                notificationPosition = data.notificationPosition;
+
             if (data.osdPosition)
-                osdPosition = data.osdPosition
+                osdPosition = data.osdPosition;
+
             if (data.barPosition)
-                barPosition = data.barPosition
+                barPosition = data.barPosition;
+
             if (data.barStyle) {
                 if (data.barStyle === "flat")
-                    barStyle = "flat"
+                    barStyle = "flat";
                 else
-                    barStyle = "dock"
+                    barStyle = "dock";
             }
             if (data.workspaceStyle) {
                 if (data.workspaceStyle === "pills")
-                    workspaceStyle = "strip"
+                    workspaceStyle = "strip";
                 else if (["og", "strip", "pulse"].includes(data.workspaceStyle))
-                    workspaceStyle = data.workspaceStyle
+                    workspaceStyle = data.workspaceStyle;
             }
             if (data.launcherIconPreset)
-                launcherIconPreset = data.launcherIconPreset
+                launcherIconPreset = data.launcherIconPreset;
+
             if (typeof data.launcherIconSize === "number")
-                launcherIconSize = Math.max(10, Math.min(18, Math.round(data.launcherIconSize)))
+                launcherIconSize = Math.max(10, Math.min(18, Math.round(data.launcherIconSize)));
+
             if (typeof data.clockWidgetEnabled === "boolean")
-                clockWidgetEnabled = data.clockWidgetEnabled
+                clockWidgetEnabled = data.clockWidgetEnabled;
+
             if (typeof data.clockUse24h === "boolean")
-                clockUse24h = data.clockUse24h
+                clockUse24h = data.clockUse24h;
+
             if (typeof data.clockWidgetPosX === "number")
-                clockWidgetPosX = Math.max(0, Math.min(1, data.clockWidgetPosX))
+                clockWidgetPosX = Math.max(0, Math.min(1, data.clockWidgetPosX));
+
             if (typeof data.clockWidgetPosY === "number")
-                clockWidgetPosY = Math.max(0, Math.min(1, data.clockWidgetPosY))
+                clockWidgetPosY = Math.max(0, Math.min(1, data.clockWidgetPosY));
+
             if (typeof data.calendarWidgetEnabled === "boolean")
-                calendarWidgetEnabled = data.calendarWidgetEnabled
+                calendarWidgetEnabled = data.calendarWidgetEnabled;
+
             if (typeof data.googleCalendarEventsEnabled === "boolean")
-                googleCalendarEventsEnabled = data.googleCalendarEventsEnabled
+                googleCalendarEventsEnabled = data.googleCalendarEventsEnabled;
+
             if (typeof data.calendarWidgetPosX === "number")
-                calendarWidgetPosX = Math.max(0, Math.min(1, data.calendarWidgetPosX))
+                calendarWidgetPosX = Math.max(0, Math.min(1, data.calendarWidgetPosX));
+
             if (typeof data.calendarWidgetPosY === "number")
-                calendarWidgetPosY = Math.max(0, Math.min(1, data.calendarWidgetPosY))
+                calendarWidgetPosY = Math.max(0, Math.min(1, data.calendarWidgetPosY));
+
             if (typeof data.pomodoroWidgetEnabled === "boolean")
-                pomodoroWidgetEnabled = data.pomodoroWidgetEnabled
+                pomodoroWidgetEnabled = data.pomodoroWidgetEnabled;
+
             if (typeof data.pomodoroWidgetPosX === "number")
-                pomodoroWidgetPosX = Math.max(0, Math.min(1, data.pomodoroWidgetPosX))
+                pomodoroWidgetPosX = Math.max(0, Math.min(1, data.pomodoroWidgetPosX));
+
             if (typeof data.pomodoroWidgetPosY === "number")
-                pomodoroWidgetPosY = Math.max(0, Math.min(1, data.pomodoroWidgetPosY))
+                pomodoroWidgetPosY = Math.max(0, Math.min(1, data.pomodoroWidgetPosY));
+
             if (typeof data.todoWidgetEnabled === "boolean")
-                todoWidgetEnabled = data.todoWidgetEnabled
+                todoWidgetEnabled = data.todoWidgetEnabled;
+
             if (typeof data.todoWidgetPosX === "number")
-                todoWidgetPosX = Math.max(0, Math.min(1, data.todoWidgetPosX))
+                todoWidgetPosX = Math.max(0, Math.min(1, data.todoWidgetPosX));
+
             if (typeof data.todoWidgetPosY === "number")
-                todoWidgetPosY = Math.max(0, Math.min(1, data.todoWidgetPosY))
+                todoWidgetPosY = Math.max(0, Math.min(1, data.todoWidgetPosY));
+
             if (Array.isArray(data.dockPinnedApps))
-                dockPinnedApps = data.dockPinnedApps.slice()
+                dockPinnedApps = data.dockPinnedApps.slice();
+
             if (typeof data.dockEnabled === "boolean")
-                dockEnabled = data.dockEnabled
+                dockEnabled = data.dockEnabled;
+
             if (typeof data.dockAutoHide === "boolean")
-                dockAutoHide = data.dockAutoHide
+                dockAutoHide = data.dockAutoHide;
+
             if (typeof data.rememberSettingsWindowPosition === "boolean")
-                rememberSettingsWindowPosition = data.rememberSettingsWindowPosition
+                rememberSettingsWindowPosition = data.rememberSettingsWindowPosition;
+
             if (typeof data.openSettingsOnGeneralAlways === "boolean")
-                openSettingsOnGeneralAlways = data.openSettingsOnGeneralAlways
+                openSettingsOnGeneralAlways = data.openSettingsOnGeneralAlways;
+
             if (typeof data.picturesImageLimit === "number")
-                picturesImageLimit = Math.max(1, Math.min(50, Math.round(data.picturesImageLimit)))
+                picturesImageLimit = Math.max(1, Math.min(50, Math.round(data.picturesImageLimit)));
+
             if (typeof data.downloadsFileLimit === "number")
-                downloadsFileLimit = Math.max(1, Math.min(50, Math.round(data.downloadsFileLimit)))
+                downloadsFileLimit = Math.max(1, Math.min(50, Math.round(data.downloadsFileLimit)));
+
         } catch (e) {
             // keep defaults when the file is missing or malformed
-            _applyDefaults()
+            _applyDefaults();
         }
-        loaded = true
+        loaded = true;
     }
 
     function _writeSettings() {
         const payload = JSON.stringify({
-            notificationPosition: notificationPosition,
-            osdPosition: osdPosition,
-            barPosition: barPosition,
-            barStyle: barStyle,
-            workspaceStyle: workspaceStyle,
-            launcherIconPreset: launcherIconPreset,
-            launcherIconSize: launcherIconSize,
-            clockWidgetEnabled: clockWidgetEnabled,
-            clockUse24h: clockUse24h,
-            clockWidgetPosX: clockWidgetPosX,
-            clockWidgetPosY: clockWidgetPosY,
-            calendarWidgetEnabled: calendarWidgetEnabled,
-            googleCalendarEventsEnabled: googleCalendarEventsEnabled,
-            calendarWidgetPosX: calendarWidgetPosX,
-            calendarWidgetPosY: calendarWidgetPosY,
-            pomodoroWidgetEnabled: pomodoroWidgetEnabled,
-            pomodoroWidgetPosX: pomodoroWidgetPosX,
-            pomodoroWidgetPosY: pomodoroWidgetPosY,
-            todoWidgetEnabled: todoWidgetEnabled,
-            todoWidgetPosX: todoWidgetPosX,
-            todoWidgetPosY: todoWidgetPosY,
-            dockPinnedApps: dockPinnedApps,
-            dockEnabled: dockEnabled,
-            dockAutoHide: dockAutoHide,
-            rememberSettingsWindowPosition: rememberSettingsWindowPosition,
-            openSettingsOnGeneralAlways: openSettingsOnGeneralAlways,
-            picturesImageLimit: picturesImageLimit,
-            downloadsFileLimit: downloadsFileLimit
-        }, null, 2)
-
-        Quickshell.execDetached([
-            "bash",
-            "-lc",
-            "mkdir -p " + root.settingsDir + " && tmp=" + root.settingsPath + ".tmp && cat > \"$tmp\" <<'EOF'\n" +
-            payload +
-            "\nEOF\nmv \"$tmp\" " + root.settingsPath
-        ])
+            "notificationPosition": notificationPosition,
+            "osdPosition": osdPosition,
+            "barPosition": barPosition,
+            "barStyle": barStyle,
+            "workspaceStyle": workspaceStyle,
+            "launcherIconPreset": launcherIconPreset,
+            "launcherIconSize": launcherIconSize,
+            "clockWidgetEnabled": clockWidgetEnabled,
+            "clockUse24h": clockUse24h,
+            "clockWidgetPosX": clockWidgetPosX,
+            "clockWidgetPosY": clockWidgetPosY,
+            "calendarWidgetEnabled": calendarWidgetEnabled,
+            "googleCalendarEventsEnabled": googleCalendarEventsEnabled,
+            "calendarWidgetPosX": calendarWidgetPosX,
+            "calendarWidgetPosY": calendarWidgetPosY,
+            "pomodoroWidgetEnabled": pomodoroWidgetEnabled,
+            "pomodoroWidgetPosX": pomodoroWidgetPosX,
+            "pomodoroWidgetPosY": pomodoroWidgetPosY,
+            "todoWidgetEnabled": todoWidgetEnabled,
+            "todoWidgetPosX": todoWidgetPosX,
+            "todoWidgetPosY": todoWidgetPosY,
+            "dockPinnedApps": dockPinnedApps,
+            "dockEnabled": dockEnabled,
+            "dockAutoHide": dockAutoHide,
+            "rememberSettingsWindowPosition": rememberSettingsWindowPosition,
+            "openSettingsOnGeneralAlways": openSettingsOnGeneralAlways,
+            "picturesImageLimit": picturesImageLimit,
+            "downloadsFileLimit": downloadsFileLimit
+        }, null, 2);
+        Quickshell.execDetached(["bash", "-lc", "mkdir -p " + root.settingsDir + " && tmp=" + root.settingsPath + ".tmp && cat > \"$tmp\" <<'EOF'\n" + payload + "\nEOF\nmv \"$tmp\" " + root.settingsPath]);
     }
 
     function resetToDefaults() {
-        _applyDefaults()
+        _applyDefaults();
         if (loaded) {
-            saveTimer.stop()
-            _writeSettings()
+            saveTimer.stop();
+            _writeSettings();
         }
     }
 
     function save() {
         if (!loaded)
-            return
-        saveTimer.restart()
+            return ;
+
+        saveTimer.restart();
     }
 
     onNotificationPositionChanged: save()
@@ -261,6 +281,7 @@ Item {
 
     Timer {
         id: saveTimer
+
         interval: root.saveDelayMs
         repeat: false
         onTriggered: root._writeSettings()
@@ -268,16 +289,23 @@ Item {
 
     Process {
         id: loader
+
         command: ["bash", "-lc", "cat " + root.settingsPath + " 2>/dev/null"]
         running: true
+        onExited: {
+            const raw = loader.stdout && loader.stdout.buf ? loader.stdout.buf : "";
+            root._apply(raw);
+            loader.stdout.buf = "";
+        }
+
         stdout: SplitParser {
             property string buf: ""
-            onRead: data => buf += data + "\n"
+
+            onRead: (data) => {
+                return buf += data + "\n";
+            }
         }
-        onExited: {
-            const raw = loader.stdout && loader.stdout.buf ? loader.stdout.buf : ""
-            root._apply(raw)
-            loader.stdout.buf = ""
-        }
+
     }
+
 }

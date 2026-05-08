@@ -1,15 +1,17 @@
-import QtQuick
 import "../style" as Style
+import QtQuick
 
 Item {
     id: root
 
-    property var entry: ({})
+    property var entry: ({
+    })
     property bool selected: false
-    property var theme: ({})
+    property var theme: ({
+    })
 
-    signal clicked
-    signal removeRequested
+    signal clicked()
+    signal removeRequested()
 
     width: ListView.view ? ListView.view.width : 0
     height: 42
@@ -17,20 +19,9 @@ Item {
     Rectangle {
         anchors.fill: parent
         radius: 8
-        color: selected
-            ? Qt.alpha(theme.accent || "#89b4fa", 0.14)
-            : (rowMa.containsMouse ? Qt.alpha(theme.dim || "#45475a", 0.35) : "transparent")
+        color: selected ? Qt.alpha(theme.accent || "#89b4fa", 0.14) : (rowMa.containsMouse ? Qt.alpha(theme.dim || "#45475a", 0.35) : "transparent")
         border.width: 1
-        border.color: selected
-            ? Qt.alpha(theme.accent || "#89b4fa", 0.34)
-            : Qt.alpha(theme.dim || "#45475a", 0.5)
-
-        Behavior on color {
-            ColorAnimation { duration: 90 }
-        }
-        Behavior on border.color {
-            ColorAnimation { duration: 90 }
-        }
+        border.color: selected ? Qt.alpha(theme.accent || "#89b4fa", 0.34) : Qt.alpha(theme.dim || "#45475a", 0.5)
 
         Row {
             anchors.fill: parent
@@ -41,10 +32,8 @@ Item {
             Text {
                 anchors.verticalCenter: parent.verticalCenter
                 text: (entry && entry.isBinaryHint) ? "󰋩" : "󰈔"
-                color: selected
-                    ? (theme.accent || "#89b4fa")
-                    : Qt.alpha(theme.muted || "#585b70", 0.75)
-                font.pixelSize: Style.Typography.bodySmall
+                color: selected ? (theme.accent || "#89b4fa") : Qt.alpha(theme.muted || "#585b70", 0.75)
+                font.pixelSize: Style.Typography.componentSubtitle
                 font.family: Style.Typography.mono
             }
 
@@ -54,17 +43,20 @@ Item {
                 text: (entry && entry.preview) ? entry.preview : ""
                 color: theme.fg || "#cdd6f4"
                 elide: Text.ElideRight
-                font.pixelSize: Style.Typography.bodySmall
+                font.pixelSize: Style.Typography.componentSubtitle
                 font.family: Style.Typography.mono
             }
 
-            Item { width: 1; height: 1 }
+            Item {
+                width: 1
+                height: 1
+            }
 
             Text {
                 anchors.verticalCenter: parent.verticalCenter
                 text: "✕"
                 color: Qt.alpha(theme.red || "#f38ba8", rowMa.containsMouse ? 0.95 : 0.75)
-                font.pixelSize: Style.Typography.caption
+                font.pixelSize: Style.Typography.componentMeta
                 font.family: Style.Typography.mono
 
                 MouseArea {
@@ -72,19 +64,38 @@ Item {
                     anchors.margins: -4
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        mouse.accepted = true
-                        root.removeRequested()
+                        mouse.accepted = true;
+                        root.removeRequested();
                     }
                 }
+
             }
+
         }
+
+        Behavior on color {
+            ColorAnimation {
+                duration: 90
+            }
+
+        }
+
+        Behavior on border.color {
+            ColorAnimation {
+                duration: 90
+            }
+
+        }
+
     }
 
     MouseArea {
         id: rowMa
+
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: root.clicked()
     }
+
 }

@@ -1,9 +1,9 @@
+import "../style" as Style
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
-import "../style" as Style
 
 PanelWindow {
     id: root
@@ -361,7 +361,7 @@ PanelWindow {
                     Text {
                         text: Qt.formatDate(root.now, "ddd").toUpperCase() + " · " + Qt.formatDate(root.now, "dd MMM").toUpperCase()
                         color: nMuted
-                        font.pixelSize: Style.Typography.caption
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: root.textFont
                         font.letterSpacing: 0
                     }

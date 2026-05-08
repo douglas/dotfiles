@@ -9,9 +9,9 @@ import "bar/modules"
 import "dock"
 import "launcher"
 import "settings"
+import "style" as Style
 import "taskmanager"
 import "widgets"
-import "style" as Style
 
 ShellRoot {
     id: shell
@@ -465,7 +465,7 @@ ShellRoot {
                         Text {
                             text: powerActions.message
                             color: shell.muted
-                            font.pixelSize: Style.Typography.label
+                            font.pixelSize: Style.Typography.componentSubtitle
                             font.family: Style.Typography.monoPropo
                             wrapMode: Text.WordWrap
                             Layout.fillWidth: true
@@ -489,7 +489,7 @@ ShellRoot {
                                     anchors.centerIn: parent
                                     text: "Cancel"
                                     color: powerActions.selectedIndex === 0 ? shell.accent : shell.fg
-                                    font.pixelSize: Style.Typography.label
+                                    font.pixelSize: Style.Typography.componentSubtitle
                                     font.family: Style.Typography.monoPropo
                                 }
 
@@ -533,7 +533,7 @@ ShellRoot {
                                     anchors.centerIn: parent
                                     text: "Confirm"
                                     color: confirmButton.armed ? shell.fg : shell.muted
-                                    font.pixelSize: Style.Typography.label
+                                    font.pixelSize: Style.Typography.componentSubtitle
                                     font.family: Style.Typography.monoPropo
                                     font.weight: Font.DemiBold
                                 }

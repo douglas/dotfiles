@@ -361,7 +361,7 @@ Item {
                 text: root.nextMinutes >= 0 && root.nextMinutes <= 60 ? String(root.nextMinutes) + "m" : (root.displayEvents.length > 0 ? String(root.displayEvents.length) : "")
                 visible: text.length > 0
                 color: root.urgentMeeting ? root.cRed : root.cAccent
-                font.pixelSize: Style.Typography.micro
+                font.pixelSize: Style.Typography.componentMeta
                 font.family: Style.Typography.mono
                 font.weight: Font.DemiBold
             }
@@ -390,7 +390,7 @@ Item {
             anchors.centerIn: parent
             text: root.statusText
             color: root.cFg
-            font.pixelSize: Style.Typography.label
+            font.pixelSize: Style.Typography.componentSubtitle
             font.family: Style.Typography.mono
         }
 
@@ -517,7 +517,7 @@ Item {
                         Text {
                             text: root.statusText
                             color: root.ok ? root.cMuted : root.cRed
-                            font.pixelSize: Style.Typography.scaledBodySmall(root.overlayScale)
+                            font.pixelSize: Style.Typography.scaledComponentSubtitle(root.overlayScale)
                             font.family: Style.Typography.monoPropo
                             elide: Text.ElideRight
                             Layout.fillWidth: true
@@ -546,7 +546,7 @@ Item {
                                 anchors.centerIn: parent
                                 text: ""
                                 color: root.settingsOpen ? root.cAccent : settingsHover.containsMouse ? root.cAccent : Qt.alpha(root.cMuted, 0.75)
-                                font.pixelSize: Style.Typography.scaledBodyLarge(root.overlayScale)
+                                font.pixelSize: Style.Typography.scaledActionIcon(root.overlayScale)
                                 font.family: Style.Typography.mono
                             }
 
@@ -572,7 +572,7 @@ Item {
                                 anchors.centerIn: parent
                                 text: ""
                                 color: refreshHover.containsMouse ? root.cAccent : root.cMuted
-                                font.pixelSize: Style.Typography.scaledBodyLarge(root.overlayScale)
+                                font.pixelSize: Style.Typography.scaledActionIcon(root.overlayScale)
                                 font.family: Style.Typography.mono
                             }
 
@@ -597,7 +597,7 @@ Item {
                                 anchors.centerIn: parent
                                 text: "󰅖"
                                 color: closeHover.containsMouse ? root.cRed : root.cMuted
-                                font.pixelSize: Style.Typography.scaledBodyLarge(root.overlayScale)
+                                font.pixelSize: Style.Typography.scaledCloseIcon(root.overlayScale)
                                 font.family: Style.Typography.mono
                             }
 
@@ -692,7 +692,7 @@ Item {
                             Text {
                                 text: modelData
                                 color: root.cMuted
-                                font.pixelSize: Style.Typography.scaledLabel(root.overlayScale)
+                                font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
                                 font.family: Style.Typography.monoPropo
                                 horizontalAlignment: Text.AlignHCenter
                                 Layout.fillWidth: true
@@ -740,7 +740,7 @@ Item {
                                     text: isValid ? dayNum : ""
                                     color: isSelected ? root.cAccent : root.cFg
                                     opacity: isValid ? 1 : 0
-                                    font.pixelSize: Style.Typography.scaledBodySmall(root.overlayScale)
+                                    font.pixelSize: Style.Typography.scaledComponentSubtitle(root.overlayScale)
                                     font.family: Style.Typography.monoPropo
                                     font.weight: isSelected || isToday ? Font.DemiBold : Font.Normal
                                 }
@@ -809,7 +809,7 @@ Item {
                             Text {
                                 text: root.eventsEnabled ? "Fetch activities for the selected day." : "Keep the popup as a local calendar."
                                 color: root.cMuted
-                                font.pixelSize: Style.Typography.scaledBodySmall(root.overlayScale)
+                                font.pixelSize: Style.Typography.scaledComponentSubtitle(root.overlayScale)
                                 font.family: Style.Typography.monoPropo
                                 wrapMode: Text.WordWrap
                                 Layout.fillWidth: true
@@ -931,7 +931,7 @@ Item {
                                 Text {
                                     text: root.rowSubtext(row.modelData)
                                     color: root.cMuted
-                                    font.pixelSize: Style.Typography.scaledBodySmall(root.overlayScale)
+                                    font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
                                     font.family: Style.Typography.monoPropo
                                     elide: Text.ElideRight
                                     Layout.fillWidth: true
@@ -943,7 +943,7 @@ Item {
                                 visible: row.modelData.conferenceUrl && row.modelData.conferenceUrl.length > 0
                                 text: "󰍫"
                                 color: root.cAccent
-                                font.pixelSize: Style.Typography.scaledBodyLarge(root.overlayScale)
+                                font.pixelSize: Style.Typography.scaledActionIcon(root.overlayScale)
                                 font.family: Style.Typography.mono
 
                                 MouseArea {
@@ -958,7 +958,7 @@ Item {
                             Text {
                                 text: "󰏌"
                                 color: root.cMuted
-                                font.pixelSize: Style.Typography.scaledBodyLarge(root.overlayScale)
+                                font.pixelSize: Style.Typography.scaledActionIcon(root.overlayScale)
                                 font.family: Style.Typography.mono
                             }
 
@@ -982,7 +982,7 @@ Item {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: "󰔟"
                             color: root.cAccent
-                            font.pixelSize: Style.Typography.scaledBodyLarge(root.overlayScale)
+                            font.pixelSize: Style.Typography.scaledActionIcon(root.overlayScale)
                             font.family: Style.Typography.mono
 
                             RotationAnimation on rotation {
@@ -998,7 +998,7 @@ Item {
                         Text {
                             text: "Loading events..."
                             color: root.cMuted
-                            font.pixelSize: Style.Typography.scaledBodySmall(root.overlayScale)
+                            font.pixelSize: Style.Typography.scaledComponentSubtitle(root.overlayScale)
                             font.family: Style.Typography.monoPropo
                         }
 

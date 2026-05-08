@@ -1,39 +1,51 @@
+import "../../style" as Style
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import "../../style" as Style
 
 Item {
     id: root
 
     property var state: null
-    property var theme: ({})
+    property var theme: ({
+    })
+    readonly property var positions: [{
+        "key": "top-center",
+        "label": "Top Center"
+    }, {
+        "key": "top-right",
+        "label": "Top Right"
+    }, {
+        "key": "top-left",
+        "label": "Top Left"
+    }, {
+        "key": "bottom-center",
+        "label": "Bottom Center"
+    }, {
+        "key": "bottom-right",
+        "label": "Bottom Right"
+    }, {
+        "key": "bottom-left",
+        "label": "Bottom Left"
+    }]
 
-    function t(key, fallback) { return theme[key] || fallback }
-
-    readonly property var positions: [
-        { key: "top-center", label: "Top Center" },
-        { key: "top-right", label: "Top Right" },
-        { key: "top-left", label: "Top Left" },
-        { key: "bottom-center", label: "Bottom Center" },
-        { key: "bottom-right", label: "Bottom Right" },
-        { key: "bottom-left", label: "Bottom Left" }
-    ]
+    function t(key, fallback) {
+        return theme[key] || fallback;
+    }
 
     function currentPosition() {
-        return root.state ? root.state.notificationPosition : "top-center"
+        return root.state ? root.state.notificationPosition : "top-center";
     }
 
     function setPosition(key) {
-        if (!root.state) return
-        root.state.notificationPosition = key
+        if (!root.state)
+            return ;
+
+        root.state.notificationPosition = key;
     }
 
     function sendTestNotification() {
-        Quickshell.execDetached([
-            "bash", "-lc",
-            "notify-send -a Kurama -u normal 'Kurama Settings' 'This is a test notification.'"
-        ])
+        Quickshell.execDetached(["bash", "-lc", "notify-send -a Kurama -u normal 'Kurama Settings' 'This is a test notification.'"]);
     }
 
     ColumnLayout {
@@ -56,7 +68,7 @@ Item {
                 Text {
                     text: "Toast location"
                     color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                    font.pixelSize: Style.Typography.caption
+                    font.pixelSize: Style.Typography.componentMeta
                     font.family: Style.Typography.text
                 }
 
@@ -71,27 +83,19 @@ Item {
 
                         delegate: Rectangle {
                             required property var modelData
+
                             Layout.fillWidth: true
                             Layout.preferredHeight: 38
                             radius: 10
-                            color: root.currentPosition() === modelData.key
-                                ? Qt.alpha(t("accent", "#9ccfa0"), 0.18)
-                                : Qt.alpha(t("dim", "#45475a"), 0.14)
-                            border.color: root.currentPosition() === modelData.key
-                                ? Qt.alpha(t("accent", "#9ccfa0"), 0.34)
-                                : Qt.alpha(t("accent", "#9ccfa0"), 0.08)
+                            color: root.currentPosition() === modelData.key ? Qt.alpha(t("accent", "#9ccfa0"), 0.18) : Qt.alpha(t("dim", "#45475a"), 0.14)
+                            border.color: root.currentPosition() === modelData.key ? Qt.alpha(t("accent", "#9ccfa0"), 0.34) : Qt.alpha(t("accent", "#9ccfa0"), 0.08)
                             border.width: 1
-
-                            Behavior on color { ColorAnimation { duration: 120 } }
-                            Behavior on border.color { ColorAnimation { duration: 120 } }
 
                             Text {
                                 anchors.centerIn: parent
                                 text: modelData.label
-                                color: root.currentPosition() === modelData.key
-                                    ? t("fg", "#eef6ef")
-                                    : Qt.alpha(t("fg", "#eef6ef"), 0.72)
-                                font.pixelSize: Style.Typography.caption
+                                color: root.currentPosition() === modelData.key ? t("fg", "#eef6ef") : Qt.alpha(t("fg", "#eef6ef"), 0.72)
+                                font.pixelSize: Style.Typography.componentMeta
                                 font.family: Style.Typography.text
                                 font.weight: Font.Medium
                             }
@@ -101,8 +105,25 @@ Item {
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: root.setPosition(modelData.key)
                             }
+
+                            Behavior on color {
+                                ColorAnimation {
+                                    duration: 120
+                                }
+
+                            }
+
+                            Behavior on border.color {
+                                ColorAnimation {
+                                    duration: 120
+                                }
+
+                            }
+
                         }
+
                     }
+
                 }
 
                 RowLayout {
@@ -121,7 +142,7 @@ Item {
                             anchors.centerIn: parent
                             text: "Send test notification"
                             color: t("fg", "#eef6ef")
-                            font.pixelSize: Style.Typography.caption
+                            font.pixelSize: Style.Typography.componentMeta
                             font.family: Style.Typography.text
                             font.weight: Font.DemiBold
                         }
@@ -131,6 +152,7 @@ Item {
                             cursorShape: Qt.PointingHandCursor
                             onClicked: sendTestNotification()
                         }
+
                     }
 
                     Rectangle {
@@ -145,7 +167,7 @@ Item {
                             anchors.centerIn: parent
                             text: "Reset"
                             color: Qt.alpha(t("fg", "#eef6ef"), 0.8)
-                            font.pixelSize: Style.Typography.caption
+                            font.pixelSize: Style.Typography.componentMeta
                             font.family: Style.Typography.text
                             font.weight: Font.Medium
                         }
@@ -155,9 +177,13 @@ Item {
                             cursorShape: Qt.PointingHandCursor
                             onClicked: root.setPosition("top-center")
                         }
+
                     }
+
                 }
+
             }
+
         }
 
         Rectangle {
@@ -176,14 +202,14 @@ Item {
                 Text {
                     text: "Current"
                     color: Qt.alpha(t("muted", "#9fb29f"), 0.74)
-                    font.pixelSize: Style.Typography.micro
+                    font.pixelSize: Style.Typography.componentMeta
                     font.family: Style.Typography.text
                 }
 
                 Text {
                     text: root.currentPosition()
                     color: t("fg", "#eef6ef")
-                    font.pixelSize: Style.Typography.bodySmall
+                    font.pixelSize: Style.Typography.componentSubtitle
                     font.family: Style.Typography.text
                     font.weight: Font.DemiBold
                 }
@@ -191,12 +217,16 @@ Item {
                 Text {
                     text: "Top center is the default toast position."
                     color: Qt.alpha(t("muted", "#9fb29f"), 0.55)
-                    font.pixelSize: Style.Typography.micro
+                    font.pixelSize: Style.Typography.componentMeta
                     font.family: Style.Typography.text
                     Layout.fillWidth: true
                     wrapMode: Text.WordWrap
                 }
+
             }
+
         }
+
     }
+
 }

@@ -831,7 +831,7 @@ PanelWindow {
                 anchors.centerIn: parent
                 text: notifCount > 9 ? "9+" : String(notifCount)
                 color: root.cBg
-                font.pixelSize: Style.Typography.nano
+                font.pixelSize: Style.Typography.componentMeta
                 font.bold: true
                 font.family: Style.Typography.monoPropo
             }

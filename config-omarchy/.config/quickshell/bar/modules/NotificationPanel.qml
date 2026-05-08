@@ -212,7 +212,7 @@ Item {
                     Text {
                         text: toastWin.latest ? (toastWin.latest.appName || "") : ""
                         color: Qt.rgba(1,1,1,0.38)
-                        font.pixelSize: Style.Typography.bodySmall
+                        font.pixelSize: Style.Typography.componentSubtitle
                         font.family: Style.Typography.text
                     }
 
@@ -238,14 +238,14 @@ Item {
                             anchors.centerIn: parent
                             text: "+" + (toastWin.visibleToasts.length - 1)
                             color: Qt.rgba(1,1,1,0.35)
-                            font.pixelSize: Style.Typography.label
+                            font.pixelSize: Style.Typography.componentSubtitle
                             font.family: Style.Typography.text
                         }
                     }
 
                     Text {
                         text: "✕"
-                        font.pixelSize: Style.Typography.caption
+                        font.pixelSize: Style.Typography.componentMeta
                         color: xhov.containsMouse ? t("fg", "#cdd6f4") : Qt.rgba(1,1,1,0.2)
                         Behavior on color { ColorAnimation { duration: 80 } }
                         MouseArea {
@@ -294,7 +294,7 @@ Item {
                                 text: modelData.text
                                 color: hudActMa.containsMouse
                                     ? t("bg", "#1e1e2e") : t("fg", "#cdd6f4")
-                                font.pixelSize: Style.Typography.bodySmall
+                                font.pixelSize: Style.Typography.componentSubtitle
                                 font.family: Style.Typography.text
                                 Behavior on color { ColorAnimation { duration: 80 } }
                             }
@@ -367,7 +367,7 @@ Item {
                         Text {
                             text: "Notifications"
                             color: t("fg", "#cdd6f4")
-                            font.pixelSize: Style.Typography.label
+                            font.pixelSize: Style.Typography.componentSubtitle
                             font.weight: Font.DemiBold
                             font.family: Style.Typography.text
                         }
@@ -383,7 +383,7 @@ Item {
                                 anchors.centerIn: parent
                                 text: notifServer.notifications.length
                                 color: t("accent", "#89b4fa")
-                                font.pixelSize: Style.Typography.micro
+                                font.pixelSize: Style.Typography.componentMeta
                                 font.weight: Font.Bold
                                 font.family: Style.Typography.text
                             }
@@ -412,7 +412,7 @@ Item {
                                 color: grpHov.containsMouse || root.groupedView
                                     ? t("accent", "#89b4fa")
                                     : Qt.alpha(t("fg", "#cdd6f4"), 0.70)
-                                font.pixelSize: Style.Typography.micro
+                                font.pixelSize: Style.Typography.componentMeta
                                 font.family: Style.Typography.text
                             }
 
@@ -447,7 +447,7 @@ Item {
                                 color: clrHov.containsMouse
                                     ? t("red", "#f38ba8")
                                     : Qt.alpha(t("fg", "#cdd6f4"), 0.70)
-                                font.pixelSize: Style.Typography.micro
+                                font.pixelSize: Style.Typography.componentMeta
                                 font.family: Style.Typography.text
                                 Behavior on color { ColorAnimation { duration: 100 } }
                             }
@@ -503,7 +503,7 @@ Item {
                                     anchors.centerIn: parent
                                     text: modelData
                                     color: active ? t("accent", "#89b4fa") : Qt.alpha(t("fg", "#cdd6f4"), 0.72)
-                                    font.pixelSize: Style.Typography.micro
+                                    font.pixelSize: Style.Typography.componentMeta
                                     font.family: Style.Typography.text
                                 }
 
@@ -684,7 +684,7 @@ Item {
                                 Text {
                                     text: latest.appName
                                     color: Qt.rgba(1,1,1,0.3)
-                                    font.pixelSize: Style.Typography.label
+                                    font.pixelSize: Style.Typography.componentSubtitle
                                     font.family: Style.Typography.text
                                     Layout.fillWidth: true
                                     elide: Text.ElideRight
@@ -701,7 +701,7 @@ Item {
                                         anchors.centerIn: parent
                                         text: modelData.count
                                         color: t("accent", "#89b4fa")
-                                        font.pixelSize: Style.Typography.micro
+                                        font.pixelSize: Style.Typography.componentMeta
                                         font.family: Style.Typography.text
                                         font.weight: Font.Bold
                                     }
@@ -709,7 +709,7 @@ Item {
 
                                 Text {
                                     text: "✕"
-                                    font.pixelSize: Style.Typography.caption
+                                    font.pixelSize: Style.Typography.componentMeta
                                     color: dxhov.containsMouse
                                         ? t("red", "#f38ba8") : Qt.rgba(1,1,1,0.18)
                                     Behavior on color { ColorAnimation { duration: 80 } }
@@ -741,7 +741,7 @@ Item {
                                 Layout.fillWidth: true
                                 text: latest.body || ""
                                 color: Qt.rgba(1,1,1,0.38)
-                                font.pixelSize: Style.Typography.bodySmall
+                                font.pixelSize: Style.Typography.componentSubtitle
                                 font.family: Style.Typography.text
                                 wrapMode: Text.WordWrap
                                 maximumLineCount: 2
@@ -753,7 +753,7 @@ Item {
                                 Layout.fillWidth: true
                                 text: "Collapsed " + modelData.count + " notifications from " + latest.appName
                                 color: Qt.alpha(t("fg", "#cdd6f4"), 0.44)
-                                font.pixelSize: Style.Typography.caption
+                                font.pixelSize: Style.Typography.componentMeta
                                 font.family: Style.Typography.text
                                 elide: Text.ElideRight
                             }
@@ -779,7 +779,7 @@ Item {
                                             text: modelData.text
                                             color: pAMa.containsMouse
                                                 ? t("bg", "#1e1e2e") : t("fg", "#cdd6f4")
-                                            font.pixelSize: Style.Typography.label
+                                            font.pixelSize: Style.Typography.componentSubtitle
                                             font.family: Style.Typography.text
                                             Behavior on color { ColorAnimation { duration: 80 } }
                                         }
@@ -816,7 +816,7 @@ Item {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: root.appFilter !== "" ? "no notifications for filter" : "no notifications"
                             color: t("muted", "#585b70")
-                            font.pixelSize: Style.Typography.bodySmall
+                            font.pixelSize: Style.Typography.componentSubtitle
                             font.family: Style.Typography.text
                             opacity: 0.5
                         }

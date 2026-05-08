@@ -1,9 +1,9 @@
+import "../style" as Style
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
-import "../style" as Style
 
 PanelWindow {
     id: root
@@ -119,7 +119,7 @@ PanelWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         text: "󰆈"
                         color: theme.accent || "#89b4fa"
-                        font.pixelSize: Style.Typography.bodySmall
+                        font.pixelSize: Style.Typography.componentSubtitle
                         font.family: Style.Typography.mono
                     }
 
@@ -127,7 +127,7 @@ PanelWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         text: "Clipboard"
                         color: theme.fg || "#cdd6f4"
-                        font.pixelSize: Style.Typography.bodySmall
+                        font.pixelSize: Style.Typography.componentSubtitle
                         font.family: Style.Typography.mono
                         font.weight: Font.Medium
                     }
@@ -150,7 +150,7 @@ PanelWindow {
                             anchors.centerIn: parent
                             text: "clear all"
                             color: Qt.alpha(theme.red || "#f38ba8", 0.95)
-                            font.pixelSize: Style.Typography.caption
+                            font.pixelSize: Style.Typography.componentMeta
                             font.family: Style.Typography.mono
                             font.weight: Font.Medium
                         }
@@ -167,7 +167,7 @@ PanelWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         text: "✕"
                         color: Qt.alpha(theme.muted || "#585b70", 0.6)
-                        font.pixelSize: Style.Typography.micro
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.mono
 
                         MouseArea {
@@ -199,7 +199,7 @@ PanelWindow {
                             anchors.verticalCenter: parent.verticalCenter
                             text: "󰍉"
                             color: theme.accent || "#89b4fa"
-                            font.pixelSize: Style.Typography.bodySmall
+                            font.pixelSize: Style.Typography.componentSubtitle
                             font.family: Style.Typography.mono
                         }
 
@@ -207,7 +207,7 @@ PanelWindow {
                             anchors.verticalCenter: parent.verticalCenter
                             text: root.searchText
                             color: theme.fg || "#cdd6f4"
-                            font.pixelSize: Style.Typography.bodySmall
+                            font.pixelSize: Style.Typography.componentSubtitle
                             font.family: Style.Typography.mono
                         }
 
@@ -243,7 +243,7 @@ PanelWindow {
                             visible: root.searchText !== ""
                             text: "✕"
                             color: Qt.alpha(theme.muted || "#585b70", 0.5)
-                            font.pixelSize: Style.Typography.micro
+                            font.pixelSize: Style.Typography.componentMeta
                             font.family: Style.Typography.mono
 
                             MouseArea {
@@ -265,7 +265,7 @@ PanelWindow {
                     Text {
                         text: service.filtered.length + " items"
                         color: Qt.alpha(theme.muted || "#585b70", 0.45)
-                        font.pixelSize: Style.Typography.micro
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.mono
                     }
 
@@ -276,7 +276,7 @@ PanelWindow {
                     Text {
                         text: "↵ copy  del remove  esc close"
                         color: Qt.alpha(theme.muted || "#585b70", 0.35)
-                        font.pixelSize: Style.Typography.micro
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.mono
                     }
 
@@ -291,7 +291,7 @@ PanelWindow {
                         anchors.centerIn: parent
                         text: "Loading clipboard history..."
                         color: Qt.alpha(theme.muted || "#585b70", 0.5)
-                        font.pixelSize: Style.Typography.label
+                        font.pixelSize: Style.Typography.componentSubtitle
                         font.family: Style.Typography.mono
                     }
 
@@ -309,7 +309,7 @@ PanelWindow {
                         width: parent.width - 40
                         wrapMode: Text.Wrap
                         color: Qt.alpha(theme.red || "#f38ba8", 0.85)
-                        font.pixelSize: Style.Typography.caption
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.mono
                     }
 
@@ -359,7 +359,7 @@ PanelWindow {
                                 anchors.centerIn: parent
                                 text: root.searchText.length > 0 ? "No matches found" : "Clipboard is empty"
                                 color: Qt.alpha(theme.muted || "#585b70", 0.5)
-                                font.pixelSize: Style.Typography.label
+                                font.pixelSize: Style.Typography.componentSubtitle
                                 font.family: Style.Typography.mono
                             }
 
@@ -404,7 +404,7 @@ PanelWindow {
                             Text {
                                 text: "Image Preview"
                                 color: theme.fg || "#cdd6f4"
-                                font.pixelSize: Style.Typography.caption
+                                font.pixelSize: Style.Typography.componentMeta
                                 font.family: Style.Typography.mono
                                 font.weight: Font.Medium
                             }
@@ -412,7 +412,7 @@ PanelWindow {
                             Text {
                                 text: service.previewMime
                                 color: Qt.alpha(theme.muted || "#585b70", 0.7)
-                                font.pixelSize: Style.Typography.micro
+                                font.pixelSize: Style.Typography.componentMeta
                                 font.family: Style.Typography.mono
                             }
 

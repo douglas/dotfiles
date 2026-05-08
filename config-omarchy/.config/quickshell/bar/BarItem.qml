@@ -1,5 +1,5 @@
-import QtQuick
 import "../style" as Style
+import QtQuick
 
 Rectangle {
     property string label: ""
@@ -10,10 +10,9 @@ Rectangle {
     radius: 6
     color: ma.containsMouse ? "#25313244" : "transparent"
 
-    Behavior on color { ColorAnimation { duration: 120 } }
-
     Text {
         id: lbl
+
         anchors.centerIn: parent
         text: parent.label
         color: "#cdd6f4"
@@ -22,7 +21,16 @@ Rectangle {
 
     MouseArea {
         id: ma
+
         anchors.fill: parent
         hoverEnabled: true
     }
+
+    Behavior on color {
+        ColorAnimation {
+            duration: 120
+        }
+
+    }
+
 }

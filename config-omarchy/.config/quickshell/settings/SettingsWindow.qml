@@ -1,118 +1,138 @@
+import "../style" as Style
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
 import "pages"
-import "../style" as Style
 
 PanelWindow {
     id: root
 
     property var state: null
-    property var theme: ({})
+    property var theme: ({
+    })
     property bool showing: false
     property int pageIndex: 0
-    property real uiScale: 1.0
-
-    readonly property var pages: [
-        { label: "General", desc: "Shell identity and window behavior" },
-        { label: "Notifications", desc: "Toast position and test alert" },
-        { label: "OSD", desc: "On-screen display position" },
-        { label: "Bar", desc: "Style, position and shell layout" },
-        { label: "Dock", desc: "Dock visibility and layout" },
-        { label: "Widgets", desc: "Desktop widget styles and options" },
-        { label: "About", desc: "Shell info and config location" }
-    ]
-
-    function t(key, fallback) { return theme[key] || fallback }
-
-    function currentPageMeta() {
-        return pages[pageIndex] || pages[0]
-    }
-
-    function setPage(index) {
-        const clamped = Math.max(0, Math.min(index, pages.length - 1))
-        pageIndex = clamped
-    }
-
+    property real uiScale: 1
+    readonly property var pages: [{
+        "label": "General",
+        "desc": "Shell identity and window behavior"
+    }, {
+        "label": "Notifications",
+        "desc": "Toast position and test alert"
+    }, {
+        "label": "OSD",
+        "desc": "On-screen display position"
+    }, {
+        "label": "Bar",
+        "desc": "Style, position and shell layout"
+    }, {
+        "label": "Dock",
+        "desc": "Dock visibility and layout"
+    }, {
+        "label": "Widgets",
+        "desc": "Desktop widget styles and options"
+    }, {
+        "label": "About",
+        "desc": "Shell info and config location"
+    }]
     property real cardX: 0
     property real cardY: 0
     property bool cardPositioned: false
+    property real reveal: showing ? 1 : 0
+
+    function t(key, fallback) {
+        return theme[key] || fallback;
+    }
+
+    function currentPageMeta() {
+        return pages[pageIndex] || pages[0];
+    }
+
+    function setPage(index) {
+        const clamped = Math.max(0, Math.min(index, pages.length - 1));
+        pageIndex = clamped;
+    }
 
     function centerCard() {
         if (!backdrop.width || !backdrop.height)
-            return
-        cardX = Math.round((backdrop.width - card.width) / 2)
-        cardY = Math.round((backdrop.height - card.height) / 2)
-        cardPositioned = true
+            return ;
+
+        cardX = Math.round((backdrop.width - card.width) / 2);
+        cardY = Math.round((backdrop.height - card.height) / 2);
+        cardPositioned = true;
     }
 
     function clampCard() {
         if (!backdrop.width || !backdrop.height)
-            return
-        cardX = Math.max(12, Math.min(cardX, backdrop.width - card.width - 12))
-        cardY = Math.max(12, Math.min(cardY, backdrop.height - card.height - 12))
+            return ;
+
+        cardX = Math.max(12, Math.min(cardX, backdrop.width - card.width - 12));
+        cardY = Math.max(12, Math.min(cardY, backdrop.height - card.height - 12));
     }
 
     visible: showing || reveal > 0.001
     implicitWidth: 860
     implicitHeight: 520
-
-    anchors { top: true; left: true; right: true; bottom: true }
     color: "transparent"
     exclusiveZone: 0
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
-
-    property real reveal: showing ? 1 : 0
-
-    Behavior on reveal {
-        NumberAnimation { duration: 120; easing.type: Easing.OutCubic }
-    }
-
     onVisibleChanged: {
         if (visible)
-            forceActiveFocus()
-    }
+            forceActiveFocus();
 
+    }
     onShowingChanged: {
         if (showing) {
             if (state && state.openSettingsOnGeneralAlways)
-                setPage(0)
+                setPage(0);
+
             if (!state || !state.rememberSettingsWindowPosition || !cardPositioned)
-                centerCard()
+                centerCard();
             else
-                clampCard()
+                clampCard();
+        }
+    }
+    Keys.onPressed: (event) => {
+        if (!showing)
+            return ;
+
+        if (event.key === Qt.Key_Escape) {
+            showing = false;
+            event.accepted = true;
         }
     }
 
-    Keys.onPressed: event => {
-        if (!showing) return
-        if (event.key === Qt.Key_Escape) {
-            showing = false
-            event.accepted = true
-        }
+    anchors {
+        top: true
+        left: true
+        right: true
+        bottom: true
     }
 
     Rectangle {
         id: backdrop
+
         anchors.fill: parent
         color: "transparent"
 
         MouseArea {
             id: backdropArea
+
             anchors.fill: parent
-            onClicked: mouse => {
-                const point = card.mapFromItem(backdropArea, mouse.x, mouse.y)
-                const insideCard = point.x >= 0 && point.y >= 0
-                    && point.x <= card.width && point.y <= card.height
+            onClicked: (mouse) => {
+                const point = card.mapFromItem(backdropArea, mouse.x, mouse.y);
+                const insideCard = point.x >= 0 && point.y >= 0 && point.x <= card.width && point.y <= card.height;
                 if (!insideCard)
-                    root.showing = false
+                    root.showing = false;
+
             }
         }
 
         Rectangle {
             id: card
+
             width: Math.min((parent.width - 48) / root.uiScale, 860)
             height: Math.min((parent.height - 48) / root.uiScale, 520)
             x: root.cardX
@@ -125,27 +145,17 @@ PanelWindow {
             opacity: root.reveal
             scale: root.uiScale * (0.985 + (0.015 * root.reveal))
             clip: true
-
-            Behavior on opacity {
-                NumberAnimation { duration: 160; easing.type: Easing.OutCubic }
-            }
-
-            Behavior on scale {
-                NumberAnimation { duration: 180; easing.type: Easing.OutCubic }
-            }
-
             onWidthChanged: {
                 if (!root.cardPositioned)
-                    root.centerCard()
+                    root.centerCard();
                 else
-                    root.clampCard()
+                    root.clampCard();
             }
-
             onHeightChanged: {
                 if (!root.cardPositioned)
-                    root.centerCard()
+                    root.centerCard();
                 else
-                    root.clampCard()
+                    root.clampCard();
             }
 
             Rectangle {
@@ -165,7 +175,7 @@ PanelWindow {
                     anchors.centerIn: parent
                     text: "✕"
                     color: root.t("fg", "#eef6ef")
-                    font.pixelSize: Style.Typography.label
+                    font.pixelSize: Style.Typography.componentSubtitle
                     font.family: Style.Typography.text
                 }
 
@@ -174,9 +184,13 @@ PanelWindow {
                     cursorShape: Qt.PointingHandCursor
                     onClicked: root.showing = false
                 }
+
             }
 
             MouseArea {
+                property real pressOffsetX: 0
+                property real pressOffsetY: 0
+
                 anchors.top: parent.top
                 anchors.left: parent.left
                 anchors.right: parent.right
@@ -186,21 +200,18 @@ PanelWindow {
                 height: 40
                 z: 15
                 cursorShape: Qt.SizeAllCursor
-                property real pressOffsetX: 0
-                property real pressOffsetY: 0
-
-                onPressed: mouse => {
-                    pressOffsetX = mouse.x
-                    pressOffsetY = mouse.y
+                onPressed: (mouse) => {
+                    pressOffsetX = mouse.x;
+                    pressOffsetY = mouse.y;
                 }
-
-                onPositionChanged: mouse => {
+                onPositionChanged: (mouse) => {
                     if (!pressed)
-                        return
-                    root.cardX += mouse.x - pressOffsetX
-                    root.cardY += mouse.y - pressOffsetY
-                    root.cardPositioned = true
-                    root.clampCard()
+                        return ;
+
+                    root.cardX += mouse.x - pressOffsetX;
+                    root.cardY += mouse.y - pressOffsetY;
+                    root.cardPositioned = true;
+                    root.clampCard();
                 }
             }
 
@@ -211,6 +222,7 @@ PanelWindow {
 
                 RowLayout {
                     id: titleBar
+
                     Layout.fillWidth: true
                     spacing: 12
 
@@ -230,9 +242,10 @@ PanelWindow {
                         Text {
                             text: "Setting Manager for Kurama."
                             color: Qt.alpha(root.t("muted", "#9fb29f"), 0.7)
-                            font.pixelSize: Style.Typography.caption
+                            font.pixelSize: Style.Typography.componentMeta
                             font.family: Style.Typography.text
                         }
+
                     }
 
                 }
@@ -281,7 +294,7 @@ PanelWindow {
                                     Text {
                                         text: "Local shell config"
                                         color: root.t("fg", "#eef6ef")
-                                        font.pixelSize: Style.Typography.caption
+                                        font.pixelSize: Style.Typography.componentMeta
                                         font.family: Style.Typography.text
                                         font.weight: Font.Medium
                                     }
@@ -289,10 +302,12 @@ PanelWindow {
                                     Text {
                                         text: "Control panel"
                                         color: Qt.alpha(root.t("muted", "#9fb29f"), 0.65)
-                                        font.pixelSize: Style.Typography.micro
+                                        font.pixelSize: Style.Typography.componentMeta
                                         font.family: Style.Typography.text
                                     }
+
                                 }
+
                             }
 
                             Rectangle {
@@ -311,7 +326,15 @@ PanelWindow {
                                     anchors.verticalCenter: parent.verticalCenter
                                     height: root.pageIndex === 0 ? 20 : 0
                                     color: root.t("accent", "#9ccfa0")
-                                    Behavior on height { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
+
+                                    Behavior on height {
+                                        NumberAnimation {
+                                            duration: 120
+                                            easing.type: Easing.OutCubic
+                                        }
+
+                                    }
+
                                 }
 
                                 RowLayout {
@@ -335,7 +358,7 @@ PanelWindow {
                                         Text {
                                             text: root.pages[0].label
                                             color: root.pageIndex === 0 ? root.t("fg", "#eef6ef") : Qt.alpha(root.t("fg", "#eef6ef"), 0.8)
-                                            font.pixelSize: Style.Typography.caption
+                                            font.pixelSize: Style.Typography.componentMeta
                                             font.family: Style.Typography.text
                                             font.weight: Font.DemiBold
                                         }
@@ -343,12 +366,14 @@ PanelWindow {
                                         Text {
                                             text: root.pages[0].desc
                                             color: Qt.alpha(root.t("muted", "#9fb29f"), 0.58)
-                                            font.pixelSize: Style.Typography.nano
+                                            font.pixelSize: Style.Typography.componentMeta
                                             font.family: Style.Typography.text
                                             elide: Text.ElideRight
                                             Layout.fillWidth: true
                                         }
+
                                     }
+
                                 }
 
                                 MouseArea {
@@ -356,6 +381,7 @@ PanelWindow {
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: root.setPage(0)
                                 }
+
                             }
 
                             Rectangle {
@@ -374,7 +400,15 @@ PanelWindow {
                                     anchors.verticalCenter: parent.verticalCenter
                                     height: root.pageIndex === 1 ? 20 : 0
                                     color: root.t("accent", "#9ccfa0")
-                                    Behavior on height { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
+
+                                    Behavior on height {
+                                        NumberAnimation {
+                                            duration: 120
+                                            easing.type: Easing.OutCubic
+                                        }
+
+                                    }
+
                                 }
 
                                 RowLayout {
@@ -398,7 +432,7 @@ PanelWindow {
                                         Text {
                                             text: root.pages[1].label
                                             color: root.pageIndex === 1 ? root.t("fg", "#eef6ef") : Qt.alpha(root.t("fg", "#eef6ef"), 0.8)
-                                            font.pixelSize: Style.Typography.caption
+                                            font.pixelSize: Style.Typography.componentMeta
                                             font.family: Style.Typography.text
                                             font.weight: Font.DemiBold
                                         }
@@ -406,12 +440,14 @@ PanelWindow {
                                         Text {
                                             text: root.pages[1].desc
                                             color: Qt.alpha(root.t("muted", "#9fb29f"), 0.58)
-                                            font.pixelSize: Style.Typography.nano
+                                            font.pixelSize: Style.Typography.componentMeta
                                             font.family: Style.Typography.text
                                             elide: Text.ElideRight
                                             Layout.fillWidth: true
                                         }
+
                                     }
+
                                 }
 
                                 MouseArea {
@@ -419,6 +455,7 @@ PanelWindow {
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: root.setPage(1)
                                 }
+
                             }
 
                             Rectangle {
@@ -437,7 +474,15 @@ PanelWindow {
                                     anchors.verticalCenter: parent.verticalCenter
                                     height: root.pageIndex === 2 ? 20 : 0
                                     color: root.t("accent", "#9ccfa0")
-                                    Behavior on height { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
+
+                                    Behavior on height {
+                                        NumberAnimation {
+                                            duration: 120
+                                            easing.type: Easing.OutCubic
+                                        }
+
+                                    }
+
                                 }
 
                                 RowLayout {
@@ -461,7 +506,7 @@ PanelWindow {
                                         Text {
                                             text: root.pages[2].label
                                             color: root.pageIndex === 2 ? root.t("fg", "#eef6ef") : Qt.alpha(root.t("fg", "#eef6ef"), 0.8)
-                                            font.pixelSize: Style.Typography.caption
+                                            font.pixelSize: Style.Typography.componentMeta
                                             font.family: Style.Typography.text
                                             font.weight: Font.DemiBold
                                         }
@@ -469,12 +514,14 @@ PanelWindow {
                                         Text {
                                             text: root.pages[2].desc
                                             color: Qt.alpha(root.t("muted", "#9fb29f"), 0.58)
-                                            font.pixelSize: Style.Typography.nano
+                                            font.pixelSize: Style.Typography.componentMeta
                                             font.family: Style.Typography.text
                                             elide: Text.ElideRight
                                             Layout.fillWidth: true
                                         }
+
                                     }
+
                                 }
 
                                 MouseArea {
@@ -482,6 +529,7 @@ PanelWindow {
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: root.setPage(2)
                                 }
+
                             }
 
                             Rectangle {
@@ -500,7 +548,15 @@ PanelWindow {
                                     anchors.verticalCenter: parent.verticalCenter
                                     height: root.pageIndex === 3 ? 20 : 0
                                     color: root.t("accent", "#9ccfa0")
-                                    Behavior on height { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
+
+                                    Behavior on height {
+                                        NumberAnimation {
+                                            duration: 120
+                                            easing.type: Easing.OutCubic
+                                        }
+
+                                    }
+
                                 }
 
                                 RowLayout {
@@ -524,7 +580,7 @@ PanelWindow {
                                         Text {
                                             text: root.pages[3].label
                                             color: root.pageIndex === 3 ? root.t("fg", "#eef6ef") : Qt.alpha(root.t("fg", "#eef6ef"), 0.8)
-                                            font.pixelSize: Style.Typography.caption
+                                            font.pixelSize: Style.Typography.componentMeta
                                             font.family: Style.Typography.text
                                             font.weight: Font.DemiBold
                                         }
@@ -532,12 +588,14 @@ PanelWindow {
                                         Text {
                                             text: root.pages[3].desc
                                             color: Qt.alpha(root.t("muted", "#9fb29f"), 0.58)
-                                            font.pixelSize: Style.Typography.nano
+                                            font.pixelSize: Style.Typography.componentMeta
                                             font.family: Style.Typography.text
                                             elide: Text.ElideRight
                                             Layout.fillWidth: true
                                         }
+
                                     }
+
                                 }
 
                                 MouseArea {
@@ -545,6 +603,7 @@ PanelWindow {
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: root.setPage(3)
                                 }
+
                             }
 
                             Rectangle {
@@ -563,7 +622,15 @@ PanelWindow {
                                     anchors.verticalCenter: parent.verticalCenter
                                     height: root.pageIndex === 4 ? 20 : 0
                                     color: root.t("accent", "#9ccfa0")
-                                    Behavior on height { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
+
+                                    Behavior on height {
+                                        NumberAnimation {
+                                            duration: 120
+                                            easing.type: Easing.OutCubic
+                                        }
+
+                                    }
+
                                 }
 
                                 RowLayout {
@@ -587,7 +654,7 @@ PanelWindow {
                                         Text {
                                             text: root.pages[4].label
                                             color: root.pageIndex === 4 ? root.t("fg", "#eef6ef") : Qt.alpha(root.t("fg", "#eef6ef"), 0.8)
-                                            font.pixelSize: Style.Typography.caption
+                                            font.pixelSize: Style.Typography.componentMeta
                                             font.family: Style.Typography.text
                                             font.weight: Font.DemiBold
                                         }
@@ -595,12 +662,14 @@ PanelWindow {
                                         Text {
                                             text: root.pages[4].desc
                                             color: Qt.alpha(root.t("muted", "#9fb29f"), 0.58)
-                                            font.pixelSize: Style.Typography.nano
+                                            font.pixelSize: Style.Typography.componentMeta
                                             font.family: Style.Typography.text
                                             elide: Text.ElideRight
                                             Layout.fillWidth: true
                                         }
+
                                     }
+
                                 }
 
                                 MouseArea {
@@ -608,6 +677,7 @@ PanelWindow {
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: root.setPage(4)
                                 }
+
                             }
 
                             Rectangle {
@@ -626,7 +696,15 @@ PanelWindow {
                                     anchors.verticalCenter: parent.verticalCenter
                                     height: root.pageIndex === 5 ? 20 : 0
                                     color: root.t("accent", "#9ccfa0")
-                                    Behavior on height { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
+
+                                    Behavior on height {
+                                        NumberAnimation {
+                                            duration: 120
+                                            easing.type: Easing.OutCubic
+                                        }
+
+                                    }
+
                                 }
 
                                 RowLayout {
@@ -650,7 +728,7 @@ PanelWindow {
                                         Text {
                                             text: root.pages[5].label
                                             color: root.pageIndex === 5 ? root.t("fg", "#eef6ef") : Qt.alpha(root.t("fg", "#eef6ef"), 0.8)
-                                            font.pixelSize: Style.Typography.caption
+                                            font.pixelSize: Style.Typography.componentMeta
                                             font.family: Style.Typography.text
                                             font.weight: Font.DemiBold
                                         }
@@ -658,12 +736,14 @@ PanelWindow {
                                         Text {
                                             text: root.pages[5].desc
                                             color: Qt.alpha(root.t("muted", "#9fb29f"), 0.58)
-                                            font.pixelSize: Style.Typography.nano
+                                            font.pixelSize: Style.Typography.componentMeta
                                             font.family: Style.Typography.text
                                             elide: Text.ElideRight
                                             Layout.fillWidth: true
                                         }
+
                                     }
+
                                 }
 
                                 MouseArea {
@@ -671,6 +751,7 @@ PanelWindow {
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: root.setPage(5)
                                 }
+
                             }
 
                             Rectangle {
@@ -689,7 +770,15 @@ PanelWindow {
                                     anchors.verticalCenter: parent.verticalCenter
                                     height: root.pageIndex === 6 ? 20 : 0
                                     color: root.t("accent", "#9ccfa0")
-                                    Behavior on height { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
+
+                                    Behavior on height {
+                                        NumberAnimation {
+                                            duration: 120
+                                            easing.type: Easing.OutCubic
+                                        }
+
+                                    }
+
                                 }
 
                                 RowLayout {
@@ -713,7 +802,7 @@ PanelWindow {
                                         Text {
                                             text: root.pages[6].label
                                             color: root.pageIndex === 6 ? root.t("fg", "#eef6ef") : Qt.alpha(root.t("fg", "#eef6ef"), 0.8)
-                                            font.pixelSize: Style.Typography.caption
+                                            font.pixelSize: Style.Typography.componentMeta
                                             font.family: Style.Typography.text
                                             font.weight: Font.DemiBold
                                         }
@@ -721,12 +810,14 @@ PanelWindow {
                                         Text {
                                             text: root.pages[6].desc
                                             color: Qt.alpha(root.t("muted", "#9fb29f"), 0.58)
-                                            font.pixelSize: Style.Typography.nano
+                                            font.pixelSize: Style.Typography.componentMeta
                                             font.family: Style.Typography.text
                                             elide: Text.ElideRight
                                             Layout.fillWidth: true
                                         }
+
                                     }
+
                                 }
 
                                 MouseArea {
@@ -734,8 +825,11 @@ PanelWindow {
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: root.setPage(6)
                                 }
+
                             }
+
                         }
+
                     }
 
                     Rectangle {
@@ -772,9 +866,10 @@ PanelWindow {
                                     Text {
                                         text: root.currentPageMeta().desc
                                         color: Qt.alpha(root.t("muted", "#9fb29f"), 0.68)
-                                        font.pixelSize: Style.Typography.caption
+                                        font.pixelSize: Style.Typography.componentMeta
                                         font.family: Style.Typography.text
                                     }
+
                                 }
 
                             }
@@ -820,11 +915,43 @@ PanelWindow {
                                     state: root.state
                                     theme: root.theme
                                 }
+
                             }
+
                         }
+
                     }
+
                 }
+
             }
+
+            Behavior on opacity {
+                NumberAnimation {
+                    duration: 160
+                    easing.type: Easing.OutCubic
+                }
+
+            }
+
+            Behavior on scale {
+                NumberAnimation {
+                    duration: 180
+                    easing.type: Easing.OutCubic
+                }
+
+            }
+
         }
+
     }
+
+    Behavior on reveal {
+        NumberAnimation {
+            duration: 120
+            easing.type: Easing.OutCubic
+        }
+
+    }
+
 }

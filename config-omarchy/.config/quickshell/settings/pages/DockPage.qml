@@ -1,30 +1,36 @@
+import "../../style" as Style
 import QtQuick
 import QtQuick.Layouts
-import "../../style" as Style
 
 Item {
     id: root
-    property var state: null
-    property var theme: ({})
 
-    function t(key, fallback) { return theme[key] || fallback }
+    property var state: null
+    property var theme: ({
+    })
+
+    function t(key, fallback) {
+        return theme[key] || fallback;
+    }
 
     function isDockEnabled() {
-        return root.state ? root.state.dockEnabled : true
+        return root.state ? root.state.dockEnabled : true;
     }
 
     function toggleDockEnabled() {
         if (root.state)
-            root.state.dockEnabled = !root.state.dockEnabled
+            root.state.dockEnabled = !root.state.dockEnabled;
+
     }
 
     function isAutoHide() {
-        return root.state ? root.state.dockAutoHide : false
+        return root.state ? root.state.dockAutoHide : false;
     }
 
     function toggleAutoHide() {
         if (root.state)
-            root.state.dockAutoHide = !root.state.dockAutoHide
+            root.state.dockAutoHide = !root.state.dockAutoHide;
+
     }
 
     ColumnLayout {
@@ -39,6 +45,7 @@ Item {
 
             Column {
                 id: contentColumn
+
                 width: root.width
                 spacing: 10
 
@@ -58,7 +65,7 @@ Item {
                         Text {
                             text: "Dock"
                             color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                            font.pixelSize: Style.Typography.caption
+                            font.pixelSize: Style.Typography.componentMeta
                             font.family: Style.Typography.text
                         }
 
@@ -83,7 +90,7 @@ Item {
                                     Text {
                                         text: "Show dock"
                                         color: t("fg", "#eef6ef")
-                                        font.pixelSize: Style.Typography.caption
+                                        font.pixelSize: Style.Typography.componentMeta
                                         font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
@@ -91,23 +98,22 @@ Item {
                                     Text {
                                         text: "Toggle dock visibility."
                                         color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                        font.pixelSize: Style.Typography.nano
+                                        font.pixelSize: Style.Typography.componentMeta
                                         font.family: Style.Typography.text
                                     }
+
                                 }
 
-                                Item { Layout.fillWidth: true }
+                                Item {
+                                    Layout.fillWidth: true
+                                }
 
                                 Rectangle {
                                     width: 40
                                     height: 20
                                     radius: 10
-                                    color: root.isDockEnabled()
-                                        ? Qt.alpha(t("accent", "#9ccfa0"), 0.35)
-                                        : Qt.alpha(t("dim", "#45475a"), 0.35)
-                                    border.color: root.isDockEnabled()
-                                        ? Qt.alpha(t("accent", "#9ccfa0"), 0.55)
-                                        : Qt.alpha(t("accent", "#9ccfa0"), 0.12)
+                                    color: root.isDockEnabled() ? Qt.alpha(t("accent", "#9ccfa0"), 0.35) : Qt.alpha(t("dim", "#45475a"), 0.35)
+                                    border.color: root.isDockEnabled() ? Qt.alpha(t("accent", "#9ccfa0"), 0.55) : Qt.alpha(t("accent", "#9ccfa0"), 0.12)
                                     border.width: 1
 
                                     Rectangle {
@@ -116,13 +122,16 @@ Item {
                                         radius: 7
                                         y: 3
                                         x: root.isDockEnabled() ? (parent.width - width - 3) : 3
-                                        color: root.isDockEnabled()
-                                            ? t("accent", "#9ccfa0")
-                                            : Qt.alpha(t("fg", "#eef6ef"), 0.6)
+                                        color: root.isDockEnabled() ? t("accent", "#9ccfa0") : Qt.alpha(t("fg", "#eef6ef"), 0.6)
 
                                         Behavior on x {
-                                            NumberAnimation { duration: 140; easing.type: Easing.OutCubic }
+                                            NumberAnimation {
+                                                duration: 140
+                                                easing.type: Easing.OutCubic
+                                            }
+
                                         }
+
                                     }
 
                                     MouseArea {
@@ -130,8 +139,11 @@ Item {
                                         cursorShape: Qt.PointingHandCursor
                                         onClicked: root.toggleDockEnabled()
                                     }
+
                                 }
+
                             }
+
                         }
 
                         Rectangle {
@@ -155,7 +167,7 @@ Item {
                                     Text {
                                         text: "Smart auto hide"
                                         color: t("fg", "#eef6ef")
-                                        font.pixelSize: Style.Typography.caption
+                                        font.pixelSize: Style.Typography.componentMeta
                                         font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
@@ -163,23 +175,22 @@ Item {
                                     Text {
                                         text: "Hide the dock when focused on window and shows on hovering in the bottom area (Always show on empty desktop)"
                                         color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                        font.pixelSize: Style.Typography.nano
+                                        font.pixelSize: Style.Typography.componentMeta
                                         font.family: Style.Typography.text
                                     }
+
                                 }
 
-                                Item { Layout.fillWidth: true }
+                                Item {
+                                    Layout.fillWidth: true
+                                }
 
                                 Rectangle {
                                     width: 40
                                     height: 20
                                     radius: 10
-                                    color: root.isAutoHide()
-                                        ? Qt.alpha(t("accent", "#9ccfa0"), 0.35)
-                                        : Qt.alpha(t("dim", "#45475a"), 0.35)
-                                    border.color: root.isAutoHide()
-                                        ? Qt.alpha(t("accent", "#9ccfa0"), 0.55)
-                                        : Qt.alpha(t("accent", "#9ccfa0"), 0.12)
+                                    color: root.isAutoHide() ? Qt.alpha(t("accent", "#9ccfa0"), 0.35) : Qt.alpha(t("dim", "#45475a"), 0.35)
+                                    border.color: root.isAutoHide() ? Qt.alpha(t("accent", "#9ccfa0"), 0.55) : Qt.alpha(t("accent", "#9ccfa0"), 0.12)
                                     border.width: 1
 
                                     Rectangle {
@@ -188,13 +199,16 @@ Item {
                                         radius: 7
                                         y: 3
                                         x: root.isAutoHide() ? (parent.width - width - 3) : 3
-                                        color: root.isAutoHide()
-                                            ? t("accent", "#9ccfa0")
-                                            : Qt.alpha(t("fg", "#eef6ef"), 0.6)
+                                        color: root.isAutoHide() ? t("accent", "#9ccfa0") : Qt.alpha(t("fg", "#eef6ef"), 0.6)
 
                                         Behavior on x {
-                                            NumberAnimation { duration: 140; easing.type: Easing.OutCubic }
+                                            NumberAnimation {
+                                                duration: 140
+                                                easing.type: Easing.OutCubic
+                                            }
+
                                         }
+
                                     }
 
                                     MouseArea {
@@ -202,12 +216,21 @@ Item {
                                         cursorShape: Qt.PointingHandCursor
                                         onClicked: root.toggleAutoHide()
                                     }
+
                                 }
+
                             }
+
                         }
+
                     }
+
                 }
+
             }
+
         }
+
     }
+
 }

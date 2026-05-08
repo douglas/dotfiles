@@ -1,61 +1,67 @@
+import "../../style" as Style
 import QtQuick
 import QtQuick.Layouts
-import "../../style" as Style
 
 Item {
     id: root
 
     property var state: null
-    property var theme: ({})
+    property var theme: ({
+    })
 
-    function t(key, fallback) { return theme[key] || fallback }
+    function t(key, fallback) {
+        return theme[key] || fallback;
+    }
 
     function isEnabled() {
-        return root.state ? root.state.clockWidgetEnabled : true
+        return root.state ? root.state.clockWidgetEnabled : true;
     }
 
     function setEnabled(val) {
         if (root.state)
-            root.state.clockWidgetEnabled = val
+            root.state.clockWidgetEnabled = val;
+
     }
 
     function calendarEnabled() {
-        return root.state ? root.state.calendarWidgetEnabled : false
+        return root.state ? root.state.calendarWidgetEnabled : false;
     }
 
     function setCalendarEnabled(val) {
         if (root.state)
-            root.state.calendarWidgetEnabled = val
+            root.state.calendarWidgetEnabled = val;
+
     }
 
     function googleEventsEnabled() {
-        return root.state ? root.state.googleCalendarEventsEnabled : false
+        return root.state ? root.state.googleCalendarEventsEnabled : false;
     }
 
     function setGoogleEventsEnabled(val) {
         if (root.state)
-            root.state.googleCalendarEventsEnabled = val
+            root.state.googleCalendarEventsEnabled = val;
+
     }
 
     function pomodoroEnabled() {
-        return root.state ? root.state.pomodoroWidgetEnabled : false
+        return root.state ? root.state.pomodoroWidgetEnabled : false;
     }
 
     function setPomodoroEnabled(val) {
         if (root.state)
-            root.state.pomodoroWidgetEnabled = val
+            root.state.pomodoroWidgetEnabled = val;
+
     }
 
     function todoEnabled() {
-        return root.state ? root.state.todoWidgetEnabled : false
+        return root.state ? root.state.todoWidgetEnabled : false;
     }
 
     function setTodoEnabled(val) {
         if (root.state)
-            root.state.todoWidgetEnabled = val
+            root.state.todoWidgetEnabled = val;
+
     }
-
-
 
     Flickable {
         anchors.fill: parent
@@ -65,6 +71,7 @@ Item {
 
         Column {
             id: contentColumn
+
             width: root.width
             spacing: 10
 
@@ -84,7 +91,7 @@ Item {
                     Text {
                         text: "Clock widget"
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                        font.pixelSize: Style.Typography.caption
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.text
                     }
 
@@ -109,7 +116,7 @@ Item {
                                 Text {
                                     text: "Desktop clock"
                                     color: t("fg", "#eef6ef")
-                                    font.pixelSize: Style.Typography.caption
+                                    font.pixelSize: Style.Typography.componentMeta
                                     font.family: Style.Typography.text
                                     font.weight: Font.DemiBold
                                 }
@@ -117,23 +124,22 @@ Item {
                                 Text {
                                     text: "Show the floating desktop clock widget."
                                     color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                    font.pixelSize: Style.Typography.nano
+                                    font.pixelSize: Style.Typography.componentMeta
                                     font.family: Style.Typography.text
                                 }
+
                             }
 
-                            Item { Layout.fillWidth: true }
+                            Item {
+                                Layout.fillWidth: true
+                            }
 
                             Rectangle {
                                 width: 40
                                 height: 20
                                 radius: 10
-                                color: root.isEnabled()
-                                    ? Qt.alpha(t("accent", "#9ccfa0"), 0.35)
-                                    : Qt.alpha(t("dim", "#45475a"), 0.35)
-                                border.color: root.isEnabled()
-                                    ? Qt.alpha(t("accent", "#9ccfa0"), 0.55)
-                                    : Qt.alpha(t("accent", "#9ccfa0"), 0.12)
+                                color: root.isEnabled() ? Qt.alpha(t("accent", "#9ccfa0"), 0.35) : Qt.alpha(t("dim", "#45475a"), 0.35)
+                                border.color: root.isEnabled() ? Qt.alpha(t("accent", "#9ccfa0"), 0.55) : Qt.alpha(t("accent", "#9ccfa0"), 0.12)
                                 border.width: 1
 
                                 Rectangle {
@@ -142,13 +148,16 @@ Item {
                                     radius: 7
                                     y: 3
                                     x: root.isEnabled() ? (parent.width - width - 3) : 3
-                                    color: root.isEnabled()
-                                        ? t("accent", "#9ccfa0")
-                                        : Qt.alpha(t("fg", "#eef6ef"), 0.6)
+                                    color: root.isEnabled() ? t("accent", "#9ccfa0") : Qt.alpha(t("fg", "#eef6ef"), 0.6)
 
                                     Behavior on x {
-                                        NumberAnimation { duration: 140; easing.type: Easing.OutCubic }
+                                        NumberAnimation {
+                                            duration: 140
+                                            easing.type: Easing.OutCubic
+                                        }
+
                                     }
+
                                 }
 
                                 MouseArea {
@@ -156,8 +165,11 @@ Item {
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: root.setEnabled(!root.isEnabled())
                                 }
+
                             }
+
                         }
+
                     }
 
                     RowLayout {
@@ -171,7 +183,7 @@ Item {
                             Text {
                                 text: "Time format"
                                 color: t("fg", "#eef6ef")
-                                font.pixelSize: Style.Typography.caption
+                                font.pixelSize: Style.Typography.componentMeta
                                 font.family: Style.Typography.text
                                 font.weight: Font.DemiBold
                             }
@@ -179,12 +191,15 @@ Item {
                             Text {
                                 text: "Switch between 24-hour and 12-hour time."
                                 color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                font.pixelSize: Style.Typography.nano
+                                font.pixelSize: Style.Typography.componentMeta
                                 font.family: Style.Typography.text
                             }
+
                         }
 
-                        Item { Layout.fillWidth: true }
+                        Item {
+                            Layout.fillWidth: true
+                        }
 
                         Rectangle {
                             width: 59
@@ -195,7 +210,7 @@ Item {
                             border.width: 1
 
                             Rectangle {
-                                width: 26  
+                                width: 26
                                 height: 16
                                 radius: 8
                                 y: 3
@@ -203,8 +218,13 @@ Item {
                                 color: t("accent", "#9ccfa0")
 
                                 Behavior on x {
-                                    NumberAnimation { duration: 140; easing.type: Easing.OutCubic }
+                                    NumberAnimation {
+                                        duration: 140
+                                        easing.type: Easing.OutCubic
+                                    }
+
                                 }
+
                             }
 
                             Text {
@@ -212,10 +232,8 @@ Item {
                                 anchors.left: parent.left
                                 anchors.leftMargin: 8
                                 anchors.verticalCenter: parent.verticalCenter
-                                color: (root.state && root.state.clockUse24h)
-                                    ? t("bg", "#0b100c")
-                                    : Qt.alpha(t("fg", "#eef6ef"), 0.6)
-                                font.pixelSize: Style.Typography.micro
+                                color: (root.state && root.state.clockUse24h) ? t("bg", "#0b100c") : Qt.alpha(t("fg", "#eef6ef"), 0.6)
+                                font.pixelSize: Style.Typography.componentMeta
                                 font.family: Style.Typography.text
                                 font.weight: Font.DemiBold
                             }
@@ -225,10 +243,8 @@ Item {
                                 anchors.right: parent.right
                                 anchors.rightMargin: 8
                                 anchors.verticalCenter: parent.verticalCenter
-                                color: (root.state && !root.state.clockUse24h)
-                                    ? t("bg", "#0b100c")
-                                    : Qt.alpha(t("fg", "#eef6ef"), 0.6)
-                                font.pixelSize: Style.Typography.micro
+                                color: (root.state && !root.state.clockUse24h) ? t("bg", "#0b100c") : Qt.alpha(t("fg", "#eef6ef"), 0.6)
+                                font.pixelSize: Style.Typography.componentMeta
                                 font.family: Style.Typography.text
                                 font.weight: Font.DemiBold
                             }
@@ -238,13 +254,17 @@ Item {
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: {
                                     if (root.state)
-                                        root.state.clockUse24h = !root.state.clockUse24h
+                                        root.state.clockUse24h = !root.state.clockUse24h;
+
                                 }
                             }
+
                         }
+
                     }
 
                 }
+
             }
 
             Rectangle {
@@ -263,7 +283,7 @@ Item {
                     Text {
                         text: "Calendar widget"
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                        font.pixelSize: Style.Typography.caption
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.text
                     }
 
@@ -288,7 +308,7 @@ Item {
                                 Text {
                                     text: "Desktop calendar"
                                     color: t("fg", "#eef6ef")
-                                    font.pixelSize: Style.Typography.caption
+                                    font.pixelSize: Style.Typography.componentMeta
                                     font.family: Style.Typography.text
                                     font.weight: Font.DemiBold
                                 }
@@ -296,23 +316,22 @@ Item {
                                 Text {
                                     text: "Show the floating calendar widget."
                                     color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                    font.pixelSize: Style.Typography.nano
+                                    font.pixelSize: Style.Typography.componentMeta
                                     font.family: Style.Typography.text
                                 }
+
                             }
 
-                            Item { Layout.fillWidth: true }
+                            Item {
+                                Layout.fillWidth: true
+                            }
 
                             Rectangle {
                                 width: 40
                                 height: 20
                                 radius: 10
-                                color: root.calendarEnabled()
-                                    ? Qt.alpha(t("accent", "#9ccfa0"), 0.35)
-                                    : Qt.alpha(t("dim", "#45475a"), 0.35)
-                                border.color: root.calendarEnabled()
-                                    ? Qt.alpha(t("accent", "#9ccfa0"), 0.55)
-                                    : Qt.alpha(t("accent", "#9ccfa0"), 0.12)
+                                color: root.calendarEnabled() ? Qt.alpha(t("accent", "#9ccfa0"), 0.35) : Qt.alpha(t("dim", "#45475a"), 0.35)
+                                border.color: root.calendarEnabled() ? Qt.alpha(t("accent", "#9ccfa0"), 0.55) : Qt.alpha(t("accent", "#9ccfa0"), 0.12)
                                 border.width: 1
 
                                 Rectangle {
@@ -321,13 +340,16 @@ Item {
                                     radius: 7
                                     y: 3
                                     x: root.calendarEnabled() ? (parent.width - width - 3) : 3
-                                    color: root.calendarEnabled()
-                                        ? t("accent", "#9ccfa0")
-                                        : Qt.alpha(t("fg", "#eef6ef"), 0.6)
+                                    color: root.calendarEnabled() ? t("accent", "#9ccfa0") : Qt.alpha(t("fg", "#eef6ef"), 0.6)
 
                                     Behavior on x {
-                                        NumberAnimation { duration: 140; easing.type: Easing.OutCubic }
+                                        NumberAnimation {
+                                            duration: 140
+                                            easing.type: Easing.OutCubic
+                                        }
+
                                     }
+
                                 }
 
                                 MouseArea {
@@ -335,8 +357,11 @@ Item {
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: root.setCalendarEnabled(!root.calendarEnabled())
                                 }
+
                             }
+
                         }
+
                     }
 
                     Rectangle {
@@ -360,7 +385,7 @@ Item {
                                 Text {
                                     text: "Google events"
                                     color: t("fg", "#eef6ef")
-                                    font.pixelSize: Style.Typography.caption
+                                    font.pixelSize: Style.Typography.componentMeta
                                     font.family: Style.Typography.text
                                     font.weight: Font.DemiBold
                                 }
@@ -368,21 +393,18 @@ Item {
                                 Text {
                                     text: "Fetch daily events in the bar calendar."
                                     color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                    font.pixelSize: Style.Typography.nano
+                                    font.pixelSize: Style.Typography.componentMeta
                                     font.family: Style.Typography.text
                                 }
+
                             }
 
                             Rectangle {
                                 Layout.preferredWidth: 20
                                 Layout.preferredHeight: 20
                                 radius: 5
-                                color: root.googleEventsEnabled()
-                                    ? Qt.alpha(t("accent", "#9ccfa0"), 0.22)
-                                    : Qt.alpha(t("dim", "#45475a"), 0.35)
-                                border.color: root.googleEventsEnabled()
-                                    ? Qt.alpha(t("accent", "#9ccfa0"), 0.64)
-                                    : Qt.alpha(t("accent", "#9ccfa0"), 0.16)
+                                color: root.googleEventsEnabled() ? Qt.alpha(t("accent", "#9ccfa0"), 0.22) : Qt.alpha(t("dim", "#45475a"), 0.35)
+                                border.color: root.googleEventsEnabled() ? Qt.alpha(t("accent", "#9ccfa0"), 0.64) : Qt.alpha(t("accent", "#9ccfa0"), 0.16)
                                 border.width: 1
 
                                 Text {
@@ -390,10 +412,11 @@ Item {
                                     text: "✓"
                                     visible: root.googleEventsEnabled()
                                     color: t("accent", "#9ccfa0")
-                                    font.pixelSize: Style.Typography.caption
+                                    font.pixelSize: Style.Typography.componentMeta
                                     font.family: Style.Typography.text
                                     font.weight: Font.DemiBold
                                 }
+
                             }
 
                         }
@@ -403,8 +426,11 @@ Item {
                             cursorShape: Qt.PointingHandCursor
                             onClicked: root.setGoogleEventsEnabled(!root.googleEventsEnabled())
                         }
+
                     }
+
                 }
+
             }
 
             Rectangle {
@@ -423,7 +449,7 @@ Item {
                     Text {
                         text: "Todo widget"
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                        font.pixelSize: Style.Typography.caption
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.text
                     }
 
@@ -448,7 +474,7 @@ Item {
                                 Text {
                                     text: "Desktop todo"
                                     color: t("fg", "#eef6ef")
-                                    font.pixelSize: Style.Typography.caption
+                                    font.pixelSize: Style.Typography.componentMeta
                                     font.family: Style.Typography.text
                                     font.weight: Font.DemiBold
                                 }
@@ -456,23 +482,22 @@ Item {
                                 Text {
                                     text: "Quick tasks you can check off."
                                     color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                    font.pixelSize: Style.Typography.nano
+                                    font.pixelSize: Style.Typography.componentMeta
                                     font.family: Style.Typography.text
                                 }
+
                             }
 
-                            Item { Layout.fillWidth: true }
+                            Item {
+                                Layout.fillWidth: true
+                            }
 
                             Rectangle {
                                 width: 40
                                 height: 20
                                 radius: 10
-                                color: root.todoEnabled()
-                                    ? Qt.alpha(t("accent", "#9ccfa0"), 0.35)
-                                    : Qt.alpha(t("dim", "#45475a"), 0.35)
-                                border.color: root.todoEnabled()
-                                    ? Qt.alpha(t("accent", "#9ccfa0"), 0.55)
-                                    : Qt.alpha(t("accent", "#9ccfa0"), 0.12)
+                                color: root.todoEnabled() ? Qt.alpha(t("accent", "#9ccfa0"), 0.35) : Qt.alpha(t("dim", "#45475a"), 0.35)
+                                border.color: root.todoEnabled() ? Qt.alpha(t("accent", "#9ccfa0"), 0.55) : Qt.alpha(t("accent", "#9ccfa0"), 0.12)
                                 border.width: 1
 
                                 Rectangle {
@@ -481,13 +506,16 @@ Item {
                                     radius: 7
                                     y: 3
                                     x: root.todoEnabled() ? (parent.width - width - 3) : 3
-                                    color: root.todoEnabled()
-                                        ? t("accent", "#9ccfa0")
-                                        : Qt.alpha(t("fg", "#eef6ef"), 0.6)
+                                    color: root.todoEnabled() ? t("accent", "#9ccfa0") : Qt.alpha(t("fg", "#eef6ef"), 0.6)
 
                                     Behavior on x {
-                                        NumberAnimation { duration: 140; easing.type: Easing.OutCubic }
+                                        NumberAnimation {
+                                            duration: 140
+                                            easing.type: Easing.OutCubic
+                                        }
+
                                     }
+
                                 }
 
                                 MouseArea {
@@ -495,10 +523,15 @@ Item {
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: root.setTodoEnabled(!root.todoEnabled())
                                 }
+
                             }
+
                         }
+
                     }
+
                 }
+
             }
 
             Rectangle {
@@ -517,7 +550,7 @@ Item {
                     Text {
                         text: "Pomodoro widget"
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                        font.pixelSize: Style.Typography.caption
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.text
                     }
 
@@ -542,7 +575,7 @@ Item {
                                 Text {
                                     text: "Desktop pomodoro"
                                     color: t("fg", "#eef6ef")
-                                    font.pixelSize: Style.Typography.caption
+                                    font.pixelSize: Style.Typography.componentMeta
                                     font.family: Style.Typography.text
                                     font.weight: Font.DemiBold
                                 }
@@ -550,23 +583,22 @@ Item {
                                 Text {
                                     text: "25 min focus + 5 min break with alerts."
                                     color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                    font.pixelSize: Style.Typography.nano
+                                    font.pixelSize: Style.Typography.componentMeta
                                     font.family: Style.Typography.text
                                 }
+
                             }
 
-                            Item { Layout.fillWidth: true }
+                            Item {
+                                Layout.fillWidth: true
+                            }
 
                             Rectangle {
                                 width: 40
                                 height: 20
                                 radius: 10
-                                color: root.pomodoroEnabled()
-                                    ? Qt.alpha(t("accent", "#9ccfa0"), 0.35)
-                                    : Qt.alpha(t("dim", "#45475a"), 0.35)
-                                border.color: root.pomodoroEnabled()
-                                    ? Qt.alpha(t("accent", "#9ccfa0"), 0.55)
-                                    : Qt.alpha(t("accent", "#9ccfa0"), 0.12)
+                                color: root.pomodoroEnabled() ? Qt.alpha(t("accent", "#9ccfa0"), 0.35) : Qt.alpha(t("dim", "#45475a"), 0.35)
+                                border.color: root.pomodoroEnabled() ? Qt.alpha(t("accent", "#9ccfa0"), 0.55) : Qt.alpha(t("accent", "#9ccfa0"), 0.12)
                                 border.width: 1
 
                                 Rectangle {
@@ -575,13 +607,16 @@ Item {
                                     radius: 7
                                     y: 3
                                     x: root.pomodoroEnabled() ? (parent.width - width - 3) : 3
-                                    color: root.pomodoroEnabled()
-                                        ? t("accent", "#9ccfa0")
-                                        : Qt.alpha(t("fg", "#eef6ef"), 0.6)
+                                    color: root.pomodoroEnabled() ? t("accent", "#9ccfa0") : Qt.alpha(t("fg", "#eef6ef"), 0.6)
 
                                     Behavior on x {
-                                        NumberAnimation { duration: 140; easing.type: Easing.OutCubic }
+                                        NumberAnimation {
+                                            duration: 140
+                                            easing.type: Easing.OutCubic
+                                        }
+
                                     }
+
                                 }
 
                                 MouseArea {
@@ -589,11 +624,19 @@ Item {
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: root.setPomodoroEnabled(!root.pomodoroEnabled())
                                 }
+
                             }
+
                         }
+
                     }
+
                 }
+
             }
+
         }
+
     }
+
 }

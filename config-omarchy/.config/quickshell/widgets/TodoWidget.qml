@@ -1,9 +1,9 @@
+import "../style" as Style
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
-import "../style" as Style
 
 PanelWindow {
     id: root
@@ -247,7 +247,7 @@ PanelWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         text: "TO-DO LIST"
                         color: cFg
-                        font.pixelSize: Style.Typography.bodySmall
+                        font.pixelSize: Style.Typography.componentSubtitle
                         font.family: root.textFont
                         font.weight: Font.DemiBold
                     }
@@ -270,7 +270,7 @@ PanelWindow {
                                 return i.done;
                             }).length + "/" + root.items.length
                             color: cAccent
-                            font.pixelSize: Style.Typography.micro
+                            font.pixelSize: Style.Typography.componentMeta
                             font.family: root.textFont
                         }
 
@@ -345,7 +345,7 @@ PanelWindow {
                         anchors.rightMargin: 6
                         text: root.inputText
                         color: cFg
-                        font.pixelSize: Style.Typography.label
+                        font.pixelSize: Style.Typography.componentSubtitle
                         font.family: root.textFont
                         selectionColor: Qt.alpha(cAccent, 0.35)
                         selectedTextColor: cFg
@@ -361,7 +361,7 @@ PanelWindow {
                             anchors.fill: parent
                             text: "add a task..."
                             color: cDim
-                            font.pixelSize: Style.Typography.label
+                            font.pixelSize: Style.Typography.componentSubtitle
                             font.family: root.textFont
                             visible: textInput.text.length === 0
                         }
@@ -383,7 +383,7 @@ PanelWindow {
                             anchors.centerIn: parent
                             text: "󰌑"
                             color: cAccent
-                            font.pixelSize: Style.Typography.label
+                            font.pixelSize: Style.Typography.componentSubtitle
                             font.family: root.iconFont
                         }
 
@@ -505,7 +505,7 @@ PanelWindow {
 
                                         text: todoRow.item.text
                                         color: todoRow.item.done ? cDim : cFg
-                                        font.pixelSize: Style.Typography.label
+                                        font.pixelSize: Style.Typography.componentSubtitle
                                         font.family: root.textFont
                                         font.strikeout: todoRow.item.done
                                         anchors.verticalCenter: parent.verticalCenter
@@ -565,7 +565,7 @@ PanelWindow {
                                 anchors.centerIn: parent
                                 text: "no tasks — enjoy the day"
                                 color: cDim
-                                font.pixelSize: Style.Typography.caption
+                                font.pixelSize: Style.Typography.componentMeta
                                 font.family: root.textFont
                                 font.italic: true
                             }
@@ -621,7 +621,7 @@ PanelWindow {
                         anchors.bottomMargin: 2
                         text: "clear done"
                         color: cDim
-                        font.pixelSize: Style.Typography.micro
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: root.textFont
 
                         MouseArea {

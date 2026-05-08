@@ -131,7 +131,7 @@ Item {
                                 ? Qt.alpha(root.theme.fg || "#cdd6f4", 0.74)
                                 : Qt.alpha(root.theme.muted || "#585b70", 0.56))
                     opacity: ws.pressed ? 0.6 : 1.0
-                    font.pixelSize: ws.styleOg ? (ws.active || ws.hovered ? Style.Typography.bodySmall : Style.Typography.label) : ws.styleStrip ? Style.Typography.caption : 0
+                    font.pixelSize: ws.styleOg ? (ws.active || ws.hovered ? Style.Typography.componentSubtitle : Style.Typography.componentSubtitle) : ws.styleStrip ? Style.Typography.componentMeta : 0
                     font.family: Style.Typography.text
                     font.weight: ws.active || ws.hovered ? Font.DemiBold : Font.Medium
 

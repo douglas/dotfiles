@@ -37,7 +37,8 @@ Item {
     readonly property color panelAccent: cAccent
     readonly property var panelProcesses: activeView === "cpu" ? cpuProcesses : memProcesses
     readonly property var panelProcessTree: activeView === "cpu" ? cpuProcessTree : memProcessTree
-    readonly property string panelEmptyText: activeView === "cpu" ? (cpuProc.running ? "loading" : "no CPU data") : (memProc.running ? "loading" : "no memory data")
+    readonly property bool panelLoading: activeView === "cpu" ? cpuProc.running : memProc.running
+    readonly property string panelEmptyText: activeView === "cpu" ? "no CPU data" : "no memory data"
     readonly property string processTreeScript: (Quickshell.env("HOME") || "") + "/.config/quickshell/scripts/quickshell-process-tree"
 
     signal opened()
@@ -449,6 +450,7 @@ Item {
         processes: root.panelProcesses
         treeGroups: root.panelProcessTree
         emptyText: root.panelEmptyText
+        loading: root.panelLoading
         theme: root.theme
         onCloseRequested: root.showing = false
         onRefreshRequested: root.refreshProcesses()

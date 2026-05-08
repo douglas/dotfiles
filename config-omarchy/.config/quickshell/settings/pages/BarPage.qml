@@ -1,44 +1,58 @@
+import "../../style" as Style
 import QtQuick
 import QtQuick.Layouts
-import "../../style" as Style
 
 Item {
     id: root
 
     property var state: null
-    property var theme: ({})
+    property var theme: ({
+    })
+    readonly property var positions: [{
+        "key": "top",
+        "label": "Top Edge",
+        "desc": "Classic bar placement"
+    }, {
+        "key": "bottom",
+        "label": "Bottom Edge",
+        "desc": "Dock-like placement"
+    }]
+    readonly property var styles: [{
+        "key": "dock",
+        "label": "Dock",
+        "desc": "Original compact dock-style bar with rounded corners."
+    }, {
+        "key": "flat",
+        "label": "Flat",
+        "desc": "Edge-to-edge strip with square corners."
+    }]
 
-    function t(key, fallback) { return theme[key] || fallback }
+    function t(key, fallback) {
+        return theme[key] || fallback;
+    }
 
     function currentPosition() {
-        return root.state ? root.state.barPosition : "top"
+        return root.state ? root.state.barPosition : "top";
     }
 
     function setPosition(pos) {
         if (root.state)
-            root.state.barPosition = pos
+            root.state.barPosition = pos;
+
     }
 
     function currentStyle() {
-        return root.state ? root.state.barStyle : "dock"
+        return root.state ? root.state.barStyle : "dock";
     }
 
     function setStyle(styleKey) {
         if (root.state) {
-            root.state.barStyle = styleKey
+            root.state.barStyle = styleKey;
             if (root.state.barPosition !== "top" && root.state.barPosition !== "bottom")
-                root.state.barPosition = "top"
+                root.state.barPosition = "top";
+
         }
     }
-
-    readonly property var positions: [
-        { key: "top", label: "Top Edge", desc: "Classic bar placement" },
-        { key: "bottom", label: "Bottom Edge", desc: "Dock-like placement" }
-    ]
-    readonly property var styles: [
-        { key: "dock", label: "Dock", desc: "Original compact dock-style bar with rounded corners." },
-        { key: "flat", label: "Flat", desc: "Edge-to-edge strip with square corners." }
-    ]
 
     Flickable {
         anchors.fill: parent
@@ -48,6 +62,7 @@ Item {
 
         Column {
             id: contentColumn
+
             width: root.width
             spacing: 10
 
@@ -67,7 +82,7 @@ Item {
                     Text {
                         text: "Visual treatment"
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                        font.pixelSize: Style.Typography.caption
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.text
                     }
 
@@ -76,15 +91,12 @@ Item {
 
                         delegate: Rectangle {
                             required property var modelData
+
                             Layout.fillWidth: true
                             Layout.preferredHeight: 44
                             radius: 10
-                            color: root.currentStyle() === modelData.key
-                                ? Qt.alpha(t("accent", "#9ccfa0"), 0.18)
-                                : Qt.alpha(t("dim", "#45475a"), 0.14)
-                            border.color: root.currentStyle() === modelData.key
-                                ? Qt.alpha(t("accent", "#9ccfa0"), 0.34)
-                                : Qt.alpha(t("accent", "#9ccfa0"), 0.08)
+                            color: root.currentStyle() === modelData.key ? Qt.alpha(t("accent", "#9ccfa0"), 0.18) : Qt.alpha(t("dim", "#45475a"), 0.14)
+                            border.color: root.currentStyle() === modelData.key ? Qt.alpha(t("accent", "#9ccfa0"), 0.34) : Qt.alpha(t("accent", "#9ccfa0"), 0.08)
                             border.width: 1
 
                             RowLayout {
@@ -96,7 +108,7 @@ Item {
                                 Text {
                                     text: root.currentStyle() === modelData.key ? "*" : ""
                                     color: t("accent", "#9ccfa0")
-                                    font.pixelSize: Style.Typography.label
+                                    font.pixelSize: Style.Typography.componentSubtitle
                                     font.family: Style.Typography.text
                                     font.weight: Font.DemiBold
                                 }
@@ -108,7 +120,7 @@ Item {
                                     Text {
                                         text: modelData.label
                                         color: t("fg", "#eef6ef")
-                                        font.pixelSize: Style.Typography.caption
+                                        font.pixelSize: Style.Typography.componentMeta
                                         font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
@@ -116,11 +128,13 @@ Item {
                                     Text {
                                         text: modelData.desc
                                         color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                        font.pixelSize: Style.Typography.nano
+                                        font.pixelSize: Style.Typography.componentMeta
                                         font.family: Style.Typography.text
                                         Layout.fillWidth: true
                                     }
+
                                 }
+
                             }
 
                             MouseArea {
@@ -128,9 +142,13 @@ Item {
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: root.setStyle(modelData.key)
                             }
+
                         }
+
                     }
+
                 }
+
             }
 
             Rectangle {
@@ -149,7 +167,7 @@ Item {
                     Text {
                         text: "Placement"
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                        font.pixelSize: Style.Typography.caption
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.text
                     }
 
@@ -158,15 +176,12 @@ Item {
 
                         delegate: Rectangle {
                             required property var modelData
+
                             Layout.fillWidth: true
                             Layout.preferredHeight: 40
                             radius: 10
-                            color: root.currentPosition() === modelData.key
-                                ? Qt.alpha(t("accent", "#9ccfa0"), 0.18)
-                                : Qt.alpha(t("dim", "#45475a"), 0.14)
-                            border.color: root.currentPosition() === modelData.key
-                                ? Qt.alpha(t("accent", "#9ccfa0"), 0.34)
-                                : Qt.alpha(t("accent", "#9ccfa0"), 0.08)
+                            color: root.currentPosition() === modelData.key ? Qt.alpha(t("accent", "#9ccfa0"), 0.18) : Qt.alpha(t("dim", "#45475a"), 0.14)
+                            border.color: root.currentPosition() === modelData.key ? Qt.alpha(t("accent", "#9ccfa0"), 0.34) : Qt.alpha(t("accent", "#9ccfa0"), 0.08)
                             border.width: 1
 
                             RowLayout {
@@ -178,7 +193,7 @@ Item {
                                 Text {
                                     text: root.currentPosition() === modelData.key ? "*" : ""
                                     color: t("accent", "#9ccfa0")
-                                    font.pixelSize: Style.Typography.label
+                                    font.pixelSize: Style.Typography.componentSubtitle
                                     font.family: Style.Typography.text
                                     font.weight: Font.DemiBold
                                 }
@@ -190,7 +205,7 @@ Item {
                                     Text {
                                         text: modelData.label
                                         color: t("fg", "#eef6ef")
-                                        font.pixelSize: Style.Typography.caption
+                                        font.pixelSize: Style.Typography.componentMeta
                                         font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
@@ -198,11 +213,13 @@ Item {
                                     Text {
                                         text: modelData.desc
                                         color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                        font.pixelSize: Style.Typography.nano
+                                        font.pixelSize: Style.Typography.componentMeta
                                         font.family: Style.Typography.text
                                         Layout.fillWidth: true
                                     }
+
                                 }
+
                             }
 
                             MouseArea {
@@ -210,9 +227,13 @@ Item {
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: root.setPosition(modelData.key)
                             }
+
                         }
+
                     }
+
                 }
+
             }
 
             Rectangle {
@@ -231,14 +252,14 @@ Item {
                     Text {
                         text: "Current"
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.74)
-                        font.pixelSize: Style.Typography.micro
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.text
                     }
 
                     Text {
                         text: root.currentStyle() + " / " + root.currentPosition()
                         color: t("fg", "#eef6ef")
-                        font.pixelSize: Style.Typography.bodySmall
+                        font.pixelSize: Style.Typography.componentSubtitle
                         font.family: Style.Typography.text
                         font.weight: Font.DemiBold
                     }
@@ -247,12 +268,17 @@ Item {
                         width: parent.width
                         text: "Changes apply live to the main bar."
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.55)
-                        font.pixelSize: Style.Typography.micro
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.text
                         wrapMode: Text.WordWrap
                     }
+
                 }
+
             }
+
         }
+
     }
+
 }

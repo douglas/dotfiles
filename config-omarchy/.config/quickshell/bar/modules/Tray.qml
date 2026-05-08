@@ -236,7 +236,7 @@ Item {
                                             color:                  modelData.enabled
                                                                     ? (root.theme.fg    || "#cdd6f4")
                                                                     : (root.theme.muted || "#585b70")
-                                            font.pixelSize:         Style.Typography.bodySmall
+                                            font.pixelSize:         Style.Typography.componentSubtitle
                                             font.family: Style.Typography.mono
                                         }
 
@@ -343,7 +343,7 @@ Item {
                                           ? modelData.tooltipTitle
                                           : modelData.title
                         color:            root.theme.fg || "#cdd6f4"
-                        font.pixelSize:   Style.Typography.label
+                        font.pixelSize:   Style.Typography.componentSubtitle
                         font.family: Style.Typography.mono
                     }
                 }

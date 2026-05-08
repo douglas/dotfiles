@@ -1,80 +1,22 @@
-import QtQuick
-import QtQuick.Layouts
-import QtQuick.Controls
-import Quickshell
-import Quickshell.Wayland
-import Quickshell.Io
 import "../style" as Style
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import Quickshell
+import Quickshell.Io
+import Quickshell.Wayland
 
 PanelWindow {
     id: root
 
     property bool showing: false
-    property var  theme:   ({})
-    property real uiScale: 1.0
-
-    anchors { left: true; right: true; top: true; bottom: true }
-
-    implicitWidth: 380
-    color: "transparent"
-    exclusiveZone: 0
-    visible: showing
-
-    WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
-
+    property var theme: ({
+    })
+    property real uiScale: 1
     property var backgrounds: []
     property var filteredBackgrounds: []
     property string searchText: ""
     property int selectedIdx: 0
-
-    onBackgroundsChanged: applyFilter()
-    onSearchTextChanged: applyFilter()
-
-    function applyFilter() {
-        const q = searchText.trim().toLowerCase()
-        const out = []
-        for (let i = 0; i < backgrounds.length; i++) {
-            const b = backgrounds[i]
-            if (q === "" || b.name.toLowerCase().indexOf(q) !== -1)
-                out.push(b)
-        }
-        filteredBackgrounds = out
-        selectedIdx = 0
-        if (grid.count > 0)
-            grid.positionViewAtIndex(0, GridView.Beginning)
-    }
-
-    function shellQuote(s) {
-        if (s === undefined || s === null)
-            return "''"
-        return "'" + String(s).replace(/'/g, "'\\''") + "'"
-    }
-
-    function reload() {
-        scanner.stdout.buf = []
-        scanner.running = false
-        scanner.running = true
-    }
-
-    function applySelected() {
-        if (filteredBackgrounds.length === 0)
-            return
-        const idx = Math.max(0, Math.min(selectedIdx, filteredBackgrounds.length - 1))
-        applyBackground(filteredBackgrounds[idx].path)
-    }
-
-    function applyBackground(path) {
-        if (!path || path === "")
-            return
-        applyProc.command = [
-            "bash", "-lc",
-            "export PATH=\"$HOME/.local/share/omarchy/bin:$PATH\"; omarchy-theme-bg-set " + shellQuote(path)
-        ]
-        applyProc.running = false
-        applyProc.running = true
-    }
-
     property string scanScript: '
 THEME_NAME=$(cat "$HOME/.config/omarchy/current/theme.name" 2>/dev/null)
 THEME_BACKGROUNDS_PATH="$HOME/.config/omarchy/current/theme/backgrounds/"
@@ -98,76 +40,151 @@ for bg in "${BACKGROUNDS[@]}"; do
 done
 '
 
+    function applyFilter() {
+        const q = searchText.trim().toLowerCase();
+        const out = [];
+        for (let i = 0; i < backgrounds.length; i++) {
+            const b = backgrounds[i];
+            if (q === "" || b.name.toLowerCase().indexOf(q) !== -1)
+                out.push(b);
+
+        }
+        filteredBackgrounds = out;
+        selectedIdx = 0;
+        if (grid.count > 0)
+            grid.positionViewAtIndex(0, GridView.Beginning);
+
+    }
+
+    function shellQuote(s) {
+        if (s === undefined || s === null)
+            return "''";
+
+        return "'" + String(s).replace(/'/g, "'\\''") + "'";
+    }
+
+    function reload() {
+        scanner.stdout.buf = [];
+        scanner.running = false;
+        scanner.running = true;
+    }
+
+    function applySelected() {
+        if (filteredBackgrounds.length === 0)
+            return ;
+
+        const idx = Math.max(0, Math.min(selectedIdx, filteredBackgrounds.length - 1));
+        applyBackground(filteredBackgrounds[idx].path);
+    }
+
+    function applyBackground(path) {
+        if (!path || path === "")
+            return ;
+
+        applyProc.command = ["bash", "-lc", "export PATH=\"$HOME/.local/share/omarchy/bin:$PATH\"; omarchy-theme-bg-set " + shellQuote(path)];
+        applyProc.running = false;
+        applyProc.running = true;
+    }
+
+    implicitWidth: 380
+    color: "transparent"
+    exclusiveZone: 0
+    visible: showing
+    WlrLayershell.layer: WlrLayer.Overlay
+    WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
+    onBackgroundsChanged: applyFilter()
+    onSearchTextChanged: applyFilter()
+    onShowingChanged: {
+        if (showing) {
+            searchText = "";
+            selectedIdx = 0;
+            focusTimer.start();
+            root.reload();
+        }
+    }
+
+    anchors {
+        left: true
+        right: true
+        top: true
+        bottom: true
+    }
+
     Process {
         id: scanner
+
         command: ["bash", "-lc", root.scanScript]
         running: true
+        onExited: {
+            root.backgrounds = scanner.stdout.buf.slice();
+            scanner.stdout.buf = [];
+        }
+
         stdout: SplitParser {
             property var buf: []
-            onRead: data => {
-                const p = data.trim().split("|")
-                if (p.length >= 3 && p[0].trim() !== "") {
+
+            onRead: (data) => {
+                const p = data.trim().split("|");
+                if (p.length >= 3 && p[0].trim() !== "")
                     buf.push({
-                        name: p[0],
-                        path: p[1],
-                        active: p[2].trim() === "1",
-                        source: p[1] ? ("file://" + p[1]) : ""
-                    })
-                }
+                    "name": p[0],
+                    "path": p[1],
+                    "active": p[2].trim() === "1",
+                    "source": p[1] ? ("file://" + p[1]) : ""
+                });
+
             }
         }
-        onExited: {
-            root.backgrounds = scanner.stdout.buf.slice()
-            scanner.stdout.buf = []
-        }
+
     }
 
     Process {
         id: applyProc
+
         command: ["bash", "-lc", "true"]
         running: false
         onExited: {
-            root.reload()
-            root.showing = false
+            root.reload();
+            root.showing = false;
         }
     }
 
     FocusScope {
         id: focusScope
+
         anchors.fill: parent
         focus: true
-
-        Keys.onPressed: e => {
+        Keys.onPressed: (e) => {
             if (e.key === Qt.Key_Escape) {
                 if (root.searchText.length > 0)
-                    root.searchText = ""
+                    root.searchText = "";
                 else
-                    root.showing = false
-                e.accepted = true
+                    root.showing = false;
+                e.accepted = true;
             } else if (e.key === Qt.Key_Return || e.key === Qt.Key_Enter) {
-                root.applySelected()
-                e.accepted = true
+                root.applySelected();
+                e.accepted = true;
             } else if (e.key === Qt.Key_Down) {
                 if (root.selectedIdx < root.filteredBackgrounds.length - 1) {
-                    root.selectedIdx++
-                    grid.positionViewAtIndex(root.selectedIdx, GridView.Contain)
+                    root.selectedIdx++;
+                    grid.positionViewAtIndex(root.selectedIdx, GridView.Contain);
                 }
-                e.accepted = true
+                e.accepted = true;
             } else if (e.key === Qt.Key_Up) {
                 if (root.selectedIdx > 0) {
-                    root.selectedIdx--
-                    grid.positionViewAtIndex(root.selectedIdx, GridView.Contain)
+                    root.selectedIdx--;
+                    grid.positionViewAtIndex(root.selectedIdx, GridView.Contain);
                 }
-                e.accepted = true
+                e.accepted = true;
             } else if (e.key === Qt.Key_Backspace) {
                 if (root.searchText.length > 0)
-                    root.searchText = root.searchText.slice(0, -1)
+                    root.searchText = root.searchText.slice(0, -1);
                 else
-                    root.showing = false
-                e.accepted = true
+                    root.showing = false;
+                e.accepted = true;
             } else if (e.text && e.text.length === 1 && e.text.charCodeAt(0) >= 32) {
-                root.searchText += e.text
-                e.accepted = true
+                root.searchText += e.text;
+                e.accepted = true;
             }
         }
 
@@ -178,6 +195,7 @@ done
 
         Rectangle {
             id: card
+
             anchors.centerIn: parent
             width: root.implicitWidth
             height: Math.min((parent.height - 10) / root.uiScale, 900)
@@ -188,22 +206,12 @@ done
             border.color: theme.dim || "#45475a"
             border.width: 1
             clip: true
-
             opacity: root.showing ? 1 : 0
-            Behavior on opacity {
-                NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
-            }
-
-            transform: Translate {
-                x: root.showing ? 0 : -20
-                Behavior on x {
-                    NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
-                }
-            }
 
             MouseArea {
                 anchors.fill: parent
-                onClicked: {}
+                onClicked: {
+                }
             }
 
             ColumnLayout {
@@ -219,7 +227,7 @@ done
                         anchors.verticalCenter: parent.verticalCenter
                         text: ""
                         color: theme.accent || "#89b4fa"
-                        font.pixelSize: Style.Typography.bodySmall
+                        font.pixelSize: Style.Typography.componentSubtitle
                         font.family: Style.Typography.mono
                     }
 
@@ -227,18 +235,20 @@ done
                         anchors.verticalCenter: parent.verticalCenter
                         text: "Backgrounds"
                         color: theme.fg || "#cdd6f4"
-                        font.pixelSize: Style.Typography.bodySmall
+                        font.pixelSize: Style.Typography.componentSubtitle
                         font.family: Style.Typography.mono
                         font.weight: Font.Medium
                     }
 
-                    Item { Layout.fillWidth: true }
+                    Item {
+                        Layout.fillWidth: true
+                    }
 
                     Text {
                         anchors.verticalCenter: parent.verticalCenter
                         text: root.filteredBackgrounds.length + " images"
                         color: Qt.alpha(theme.muted || "#585b70", 0.45)
-                        font.pixelSize: Style.Typography.micro
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.mono
                     }
 
@@ -246,14 +256,17 @@ done
                         anchors.verticalCenter: parent.verticalCenter
                         text: "✕"
                         color: Qt.alpha(theme.muted || "#585b70", 0.5)
-                        font.pixelSize: Style.Typography.micro
+                        font.pixelSize: Style.Typography.componentMeta
+
                         MouseArea {
                             anchors.fill: parent
                             anchors.margins: -6
                             cursorShape: Qt.PointingHandCursor
                             onClicked: root.showing = false
                         }
+
                     }
+
                 }
 
                 Rectangle {
@@ -274,7 +287,7 @@ done
                             anchors.verticalCenter: parent.verticalCenter
                             text: "󰍉"
                             color: theme.accent || "#89b4fa"
-                            font.pixelSize: Style.Typography.bodySmall
+                            font.pixelSize: Style.Typography.componentSubtitle
                             font.family: Style.Typography.mono
                         }
 
@@ -282,7 +295,7 @@ done
                             anchors.verticalCenter: parent.verticalCenter
                             text: root.searchText
                             color: theme.fg || "#cdd6f4"
-                            font.pixelSize: Style.Typography.bodySmall
+                            font.pixelSize: Style.Typography.componentSubtitle
                             font.family: Style.Typography.mono
                         }
 
@@ -292,12 +305,25 @@ done
                             height: 12
                             radius: 1
                             color: theme.accent || "#89b4fa"
+
                             SequentialAnimation on opacity {
                                 loops: Animation.Infinite
                                 running: root.showing
-                                NumberAnimation { to: 0; duration: 530; easing.type: Easing.InOutSine }
-                                NumberAnimation { to: 1; duration: 530; easing.type: Easing.InOutSine }
+
+                                NumberAnimation {
+                                    to: 0
+                                    duration: 530
+                                    easing.type: Easing.InOutSine
+                                }
+
+                                NumberAnimation {
+                                    to: 1
+                                    duration: 530
+                                    easing.type: Easing.InOutSine
+                                }
+
                             }
+
                         }
 
                         Text {
@@ -305,21 +331,25 @@ done
                             visible: root.searchText !== ""
                             text: "✕"
                             color: Qt.alpha(theme.muted || "#585b70", 0.5)
-                            font.pixelSize: Style.Typography.micro
+                            font.pixelSize: Style.Typography.componentMeta
+
                             MouseArea {
                                 anchors.fill: parent
                                 anchors.margins: -4
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: root.searchText = ""
                             }
+
                         }
+
                     }
+
                 }
 
                 Text {
                     text: "↑↓ nav  ↵ apply  esc close"
                     color: Qt.alpha(theme.muted || "#585b70", 0.3)
-                    font.pixelSize: Style.Typography.micro
+                    font.pixelSize: Style.Typography.componentMeta
                     font.family: Style.Typography.mono
                 }
 
@@ -332,19 +362,21 @@ done
                         anchors.centerIn: parent
                         text: "Loading backgrounds..."
                         color: Qt.alpha(theme.muted || "#585b70", 0.4)
-                        font.pixelSize: Style.Typography.caption
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.mono
                     }
+
                 }
 
                 GridView {
                     id: grid
+
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     visible: root.backgrounds.length > 0
                     clip: true
                     cellWidth: root.implicitWidth - 20
-                    cellHeight: Math.floor(cellWidth * 0.50) + 28
+                    cellHeight: Math.floor(cellWidth * 0.5) + 28
                     model: root.filteredBackgrounds
 
                     ScrollBar.vertical: ScrollBar {
@@ -354,31 +386,35 @@ done
 
                     delegate: Item {
                         id: delegateItem
-                        width: grid.cellWidth
-                        height: grid.cellHeight
 
-                        property var bdata: root.filteredBackgrounds[index] || {}
+                        property var bdata: root.filteredBackgrounds[index] || {
+                        }
                         property bool isActive: bdata.active || false
                         property bool isSelected: index === root.selectedIdx
                         property bool isHovered: false
 
+                        width: grid.cellWidth
+                        height: grid.cellHeight
                         opacity: 0
                         Component.onCompleted: {
-                            appearTimer.interval = Math.min(index * 20, 400)
-                            appearTimer.start()
+                            appearTimer.interval = Math.min(index * 20, 400);
+                            appearTimer.start();
                         }
 
                         Timer {
                             id: appearTimer
+
                             repeat: false
                             onTriggered: appearAnim.start()
                         }
 
                         NumberAnimation {
                             id: appearAnim
+
                             target: delegateItem
                             property: "opacity"
-                            from: 0; to: 1
+                            from: 0
+                            to: 1
                             duration: 200
                             easing.type: Easing.OutCubic
                         }
@@ -388,22 +424,10 @@ done
                             anchors.margins: 3
                             radius: 7
                             color: theme.bg || "#1e1e2e"
-                            border.color: isSelected
-                                ? (theme.accent || "#89b4fa")
-                                : isActive
-                                    ? Qt.alpha(theme.accent || "#89b4fa", 0.6)
-                                    : isHovered
-                                        ? Qt.alpha(theme.accent || "#89b4fa", 0.3)
-                                        : Qt.alpha(theme.dim || "#45475a", 0.2)
+                            border.color: isSelected ? (theme.accent || "#89b4fa") : isActive ? Qt.alpha(theme.accent || "#89b4fa", 0.6) : isHovered ? Qt.alpha(theme.accent || "#89b4fa", 0.3) : Qt.alpha(theme.dim || "#45475a", 0.2)
                             border.width: isSelected ? 2 : isActive ? 2 : 1
                             clip: true
-
-                            Behavior on border.color {
-                                ColorAnimation { duration: 120 }
-                            }
-                            Behavior on border.width {
-                                NumberAnimation { duration: 120 }
-                            }
+                            scale: isHovered ? 1.01 : 1
 
                             Rectangle {
                                 anchors.fill: parent
@@ -412,18 +436,19 @@ done
                                 color: "transparent"
                                 border.color: Qt.alpha(theme.accent || "#89b4fa", isSelected ? 0.2 : 0)
                                 border.width: 4
-                                Behavior on border.color {
-                                    ColorAnimation { duration: 150 }
-                                }
-                            }
 
-                            scale: isHovered ? 1.01 : 1.0
-                            Behavior on scale {
-                                NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
+                                Behavior on border.color {
+                                    ColorAnimation {
+                                        duration: 150
+                                    }
+
+                                }
+
                             }
 
                             Image {
                                 id: previewImg
+
                                 anchors.top: parent.top
                                 anchors.left: parent.left
                                 anchors.right: parent.right
@@ -433,10 +458,6 @@ done
                                 asynchronous: true
                                 clip: true
                                 opacity: status === Image.Ready ? 1 : 0
-
-                                Behavior on opacity {
-                                    NumberAnimation { duration: 300; easing.type: Easing.OutCubic }
-                                }
 
                                 Rectangle {
                                     anchors.fill: parent
@@ -450,7 +471,17 @@ done
                                         font.pixelSize: Style.Typography.displayXl
                                         font.family: Style.Typography.mono
                                     }
+
                                 }
+
+                                Behavior on opacity {
+                                    NumberAnimation {
+                                        duration: 300
+                                        easing.type: Easing.OutCubic
+                                    }
+
+                                }
+
                             }
 
                             Rectangle {
@@ -467,9 +498,10 @@ done
                                     anchors.centerIn: parent
                                     text: "✓"
                                     color: "#000000"
-                                    font.pixelSize: Style.Typography.nano
+                                    font.pixelSize: Style.Typography.componentMeta
                                     font.weight: Font.Bold
                                 }
+
                             }
 
                             Rectangle {
@@ -486,19 +518,45 @@ done
                                     anchors.right: parent.right
                                     anchors.rightMargin: 8
                                     text: bdata.name || ""
-                                    color: isSelected
-                                        ? (theme.accent || "#89b4fa")
-                                        : (theme.fg || "#cdd6f4")
-                                    font.pixelSize: Style.Typography.caption
+                                    color: isSelected ? (theme.accent || "#89b4fa") : (theme.fg || "#cdd6f4")
+                                    font.pixelSize: Style.Typography.componentMeta
                                     font.family: Style.Typography.mono
                                     font.weight: isSelected ? Font.Medium : Font.Normal
                                     elide: Text.ElideRight
 
                                     Behavior on color {
-                                        ColorAnimation { duration: 120 }
+                                        ColorAnimation {
+                                            duration: 120
+                                        }
+
                                     }
+
                                 }
+
                             }
+
+                            Behavior on border.color {
+                                ColorAnimation {
+                                    duration: 120
+                                }
+
+                            }
+
+                            Behavior on border.width {
+                                NumberAnimation {
+                                    duration: 120
+                                }
+
+                            }
+
+                            Behavior on scale {
+                                NumberAnimation {
+                                    duration: 150
+                                    easing.type: Easing.OutCubic
+                                }
+
+                            }
+
                         }
 
                         MouseArea {
@@ -506,30 +564,49 @@ done
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
                             onEntered: {
-                                delegateItem.isHovered = true
-                                root.selectedIdx = index
+                                delegateItem.isHovered = true;
+                                root.selectedIdx = index;
                             }
                             onExited: delegateItem.isHovered = false
                             onClicked: root.applyBackground(bdata.path)
                         }
-                    }
-                }
-            }
-        }
-    }
 
-    onShowingChanged: {
-        if (showing) {
-            searchText = ""
-            selectedIdx = 0
-            focusTimer.start()
-            root.reload()
+                    }
+
+                }
+
+            }
+
+            Behavior on opacity {
+                NumberAnimation {
+                    duration: 200
+                    easing.type: Easing.OutCubic
+                }
+
+            }
+
+            transform: Translate {
+                x: root.showing ? 0 : -20
+
+                Behavior on x {
+                    NumberAnimation {
+                        duration: 220
+                        easing.type: Easing.OutCubic
+                    }
+
+                }
+
+            }
+
         }
+
     }
 
     Timer {
         id: focusTimer
+
         interval: 50
         onTriggered: focusScope.forceActiveFocus()
     }
+
 }

@@ -1,18 +1,19 @@
+import "../style" as Style
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
-import "../style" as Style
 
 FloatingWindow {
     id: root
 
     property bool showing: false
     property string mode: "pictures"
-    property var theme: ({})
+    property var theme: ({
+    })
     property var settings: null
-    property real uiScale: 1.0
+    property real uiScale: 1
     property var files: []
     property var picturesFiles: []
     property var downloadsFiles: []
@@ -20,40 +21,226 @@ FloatingWindow {
     property bool settingsOpen: false
     readonly property var imageExtensions: ["jpg", "jpeg", "png", "webp", "gif", "bmp", "heic", "avif"]
     readonly property var profiles: ({
-        pictures: {
-            title: "Recent Pictures",
-            icon: "",
-            dir: "$HOME/Pictures",
-            extensions: root.imageExtensions,
-            recursive: true,
-            singular: "image",
-            plural: "images",
-            loadingText: "Loading pictures...",
-            emptyText: "No images found in ~/Pictures",
-            settingLabel: "Images to load"
+        "pictures": {
+            "title": "Recent Pictures",
+            "icon": "",
+            "dir": "$HOME/Pictures",
+            "extensions": root.imageExtensions,
+            "recursive": true,
+            "singular": "image",
+            "plural": "images",
+            "loadingText": "Loading pictures...",
+            "emptyText": "No images found in ~/Pictures",
+            "settingLabel": "Images to load"
         },
-        downloads: {
-            title: "Recent Downloads",
-            icon: "",
-            dir: "$HOME/Downloads",
-            extensions: [],
-            recursive: false,
-            singular: "file",
-            plural: "files",
-            loadingText: "Loading downloads...",
-            emptyText: "No files found in ~/Downloads",
-            settingLabel: "Files to load"
+        "downloads": {
+            "title": "Recent Downloads",
+            "icon": "",
+            "dir": "$HOME/Downloads",
+            "extensions": [],
+            "recursive": false,
+            "singular": "file",
+            "plural": "files",
+            "loadingText": "Loading downloads...",
+            "emptyText": "No files found in ~/Downloads",
+            "settingLabel": "Files to load"
         }
     })
     readonly property var activeProfile: mode === "downloads" ? profiles.downloads : profiles.pictures
-    readonly property int fileLimit: settings
-        ? Math.max(1, Math.min(50, Math.round(mode === "downloads"
-            ? settings.downloadsFileLimit
-            : settings.picturesImageLimit)))
-        : 10
-    readonly property var selectedFile: files.length > 0
-        ? files[Math.max(0, Math.min(selectedIdx, files.length - 1))]
-        : ({})
+    readonly property int fileLimit: settings ? Math.max(1, Math.min(50, Math.round(mode === "downloads" ? settings.downloadsFileLimit : settings.picturesImageLimit))) : 10
+    readonly property var selectedFile: files.length > 0 ? files[Math.max(0, Math.min(selectedIdx, files.length - 1))] : ({
+    })
+
+    function shellQuote(s) {
+        if (s === undefined || s === null)
+            return "''";
+
+        return "'" + String(s).replace(/'/g, "'\\''") + "'";
+    }
+
+    function fileUrl(path) {
+        return path && path !== "" ? "file://" + encodeURI(path) : "";
+    }
+
+    function extension(path) {
+        const value = String(path || "");
+        const idx = value.lastIndexOf(".");
+        return idx >= 0 ? value.substring(idx + 1).toLowerCase() : "";
+    }
+
+    function isImagePath(path) {
+        return imageExtensions.indexOf(extension(path)) !== -1;
+    }
+
+    function fileObject(path) {
+        const nameParts = path.split("/");
+        const ext = extension(path);
+        const image = isImagePath(path);
+        return {
+            "path": path,
+            "name": nameParts[nameParts.length - 1],
+            "extension": ext,
+            "isImage": image,
+            "source": image ? fileUrl(path) : ""
+        };
+    }
+
+    function fileFromScanLine(line) {
+        const sep = line.indexOf("|");
+        if (sep === -1)
+            return null;
+
+        return fileObject(line.substring(sep + 1));
+    }
+
+    function fileIcon(file) {
+        const ext = file.extension || "";
+        if (ext === "pdf")
+            return "";
+
+        if (["zip", "gz", "xz", "7z", "rar", "tar"].indexOf(ext) !== -1)
+            return "";
+
+        if (["mp4", "mkv", "mov", "webm"].indexOf(ext) !== -1)
+            return "";
+
+        if (["mp3", "flac", "wav", "ogg"].indexOf(ext) !== -1)
+            return "";
+
+        if (["txt", "md", "json", "csv", "log"].indexOf(ext) !== -1)
+            return "";
+
+        return "";
+    }
+
+    function dragMimeData(path) {
+        const url = fileUrl(path);
+        return {
+            "text/plain": path || "",
+            "text/uri-list": url ? url + "\n" : ""
+        };
+    }
+
+    function prepareDragImage(item, width, height) {
+        item.grabToImage(function(result) {
+            item.Drag.imageSource = result.url;
+        }, Qt.size(width, height));
+    }
+
+    function normalizeMode(requestedMode) {
+        return requestedMode === "downloads" ? "downloads" : "pictures";
+    }
+
+    function cachedFiles(requestedMode) {
+        return normalizeMode(requestedMode) === "downloads" ? downloadsFiles : picturesFiles;
+    }
+
+    function setCachedFiles(requestedMode, nextFiles) {
+        if (normalizeMode(requestedMode) === "downloads")
+            downloadsFiles = nextFiles;
+        else
+            picturesFiles = nextFiles;
+    }
+
+    function setMode(requestedMode) {
+        const nextMode = normalizeMode(requestedMode);
+        if (mode !== nextMode) {
+            files = cachedFiles(nextMode).slice();
+            selectedIdx = 0;
+            fileScanner.stdout.buf = [];
+        }
+        mode = nextMode;
+    }
+
+    function profileForMode(requestedMode) {
+        return normalizeMode(requestedMode) === "downloads" ? profiles.downloads : profiles.pictures;
+    }
+
+    function toggleMode(requestedMode) {
+        const nextMode = normalizeMode(requestedMode);
+        if (showing && mode === nextMode) {
+            showing = false;
+            return ;
+        }
+        if (showing) {
+            setMode(nextMode);
+            settingsOpen = false;
+            reload();
+            focusTimer.start();
+            return ;
+        }
+        setMode(nextMode);
+        showing = true;
+    }
+
+    function reload() {
+        fileScanner.stdout.buf = [];
+        refreshMode(mode);
+    }
+
+    function refreshMode(requestedMode) {
+        fileScanner.scanMode = normalizeMode(requestedMode);
+        fileScanner.running = false;
+        fileScanner.running = true;
+    }
+
+    function extensionArgs(requestedMode) {
+        let args = "";
+        const extensions = profileForMode(requestedMode).extensions || [];
+        for (let i = 0; i < extensions.length; i++) args += "-e " + extensions[i] + " "
+        return args;
+    }
+
+    function scanScript(requestedMode) {
+        const scanMode = normalizeMode(requestedMode);
+        const profile = profileForMode(scanMode);
+        const depthArg = profile.recursive ? "" : "--max-depth 1 ";
+        return "fd -H -L -t f " + depthArg + extensionArgs(scanMode) + "-0 . \"" + profile.dir + "\" 2>/dev/null | " + "xargs -0 -r stat -c \"%Y|%n\" | sort -t \"|\" -k 1,1nr | head -n " + fileLimit;
+    }
+
+    function setFileLimit(value) {
+        const next = Math.max(1, Math.min(50, Math.round(value)));
+        if (settings) {
+            if (mode === "downloads")
+                settings.downloadsFileLimit = next;
+            else
+                settings.picturesImageLimit = next;
+        }
+        reload();
+    }
+
+    function openFile(path) {
+        if (!path || path === "")
+            return ;
+
+        Quickshell.execDetached(["bash", "-lc", "xdg-open " + shellQuote(path)]);
+        showing = false;
+    }
+
+    function copyImageMetadata(path) {
+        if (!path || path === "")
+            return ;
+
+        Quickshell.execDetached(["bash", "-lc", "printf '%s' " + shellQuote(path) + " | wl-copy"]);
+        showing = false;
+    }
+
+    function activateSelected() {
+        if (mode === "pictures" && selectedFile.isImage === true) {
+            settingsOpen = false;
+            copyImageMetadata(selectedFile.path);
+            return ;
+        }
+        openFile(selectedFile.path);
+    }
+
+    function moveSelection(delta) {
+        if (files.length === 0)
+            return ;
+
+        selectedIdx = Math.max(0, Math.min(selectedIdx + delta, files.length - 1));
+        filmstrip.positionViewAtIndex(selectedIdx, ListView.Contain);
+    }
 
     title: "Quickshell Recent Files"
     color: "transparent"
@@ -62,245 +249,70 @@ FloatingWindow {
     implicitHeight: 600
     minimumSize: Qt.size(720, 420)
     maximumSize: Qt.size(1200, 820)
-
-    function shellQuote(s) {
-        if (s === undefined || s === null)
-            return "''"
-        return "'" + String(s).replace(/'/g, "'\\''") + "'"
-    }
-
-    function fileUrl(path) {
-        return path && path !== "" ? "file://" + encodeURI(path) : ""
-    }
-
-    function extension(path) {
-        const value = String(path || "")
-        const idx = value.lastIndexOf(".")
-        return idx >= 0 ? value.substring(idx + 1).toLowerCase() : ""
-    }
-
-    function isImagePath(path) {
-        return imageExtensions.indexOf(extension(path)) !== -1
-    }
-
-    function fileObject(path) {
-        const nameParts = path.split("/")
-        const ext = extension(path)
-        const image = isImagePath(path)
-        return {
-            path: path,
-            name: nameParts[nameParts.length - 1],
-            extension: ext,
-            isImage: image,
-            source: image ? fileUrl(path) : ""
-        }
-    }
-
-    function fileFromScanLine(line) {
-        const sep = line.indexOf("|")
-        if (sep === -1)
-            return null
-        return fileObject(line.substring(sep + 1))
-    }
-
-    function fileIcon(file) {
-        const ext = file.extension || ""
-        if (ext === "pdf")
-            return ""
-        if (["zip", "gz", "xz", "7z", "rar", "tar"].indexOf(ext) !== -1)
-            return ""
-        if (["mp4", "mkv", "mov", "webm"].indexOf(ext) !== -1)
-            return ""
-        if (["mp3", "flac", "wav", "ogg"].indexOf(ext) !== -1)
-            return ""
-        if (["txt", "md", "json", "csv", "log"].indexOf(ext) !== -1)
-            return ""
-        return ""
-    }
-
-    function dragMimeData(path) {
-        const url = fileUrl(path)
-        return {
-            "text/plain": path || "",
-            "text/uri-list": url ? url + "\n" : ""
-        }
-    }
-
-    function prepareDragImage(item, width, height) {
-        item.grabToImage(function(result) {
-            item.Drag.imageSource = result.url
-        }, Qt.size(width, height))
-    }
-
-    function normalizeMode(requestedMode) {
-        return requestedMode === "downloads" ? "downloads" : "pictures"
-    }
-
-    function cachedFiles(requestedMode) {
-        return normalizeMode(requestedMode) === "downloads" ? downloadsFiles : picturesFiles
-    }
-
-    function setCachedFiles(requestedMode, nextFiles) {
-        if (normalizeMode(requestedMode) === "downloads")
-            downloadsFiles = nextFiles
-        else
-            picturesFiles = nextFiles
-    }
-
-    function setMode(requestedMode) {
-        const nextMode = normalizeMode(requestedMode)
-        if (mode !== nextMode) {
-            files = cachedFiles(nextMode).slice()
-            selectedIdx = 0
-            fileScanner.stdout.buf = []
-        }
-        mode = nextMode
-    }
-
-    function profileForMode(requestedMode) {
-        return normalizeMode(requestedMode) === "downloads" ? profiles.downloads : profiles.pictures
-    }
-
-    function toggleMode(requestedMode) {
-        const nextMode = normalizeMode(requestedMode)
-        if (showing && mode === nextMode) {
-            showing = false
-            return
-        }
-
+    onShowingChanged: {
         if (showing) {
-            setMode(nextMode)
-            settingsOpen = false
-            reload()
-            focusTimer.start()
-            return
+            root.settingsOpen = false;
+            root.reload();
+            focusTimer.start();
         }
-
-        setMode(nextMode)
-        showing = true
-    }
-
-    function reload() {
-        fileScanner.stdout.buf = []
-        refreshMode(mode)
-    }
-
-    function refreshMode(requestedMode) {
-        fileScanner.scanMode = normalizeMode(requestedMode)
-        fileScanner.running = false
-        fileScanner.running = true
-    }
-
-    function extensionArgs(requestedMode) {
-        let args = ""
-        const extensions = profileForMode(requestedMode).extensions || []
-        for (let i = 0; i < extensions.length; i++)
-            args += "-e " + extensions[i] + " "
-        return args
-    }
-
-    function scanScript(requestedMode) {
-        const scanMode = normalizeMode(requestedMode)
-        const profile = profileForMode(scanMode)
-        const depthArg = profile.recursive ? "" : "--max-depth 1 "
-        return "fd -H -L -t f " + depthArg + extensionArgs(scanMode) +
-            "-0 . \"" + profile.dir + "\" 2>/dev/null | " +
-            "xargs -0 -r stat -c \"%Y|%n\" | sort -t \"|\" -k 1,1nr | head -n " +
-            fileLimit
-    }
-
-    function setFileLimit(value) {
-        const next = Math.max(1, Math.min(50, Math.round(value)))
-        if (settings) {
-            if (mode === "downloads")
-                settings.downloadsFileLimit = next
-            else
-                settings.picturesImageLimit = next
-        }
-        reload()
-    }
-
-    function openFile(path) {
-        if (!path || path === "")
-            return
-        Quickshell.execDetached(["bash", "-lc", "xdg-open " + shellQuote(path)])
-        showing = false
-    }
-
-    function copyImageMetadata(path) {
-        if (!path || path === "")
-            return
-        Quickshell.execDetached(["bash", "-lc", "printf '%s' " + shellQuote(path) + " | wl-copy"])
-        showing = false
-    }
-
-    function activateSelected() {
-        if (mode === "pictures" && selectedFile.isImage === true) {
-            settingsOpen = false
-            copyImageMetadata(selectedFile.path)
-            return
-        }
-
-        openFile(selectedFile.path)
-    }
-
-    function moveSelection(delta) {
-        if (files.length === 0)
-            return
-        selectedIdx = Math.max(0, Math.min(selectedIdx + delta, files.length - 1))
-        filmstrip.positionViewAtIndex(selectedIdx, ListView.Contain)
     }
 
     Process {
         id: fileScanner
+
         property string scanMode: root.mode
+
         command: ["bash", "-lc", root.scanScript(fileScanner.scanMode)]
         running: false
+        onExited: {
+            const nextFiles = fileScanner.stdout.buf.slice();
+            root.setCachedFiles(fileScanner.scanMode, nextFiles);
+            if (fileScanner.scanMode === root.mode) {
+                root.files = nextFiles;
+                root.selectedIdx = 0;
+            }
+            fileScanner.stdout.buf = [];
+        }
+
         stdout: SplitParser {
             property var buf: []
-            onRead: data => {
-                const line = data.trim()
-                const file = root.fileFromScanLine(line)
-                if (!file)
-                    return
 
-                buf.push(file)
+            onRead: (data) => {
+                const line = data.trim();
+                const file = root.fileFromScanLine(line);
+                if (!file)
+                    return ;
+
+                buf.push(file);
             }
         }
-        onExited: {
-            const nextFiles = fileScanner.stdout.buf.slice()
-            root.setCachedFiles(fileScanner.scanMode, nextFiles)
-            if (fileScanner.scanMode === root.mode) {
-                root.files = nextFiles
-                root.selectedIdx = 0
-            }
-            fileScanner.stdout.buf = []
-        }
+
     }
 
     FocusScope {
         id: focusScope
+
         anchors.fill: parent
         focus: true
-
-        Keys.onPressed: e => {
+        Keys.onPressed: (e) => {
             if (e.key === Qt.Key_Escape) {
-                root.showing = false
-                e.accepted = true
+                root.showing = false;
+                e.accepted = true;
             } else if (e.key === Qt.Key_Return || e.key === Qt.Key_Enter) {
-                root.activateSelected()
-                e.accepted = true
+                root.activateSelected();
+                e.accepted = true;
             } else if (e.key === Qt.Key_Right || e.key === Qt.Key_Down) {
-                root.moveSelection(1)
-                e.accepted = true
+                root.moveSelection(1);
+                e.accepted = true;
             } else if (e.key === Qt.Key_Left || e.key === Qt.Key_Up) {
-                root.moveSelection(-1)
-                e.accepted = true
+                root.moveSelection(-1);
+                e.accepted = true;
             }
         }
 
         Rectangle {
             id: card
+
             anchors.fill: parent
             radius: 0
             color: theme.bg || "#1e1e2e"
@@ -315,52 +327,48 @@ FloatingWindow {
 
                 RowLayout {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 24
+                    Layout.preferredHeight: 30
                     spacing: 8
 
                     Text {
                         text: root.activeProfile.icon
                         color: theme.accent || "#89b4fa"
-                        font.pixelSize: Style.Typography.bodyLarge
+                        font.pixelSize: Style.Typography.actionIcon
                         font.family: Style.Typography.mono
                     }
 
                     Text {
                         text: root.activeProfile.title
                         color: theme.fg || "#cdd6f4"
-                        font.pixelSize: Style.Typography.bodyLarge
+                        font.pixelSize: Style.Typography.componentTitle
                         font.family: Style.Typography.mono
                         font.weight: Font.Medium
                     }
 
-                    Item { Layout.fillWidth: true }
+                    Item {
+                        Layout.fillWidth: true
+                    }
 
                     Text {
-                        text: root.files.length + " " + (root.files.length === 1
-                            ? root.activeProfile.singular
-                            : root.activeProfile.plural)
+                        text: root.files.length + " " + (root.files.length === 1 ? root.activeProfile.singular : root.activeProfile.plural)
                         color: Qt.alpha(theme.muted || "#585b70", 0.55)
-                        font.pixelSize: Style.Typography.caption
+                        font.pixelSize: Style.Typography.body
                         font.family: Style.Typography.mono
                     }
 
                     Rectangle {
-                        Layout.preferredWidth: 22
-                        Layout.preferredHeight: 22
+                        Layout.preferredWidth: 28
+                        Layout.preferredHeight: 28
                         radius: 0
-                        color: root.settingsOpen
-                            ? Qt.alpha(theme.accent || "#89b4fa", 0.18)
-                            : "transparent"
+                        color: root.settingsOpen ? Qt.alpha(theme.accent || "#89b4fa", 0.18) : "transparent"
                         border.width: root.settingsOpen ? 1 : 0
                         border.color: Qt.alpha(theme.accent || "#89b4fa", 0.45)
 
                         Text {
                             anchors.centerIn: parent
                             text: ""
-                            color: root.settingsOpen
-                                ? (theme.accent || "#89b4fa")
-                                : Qt.alpha(theme.muted || "#585b70", 0.75)
-                            font.pixelSize: Style.Typography.label
+                            color: root.settingsOpen ? (theme.accent || "#89b4fa") : Qt.alpha(theme.muted || "#585b70", 0.75)
+                            font.pixelSize: Style.Typography.actionIcon
                             font.family: Style.Typography.mono
                         }
 
@@ -369,21 +377,31 @@ FloatingWindow {
                             cursorShape: Qt.PointingHandCursor
                             onClicked: root.settingsOpen = !root.settingsOpen
                         }
+
                     }
 
-                    Text {
-                        text: "✕"
-                        color: Qt.alpha(theme.muted || "#585b70", 0.7)
-                        font.pixelSize: Style.Typography.caption
-                        font.family: Style.Typography.mono
+                    Rectangle {
+                        Layout.preferredWidth: 28
+                        Layout.preferredHeight: 28
+                        radius: 0
+                        color: "transparent"
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "󰅖"
+                            color: Qt.alpha(theme.muted || "#585b70", 0.7)
+                            font.pixelSize: Style.Typography.closeIcon
+                            font.family: Style.Typography.mono
+                        }
 
                         MouseArea {
                             anchors.fill: parent
-                            anchors.margins: -8
                             cursorShape: Qt.PointingHandCursor
                             onClicked: root.showing = false
                         }
+
                     }
+
                 }
 
                 Item {
@@ -395,9 +413,10 @@ FloatingWindow {
                         anchors.centerIn: parent
                         text: fileScanner.running ? root.activeProfile.loadingText : root.activeProfile.emptyText
                         color: Qt.alpha(theme.muted || "#585b70", 0.6)
-                        font.pixelSize: Style.Typography.label
+                        font.pixelSize: Style.Typography.body
                         font.family: Style.Typography.mono
                     }
+
                 }
 
                 RowLayout {
@@ -408,6 +427,7 @@ FloatingWindow {
 
                     Rectangle {
                         id: previewPane
+
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         radius: 0
@@ -428,11 +448,11 @@ FloatingWindow {
 
                                 Item {
                                     id: selectedDragItem
+
                                     x: 0
                                     y: 0
                                     width: parent.width
                                     height: parent.height
-
                                     Drag.dragType: Drag.Automatic
                                     Drag.supportedActions: Qt.CopyAction
                                     Drag.proposedAction: Qt.CopyAction
@@ -442,11 +462,10 @@ FloatingWindow {
                                     Drag.hotSpot.x: width / 2
                                     Drag.hotSpot.y: height / 2
                                     Drag.active: selectedMouse.drag.active
-
                                     Drag.onDragFinished: {
-                                        x = 0
-                                        y = 0
-                                        root.showing = false
+                                        x = 0;
+                                        y = 0;
+                                        root.showing = false;
                                     }
 
                                     Rectangle {
@@ -493,39 +512,42 @@ FloatingWindow {
 
                                             Text {
                                                 width: parent.width
-                                                text: root.selectedFile.extension
-                                                    ? root.selectedFile.extension.toUpperCase() + " file"
-                                                    : "File"
+                                                text: root.selectedFile.extension ? root.selectedFile.extension.toUpperCase() + " file" : "File"
                                                 color: Qt.alpha(theme.muted || "#585b70", 0.72)
                                                 horizontalAlignment: Text.AlignHCenter
-                                                font.pixelSize: Style.Typography.label
+                                                font.pixelSize: Style.Typography.body
                                                 font.family: Style.Typography.mono
                                             }
+
                                         }
+
                                     }
+
                                 }
 
                                 MouseArea {
                                     id: selectedMouse
+
                                     anchors.fill: parent
                                     acceptedButtons: Qt.LeftButton
                                     cursorShape: Qt.OpenHandCursor
                                     drag.target: selectedDragItem
                                     drag.threshold: 6
-                                    onPressed: mouse => {
-                                        root.prepareDragImage(selectedDragItem, 220, 140)
-                                        mouse.accepted = true
+                                    onPressed: (mouse) => {
+                                        root.prepareDragImage(selectedDragItem, 220, 140);
+                                        mouse.accepted = true;
                                     }
                                     onReleased: {
-                                        selectedDragItem.x = 0
-                                        selectedDragItem.y = 0
+                                        selectedDragItem.x = 0;
+                                        selectedDragItem.y = 0;
                                     }
                                     onCanceled: {
-                                        selectedDragItem.x = 0
-                                        selectedDragItem.y = 0
+                                        selectedDragItem.x = 0;
+                                        selectedDragItem.y = 0;
                                     }
                                     onDoubleClicked: root.openFile(root.selectedFile.path)
                                 }
+
                             }
 
                             RowLayout {
@@ -536,7 +558,7 @@ FloatingWindow {
                                     Layout.fillWidth: true
                                     text: root.selectedFile.name || ""
                                     color: theme.fg || "#cdd6f4"
-                                    font.pixelSize: Style.Typography.bodySmall
+                                    font.pixelSize: Style.Typography.body
                                     font.family: Style.Typography.mono
                                     elide: Text.ElideMiddle
                                 }
@@ -544,15 +566,19 @@ FloatingWindow {
                                 Text {
                                     text: (root.selectedIdx + 1) + " / " + root.files.length
                                     color: Qt.alpha(theme.muted || "#585b70", 0.72)
-                                    font.pixelSize: Style.Typography.caption
+                                    font.pixelSize: Style.Typography.body
                                     font.family: Style.Typography.mono
                                 }
+
                             }
+
                         }
+
                     }
 
                     Rectangle {
                         id: stripPane
+
                         Layout.preferredWidth: 214
                         Layout.fillHeight: true
                         radius: 0
@@ -563,6 +589,7 @@ FloatingWindow {
 
                         ListView {
                             id: filmstrip
+
                             anchors.fill: parent
                             anchors.margins: 8
                             model: root.files
@@ -576,20 +603,22 @@ FloatingWindow {
 
                             delegate: Item {
                                 id: delegateItem
-                                width: filmstrip.width
-                                height: 86
 
-                                property var fileData: root.files[index] || {}
+                                property var fileData: root.files[index] || {
+                                }
                                 property bool selected: index === root.selectedIdx
                                 property bool hovered: false
 
+                                width: filmstrip.width
+                                height: 108
+
                                 Item {
                                     id: thumb
+
                                     x: 0
                                     y: 0
                                     width: parent.width
                                     height: parent.height
-
                                     Drag.dragType: Drag.Automatic
                                     Drag.supportedActions: Qt.CopyAction
                                     Drag.proposedAction: Qt.CopyAction
@@ -599,23 +628,18 @@ FloatingWindow {
                                     Drag.hotSpot.x: width / 2
                                     Drag.hotSpot.y: height / 2
                                     Drag.active: thumbnailMouse.drag.active
-
                                     Drag.onDragFinished: {
-                                        x = 0
-                                        y = 0
-                                        root.showing = false
+                                        x = 0;
+                                        y = 0;
+                                        root.showing = false;
                                     }
 
                                     Rectangle {
                                         anchors.fill: parent
                                         radius: 0
-                                        color: selected
-                                            ? Qt.alpha(theme.accent || "#89b4fa", 0.17)
-                                            : Qt.alpha(theme.dim || "#45475a", hovered ? 0.34 : 0.22)
+                                        color: selected ? Qt.alpha(theme.accent || "#89b4fa", 0.17) : Qt.alpha(theme.dim || "#45475a", hovered ? 0.34 : 0.22)
                                         border.width: selected ? 2 : 1
-                                        border.color: selected
-                                            ? (theme.accent || "#89b4fa")
-                                            : Qt.alpha(theme.dim || "#45475a", 0.62)
+                                        border.color: selected ? (theme.accent || "#89b4fa") : Qt.alpha(theme.dim || "#45475a", 0.62)
                                         clip: true
 
                                         RowLayout {
@@ -645,9 +669,10 @@ FloatingWindow {
                                                     visible: delegateItem.fileData.isImage !== true
                                                     text: root.fileIcon(delegateItem.fileData)
                                                     color: theme.accent || "#89b4fa"
-                                                    font.pixelSize: Style.Typography.display2Xl
+                                                    font.pixelSize: Style.Typography.display3Xl
                                                     font.family: Style.Typography.mono
                                                 }
+
                                             }
 
                                             ColumnLayout {
@@ -658,31 +683,36 @@ FloatingWindow {
                                                 Text {
                                                     Layout.fillWidth: true
                                                     text: delegateItem.fileData.name || ""
-                                                    color: selected
-                                                        ? (theme.accent || "#89b4fa")
-                                                        : (theme.fg || "#cdd6f4")
-                                                    font.pixelSize: Style.Typography.caption
+                                                    color: selected ? (theme.accent || "#89b4fa") : (theme.fg || "#cdd6f4")
+                                                    font.pixelSize: Style.Typography.body
                                                     font.family: Style.Typography.mono
                                                     elide: Text.ElideMiddle
                                                     maximumLineCount: 2
                                                     wrapMode: Text.WrapAnywhere
                                                 }
 
-                                                Item { Layout.fillHeight: true }
+                                                Item {
+                                                    Layout.fillHeight: true
+                                                }
 
                                                 Text {
                                                     text: "#" + (index + 1)
                                                     color: Qt.alpha(theme.muted || "#585b70", 0.62)
-                                                    font.pixelSize: Style.Typography.micro
+                                                    font.pixelSize: Style.Typography.componentSubtitle
                                                     font.family: Style.Typography.mono
                                                 }
+
                                             }
+
                                         }
+
                                     }
+
                                 }
 
                                 MouseArea {
                                     id: thumbnailMouse
+
                                     anchors.fill: parent
                                     hoverEnabled: true
                                     acceptedButtons: Qt.LeftButton
@@ -692,33 +722,39 @@ FloatingWindow {
                                     drag.threshold: 6
                                     onEntered: delegateItem.hovered = true
                                     onExited: delegateItem.hovered = false
-                                    onPressed: mouse => {
-                                        root.selectedIdx = index
-                                        root.prepareDragImage(thumb, 160, 90)
-                                        mouse.accepted = true
+                                    onPressed: (mouse) => {
+                                        root.selectedIdx = index;
+                                        root.prepareDragImage(thumb, 160, 90);
+                                        mouse.accepted = true;
                                     }
                                     onReleased: {
-                                        thumb.x = 0
-                                        thumb.y = 0
+                                        thumb.x = 0;
+                                        thumb.y = 0;
                                     }
                                     onCanceled: {
-                                        thumb.x = 0
-                                        thumb.y = 0
+                                        thumb.x = 0;
+                                        thumb.y = 0;
                                     }
-                                    onClicked: mouse => {
-                                        root.selectedIdx = index
-                                        mouse.accepted = true
+                                    onClicked: (mouse) => {
+                                        root.selectedIdx = index;
+                                        mouse.accepted = true;
                                     }
                                     onDoubleClicked: root.openFile(delegateItem.fileData.path)
                                 }
+
                             }
+
                         }
+
                     }
+
                 }
+
             }
 
             Rectangle {
                 id: settingsPanel
+
                 visible: root.settingsOpen
                 z: 20
                 width: 236
@@ -734,7 +770,8 @@ FloatingWindow {
 
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: {}
+                    onClicked: {
+                    }
                 }
 
                 ColumnLayout {
@@ -750,7 +787,7 @@ FloatingWindow {
                             Layout.fillWidth: true
                             text: root.activeProfile.settingLabel
                             color: theme.fg || "#cdd6f4"
-                            font.pixelSize: Style.Typography.label
+                            font.pixelSize: Style.Typography.body
                             font.family: Style.Typography.mono
                             font.weight: Font.Medium
                         }
@@ -758,10 +795,11 @@ FloatingWindow {
                         Text {
                             text: root.fileLimit
                             color: theme.accent || "#89b4fa"
-                            font.pixelSize: Style.Typography.body
+                            font.pixelSize: Style.Typography.bodyLarge
                             font.family: Style.Typography.mono
                             font.weight: Font.DemiBold
                         }
+
                     }
 
                     RowLayout {
@@ -769,16 +807,23 @@ FloatingWindow {
                         spacing: 8
 
                         Repeater {
-                            model: [
-                                { label: "-5", delta: -5 },
-                                { label: "-1", delta: -1 },
-                                { label: "+1", delta: 1 },
-                                { label: "+5", delta: 5 }
-                            ]
+                            model: [{
+                                "label": "-5",
+                                "delta": -5
+                            }, {
+                                "label": "-1",
+                                "delta": -1
+                            }, {
+                                "label": "+1",
+                                "delta": 1
+                            }, {
+                                "label": "+5",
+                                "delta": 5
+                            }]
 
                             Rectangle {
                                 Layout.fillWidth: true
-                                height: 28
+                                height: 32
                                 radius: 0
                                 color: Qt.alpha(theme.dim || "#45475a", 0.34)
                                 border.width: 1
@@ -788,7 +833,7 @@ FloatingWindow {
                                     anchors.centerIn: parent
                                     text: modelData.label
                                     color: theme.fg || "#cdd6f4"
-                                    font.pixelSize: Style.Typography.caption
+                                    font.pixelSize: Style.Typography.body
                                     font.family: Style.Typography.mono
                                 }
 
@@ -797,25 +842,26 @@ FloatingWindow {
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: root.setFileLimit(root.fileLimit + modelData.delta)
                                 }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 
-    onShowingChanged: {
-        if (showing) {
-            root.settingsOpen = false
-            root.reload()
-            focusTimer.start()
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
         }
+
     }
 
     Timer {
         id: focusTimer
+
         interval: 50
         onTriggered: focusScope.forceActiveFocus()
     }
+
 }

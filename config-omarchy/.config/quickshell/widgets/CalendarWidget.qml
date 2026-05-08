@@ -1,8 +1,8 @@
+import "../style" as Style
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
-import "../style" as Style
 
 PanelWindow {
     // no easing for direct drag
@@ -137,7 +137,7 @@ PanelWindow {
                     Text {
                         text: Qt.formatDate(root.now, "MMMM").toUpperCase()
                         color: cFg
-                        font.pixelSize: Style.Typography.bodySmall
+                        font.pixelSize: Style.Typography.componentSubtitle
                         font.family: root.textFont
                         font.weight: Font.DemiBold
                     }
@@ -145,7 +145,7 @@ PanelWindow {
                     Text {
                         text: Qt.formatDate(root.now, "yyyy")
                         color: cMuted
-                        font.pixelSize: Style.Typography.caption
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: root.textFont
                     }
 
@@ -170,7 +170,7 @@ PanelWindow {
                                 anchors.centerIn: parent
                                 text: modelData
                                 color: cDim
-                                font.pixelSize: Style.Typography.nano
+                                font.pixelSize: Style.Typography.componentMeta
                                 font.family: root.textFont
                             }
 
@@ -205,7 +205,7 @@ PanelWindow {
                                 anchors.centerIn: parent
                                 text: inMonth ? String(day) : ""
                                 color: isToday ? cBg : (inMonth ? cFg : cDim)
-                                font.pixelSize: Style.Typography.label
+                                font.pixelSize: Style.Typography.componentSubtitle
                                 font.family: root.textFont
                             }
 

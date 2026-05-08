@@ -369,7 +369,8 @@ Item {
         accent: root.cAccent
         processes: root.processes
         treeGroups: root.processTree
-        emptyText: impactProc.running ? "loading" : "no process data"
+        emptyText: "no process data"
+        loading: impactProc.running
         theme: root.theme
         onCloseRequested: root.showing = false
         onRefreshRequested: root.refreshImpact()

@@ -1,42 +1,34 @@
+import "../../style" as Style
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import "../../style" as Style
 
 Item {
     id: root
 
     property var state: null
-    property var theme: ({})
+    property var theme: ({
+    })
     readonly property string homeDir: Quickshell.env("HOME") || ""
     readonly property string configDir: homeDir + "/.config/quickshell"
 
-    function t(key, fallback) { return theme[key] || fallback }
+    function t(key, fallback) {
+        return theme[key] || fallback;
+    }
+
     function shellQuote(value) {
         if (value === undefined || value === null)
-            return "''"
-        return "'" + String(value).replace(/'/g, "'\\''") + "'"
+            return "''";
+
+        return "'" + String(value).replace(/'/g, "'\\''") + "'";
     }
 
     function openPath(path) {
-        Quickshell.execDetached(["bash", "-lc",
-            "if command -v xdg-open >/dev/null 2>&1; then " +
-            "  xdg-open " + shellQuote(path) + " >/dev/null 2>&1; " +
-            "fi"
-        ])
+        Quickshell.execDetached(["bash", "-lc", "if command -v xdg-open >/dev/null 2>&1; then " + "  xdg-open " + shellQuote(path) + " >/dev/null 2>&1; " + "fi"]);
     }
 
     function openEditorPath(path) {
-        Quickshell.execDetached(["bash", "-lc",
-            "FILE=" + shellQuote(path) + "; " +
-            "if command -v omarchy-launch-editor >/dev/null 2>&1; then " +
-            "  omarchy-launch-editor \"$FILE\"; " +
-            "elif [ -n \"$EDITOR\" ] && command -v \"${EDITOR%% *}\" >/dev/null 2>&1 && command -v xdg-terminal-exec >/dev/null 2>&1; then " +
-            "  setsid xdg-terminal-exec sh -lc '\"$EDITOR\" \"$1\"' sh \"$FILE\" >/dev/null 2>&1 & " +
-            "elif command -v xdg-open >/dev/null 2>&1; then " +
-            "  xdg-open \"$FILE\" >/dev/null 2>&1; " +
-            "fi"
-        ])
+        Quickshell.execDetached(["bash", "-lc", "FILE=" + shellQuote(path) + "; " + "if command -v omarchy-launch-editor >/dev/null 2>&1; then " + "  omarchy-launch-editor \"$FILE\"; " + "elif [ -n \"$EDITOR\" ] && command -v \"${EDITOR%% *}\" >/dev/null 2>&1 && command -v xdg-terminal-exec >/dev/null 2>&1; then " + "  setsid xdg-terminal-exec sh -lc '\"$EDITOR\" \"$1\"' sh \"$FILE\" >/dev/null 2>&1 & " + "elif command -v xdg-open >/dev/null 2>&1; then " + "  xdg-open \"$FILE\" >/dev/null 2>&1; " + "fi"]);
     }
 
     Flickable {
@@ -47,6 +39,7 @@ Item {
 
         Column {
             id: contentColumn
+
             width: root.width
             spacing: 10
 
@@ -90,6 +83,7 @@ Item {
                                 font.family: Style.Typography.text
                                 font.weight: Font.DemiBold
                             }
+
                         }
 
                         ColumnLayout {
@@ -107,9 +101,10 @@ Item {
                             Text {
                                 text: "A custom Quickshell setup tuned for Omarchy workflows."
                                 color: Qt.alpha(t("muted", "#9fb29f"), 0.74)
-                                font.pixelSize: Style.Typography.caption
+                                font.pixelSize: Style.Typography.componentMeta
                                 font.family: Style.Typography.text
                             }
+
                         }
 
                         Rectangle {
@@ -124,18 +119,20 @@ Item {
                                 anchors.centerIn: parent
                                 text: "MIT"
                                 color: t("accent", "#9ccfa0")
-                                font.pixelSize: Style.Typography.micro
+                                font.pixelSize: Style.Typography.componentMeta
                                 font.family: Style.Typography.text
                                 font.weight: Font.DemiBold
                             }
+
                         }
+
                     }
 
                     Text {
                         Layout.fillWidth: true
                         text: "Launcher, themed settings, media OSD, notifications, bar layouts, tray handling, and shell controls in one compact config."
                         color: Qt.alpha(t("fg", "#eef6ef"), 0.82)
-                        font.pixelSize: Style.Typography.caption
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.text
                         wrapMode: Text.WordWrap
                     }
@@ -156,10 +153,11 @@ Item {
                                 anchors.centerIn: parent
                                 text: "Bar: " + (root.state ? root.state.barStyle : "dock")
                                 color: Qt.alpha(t("fg", "#eef6ef"), 0.84)
-                                font.pixelSize: Style.Typography.micro
+                                font.pixelSize: Style.Typography.componentMeta
                                 font.family: Style.Typography.text
                                 font.weight: Font.Medium
                             }
+
                         }
 
                         Rectangle {
@@ -174,10 +172,11 @@ Item {
                                 anchors.centerIn: parent
                                 text: "Workspaces: " + (root.state ? root.state.workspaceStyle : "og")
                                 color: Qt.alpha(t("fg", "#eef6ef"), 0.84)
-                                font.pixelSize: Style.Typography.micro
+                                font.pixelSize: Style.Typography.componentMeta
                                 font.family: Style.Typography.text
                                 font.weight: Font.Medium
                             }
+
                         }
 
                         Rectangle {
@@ -192,13 +191,17 @@ Item {
                                 anchors.centerIn: parent
                                 text: "OSD: " + (root.state ? root.state.osdPosition : "bottom-center")
                                 color: Qt.alpha(t("fg", "#eef6ef"), 0.84)
-                                font.pixelSize: Style.Typography.micro
+                                font.pixelSize: Style.Typography.componentMeta
                                 font.family: Style.Typography.text
                                 font.weight: Font.Medium
                             }
+
                         }
+
                     }
+
                 }
+
             }
 
             Rectangle {
@@ -218,14 +221,14 @@ Item {
                     Text {
                         text: "Config Root"
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                        font.pixelSize: Style.Typography.micro
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.text
                     }
 
                     Text {
                         text: root.configDir
                         color: t("fg", "#eef6ef")
-                        font.pixelSize: Style.Typography.label
+                        font.pixelSize: Style.Typography.componentSubtitle
                         font.family: Style.Typography.text
                         font.weight: Font.DemiBold
                     }
@@ -233,24 +236,26 @@ Item {
                     Text {
                         text: "Notification position: " + (root.state ? root.state.notificationPosition : "top-center")
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.72)
-                        font.pixelSize: Style.Typography.micro
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.text
                     }
 
                     Text {
                         text: "Bar position: " + (root.state ? root.state.barPosition : "top")
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.72)
-                        font.pixelSize: Style.Typography.micro
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.text
                     }
 
                     Text {
                         text: "Launcher icon: " + (root.state ? root.state.launcherIconPreset : "omarchy")
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.72)
-                        font.pixelSize: Style.Typography.micro
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.text
                     }
+
                 }
+
             }
 
             Rectangle {
@@ -269,25 +274,29 @@ Item {
 
                     Text {
                         id: mitTitle
+
                         text: "MIT License"
                         color: t("fg", "#eef6ef")
-                        font.pixelSize: Style.Typography.bodySmall
+                        font.pixelSize: Style.Typography.componentSubtitle
                         font.family: Style.Typography.text
                         font.weight: Font.DemiBold
                     }
 
                     Text {
                         id: mitBody
+
                         Layout.fillWidth: true
                         text: "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software.\n\nThe software is provided \"as is\", without warranty of any kind, express or implied, including but not limited to merchantability, fitness for a particular purpose, and noninfringement."
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.68)
-                        font.pixelSize: Style.Typography.micro
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.text
                         wrapMode: Text.WordWrap
                         lineHeight: 1.18
                         lineHeightMode: Text.ProportionalHeight
                     }
+
                 }
+
             }
 
             RowLayout {
@@ -297,12 +306,11 @@ Item {
 
                 Rectangle {
                     id: openConfigButton
+
                     Layout.fillWidth: true
                     height: 34
                     radius: 10
-                    color: openConfigArea.pressed
-                        ? Qt.alpha(t("accent", "#9ccfa0"), 0.24)
-                        : Qt.alpha(t("accent", "#9ccfa0"), 0.18)
+                    color: openConfigArea.pressed ? Qt.alpha(t("accent", "#9ccfa0"), 0.24) : Qt.alpha(t("accent", "#9ccfa0"), 0.18)
                     border.color: Qt.alpha(t("accent", "#9ccfa0"), 0.28)
                     border.width: 1
 
@@ -310,28 +318,29 @@ Item {
                         anchors.centerIn: parent
                         text: "Open config folder"
                         color: t("fg", "#eef6ef")
-                        font.pixelSize: Style.Typography.caption
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.text
                         font.weight: Font.DemiBold
                     }
 
                     MouseArea {
                         id: openConfigArea
+
                         anchors.fill: parent
                         cursorShape: Qt.PointingHandCursor
                         hoverEnabled: true
-                            onClicked: root.openPath(root.configDir)
+                        onClicked: root.openPath(root.configDir)
                     }
+
                 }
 
                 Rectangle {
                     id: openShellButton
+
                     Layout.preferredWidth: 120
                     height: 34
                     radius: 10
-                    color: openShellArea.pressed
-                        ? Qt.alpha(t("dim", "#45475a"), 0.22)
-                        : Qt.alpha(t("dim", "#45475a"), 0.16)
+                    color: openShellArea.pressed ? Qt.alpha(t("dim", "#45475a"), 0.22) : Qt.alpha(t("dim", "#45475a"), 0.16)
                     border.color: Qt.alpha(t("accent", "#9ccfa0"), 0.08)
                     border.width: 1
 
@@ -339,20 +348,26 @@ Item {
                         anchors.centerIn: parent
                         text: "Open shell.qml"
                         color: Qt.alpha(t("fg", "#eef6ef"), 0.8)
-                        font.pixelSize: Style.Typography.caption
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.text
                         font.weight: Font.Medium
                     }
 
                     MouseArea {
                         id: openShellArea
+
                         anchors.fill: parent
                         cursorShape: Qt.PointingHandCursor
                         hoverEnabled: true
                         onClicked: root.openEditorPath(root.configDir + "/shell.qml")
                     }
+
                 }
+
             }
+
         }
+
     }
+
 }

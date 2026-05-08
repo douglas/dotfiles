@@ -739,7 +739,7 @@ PanelWindow {
                         Text {
                             text: Quickshell.env("HOSTNAME") || "localhost"
                             color: theme.muted || "#585b70"
-                            font.pixelSize: Style.Typography.label; font.family: Style.Typography.monoPropo
+                            font.pixelSize: Style.Typography.componentSubtitle; font.family: Style.Typography.monoPropo
                         }
                     }
                 }
@@ -824,7 +824,7 @@ PanelWindow {
                                     ? cc.wifiSsid
                                     : (cc.wifiEnabled ? "Manage networks" : "Wi-Fi off"))
                             color: cc.ethernetActive ? (theme.muted || "#585b70") : cc.wifiStateColor()
-                            font.pixelSize: Style.Typography.micro; font.family: Style.Typography.monoPropo
+                            font.pixelSize: Style.Typography.componentMeta; font.family: Style.Typography.monoPropo
                             elide: Text.ElideRight; width: parent.parent.width - 10
                             horizontalAlignment: Text.AlignHCenter
                         }
@@ -864,7 +864,7 @@ PanelWindow {
                             color: cc.wifiEnabled
                                 ? (theme.accent || "#89b4fa")
                                 : (theme.muted || "#585b70")
-                            font.pixelSize: Style.Typography.micro
+                            font.pixelSize: Style.Typography.componentMeta
                             font.family: Style.Typography.monoPropo
                             font.weight: Font.DemiBold
                         }
@@ -917,7 +917,7 @@ PanelWindow {
                                     ? (cc.btEnabled ? "Manage devices" : "Bluetooth off")
                                     : cc.bluetoothUnavailableLabel("No adapter"))
                             color: theme.muted || "#585b70"
-                            font.pixelSize: Style.Typography.micro; font.family: Style.Typography.monoPropo
+                            font.pixelSize: Style.Typography.componentMeta; font.family: Style.Typography.monoPropo
                             elide: Text.ElideRight
                             width: parent.parent.width - 10
                             horizontalAlignment: Text.AlignHCenter
@@ -961,7 +961,7 @@ PanelWindow {
                             color: cc.btEnabled
                                 ? (theme.accent || "#89b4fa")
                                 : (theme.muted || "#585b70")
-                            font.pixelSize: Style.Typography.micro
+                            font.pixelSize: Style.Typography.componentMeta
                             font.family: Style.Typography.monoPropo
                             font.weight: Font.DemiBold
                         }
@@ -999,14 +999,14 @@ PanelWindow {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: "DND"
                             color: cc.dndEnabled ? (theme.fg || "#cdd6f4") : (theme.muted || "#585b70")
-                            font.pixelSize: Style.Typography.label; font.family: Style.Typography.monoPropo
+                            font.pixelSize: Style.Typography.componentSubtitle; font.family: Style.Typography.monoPropo
                             font.weight: Font.Medium
                         }
                         Text {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: cc.dndEnabled ? "On" : "Off"
                             color: theme.muted || "#585b70"
-                            font.pixelSize: Style.Typography.micro; font.family: Style.Typography.monoPropo
+                            font.pixelSize: Style.Typography.componentMeta; font.family: Style.Typography.monoPropo
                         }
                     }
                     MouseArea {
@@ -1022,7 +1022,7 @@ PanelWindow {
                 visible: cc.showWifiList && cc.wifiNetworks.length > 0
                 Text {
                     text: "Available Networks"; color: theme.muted || "#585b70"
-                    font.pixelSize: Style.Typography.caption; font.family: Style.Typography.monoPropo; bottomPadding: 2
+                    font.pixelSize: Style.Typography.componentMeta; font.family: Style.Typography.monoPropo; bottomPadding: 2
                 }
                 Repeater {
                     model: cc.wifiNetworks
@@ -1043,14 +1043,14 @@ PanelWindow {
                             Text {
                                 anchors.verticalCenter: parent.verticalCenter; text: modelData.ssid
                                 color: modelData.ssid === cc.wifiSsid ? (theme.accent || "#89b4fa") : (theme.fg || "#cdd6f4")
-                                font.pixelSize: Style.Typography.label; font.family: Style.Typography.monoPropo
+                                font.pixelSize: Style.Typography.componentSubtitle; font.family: Style.Typography.monoPropo
                                 font.weight: modelData.ssid === cc.wifiSsid ? Font.Medium : Font.Normal
                                 elide: Text.ElideRight; width: parent.width - 44
                             }
                             Text {
                                 anchors.verticalCenter: parent.verticalCenter
                                 visible: modelData.secure; text: "󰌾"
-                                color: theme.muted || "#585b70"; font.pixelSize: Style.Typography.label; font.family: Style.Typography.monoPropo
+                                color: theme.muted || "#585b70"; font.pixelSize: Style.Typography.componentSubtitle; font.family: Style.Typography.monoPropo
                             }
                         }
                         MouseArea {
@@ -1072,7 +1072,7 @@ PanelWindow {
                 visible: cc.showBtList && cc.btDevices.length > 0
                 Text {
                     text: "Paired Devices"; color: theme.muted || "#585b70"
-                    font.pixelSize: Style.Typography.caption; font.family: Style.Typography.monoPropo; bottomPadding: 2
+                    font.pixelSize: Style.Typography.componentMeta; font.family: Style.Typography.monoPropo; bottomPadding: 2
                 }
                 Repeater {
                     model: cc.btDevices
@@ -1092,7 +1092,7 @@ PanelWindow {
                             }
                             Text {
                                 anchors.verticalCenter: parent.verticalCenter; text: modelData.name
-                                color: theme.fg || "#cdd6f4"; font.pixelSize: Style.Typography.label; font.family: Style.Typography.monoPropo
+                                color: theme.fg || "#cdd6f4"; font.pixelSize: Style.Typography.componentSubtitle; font.family: Style.Typography.monoPropo
                                 elide: Text.ElideRight; width: parent.parent.width - 50
                             }
                         }
@@ -1219,7 +1219,7 @@ PanelWindow {
                         Layout.alignment: Qt.AlignVCenter
                         text: "Wi-Fi Manager"
                         color: cc.theme.fg || "#cdd6f4"
-                        font.pixelSize: Style.Typography.bodySmall
+                        font.pixelSize: Style.Typography.componentSubtitle
                         font.family: Style.Typography.monoPropo
                         font.weight: Font.Medium
                     }
@@ -1227,7 +1227,7 @@ PanelWindow {
                         Layout.alignment: Qt.AlignVCenter
                         text: "✕"
                         color: wifiCloseMa.containsMouse ? (cc.theme.red || "#f38ba8") : (cc.theme.muted || "#585b70")
-                        font.pixelSize: Style.Typography.micro
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.monoPropo
                         MouseArea {
                             id: wifiCloseMa
@@ -1273,7 +1273,7 @@ PanelWindow {
                                     : cc.wifiStateLabel())
                                 : "Wi-Fi Off"
                             color: cc.theme.fg || "#cdd6f4"
-                            font.pixelSize: Style.Typography.bodySmall
+                            font.pixelSize: Style.Typography.componentSubtitle
                             font.family: Style.Typography.monoPropo
                             elide: Text.ElideRight
                         }
@@ -1281,7 +1281,7 @@ PanelWindow {
                             Layout.alignment: Qt.AlignVCenter
                             text: cc.wifiEnabled ? "Disable" : "Enable"
                             color: cc.theme.accent || "#89b4fa"
-                            font.pixelSize: Style.Typography.bodySmall
+                            font.pixelSize: Style.Typography.componentSubtitle
                             font.family: Style.Typography.monoPropo
                         }
                     }
@@ -1316,7 +1316,7 @@ PanelWindow {
                             Layout.alignment: Qt.AlignVCenter
                             text: "Rescan Networks"
                             color: cc.theme.muted || "#585b70"
-                            font.pixelSize: Style.Typography.bodySmall
+                            font.pixelSize: Style.Typography.componentSubtitle
                             font.family: Style.Typography.monoPropo
                         }
                         RowLayout {
@@ -1337,7 +1337,7 @@ PanelWindow {
                             Text {
                                 text: cc.wifiScanning ? "Scanning" : "Scan"
                                 color: cc.theme.accent || "#89b4fa"
-                                font.pixelSize: Style.Typography.bodySmall
+                                font.pixelSize: Style.Typography.componentSubtitle
                                 font.family: Style.Typography.monoPropo
                             }
                         }
@@ -1396,7 +1396,7 @@ PanelWindow {
                                         Layout.fillWidth: true
                                         text: modelData.ssid
                                         color: modelData.ssid === cc.wifiSsid ? (cc.theme.accent || "#89b4fa") : (cc.theme.fg || "#cdd6f4")
-                                        font.pixelSize: Style.Typography.bodySmall
+                                        font.pixelSize: Style.Typography.componentSubtitle
                                         font.family: Style.Typography.monoPropo
                                         elide: Text.ElideRight
                                     }
@@ -1404,7 +1404,7 @@ PanelWindow {
                                         Layout.alignment: Qt.AlignVCenter
                                         text: modelData.ssid === cc.wifiSsid && cc.wifiState !== "" ? cc.wifiState : (modelData.secure ? "secure" : "")
                                         color: modelData.ssid === cc.wifiSsid ? cc.wifiStateColor() : (cc.theme.muted || "#585b70")
-                                        font.pixelSize: Style.Typography.caption
+                                        font.pixelSize: Style.Typography.componentMeta
                                         font.family: Style.Typography.monoPropo
                                     }
                                     RowLayout {
@@ -1423,7 +1423,7 @@ PanelWindow {
                                                 anchors.centerIn: parent
                                                 text: modelData.ssid === cc.wifiSsid ? "Disconnect" : "Connect"
                                                 color: cc.theme.accent || "#89b4fa"
-                                                font.pixelSize: Style.Typography.caption
+                                                font.pixelSize: Style.Typography.componentMeta
                                                 font.family: Style.Typography.monoPropo
                                             }
                                             MouseArea {
@@ -1454,7 +1454,7 @@ PanelWindow {
                                                 anchors.centerIn: parent
                                                 text: "Forget"
                                                 color: cc.theme.muted || "#585b70"
-                                                font.pixelSize: Style.Typography.caption
+                                                font.pixelSize: Style.Typography.componentMeta
                                                 font.family: Style.Typography.monoPropo
                                             }
                                             MouseArea {
@@ -1486,7 +1486,7 @@ PanelWindow {
                                 anchors.centerIn: parent
                                 text: "No networks found"
                                 color: cc.theme.muted || "#585b70"
-                                font.pixelSize: Style.Typography.bodySmall
+                                font.pixelSize: Style.Typography.componentSubtitle
                                 font.family: Style.Typography.monoPropo
                             }
                         }
@@ -1531,7 +1531,7 @@ PanelWindow {
                         Text {
                             text: "Secure Wi‑Fi Network"
                             color: cc.theme.fg || "#cdd6f4"
-                            font.pixelSize: Style.Typography.bodySmall
+                            font.pixelSize: Style.Typography.componentSubtitle
                             font.family: Style.Typography.monoPropo
                             font.weight: Font.Medium
                         }
@@ -1539,7 +1539,7 @@ PanelWindow {
                         Text {
                             text: cc.wifiPasswordSsid
                             color: cc.theme.muted || "#585b70"
-                            font.pixelSize: Style.Typography.caption
+                            font.pixelSize: Style.Typography.componentMeta
                             font.family: Style.Typography.monoPropo
                             elide: Text.ElideRight
                         }
@@ -1563,7 +1563,7 @@ PanelWindow {
                                 anchors.rightMargin: cc.btpx(10)
                                 text: cc.wifiPasswordText
                                 color: cc.theme.fg || "#cdd6f4"
-                                font.pixelSize: Style.Typography.label
+                                font.pixelSize: Style.Typography.componentSubtitle
                                 font.family: Style.Typography.monoPropo
                                 echoMode: TextInput.Password
                                 selectionColor: Qt.alpha(cc.theme.accent || "#89b4fa", 0.35)
@@ -1583,7 +1583,7 @@ PanelWindow {
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: "Password"
                                 color: cc.theme.muted || "#585b70"
-                                font.pixelSize: Style.Typography.label
+                                font.pixelSize: Style.Typography.componentSubtitle
                                 font.family: Style.Typography.monoPropo
                                 visible: passwordInput.text.length === 0
                             }
@@ -1593,7 +1593,7 @@ PanelWindow {
                             visible: cc.wifiPasswordError !== ""
                             text: cc.wifiPasswordError
                             color: cc.theme.red || "#f38ba8"
-                            font.pixelSize: Style.Typography.caption
+                            font.pixelSize: Style.Typography.componentMeta
                             font.family: Style.Typography.monoPropo
                             wrapMode: Text.WordWrap
                             width: parent.width
@@ -1612,7 +1612,7 @@ PanelWindow {
                                     anchors.centerIn: parent
                                     text: "Cancel"
                                     color: cc.theme.muted || "#585b70"
-                                    font.pixelSize: Style.Typography.caption
+                                    font.pixelSize: Style.Typography.componentMeta
                                     font.family: Style.Typography.monoPropo
                                 }
                                 MouseArea {
@@ -1636,7 +1636,7 @@ PanelWindow {
                                     anchors.centerIn: parent
                                     text: cc.wifiPasswordWorking ? "Connecting" : "Connect"
                                     color: cc.theme.accent || "#89b4fa"
-                                    font.pixelSize: Style.Typography.caption
+                                    font.pixelSize: Style.Typography.componentMeta
                                     font.family: Style.Typography.monoPropo
                                 }
                                 MouseArea {
@@ -1713,7 +1713,7 @@ PanelWindow {
                         Layout.alignment: Qt.AlignVCenter
                         text: "Bluetooth Manager"
                         color: cc.theme.fg || "#cdd6f4"
-                        font.pixelSize: Style.Typography.bodySmall
+                        font.pixelSize: Style.Typography.componentSubtitle
                         font.family: Style.Typography.monoPropo
                         font.weight: Font.Medium
                     }
@@ -1721,7 +1721,7 @@ PanelWindow {
                         Layout.alignment: Qt.AlignVCenter
                         text: "✕"
                         color: btCloseMa.containsMouse ? (cc.theme.red || "#f38ba8") : (cc.theme.muted || "#585b70")
-                        font.pixelSize: Style.Typography.micro
+                        font.pixelSize: Style.Typography.componentMeta
                         font.family: Style.Typography.monoPropo
                         MouseArea {
                             id: btCloseMa
@@ -1759,14 +1759,14 @@ PanelWindow {
                                 ? (cc.btEnabled ? "Bluetooth On" : "Bluetooth Off")
                                 : cc.bluetoothUnavailableLabel("Bluetooth adapter not found")
                             color: cc.theme.fg || "#cdd6f4"
-                            font.pixelSize: Style.Typography.bodySmall
+                            font.pixelSize: Style.Typography.componentSubtitle
                             font.family: Style.Typography.monoPropo
                         }
                         Text {
                             Layout.alignment: Qt.AlignVCenter
                             text: cc.hasBluetoothDevice ? (cc.btEnabled ? "Disable" : "Enable") : ""
                             color: cc.theme.accent || "#89b4fa"
-                            font.pixelSize: Style.Typography.bodySmall
+                            font.pixelSize: Style.Typography.componentSubtitle
                             font.family: Style.Typography.monoPropo
                         }
                     }
@@ -1807,7 +1807,7 @@ PanelWindow {
                             Layout.alignment: Qt.AlignVCenter
                             text: cc.hasBluetoothDevice ? "Scan nearby devices" : cc.bluetoothUnavailableLabel("No Bluetooth adapter found")
                             color: cc.hasBluetoothDevice ? (cc.theme.muted || "#585b70") : (cc.theme.red || "#f38ba8")
-                            font.pixelSize: Style.Typography.bodySmall
+                            font.pixelSize: Style.Typography.componentSubtitle
                             font.family: Style.Typography.monoPropo
                         }
                         RowLayout {
@@ -1828,7 +1828,7 @@ PanelWindow {
                             Text {
                                 text: cc.hasBluetoothDevice ? (cc.btScanning ? "Scanning" : "Scan") : ""
                                 color: cc.theme.accent || "#89b4fa"
-                                font.pixelSize: Style.Typography.bodySmall
+                                font.pixelSize: Style.Typography.componentSubtitle
                                 font.family: Style.Typography.monoPropo
                             }
                         }
@@ -1899,7 +1899,7 @@ PanelWindow {
                                             Layout.alignment: Qt.AlignVCenter
                                             text: modelData.name
                                             color: cc.theme.fg || "#cdd6f4"
-                                            font.pixelSize: Style.Typography.bodySmall
+                                            font.pixelSize: Style.Typography.componentSubtitle
                                             font.family: Style.Typography.monoPropo
                                             elide: Text.ElideRight
                                         }
@@ -1908,7 +1908,7 @@ PanelWindow {
                                             visible: modelData.battery >= 0
                                             text: "󰁹 " + modelData.battery + "%"
                                             color: cc.theme.muted || "#585b70"
-                                            font.pixelSize: Style.Typography.caption
+                                            font.pixelSize: Style.Typography.componentMeta
                                             font.family: Style.Typography.monoPropo
                                         }
                                         Text {
@@ -1919,7 +1919,7 @@ PanelWindow {
                                                 : modelData.trusted
                                                     ? (cc.theme.green || "#a6e3a1")
                                                     : (cc.theme.red || "#f38ba8")
-                                            font.pixelSize: Style.Typography.caption
+                                            font.pixelSize: Style.Typography.componentMeta
                                             font.family: Style.Typography.monoPropo
                                         }
                                     }
@@ -1941,7 +1941,7 @@ PanelWindow {
                                                 anchors.centerIn: parent
                                                 text: "connect"
                                                 color: cc.theme.accent || "#89b4fa"
-                                                font.pixelSize: Style.Typography.caption
+                                                font.pixelSize: Style.Typography.componentMeta
                                                 font.family: Style.Typography.monoPropo
                                             }
                                             MouseArea {
@@ -1964,7 +1964,7 @@ PanelWindow {
                                                 anchors.centerIn: parent
                                                 text: "disconnect"
                                                 color: "#fab387"
-                                                font.pixelSize: Style.Typography.caption
+                                                font.pixelSize: Style.Typography.componentMeta
                                                 font.family: Style.Typography.monoPropo
                                             }
                                             MouseArea {
@@ -1986,7 +1986,7 @@ PanelWindow {
                                                 anchors.centerIn: parent
                                                 text: "remove"
                                                 color: cc.theme.red || "#f38ba8"
-                                                font.pixelSize: Style.Typography.caption
+                                                font.pixelSize: Style.Typography.componentMeta
                                                 font.family: Style.Typography.monoPropo
                                             }
                                             MouseArea {
@@ -2023,7 +2023,7 @@ PanelWindow {
                                     anchors.horizontalCenter: parent.horizontalCenter
                                     text: cc.hasBluetoothDevice ? "No devices found" : cc.bluetoothUnavailableLabel("Bluetooth adapter not detected")
                                     color: cc.hasBluetoothDevice ? (cc.theme.fg || "#cdd6f4") : (cc.theme.red || "#f38ba8")
-                                    font.pixelSize: Style.Typography.bodySmall
+                                    font.pixelSize: Style.Typography.componentSubtitle
                                     font.family: Style.Typography.monoPropo
                                 }
                                 Text {
@@ -2032,7 +2032,7 @@ PanelWindow {
                                         ? "Click Scan to discover"
                                         : (cc.hasBluetoothctl ? "Enable Bluetooth in system" : "Use Omarchy Bluetooth TUI")
                                     color: cc.theme.muted || "#585b70"
-                                    font.pixelSize: Style.Typography.caption
+                                    font.pixelSize: Style.Typography.componentMeta
                                     font.family: Style.Typography.monoPropo
                                 }
                             }
