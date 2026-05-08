@@ -231,7 +231,7 @@ PanelWindow {
                         spacing: 1
 
                         Text {
-                            text: "Kurama Settings"
+                            text: "Neo Settings"
                             color: root.t("fg", "#eef6ef")
                             font.pixelSize: Style.Typography.settingsTitle
                             font.family: Style.Typography.monoPropo
@@ -240,7 +240,7 @@ PanelWindow {
                         }
 
                         Text {
-                            text: "Setting Manager for Kurama."
+                            text: "Setting Manager for Neo."
                             color: Qt.alpha(root.t("muted", "#9fb29f"), 0.7)
                             font.pixelSize: Style.Typography.componentMeta
                             font.family: Style.Typography.text

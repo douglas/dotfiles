@@ -29,7 +29,7 @@ cat > "$SETTINGS_FILE" <<'EOF'
 }
 EOF
 
-printf 'Kurama settings were reset to defaults.\n'
+printf 'Neo settings were reset to defaults.\n'
 if [ "$HAD_BACKUP" -eq 1 ]; then
   printf 'Backup: %s\n' "$BACKUP_DIR/settings.$STAMP.json.bak"
 fi

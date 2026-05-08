@@ -13,7 +13,7 @@ Item {
     property int overlayBarOffset: 44
     property real overlayScale: 1.18
     property bool quietMode: false
-    property bool showing: Quickshell.env("KURAMA_CCTOP_OPEN") === "1"
+    property bool showing: Quickshell.env("NEOSH_CCTOP_OPEN") === "1"
     property var sessions: []
     property var recentProjects: []
     property int selectedIndex: 0
@@ -23,7 +23,7 @@ Item {
     property double nowMs: Date.now()
 
     readonly property string homeDir: Quickshell.env("HOME") || ""
-    readonly property string helperPath: Quickshell.env("KURAMA_CCTOP_HELPER") || homeDir + "/.config/quickshell/scripts/kurama-cctop"
+    readonly property string helperPath: Quickshell.env("NEOSH_CCTOP_HELPER") || homeDir + "/.config/quickshell/scripts/neosh-cctop"
     readonly property bool useOmarchyTheme: theme.omarchyThemeLoaded === true
     readonly property color cBg: useOmarchyTheme ? theme.bg : "#1A1B26"
     readonly property bool cLightTheme: colorLuma(cBg) > 0.62

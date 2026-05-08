@@ -303,7 +303,7 @@ Item {
     Process {
         id: eventsProc
 
-        command: ["bash", "-lc", "helper=\"$HOME/.local/bin/kurama-google-calendar\"; " + "if [ -x \"$helper\" ]; then \"$helper\" today " + root.eventRequestDate + "; " + "elif command -v kurama-google-calendar >/dev/null 2>&1; then kurama-google-calendar today " + root.eventRequestDate + "; " + "else printf '%s\\n' '{\"ok\":false,\"error\":\"kurama-google-calendar is not installed\",\"events\":[]}'; fi"]
+        command: ["bash", "-lc", "helper=\"$HOME/.local/bin/neosh-google-calendar\"; " + "if [ -x \"$helper\" ]; then \"$helper\" today " + root.eventRequestDate + "; " + "elif command -v neosh-google-calendar >/dev/null 2>&1; then neosh-google-calendar today " + root.eventRequestDate + "; " + "else printf '%s\\n' '{\"ok\":false,\"error\":\"neosh-google-calendar is not installed\",\"events\":[]}'; fi"]
         running: false
         onExited: {
             const output = eventsProc.stdout.buf.trim();

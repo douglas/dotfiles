@@ -45,7 +45,7 @@ Item {
     }
 
     function sendTestNotification() {
-        Quickshell.execDetached(["bash", "-lc", "notify-send -a Kurama -u normal 'Kurama Settings' 'This is a test notification.'"]);
+        Quickshell.execDetached(["bash", "-lc", "notify-send -a Neo -u normal 'Neo Settings' 'This is a test notification.'"]);
     }
 
     ColumnLayout {

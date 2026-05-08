@@ -12,15 +12,15 @@ from datetime import date, datetime, time as dt_time, timedelta
 from pathlib import Path
 
 
-APP_NAME = "Kurama"
+APP_NAME = "Neo"
 DEFAULT_THRESHOLDS = [10, 5, 1]
 
 
 def state_dir():
     base = os.environ.get("XDG_STATE_HOME")
     if base:
-        return Path(base) / "kurama"
-    return Path.home() / ".local" / "state" / "kurama"
+        return Path(base) / "neosh"
+    return Path.home() / ".local" / "state" / "neosh"
 
 
 def run_gcalcli(target_date):
@@ -245,7 +245,7 @@ def watch(args):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Kurama Google Calendar helper")
+    parser = argparse.ArgumentParser(description="Neo Google Calendar helper")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     today_parser = subparsers.add_parser("today", help="print events for today or a YYYY-MM-DD date as JSON")

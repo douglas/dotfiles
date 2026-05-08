@@ -91,7 +91,7 @@ Item {
                             spacing: 4
 
                             Text {
-                                text: "Kurama for Omarchy setups"
+                                text: "Neo for Omarchy setups"
                                 color: t("fg", "#eef6ef")
                                 font.pixelSize: Style.Typography.componentTitle
                                 font.family: Style.Typography.text

@@ -799,7 +799,7 @@ case "${1:-sessions}" in
     focus_session "${2:-}" "${3:-}"
     ;;
   *)
-    printf 'usage: kurama-cctop sessions|history|focus [pid] [project_path]\n' >&2
+    printf 'usage: neosh-cctop sessions|history|focus [pid] [project_path]\n' >&2
     exit 2
     ;;
 esac
