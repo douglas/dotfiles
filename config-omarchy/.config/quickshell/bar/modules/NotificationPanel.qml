@@ -36,20 +36,6 @@ Item {
     function t(key, fallback) { return theme[key] || fallback }
     function px(value) { return Math.round(value * scaleFactor) }
 
-    function appIcon(name) {
-        const map = {
-            "firefox": "󰈹", "chromium": "󰊯", "discord": "󰙯",
-            "spotify": "󰓇", "telegram": "󰔁", "code": "󰨞",
-            "vscode": "󰨞", "alacritty": "󰆍", "kitty": "󰆍",
-            "steam": "󰓓", "vlc": "󰕼", "mpv": "󰎁",
-            "thunar": "󰉋", "nautilus": "󰉋",
-        }
-        const k = (name || "").toLowerCase()
-        for (const [key, val] of Object.entries(map))
-            if (k.includes(key)) return val
-        return "󰂚"
-    }
-
     Timer {
         id: autoDismissTimer
         interval: 3000
@@ -158,7 +144,7 @@ Item {
                 acceptedButtons: Qt.RightButton
                 onTapped: {
                     if (toastWin.latest)
-                        notifServer.hideToast(toastWin.latest.id)
+                        notifServer.dismiss(toastWin.latest)
                 }
             }
 
@@ -202,11 +188,12 @@ Item {
                     id: mainRow
                     spacing: 8
 
-                    Rectangle {
-                        width: 6; height: 6; radius: 3
-                        color: toastWin.latest && notifServer.isCritical(toastWin.latest)
-                            ? t("red", "#f38ba8")
-                            : t("accent", "#89b4fa")
+                    NotificationAppIcon {
+                        notification: toastWin.latest
+                        critical: toastWin.latest && notifServer.isCritical(toastWin.latest)
+                        theme: root.theme
+                        size: 24
+                        imageSize: 16
                     }
 
                     Text {
@@ -674,11 +661,12 @@ Item {
                                 Layout.fillWidth: true
                                 spacing: 7
 
-                                Rectangle {
-                                    width: 6; height: 6; radius: 3
-                                    color: notifServer.isCritical(latest)
-                                        ? t("red", "#f38ba8") : t("accent", "#89b4fa")
-                                    opacity: 0.85
+                                NotificationAppIcon {
+                                    notification: latest
+                                    critical: notifServer.isCritical(latest)
+                                    theme: root.theme
+                                    size: 26
+                                    imageSize: 17
                                 }
 
                                 Text {

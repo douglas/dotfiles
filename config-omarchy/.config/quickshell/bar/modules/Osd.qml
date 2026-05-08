@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
+import Quickshell.Widgets
 import "../../style" as Style
 
 Item {
@@ -62,6 +63,7 @@ Item {
             Canvas {
                 id: wave
                 anchors.fill: parent
+                visible: root.service && root.service.mediaMode
                 opacity: 0.2
 
                 Connections {
@@ -133,9 +135,15 @@ Item {
                 anchors.fill: parent
                 z: 10
                 enabled: root.messageMode
+                acceptedButtons: Qt.LeftButton | Qt.RightButton
                 cursorShape: Qt.PointingHandCursor
-                onClicked: {
-                    if (root.service)
+                onClicked: mouse => {
+                    if (!root.service)
+                        return
+
+                    if (mouse.button === Qt.RightButton)
+                        root.service.dismissMessage()
+                    else
                         root.service.activateMessage()
                 }
             }
@@ -190,11 +198,30 @@ Item {
                             Layout.fillWidth: true
                             spacing: root.px(8)
 
-                            Text {
-                                text: root.service ? root.service.icon : "󰕾"
-                                color: root.toneColor()
-                                font.pixelSize: Style.Typography.actionIcon
-                                font.family: Style.Typography.mono
+                            Item {
+                                Layout.preferredWidth: root.px(22)
+                                Layout.preferredHeight: root.px(22)
+
+                                IconImage {
+                                    id: osdIconImage
+                                    anchors.centerIn: parent
+                                    width: root.px(20)
+                                    height: root.px(20)
+                                    implicitSize: root.px(20)
+                                    source: root.service ? root.service.iconSource : ""
+                                    asynchronous: true
+                                    mipmap: true
+                                    visible: source !== "" && status !== Image.Error
+                                }
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: root.service ? root.service.icon : "󰕾"
+                                    color: root.toneColor()
+                                    font.pixelSize: Style.Typography.actionIcon
+                                    font.family: Style.Typography.mono
+                                    visible: !osdIconImage.visible
+                                }
                             }
 
                             Text {

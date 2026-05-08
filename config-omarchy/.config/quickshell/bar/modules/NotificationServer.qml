@@ -103,6 +103,26 @@ Item {
         return "󰂚"
     }
 
+    function _isDirectIconSource(icon) {
+        const value = icon || ""
+        return value.startsWith("/") ||
+            value.startsWith("file:") ||
+            value.startsWith("image:") ||
+            value.startsWith("qrc:") ||
+            value.startsWith("data:")
+    }
+
+    function iconSourceFor(notif) {
+        const value = notif?.appIcon || ""
+        if (value === "")
+            return ""
+        if (value.startsWith("/"))
+            return "file://" + value
+        if (_isDirectIconSource(value))
+            return value
+        return "image://icon/" + encodeURIComponent(value)
+    }
+
     function osdTitleFor(notif) {
         return (notif?.summary || appNameFor(notif)).trim() || "Notification"
     }
@@ -142,7 +162,9 @@ Item {
             osdSubtitleFor(notif),
             root.isCritical(notif) ? "red" : "accent",
             osdAppNameFor(notif),
-            function() { root.activateNotification(notif) }
+            function() { root.activateNotification(notif) },
+            iconSourceFor(notif),
+            function() { root.dismiss(notif) }
         )
     }
 

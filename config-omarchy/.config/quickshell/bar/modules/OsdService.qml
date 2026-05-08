@@ -11,9 +11,11 @@ Item {
     property string subtitle: ""
     property string valueText: "0%"
     property string artUrl: ""
+    property string iconSource: ""
     property bool mediaMode: false
     property bool messageMode: false
     property var messageAction: null
+    property var messageDismissAction: null
     property int value: 0
     property string tone: "accent"
     property int waveBars: 22
@@ -48,25 +50,29 @@ Item {
         value = _clamp(Math.round(valuePercent), 0, 100);
         valueText = value + "%";
         artUrl = "";
+        iconSource = "";
         mediaMode = false;
         messageMode = false;
         messageAction = null;
+        messageDismissAction = null;
         tone = toneName;
         hideTimer.interval = 1400;
         showing = true;
         hideTimer.restart();
     }
 
-    function showMessage(iconGlyph, titleText, subtitleText, toneName, valueLabel, activateAction) {
+    function showMessage(iconGlyph, titleText, subtitleText, toneName, valueLabel, activateAction, sourceIcon, dismissAction) {
         icon = iconGlyph;
         title = titleText;
         subtitle = subtitleText || "";
         value = 100;
         valueText = valueLabel || "";
         artUrl = "";
+        iconSource = sourceIcon || "";
         mediaMode = false;
         messageMode = true;
         messageAction = activateAction || null;
+        messageDismissAction = dismissAction || null;
         tone = toneName || "accent";
         hideTimer.interval = 4200;
         showing = true;
@@ -76,6 +82,13 @@ Item {
     function activateMessage() {
         if (messageAction)
             messageAction();
+
+        showing = false;
+    }
+
+    function dismissMessage() {
+        if (messageDismissAction)
+            messageDismissAction();
 
         showing = false;
     }
@@ -101,9 +114,11 @@ Item {
         value = Math.round(progress);
         valueText = durationSecs > 0 ? (_formatSeconds(positionSecs) + " / " + _formatSeconds(durationSecs)) : _formatSeconds(positionSecs);
         artUrl = snapshot.artUrl;
+        iconSource = "";
         mediaMode = true;
         messageMode = false;
         messageAction = null;
+        messageDismissAction = null;
         tone = snapshot.tone;
         if (restartHide !== false) {
             hideTimer.interval = 2400;
@@ -158,7 +173,7 @@ Item {
     }
 
     function _shouldRunCava() {
-        return hasCava && showing && !quietMode;
+        return hasCava && showing && mediaMode && !quietMode;
     }
 
     function _syncCava() {
@@ -444,6 +459,7 @@ Item {
     }
 
     onShowingChanged: _syncCava()
+    onMediaModeChanged: _syncCava()
     onQuietModeChanged: _syncCava()
 
     Process {
