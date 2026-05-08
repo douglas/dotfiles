@@ -64,6 +64,10 @@ Item {
         return Qt.alpha(statusDisplayColor(color), cLightTheme ? 0.72 : 0.78);
     }
 
+    function topbarChipColor(color) {
+        return Qt.alpha(statusDisplayColor(color), cLightTheme ? 0.72 : 0.82);
+    }
+
     function overlayPx(value) {
         return Math.round(value * Math.max(1, overlayScale));
     }
@@ -174,9 +178,7 @@ Item {
     }
 
     function topbarStatusDots() {
-        const dots = [];
-        if (permissionCount > 0)
-            dots.push({ color: cPermission, count: permissionCount });
+        const dots = [{ color: cPermission, count: permissionCount }];
         if (attentionCount > 0)
             dots.push({ color: cAttention, count: attentionCount });
         if (workingCount > 0)
@@ -501,7 +503,7 @@ Item {
             id: barContent
 
             anchors.verticalCenter: parent.verticalCenter
-            spacing: root.totalCount > 0 ? 6 : 0
+            spacing: 6
 
             Text {
                 anchors.verticalCenter: parent.verticalCenter
@@ -970,7 +972,7 @@ Item {
         width: chipText.implicitWidth + 16
         height: 18
         radius: 4
-        color: Qt.alpha(chipColor, root.cLightTheme ? 0.16 : 0.10)
+        color: Qt.alpha(chipColor, root.cLightTheme ? 0.11 : 0.07)
 
         Row {
             anchors.centerIn: parent
@@ -981,7 +983,7 @@ Item {
                 width: 5
                 height: 5
                 radius: 2.5
-                color: root.statusDisplayColor(chipColor)
+                color: root.topbarChipColor(chipColor)
             }
 
             Text {
@@ -989,9 +991,9 @@ Item {
 
                 anchors.verticalCenter: parent.verticalCenter
                 text: String(count)
-                color: root.statusDisplayColor(chipColor)
-                font.pixelSize: Style.Typography.scaledComponentMeta(1)
-                font.family: Style.Typography.monoPropo
+                color: root.topbarChipColor(chipColor)
+                font.pixelSize: Style.Typography.componentSubtitle
+                font.family: Style.Typography.text
                 font.weight: Font.Medium
             }
         }

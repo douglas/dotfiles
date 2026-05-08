@@ -17,9 +17,22 @@ Item {
     property bool quietMode: false
     readonly property bool use24h: settings ? settings.clockUse24h : true
     readonly property real popupScale: Math.max(1, overlayScale)
+    readonly property bool lightTheme: colorLuma(theme.bg || "#1e1e2e") > 0.62
 
     function overlayPx(value) {
         return Math.round(value * popupScale);
+    }
+
+    function colorLuma(color) {
+        return (0.2126 * color.r) + (0.7152 * color.g) + (0.0722 * color.b);
+    }
+
+    function statusDisplayColor(color) {
+        return lightTheme ? Qt.darker(color, 1.45) : color;
+    }
+
+    function mutedStatusColor(color) {
+        return Qt.alpha(statusDisplayColor(color), lightTheme ? 0.72 : 0.82);
     }
 
     function registerCalendarPopup() {
@@ -163,7 +176,7 @@ Item {
             visible: root.idleDisabled
             anchors.verticalCenter: parent.verticalCenter
             text: "󱫖"
-            color: theme.red || "#f38ba8"
+            color: root.mutedStatusColor(theme.red || "#f38ba8")
             font.pixelSize: Style.Typography.rightClusterIcon
             font.family: Style.Typography.mono
 
