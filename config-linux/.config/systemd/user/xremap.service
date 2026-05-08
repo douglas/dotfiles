@@ -5,6 +5,7 @@ After=graphical-session.target
 
 [Service]
 Type=simple
+Environment=PATH=%h/.local/share/omarchy/bin:%h/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/bin
 ExecStart=/usr/bin/xremap --mouse %h/.config/xremap/config.yml
 Restart=on-failure
 RestartSec=3
