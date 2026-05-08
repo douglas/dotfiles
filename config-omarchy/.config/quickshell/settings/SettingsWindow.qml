@@ -175,7 +175,7 @@ PanelWindow {
                     anchors.centerIn: parent
                     text: "✕"
                     color: root.t("fg", "#eef6ef")
-                    font.pixelSize: Style.Typography.componentSubtitle
+                    font.pixelSize: Style.Typography.closeIcon
                     font.family: Style.Typography.text
                 }
 

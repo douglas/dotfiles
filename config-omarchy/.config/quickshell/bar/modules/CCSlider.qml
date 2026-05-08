@@ -31,7 +31,7 @@ Item {
             Layout.alignment: Qt.AlignVCenter
             text: icon
             color: iconMa.containsMouse ? (c("fg", "#cdd6f4")) : (c("muted", "#585b70"))
-            font.pixelSize: Style.Typography.title
+            font.pixelSize: Style.Typography.actionIcon
             font.family: Style.Typography.mono
 
             MouseArea {

@@ -715,7 +715,7 @@ PanelWindow {
                             anchors.centerIn: parent
                             text: root.paused ? "" : ""
                             color: root.paused ? root.cYellow : root.cFg
-                            font.pixelSize: Style.Typography.componentMeta
+                            font.pixelSize: Style.Typography.actionIcon
                             font.family: Style.Typography.text
                         }
 
@@ -1103,7 +1103,7 @@ PanelWindow {
                                     anchors.centerIn: parent
                                     text: "×"
                                     color: root.cFg
-                                    font.pixelSize: Style.Typography.componentSubtitle
+                                    font.pixelSize: Style.Typography.closeIcon
                                     font.family: Style.Typography.text
                                 }
 
@@ -1422,7 +1422,7 @@ PanelWindow {
                                                     anchors.centerIn: parent
                                                     text: "×"
                                                     color: protectedProc ? root.cDim : root.cRed
-                                                    font.pixelSize: Style.Typography.body
+                                                    font.pixelSize: Style.Typography.closeIcon
                                                     font.family: Style.Typography.text
                                                 }
 

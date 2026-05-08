@@ -798,7 +798,7 @@ PanelWindow {
             anchors.verticalCenterOffset: -1
             text: iconImg.visible ? "" : (root._customGlyph(entry.name || entry.key || "") || (entry.name || entry.key || "?").slice(0, 1).toUpperCase())
             color: running ? root.cAccent : root.cFg
-            font.pixelSize: Style.Typography.bodyLarge
+            font.pixelSize: Style.Typography.dockIcon
             font.family: Style.Typography.monoPropo
         }
 

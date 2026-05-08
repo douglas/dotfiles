@@ -56,7 +56,7 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 text: "✕"
                 color: Qt.alpha(theme.red || "#f38ba8", rowMa.containsMouse ? 0.95 : 0.75)
-                font.pixelSize: Style.Typography.componentMeta
+                font.pixelSize: Style.Typography.closeIcon
                 font.family: Style.Typography.mono
 
                 MouseArea {

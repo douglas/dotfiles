@@ -780,7 +780,7 @@ Item {
                         visible: !coverImage.visible
                         text: "󰎆"
                         color: Qt.alpha(root.paletteAccent, 0.82)
-                        font.pixelSize: Style.Typography.displayLarge
+                        font.pixelSize: Style.Typography.previewIcon
                         font.family: Style.Typography.mono
                     }
                 }
@@ -828,7 +828,7 @@ Item {
                         Text {
                             text: "󰒮"
                             color: root.mutedText
-                            font.pixelSize: Style.Typography.componentSubtitle
+                            font.pixelSize: Style.Typography.actionIcon
                             font.family: Style.Typography.mono
 
                             MouseArea {
@@ -892,7 +892,7 @@ Item {
                         Text {
                             text: "󰒭"
                             color: root.mutedText
-                            font.pixelSize: Style.Typography.componentSubtitle
+                            font.pixelSize: Style.Typography.actionIcon
                             font.family: Style.Typography.mono
 
                             MouseArea {
@@ -917,7 +917,7 @@ Item {
                         anchors.centerIn: parent
                         text: root.isPlaying ? "󰏤" : "󰐊"
                         color: root.paletteAccent
-                        font.pixelSize: Style.Typography.title
+                        font.pixelSize: Style.Typography.actionIcon
                         font.family: Style.Typography.mono
                     }
 

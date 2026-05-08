@@ -338,7 +338,7 @@ Item {
             text: "󰸗"
             color: root.urgentMeeting ? root.cRed : root.activeMeeting ? root.cYellow : root.showing ? root.cAccent : root.cMuted
             opacity: root.urgentMeeting || root.activeMeeting || root.hovered || root.showing ? 1 : 0.72
-            font.pixelSize: Style.Typography.titleSmall
+            font.pixelSize: Style.Typography.barIcon
             font.family: Style.Typography.mono
         }
 

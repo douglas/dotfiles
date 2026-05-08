@@ -724,7 +724,7 @@ PanelWindow {
                         color: Qt.alpha(theme.accent || "#89b4fa", 0.15)
                         border.color: Qt.alpha(theme.accent || "#89b4fa", 0.4); border.width: 1
                         Text {
-                            anchors.centerIn: parent; text: "󰀄"; font.pixelSize: Style.Typography.display
+                            anchors.centerIn: parent; text: "󰀄"; font.pixelSize: Style.Typography.tileIcon
                             font.family: Style.Typography.monoPropo; color: theme.accent || "#89b4fa"
                         }
                     }
@@ -760,7 +760,7 @@ PanelWindow {
                                 : Qt.alpha(theme.dim || "#45475a", 0.4)
                             Behavior on color { ColorAnimation { duration: 130 } }
                             Text {
-                                anchors.centerIn: parent; text: modelData.icon; font.pixelSize: Style.Typography.title
+                                anchors.centerIn: parent; text: modelData.icon; font.pixelSize: Style.Typography.listIcon
                                 font.family: Style.Typography.monoPropo
                                 color: btnMa.containsMouse ? modelData.hoverColor : (theme.muted || "#585b70")
                                 Behavior on color { ColorAnimation { duration: 130 } }
@@ -814,7 +814,7 @@ PanelWindow {
                             text: cc.ethernetActive ? "󰈀" : cc.wifiEnabled ? "󰤨" : "󰤭"
                             color: (cc.ethernetActive || cc.wifiEnabled)
                                 ? (theme.accent || "#89b4fa") : (theme.muted || "#585b70")
-                            font.pixelSize: Style.Typography.display; font.family: Style.Typography.monoPropo
+                            font.pixelSize: Style.Typography.tileIcon; font.family: Style.Typography.monoPropo
                             Behavior on color { ColorAnimation { duration: 160 } }
                         }
                         Text {
@@ -906,7 +906,7 @@ PanelWindow {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: cc.btEnabled ? "󰂱" : "󰂲"
                             color: cc.btEnabled ? (theme.accent || "#89b4fa") : (theme.muted || "#585b70")
-                            font.pixelSize: Style.Typography.display; font.family: Style.Typography.monoPropo
+                            font.pixelSize: Style.Typography.tileIcon; font.family: Style.Typography.monoPropo
                             Behavior on color { ColorAnimation { duration: 160 } }
                         }
                         Text {
@@ -992,7 +992,7 @@ PanelWindow {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: cc.dndEnabled ? "󰂛" : "󰂚"
                             color: cc.dndEnabled ? "#fab387" : (theme.muted || "#585b70")
-                            font.pixelSize: Style.Typography.display; font.family: Style.Typography.monoPropo
+                            font.pixelSize: Style.Typography.tileIcon; font.family: Style.Typography.monoPropo
                             Behavior on color { ColorAnimation { duration: 160 } }
                         }
                         Text {
@@ -1038,7 +1038,7 @@ PanelWindow {
                             Text {
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: modelData.signal > 66 ? "󰤨" : modelData.signal > 33 ? "󰤢" : "󰤟"
-                                color: theme.accent || "#89b4fa"; font.pixelSize: Style.Typography.bodyLarge; font.family: Style.Typography.monoPropo
+                                color: theme.accent || "#89b4fa"; font.pixelSize: Style.Typography.listIcon; font.family: Style.Typography.monoPropo
                             }
                             Text {
                                 anchors.verticalCenter: parent.verticalCenter; text: modelData.ssid
@@ -1050,7 +1050,7 @@ PanelWindow {
                             Text {
                                 anchors.verticalCenter: parent.verticalCenter
                                 visible: modelData.secure; text: "󰌾"
-                                color: theme.muted || "#585b70"; font.pixelSize: Style.Typography.componentSubtitle; font.family: Style.Typography.monoPropo
+                                color: theme.muted || "#585b70"; font.pixelSize: Style.Typography.listIcon; font.family: Style.Typography.monoPropo
                             }
                         }
                         MouseArea {
@@ -1088,7 +1088,7 @@ PanelWindow {
                             Text {
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: "󰂯"; color: theme.accent || "#89b4fa"
-                                font.pixelSize: Style.Typography.titleSmall; font.family: Style.Typography.monoPropo
+                                font.pixelSize: Style.Typography.listIcon; font.family: Style.Typography.monoPropo
                             }
                             Text {
                                 anchors.verticalCenter: parent.verticalCenter; text: modelData.name
@@ -1227,7 +1227,7 @@ PanelWindow {
                         Layout.alignment: Qt.AlignVCenter
                         text: "✕"
                         color: wifiCloseMa.containsMouse ? (cc.theme.red || "#f38ba8") : (cc.theme.muted || "#585b70")
-                        font.pixelSize: Style.Typography.componentMeta
+                        font.pixelSize: Style.Typography.closeIcon
                         font.family: Style.Typography.monoPropo
                         MouseArea {
                             id: wifiCloseMa
@@ -1261,7 +1261,7 @@ PanelWindow {
                             Layout.alignment: Qt.AlignVCenter
                             text: cc.wifiEnabled ? "󰤨" : "󰤭"
                             color: cc.wifiEnabled ? (cc.theme.accent || "#89b4fa") : (cc.theme.muted || "#585b70")
-                            font.pixelSize: Style.Typography.bodyLarge
+                            font.pixelSize: Style.Typography.listIcon
                             font.family: Style.Typography.monoPropo
                         }
                         Text {
@@ -1388,7 +1388,7 @@ PanelWindow {
                                         Layout.alignment: Qt.AlignVCenter
                                         text: modelData.signal > 66 ? "󰤨" : modelData.signal > 33 ? "󰤢" : "󰤟"
                                         color: cc.theme.accent || "#89b4fa"
-                                        font.pixelSize: Style.Typography.body
+                                        font.pixelSize: Style.Typography.listIcon
                                         font.family: Style.Typography.monoPropo
                                     }
                                     Text {
@@ -1721,7 +1721,7 @@ PanelWindow {
                         Layout.alignment: Qt.AlignVCenter
                         text: "✕"
                         color: btCloseMa.containsMouse ? (cc.theme.red || "#f38ba8") : (cc.theme.muted || "#585b70")
-                        font.pixelSize: Style.Typography.componentMeta
+                        font.pixelSize: Style.Typography.closeIcon
                         font.family: Style.Typography.monoPropo
                         MouseArea {
                             id: btCloseMa
@@ -1749,7 +1749,7 @@ PanelWindow {
                             Layout.alignment: Qt.AlignVCenter
                             text: cc.btEnabled ? "󰂱" : "󰂲"
                             color: cc.btEnabled ? (cc.theme.accent || "#89b4fa") : (cc.theme.muted || "#585b70")
-                            font.pixelSize: Style.Typography.bodyLarge
+                            font.pixelSize: Style.Typography.listIcon
                             font.family: Style.Typography.monoPropo
                         }
                         Text {
@@ -1891,7 +1891,7 @@ PanelWindow {
                                             Layout.alignment: Qt.AlignVCenter
                                             text: "󰂯"
                                             color: cc.theme.accent || "#89b4fa"
-                                            font.pixelSize: Style.Typography.body
+                                            font.pixelSize: Style.Typography.listIcon
                                             font.family: Style.Typography.monoPropo
                                         }
                                         Text {

@@ -268,7 +268,7 @@ PanelWindow {
                         Text {
                             text: "󰍉"
                             color: theme.accent || "#89b4fa"
-                            font.pixelSize: Style.Typography.bodyLarge
+                            font.pixelSize: Style.Typography.searchIcon
                             font.family: Style.Typography.mono
                         }
 
@@ -325,7 +325,7 @@ PanelWindow {
                             visible: appSearchText !== ""
                             text: "✕"
                             color: Qt.alpha(theme.muted || "#585b70", 0.5)
-                            font.pixelSize: Style.Typography.componentSubtitle
+                            font.pixelSize: Style.Typography.closeIcon
 
                             MouseArea {
                                 anchors.fill: parent

@@ -150,7 +150,7 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
                         text: mitem.icon || ""
                         color: isSelected ? (theme.accent || "#89b4fa") : Qt.alpha(theme.fg || "#cdd6f4", 0.55)
-                        font.pixelSize: Style.Typography.bodyLarge
+                        font.pixelSize: Style.Typography.listIcon
                         font.family: Style.Typography.mono, "Omarchy"
                         width: 20
 
@@ -190,7 +190,7 @@ Item {
                     visible: mitem.children !== undefined
                     text: ""
                     color: Qt.alpha(theme.muted || "#585b70", isSelected ? 0.8 : 0.4)
-                    font.pixelSize: Style.Typography.componentSubtitle
+                    font.pixelSize: Style.Typography.listIcon
                     font.family: Style.Typography.mono
 
                     Behavior on color {

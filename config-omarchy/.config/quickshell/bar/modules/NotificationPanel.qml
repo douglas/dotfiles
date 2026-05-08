@@ -245,7 +245,7 @@ Item {
 
                     Text {
                         text: "✕"
-                        font.pixelSize: Style.Typography.componentMeta
+                        font.pixelSize: Style.Typography.closeIcon
                         color: xhov.containsMouse ? t("fg", "#cdd6f4") : Qt.rgba(1,1,1,0.2)
                         Behavior on color { ColorAnimation { duration: 80 } }
                         MouseArea {
@@ -503,7 +503,7 @@ Item {
                                     anchors.centerIn: parent
                                     text: modelData
                                     color: active ? t("accent", "#89b4fa") : Qt.alpha(t("fg", "#cdd6f4"), 0.72)
-                                    font.pixelSize: Style.Typography.componentMeta
+                                    font.pixelSize: Style.Typography.componentSubtitle
                                     font.family: Style.Typography.text
                                 }
 
@@ -709,7 +709,7 @@ Item {
 
                                 Text {
                                     text: "✕"
-                                    font.pixelSize: Style.Typography.componentMeta
+                                    font.pixelSize: Style.Typography.closeIcon
                                     color: dxhov.containsMouse
                                         ? t("red", "#f38ba8") : Qt.rgba(1,1,1,0.18)
                                     Behavior on color { ColorAnimation { duration: 80 } }
@@ -808,7 +808,7 @@ Item {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: "󰂛"
                             color: t("muted", "#585b70")
-                            font.pixelSize: Style.Typography.display3Xl
+                            font.pixelSize: Style.Typography.previewIcon
                             font.family: Style.Typography.mono
                             opacity: 0.5
                         }

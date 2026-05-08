@@ -495,7 +495,7 @@ FloatingWindow {
                                                 anchors.horizontalCenter: parent.horizontalCenter
                                                 text: root.fileIcon(root.selectedFile)
                                                 color: theme.accent || "#89b4fa"
-                                                font.pixelSize: Style.Typography.display6Xl
+                                                font.pixelSize: Style.Typography.largePreviewIcon
                                                 font.family: Style.Typography.mono
                                             }
 
@@ -669,7 +669,7 @@ FloatingWindow {
                                                     visible: delegateItem.fileData.isImage !== true
                                                     text: root.fileIcon(delegateItem.fileData)
                                                     color: theme.accent || "#89b4fa"
-                                                    font.pixelSize: Style.Typography.display3Xl
+                                                    font.pixelSize: Style.Typography.previewIcon
                                                     font.family: Style.Typography.mono
                                                 }
 

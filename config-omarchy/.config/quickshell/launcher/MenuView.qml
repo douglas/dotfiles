@@ -295,7 +295,7 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 text: ""
                 color: Qt.alpha(theme.accent || "#89b4fa", 0.7)
-                font.pixelSize: Style.Typography.componentSubtitle
+                font.pixelSize: Style.Typography.searchIcon
                 font.family: Style.Typography.mono
 
                 MouseArea {
@@ -431,7 +431,7 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                     text: "󰍉"
                     color: globalSearch ? (theme.accent || "#89b4fa") : Qt.alpha(theme.accent || "#89b4fa", 0.7)
-                    font.pixelSize: Style.Typography.bodyLarge
+                    font.pixelSize: Style.Typography.searchIcon
                     font.family: Style.Typography.mono
 
                     Behavior on color {
@@ -507,7 +507,7 @@ Item {
                     visible: root.searchText !== ""
                     text: "✕"
                     color: Qt.alpha(theme.muted || "#585b70", 0.5)
-                    font.pixelSize: Style.Typography.componentSubtitle
+                    font.pixelSize: Style.Typography.closeIcon
 
                     MouseArea {
                         anchors.fill: parent
@@ -751,7 +751,7 @@ Item {
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: mitem.icon || ""
                                 color: isSelected ? (theme.accent || "#89b4fa") : Qt.alpha(theme.fg || "#cdd6f4", 0.55)
-                                font.pixelSize: Style.Typography.bodyLarge
+                                font.pixelSize: Style.Typography.listIcon
                                 font.family: Style.Typography.mono
                                 width: 20
 
@@ -811,7 +811,7 @@ Item {
                                 visible: mitem.terminal !== undefined && mitem.terminal !== null
                                 text: "󰆍"
                                 color: Qt.alpha(theme.muted || "#585b70", isSelected ? 0.6 : 0.3)
-                                font.pixelSize: Style.Typography.componentSubtitle
+                                font.pixelSize: Style.Typography.listIcon
                                 font.family: Style.Typography.mono
 
                                 Behavior on color {

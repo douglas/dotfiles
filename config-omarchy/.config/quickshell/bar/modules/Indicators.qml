@@ -107,7 +107,7 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             text:                   ""
             color:                  root.green
-            font.pixelSize:         Style.Typography.bodyLarge
+            font.pixelSize:         Style.Typography.barIcon
             font.family: Style.Typography.mono
 
             Behavior on opacity { NumberAnimation { duration: 150 } }
@@ -129,7 +129,7 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             text:                   "󱫖"
             color:                  root.accent
-            font.pixelSize:         Style.Typography.bodyLarge
+            font.pixelSize:         Style.Typography.barIcon
             font.family: Style.Typography.mono
 
             Behavior on opacity { NumberAnimation { duration: 150 } }
@@ -150,7 +150,7 @@ Item {
         //     anchors.verticalCenter: parent.verticalCenter
         //     text:                   "󰂛"
         //     color:                  root.accent
-        //     font.pixelSize:         Style.Typography.bodyLarge
+        //     font.pixelSize:         Style.Typography.barIcon
         //     font.family: Style.Typography.mono
 
         //     Behavior on opacity { NumberAnimation { duration: 150 } }
@@ -172,7 +172,7 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             text:                   "󰻂"
             color:                  root.red
-            font.pixelSize:         Style.Typography.bodyLarge
+            font.pixelSize:         Style.Typography.barIcon
             font.family: Style.Typography.mono
 
             SequentialAnimation on opacity {

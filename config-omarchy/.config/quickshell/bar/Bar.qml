@@ -209,7 +209,7 @@ PanelWindow {
                     Text {
                         anchors.centerIn: parent
                         text: ""
-                        font.pixelSize: Style.Typography.bodyLarge
+                        font.pixelSize: Style.Typography.barIcon
                         font.family: Style.Typography.monoPropo
                         color: controlCenter.showing ? root.accent : root.muted
 
@@ -231,7 +231,7 @@ PanelWindow {
                         : root.notifServer && root.notifServer.notifications.length > 0
                             ? "󱅫"
                             : "󰂚"
-                    font.pixelSize: Style.Typography.titleSmall
+                    font.pixelSize: Style.Typography.barIcon
                     font.family: Style.Typography.monoPropo
                     color: root.notifServer && root.notifServer.dndEnabled
                         ? root.red

@@ -165,7 +165,7 @@ PanelWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         text: "󰌌"
                         color: theme.accent || "#89b4fa"
-                        font.pixelSize: Style.Typography.componentSubtitle
+                        font.pixelSize: Style.Typography.headerIcon
                         font.family: Style.Typography.mono
                     }
 
@@ -173,7 +173,7 @@ PanelWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         text: "Keybindings"
                         color: theme.fg || "#cdd6f4"
-                        font.pixelSize: Style.Typography.componentSubtitle
+                        font.pixelSize: Style.Typography.componentTitle
                         font.family: Style.Typography.mono
                         font.weight: Font.Medium
                     }
@@ -186,7 +186,7 @@ PanelWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         text: root.filteredBindings.length + " bindings"
                         color: Qt.alpha(theme.muted || "#585b70", 0.45)
-                        font.pixelSize: Style.Typography.componentMeta
+                        font.pixelSize: Style.Typography.componentSubtitle
                         font.family: Style.Typography.mono
                     }
 
@@ -194,7 +194,7 @@ PanelWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         text: "✕"
                         color: Qt.alpha(theme.muted || "#585b70", 0.5)
-                        font.pixelSize: Style.Typography.componentMeta
+                        font.pixelSize: Style.Typography.closeIcon
 
                         MouseArea {
                             anchors.fill: parent
@@ -225,7 +225,7 @@ PanelWindow {
                             anchors.verticalCenter: parent.verticalCenter
                             text: "󰍉"
                             color: theme.accent || "#89b4fa"
-                            font.pixelSize: Style.Typography.componentSubtitle
+                            font.pixelSize: Style.Typography.searchIcon
                             font.family: Style.Typography.mono
                         }
 
@@ -269,7 +269,7 @@ PanelWindow {
                             visible: root.searchText !== ""
                             text: "✕"
                             color: Qt.alpha(theme.muted || "#585b70", 0.5)
-                            font.pixelSize: Style.Typography.componentMeta
+                            font.pixelSize: Style.Typography.closeIcon
 
                             MouseArea {
                                 anchors.fill: parent

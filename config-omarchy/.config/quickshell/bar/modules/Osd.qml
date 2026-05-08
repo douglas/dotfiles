@@ -177,7 +177,7 @@ Item {
                             visible: !coverArt.visible
                             text: "󰎆"
                             color: root.toneColor()
-                            font.pixelSize: Style.Typography.display
+                            font.pixelSize: Style.Typography.tileIcon
                             font.family: Style.Typography.mono
                         }
                     }
@@ -193,7 +193,7 @@ Item {
                             Text {
                                 text: root.service ? root.service.icon : "󰕾"
                                 color: root.toneColor()
-                                font.pixelSize: Style.Typography.headingLarge
+                                font.pixelSize: Style.Typography.actionIcon
                                 font.family: Style.Typography.mono
                             }
 

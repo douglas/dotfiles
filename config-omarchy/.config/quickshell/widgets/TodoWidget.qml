@@ -292,7 +292,7 @@ PanelWindow {
                             anchors.centerIn: parent
                             text: showInput ? "" : ""
                             color: showInput ? cAccent : cMuted
-                            font.pixelSize: Style.Typography.bodyLarge
+                            font.pixelSize: Style.Typography.actionIcon
                             font.family: root.iconFont
                             font.weight: Font.Light
                         }
@@ -361,7 +361,7 @@ PanelWindow {
                             anchors.fill: parent
                             text: "add a task..."
                             color: cDim
-                            font.pixelSize: Style.Typography.componentSubtitle
+                            font.pixelSize: Style.Typography.actionIcon
                             font.family: root.textFont
                             visible: textInput.text.length === 0
                         }
@@ -532,7 +532,7 @@ PanelWindow {
                                     anchors.verticalCenter: parent.verticalCenter
                                     text: "× "
                                     color: cDim
-                                    font.pixelSize: Style.Typography.bodyLarge
+                                    font.pixelSize: Style.Typography.closeIcon
                                     font.family: root.textFont
                                     visible: todoRow.hovered
 

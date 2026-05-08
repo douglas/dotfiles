@@ -27,9 +27,16 @@ QtObject {
     readonly property int icon: px(16)
     readonly property int iconLarge: px(20)
     readonly property int barIcon: icon
+    readonly property int headerIcon: actionIcon
+    readonly property int listIcon: icon
+    readonly property int dockIcon: iconLarge
     readonly property int actionIcon: iconLarge
     readonly property int closeIcon: iconLarge
+    readonly property int searchIcon: actionIcon
+    readonly property int tileIcon: display
+    readonly property int placeholderIcon: displayXl
     readonly property int previewIcon: display3Xl
+    readonly property int largePreviewIcon: display6Xl
     readonly property int componentTitle: titleSmall
     readonly property int componentSubtitle: body
     readonly property int componentBody: body
@@ -127,8 +134,20 @@ QtObject {
         return scaledPx(20, multiplier);
     }
 
+    function scaledHeaderIcon(multiplier) {
+        return scaledActionIcon(multiplier);
+    }
+
     function scaledCloseIcon(multiplier) {
         return scaledActionIcon(multiplier);
+    }
+
+    function scaledListIcon(multiplier) {
+        return scaledPx(16, multiplier);
+    }
+
+    function scaledTileIcon(multiplier) {
+        return scaledPx(20, multiplier);
     }
 
     function scaledPreviewIcon(multiplier) {
