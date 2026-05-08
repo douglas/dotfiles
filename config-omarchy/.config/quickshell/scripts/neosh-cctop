@@ -78,6 +78,47 @@ ghostty_surface_id_for_pid() {
   ' "/proc/$pid/cgroup"
 }
 
+codex_cwd_for_pid() {
+  local pid="$1"
+  local base arg next=0
+
+  [[ -r "/proc/$pid/cmdline" ]] || return 1
+  base="$(readlink "/proc/$pid/cwd" 2>/dev/null || true)"
+
+  while IFS= read -r arg; do
+    if [[ "$next" -eq 1 ]]; then
+      [[ -n "$arg" ]] || return 1
+      if [[ "$arg" == /* ]]; then
+        printf "%s\n" "$arg"
+      else
+        [[ -n "$base" ]] || return 1
+        printf "%s\n" "$base/$arg"
+      fi
+      return 0
+    fi
+
+    case "$arg" in
+      -C|--cwd|--cd)
+        next=1
+        ;;
+      --cwd=*|--cd=*|--directory=*)
+        arg="${arg#*=}"
+        [[ -n "$arg" ]] || return 1
+        if [[ "$arg" == /* ]]; then
+          printf "%s\n" "$arg"
+        else
+          [[ -n "$base" ]] || return 1
+          printf "%s\n" "$base/$arg"
+        fi
+        return 0
+        ;;
+    esac
+  done < <(tr '\0' '\n' <"/proc/$pid/cmdline" 2>/dev/null)
+
+  [[ -n "$base" ]] || return 1
+  printf "%s\n" "$base"
+}
+
 git_branch_for() {
   local path="$1"
 
@@ -119,7 +160,7 @@ list_codex_sessions() {
     [[ "$pid" =~ ^[0-9]+$ ]] || continue
     session_alive "$pid" || continue
 
-    cwd="$(readlink "/proc/$pid/cwd" 2>/dev/null || true)"
+    cwd="$(codex_cwd_for_pid "$pid" 2>/dev/null || true)"
     [[ -n "$cwd" && -d "$cwd" ]] || continue
 
     tty="$(readlink "/proc/$pid/fd/0" 2>/dev/null || true)"
