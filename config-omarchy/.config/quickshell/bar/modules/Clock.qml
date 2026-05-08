@@ -1,6 +1,7 @@
 import "../../style" as Style
 import QtQuick
 import Quickshell
+import Quickshell.Io
 import Quickshell.Wayland
 
 Item {
@@ -42,9 +43,20 @@ Item {
         dateText.text = Qt.formatDate(now, "ddd, d MMM");
     }
 
+    function refreshIdleStatus() {
+        idleStatusProc.running = false;
+        idleStatusProc.running = true;
+    }
+
+    function toggleIdle() {
+        idleToggleProc.running = false;
+        idleToggleProc.running = true;
+    }
+
     anchors.verticalCenter: parent ? parent.verticalCenter : undefined
     implicitWidth: clockRow.implicitWidth
     implicitHeight: 28
+    property bool idleDisabled: false
     Component.onCompleted: {
         updateTime();
         registerCalendarPopup();
@@ -58,6 +70,33 @@ Item {
         repeat: true
         onTriggered: updateTime()
     }
+
+    Process {
+        id: idleStatusProc
+
+        command: ["bash", "-c", "pgrep -x hypridle > /dev/null && echo running || echo stopped"]
+        running: true
+        stdout: SplitParser {
+            onRead: data => root.idleDisabled = data.trim() === "stopped"
+        }
+    }
+
+    Process {
+        id: idleToggleProc
+
+        command: ["bash", "-c", "export PATH=\"$HOME/.local/share/omarchy/bin:$PATH\"; omarchy-toggle-idle"]
+        running: false
+        onExited: root.refreshIdleStatus()
+    }
+
+    Timer {
+        interval: 3000
+        running: !root.quietMode
+        repeat: true
+        onTriggered: root.refreshIdleStatus()
+    }
+
+    onQuietModeChanged: if (!quietMode) refreshIdleStatus()
 
     // ── Clock row ─────────────────────────────────
     Row {
@@ -109,6 +148,39 @@ Item {
             color: theme.fg || "#cdd6f4"
             font.pixelSize: Style.Typography.componentSubtitle
             font.family: Style.Typography.mono
+        }
+
+        Rectangle {
+            visible: root.idleDisabled
+            width: 1
+            height: 10
+            color: theme.dim || "#45475a"
+            opacity: 0.5
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Text {
+            visible: root.idleDisabled
+            anchors.verticalCenter: parent.verticalCenter
+            text: "󱫖"
+            color: theme.red || "#f38ba8"
+            font.pixelSize: Style.Typography.rightClusterIcon
+            font.family: Style.Typography.mono
+
+            Behavior on opacity {
+                NumberAnimation {
+                    duration: 150
+                }
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                hoverEnabled: true
+                onClicked: root.toggleIdle()
+                onEntered: parent.opacity = 0.7
+                onExited: parent.opacity = 1.0
+            }
         }
 
     }

@@ -211,7 +211,7 @@ Item {
                     Text {
                         text: root.icon
                         color: root.accent
-                        font.pixelSize: Style.Typography.scaledHeaderIcon(root.overlayScale)
+                        font.pixelSize: Style.Typography.scaledCalendarHeaderIcon(root.overlayScale)
                         font.family: root.iconFont
                         Layout.alignment: Qt.AlignVCenter
                     }
@@ -261,7 +261,7 @@ Item {
                         Text {
                             text: ""
                             color: refreshHover.containsMouse ? root.accent : root.cMuted
-                            font.pixelSize: Style.Typography.scaledActionIcon(root.overlayScale)
+                            font.pixelSize: Style.Typography.scaledCalendarIcon(root.overlayScale)
                             font.family: root.iconFont
 
                             MouseArea {
@@ -286,7 +286,7 @@ Item {
                         Text {
                             text: "󰅖"
                             color: closeHover.containsMouse ? root.cRed : root.cMuted
-                            font.pixelSize: Style.Typography.scaledCloseIcon(root.overlayScale)
+                            font.pixelSize: Style.Typography.scaledCalendarIcon(root.overlayScale)
                             font.family: root.iconFont
 
                             MouseArea {
@@ -503,7 +503,7 @@ Item {
                                 visible: modelData.rowType === "process"
                                 text: "󰆴"
                                 color: killHover.containsMouse ? root.cRed : root.cMuted
-                                font.pixelSize: Style.Typography.scaledActionIcon(root.overlayScale)
+                                font.pixelSize: Style.Typography.scaledCalendarIcon(root.overlayScale)
                                 font.family: root.iconFont
 
                                 MouseArea {
@@ -545,7 +545,7 @@ Item {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: "󰔟"
                             color: root.accent
-                            font.pixelSize: Style.Typography.scaledActionIcon(root.overlayScale)
+                            font.pixelSize: Style.Typography.scaledCalendarIcon(root.overlayScale)
                             font.family: root.iconFont
 
                             RotationAnimation on rotation {

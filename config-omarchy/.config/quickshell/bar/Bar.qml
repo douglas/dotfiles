@@ -314,33 +314,6 @@ PanelWindow {
                     }
                 }
 
-                Cctop {
-                    id: cctopModule
-                    anchors.verticalCenter: parent.verticalCenter
-                    barOnBottom: root.barOnBottom
-                    overlayBarOffset: root.px(root.reservedSpace + 6)
-                    overlayScale: root.scaleFactor
-                    quietMode: root.quietMode
-                    theme: ({
-                        fg: root.fg,
-                        accent: root.accent,
-                        dim: root.dim,
-                        muted: root.muted,
-                        bg: root.bg,
-                        red: root.red,
-                        green: root.green,
-                        yellow: root.yellow,
-                        blue: root.blue,
-                        cyan: root.cyan,
-                        highlight: root.highlight,
-                        omarchyThemeLoaded: root.omarchyThemeLoaded
-                    })
-                    onOpened: {
-                        statsModule.showing = false
-                        batteryModule.showing = false
-                    }
-                }
-
                 Stats {
                     id: statsModule
                     anchors.verticalCenter: parent.verticalCenter
@@ -382,6 +355,33 @@ PanelWindow {
                     red: root.red
                     green: root.green
                     fg: root.fg
+                }
+
+                Cctop {
+                    id: cctopModule
+                    anchors.verticalCenter: parent.verticalCenter
+                    barOnBottom: root.barOnBottom
+                    overlayBarOffset: root.px(root.reservedSpace + 6)
+                    overlayScale: root.scaleFactor
+                    quietMode: root.quietMode
+                    theme: ({
+                        fg: root.fg,
+                        accent: root.accent,
+                        dim: root.dim,
+                        muted: root.muted,
+                        bg: root.bg,
+                        red: root.red,
+                        green: root.green,
+                        yellow: root.yellow,
+                        blue: root.blue,
+                        cyan: root.cyan,
+                        highlight: root.highlight,
+                        omarchyThemeLoaded: root.omarchyThemeLoaded
+                    })
+                    onOpened: {
+                        statsModule.showing = false
+                        batteryModule.showing = false
+                    }
                 }
             }
         }

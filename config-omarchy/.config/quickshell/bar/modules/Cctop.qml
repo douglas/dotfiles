@@ -60,14 +60,8 @@ Item {
         return cLightTheme ? Qt.darker(color, 1.45) : color;
     }
 
-    function statusFillAlpha(group) {
-        if (group === "idle")
-            return 0.1;
-
-        if (group === "working")
-            return cLightTheme ? 0.72 : 0.4;
-
-        return 1;
+    function overlayAccentColor(color) {
+        return Qt.alpha(statusDisplayColor(color), cLightTheme ? 0.72 : 0.78);
     }
 
     function overlayPx(value) {
@@ -164,6 +158,33 @@ Item {
                 count++;
         }
         return count;
+    }
+
+    function topbarStatusColor() {
+        if (permissionCount > 0)
+            return cPermission;
+        if (attentionCount > 0)
+            return cAttention;
+        if (workingCount > 0)
+            return cWorking;
+        if (idleCount > 0)
+            return cIdle;
+
+        return cTextMuted;
+    }
+
+    function topbarStatusDots() {
+        const dots = [];
+        if (permissionCount > 0)
+            dots.push({ color: cPermission, count: permissionCount });
+        if (attentionCount > 0)
+            dots.push({ color: cAttention, count: attentionCount });
+        if (workingCount > 0)
+            dots.push({ color: cWorking, count: workingCount });
+        if (idleCount > 0)
+            dots.push({ color: cIdle, count: idleCount });
+
+        return dots;
     }
 
     function statusColor(session) {
@@ -329,62 +350,6 @@ Item {
         return copy;
     }
 
-    function statusSegments(barWidth) {
-        if (totalCount <= 0)
-            return [];
-
-        const raw = [];
-        if (permissionCount > 0)
-            raw.push({ proportion: permissionCount / totalCount, color: cPermission, action: true });
-        if (attentionCount > 0)
-            raw.push({ proportion: attentionCount / totalCount, color: cAttention, action: true });
-        if (workingCount > 0)
-            raw.push({ proportion: workingCount / totalCount, color: cWorking, action: false });
-        if (idleCount > 0)
-            raw.push({ proportion: idleCount / totalCount, color: cIdle, action: false });
-
-        const minProportion = 5 / barWidth;
-        let deficit = 0;
-        let nonActionTotal = 0;
-        let totalActionClamped = 0;
-
-        for (const segment of raw) {
-            if (segment.action) {
-                const clamped = Math.max(segment.proportion, minProportion);
-                totalActionClamped += clamped;
-                if (segment.proportion < minProportion)
-                    deficit += minProportion - segment.proportion;
-            } else {
-                nonActionTotal += segment.proportion;
-            }
-        }
-
-        if (deficit <= 0 || nonActionTotal <= 0 || totalActionClamped > 0.8)
-            return raw;
-
-        const adjusted = raw.map(segment => {
-            if (segment.action && segment.proportion < minProportion)
-                return { proportion: minProportion, color: segment.color, action: segment.action };
-
-            if (!segment.action) {
-                const shrink = deficit * (segment.proportion / nonActionTotal);
-                return { proportion: Math.max(segment.proportion - shrink, 0), color: segment.color, action: segment.action };
-            }
-
-            return segment;
-        });
-
-        const sum = adjusted.reduce((total, segment) => total + segment.proportion, 0);
-        if (sum <= 0)
-            return adjusted;
-
-        return adjusted.map(segment => ({
-            proportion: segment.proportion / sum,
-            color: segment.color,
-            action: segment.action
-        }));
-    }
-
     function activateSession(session) {
         if (!session)
             return;
@@ -536,26 +501,27 @@ Item {
             id: barContent
 
             anchors.verticalCenter: parent.verticalCenter
-            spacing: 0
+            spacing: root.totalCount > 0 ? 6 : 0
 
-            Item {
-                width: Style.Typography.barIcon + 28
-                height: Style.Typography.barIcon + 2
+            Text {
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.verticalCenterOffset: -1
+                height: Style.Typography.rightClusterIcon
+                text: "󰚩"
+                color: root.totalCount > 0 ? root.statusDisplayColor(root.topbarStatusColor()) : root.cTextMuted
+                font.pixelSize: Style.Typography.rightClusterIcon
+                font.family: Style.Typography.mono
+                verticalAlignment: Text.AlignVCenter
+            }
 
-                CctopGridIcon {
-                    width: Style.Typography.barIcon
-                    height: Style.Typography.barIcon
-                    x: 0
-                    anchors.verticalCenter: parent.verticalCenter
-                    tint: root.needsActionCount > 0 ? root.cAccent : (barHover.containsMouse || root.showing ? root.cTextPrimary : root.cTextMuted)
-                }
+            Repeater {
+                model: root.topbarStatusDots()
 
-                CctopStatusBar {
-                    visible: root.totalCount > 0
-                    x: Style.Typography.barIcon + 4
-                    anchors.verticalCenter: parent.verticalCenter
-                    width: 22
-                    height: 4
+                TopbarChip {
+                    required property var modelData
+
+                    count: modelData.count
+                    chipColor: modelData.color
                 }
             }
         }
@@ -774,98 +740,79 @@ Item {
 
     component HeaderRow: Item {
         RowLayout {
-            anchors.fill: parent
-            spacing: root.overlayPx(10)
+            id: titleGroup
+
+            anchors.left: parent.left
+            anchors.verticalCenter: parent.verticalCenter
+            spacing: root.overlayPx(8)
 
             Item {
-                Layout.preferredWidth: root.overlayPx(30)
-                Layout.preferredHeight: root.overlayPx(30)
+                Layout.preferredWidth: root.overlayPx(16)
+                Layout.preferredHeight: root.overlayPx(38)
                 Layout.alignment: Qt.AlignVCenter
 
-                CctopGridIcon {
-                    width: root.overlayPx(20)
-                    height: root.overlayPx(20)
-                    anchors.centerIn: parent
-                    tint: root.cAccent
-                }
-
-                CctopStatusBar {
-                    visible: root.totalCount > 0
-                    width: root.overlayPx(18)
-                    height: root.overlayPx(4)
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.bottom: parent.bottom
+                Rectangle {
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    width: root.overlayPx(3)
+                    height: root.overlayPx(30)
+                    radius: root.overlayPx(1.5)
+                    color: root.overlayAccentColor(root.cAccent)
                 }
             }
 
-            ColumnLayout {
-                Layout.fillWidth: true
+            Text {
+                text: "CCTOP"
+                color: root.cTextPrimary
+                font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
+                font.family: Style.Typography.monoPropo
+                font.weight: Font.DemiBold
+                elide: Text.ElideRight
                 Layout.alignment: Qt.AlignVCenter
-                spacing: 0
-
-                Text {
-                    text: "cctop"
-                    color: root.cTextPrimary
-                    font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
-                    font.family: Style.Typography.monoPropo
-                    font.weight: Font.DemiBold
-                    elide: Text.ElideRight
-                    Layout.fillWidth: true
-                }
-
-                Text {
-                    text: root.totalCount + " active · " + root.needsActionCount + " need attention"
-                    color: root.cTextMuted
-                    font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
-                    font.family: Style.Typography.monoPropo
-                    elide: Text.ElideRight
-                    Layout.fillWidth: true
-                }
-            }
-
-            RowLayout {
-                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                spacing: root.overlayPx(6)
-
-                HeaderChip {
-                    count: root.workingCount
-                    chipColor: root.cWorking
-                }
-
-                HeaderActionButton {
-                    glyph: ""
-                    tooltip: "Refresh"
-                    onClicked: {
-                        root.reload();
-                        root.notice = "Refreshing sessions";
-                        noticeTimer.restart();
-                    }
-                }
-
-                HeaderActionButton {
-                    glyph: "󰌌"
-                    tooltip: root.navigateMode ? "Exit Navigate" : "Navigate"
-                    active: root.navigateMode
-                    onClicked: root.navigateMode = !root.navigateMode
-                }
-
-                HeaderActionButton {
-                    glyph: "󰒓"
-                    tooltip: "Settings unavailable"
-                    onClicked: {
-                        root.notice = "Settings are not implemented in the Quickshell port yet";
-                        noticeTimer.restart();
-                    }
-                }
-
-                HeaderActionButton {
-                    glyph: "󰅖"
-                    tooltip: "Close"
-                    tone: root.cPermission
-                    onClicked: root.hidePanel()
-                }
             }
         }
+
+        RowLayout {
+            id: actionGroup
+
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            spacing: root.overlayPx(2)
+
+            HeaderActionButton {
+                glyph: ""
+                tooltip: "Refresh"
+                onClicked: {
+                    root.reload();
+                    root.notice = "Refreshing sessions";
+                    noticeTimer.restart();
+                }
+            }
+
+            HeaderActionButton {
+                glyph: "󰌌"
+                tooltip: root.navigateMode ? "Exit Navigate" : "Navigate"
+                active: root.navigateMode
+                onClicked: root.navigateMode = !root.navigateMode
+            }
+
+            HeaderActionButton {
+                glyph: "󰒓"
+                tooltip: "Settings unavailable"
+                onClicked: {
+                    root.notice = "Settings are not implemented in the Quickshell port yet";
+                    noticeTimer.restart();
+                }
+            }
+
+            HeaderActionButton {
+                glyph: "󰅖"
+                tooltip: "Close"
+                tone: root.cPermission
+                onClicked: root.hidePanel()
+            }
+        }
+
     }
 
     component FooterRow: Item {
@@ -958,14 +905,14 @@ Item {
         property bool active: false
         signal clicked()
 
-        Layout.preferredWidth: root.overlayPx(26)
-        Layout.preferredHeight: root.overlayPx(26)
+        Layout.preferredWidth: root.overlayPx(22)
+        Layout.preferredHeight: root.overlayPx(22)
         Layout.alignment: Qt.AlignVCenter
         z: actionHover.containsMouse ? 20 : 1
 
         Rectangle {
             anchors.fill: parent
-            radius: root.overlayPx(6)
+            radius: root.overlayPx(5)
             color: parent.active
                 ? Qt.alpha(parent.tone, root.cLightTheme ? 0.18 : 0.16)
                 : actionHover.containsMouse ? root.cCardHover : "transparent"
@@ -977,7 +924,7 @@ Item {
             anchors.centerIn: parent
             text: parent.glyph
             color: parent.active || actionHover.containsMouse ? parent.tone : root.cTextMuted
-            font.pixelSize: Style.Typography.scaledActionIcon(root.overlayScale)
+            font.pixelSize: Style.Typography.scaledCalendarIcon(root.overlayScale)
             font.family: Style.Typography.mono
         }
 
@@ -1015,95 +962,37 @@ Item {
         }
     }
 
-    component HeaderChip: Rectangle {
+    component TopbarChip: Rectangle {
         property int count: 0
         property color chipColor: root.cTextMuted
 
-        visible: count > 0
-        Layout.preferredWidth: chipText.implicitWidth + root.overlayPx(16)
-        Layout.preferredHeight: root.overlayPx(18)
-        radius: root.overlayPx(4)
-        color: Qt.alpha(chipColor, cLightTheme ? 0.16 : 0.10)
+        anchors.verticalCenter: parent ? parent.verticalCenter : undefined
+        width: chipText.implicitWidth + 16
+        height: 18
+        radius: 4
+        color: Qt.alpha(chipColor, root.cLightTheme ? 0.16 : 0.10)
 
-        RowLayout {
+        Row {
             anchors.centerIn: parent
-            height: parent.height
-            spacing: root.overlayPx(4)
+            spacing: 4
 
             Rectangle {
-                Layout.preferredWidth: root.overlayPx(5)
-                Layout.preferredHeight: root.overlayPx(5)
-                Layout.alignment: Qt.AlignVCenter
-                radius: root.overlayPx(2.5)
+                anchors.verticalCenter: parent.verticalCenter
+                width: 5
+                height: 5
+                radius: 2.5
                 color: root.statusDisplayColor(chipColor)
             }
 
             Text {
                 id: chipText
 
+                anchors.verticalCenter: parent.verticalCenter
                 text: String(count)
                 color: root.statusDisplayColor(chipColor)
-                font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
+                font.pixelSize: Style.Typography.scaledComponentMeta(1)
                 font.family: Style.Typography.monoPropo
-                Layout.alignment: Qt.AlignVCenter
-            }
-        }
-    }
-
-    component CctopGridIcon: Item {
-        property color tint: root.cTextMuted
-
-        Grid {
-            anchors.fill: parent
-            rows: 2
-            columns: 2
-            rowSpacing: 1
-            columnSpacing: 1
-
-            Repeater {
-                model: 4
-
-                Rectangle {
-                    required property int index
-
-                    width: (parent.width - parent.columnSpacing) / 2
-                    height: (parent.height - parent.rowSpacing) / 2
-                    radius: 1
-                    color: Qt.alpha(parent.parent.tint, index < 2 ? 0.85 : index === 2 ? 0.50 : 0.45)
-                }
-            }
-        }
-    }
-
-    component CctopStatusBar: Item {
-        readonly property var segments: root.statusSegments(width)
-
-        clip: true
-
-        Rectangle {
-            anchors.fill: parent
-            radius: height / 2
-            color: "transparent"
-            clip: true
-
-            Row {
-                anchors.fill: parent
-                spacing: 0
-
-                Repeater {
-                    model: parent.parent.parent.segments
-
-                    Rectangle {
-                        required property var modelData
-                        required property int index
-
-                        width: index === parent.parent.parent.segments.length - 1
-                            ? Math.max(0, parent.width - x)
-                            : parent.width * modelData.proportion
-                        height: parent.height
-                        color: modelData.color
-                    }
-                }
+                font.weight: Font.Medium
             }
         }
     }
@@ -1153,10 +1042,7 @@ Item {
                     width: root.overlayPx(3)
                     height: root.overlayPx(36)
                     radius: root.overlayPx(1.5)
-                    color: Qt.alpha(
-                        root.statusDisplayColor(root.statusColor(session)),
-                        root.statusFillAlpha(root.statusGroup(session))
-                    )
+                    color: root.overlayAccentColor(root.statusColor(session))
                 }
 
                 Rectangle {
@@ -1166,7 +1052,7 @@ Item {
                     width: root.overlayPx(16)
                     height: root.overlayPx(16)
                     radius: root.overlayPx(4)
-                    color: root.statusDisplayColor(root.statusColor(session))
+                    color: root.overlayAccentColor(root.statusColor(session))
 
                     Text {
                         anchors.centerIn: parent
@@ -1242,62 +1128,49 @@ Item {
                 }
             }
 
-            RowLayout {
+            ColumnLayout {
                 Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                Layout.minimumWidth: root.overlayPx(126)
+                Layout.preferredWidth: root.overlayPx(126)
+                Layout.maximumWidth: root.overlayPx(126)
                 Layout.fillWidth: false
-                spacing: root.overlayPx(3)
+                spacing: root.overlayPx(1)
 
-                ColumnLayout {
-                    visible: root.showSessionModelColumn()
-                    Layout.minimumWidth: root.overlayPx(54)
-                    Layout.preferredWidth: root.overlayPx(54)
-                    Layout.maximumWidth: root.overlayPx(54)
-                    Layout.fillWidth: false
-                    spacing: root.overlayPx(1)
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: root.overlayPx(3)
 
                     Text {
+                        visible: root.showSessionModelColumn()
                         text: root.sessionModelLabel(session)
-                        color: root.sessionModelColor(session)
-                        font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
-                        font.family: Style.Typography.monoPropo
-                        horizontalAlignment: Text.AlignLeft
-                        elide: Text.ElideRight
-                        Layout.fillWidth: true
-                    }
-
-                    Text {
-                        text: ""
-                        font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
-                        font.family: Style.Typography.monoPropo
-                        Layout.fillWidth: true
-                    }
-                }
-
-                ColumnLayout {
-                    Layout.minimumWidth: root.overlayPx(68)
-                    Layout.preferredWidth: root.overlayPx(68)
-                    Layout.maximumWidth: root.overlayPx(68)
-                    Layout.fillWidth: false
-                    spacing: root.overlayPx(1)
-
-                    Text {
-                        text: root.statusLabel(session)
-                        color: root.statusDisplayColor(root.statusColor(session))
+                        color: root.overlayAccentColor(root.sessionModelColor(session))
                         font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
                         font.family: Style.Typography.monoPropo
                         font.weight: Font.Medium
                         horizontalAlignment: Text.AlignRight
+                        elide: Text.ElideRight
                         Layout.fillWidth: true
+                        Layout.minimumWidth: 0
                     }
 
                     Text {
-                        text: root.relativeTime(session)
-                        color: root.cTextMuted
+                        text: root.statusLabel(session)
+                        color: root.overlayAccentColor(root.statusColor(session))
                         font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
                         font.family: Style.Typography.monoPropo
+                        font.weight: Font.Medium
                         horizontalAlignment: Text.AlignRight
-                        Layout.fillWidth: true
+                        Layout.preferredWidth: root.overlayPx(66)
                     }
+                }
+
+                Text {
+                    text: root.relativeTime(session)
+                    color: root.cTextMuted
+                    font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
+                    font.family: Style.Typography.monoPropo
+                    horizontalAlignment: Text.AlignRight
+                    Layout.fillWidth: true
                 }
             }
         }

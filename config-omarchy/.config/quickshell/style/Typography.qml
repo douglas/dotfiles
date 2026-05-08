@@ -53,9 +53,9 @@ QtObject {
     readonly property int launcherItemBody: body
     readonly property int recentTitle: titleSmall
     readonly property int recentBody: body
-    readonly property int recentHeaderIcon: actionIcon
-    readonly property int recentActionIcon: actionIcon
-    readonly property int recentCloseIcon: closeIcon
+    readonly property int recentHeaderIcon: listIcon
+    readonly property int recentActionIcon: listIcon
+    readonly property int recentCloseIcon: listIcon
     readonly property int recentPreviewIcon: previewIcon
     readonly property int recentLargePreviewIcon: largePreviewIcon
     readonly property int recentMeta: body

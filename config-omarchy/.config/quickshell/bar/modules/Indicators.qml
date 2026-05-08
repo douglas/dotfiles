@@ -52,23 +52,17 @@ Item {
         }
     }
 
-    property bool idleDisabled: false
     property bool notifSilenced: notifServer?.dndEnabled ?? false
     property bool isRecording: false
 
     Process {
         id: liveStatusProc
         command: ["bash", "-c",
-            "printf '%s\\t%s\\t%s\\n' " +
-            "\"$(pgrep -x hypridle > /dev/null && echo running || echo stopped)\" " +
-            "\"local\" " +
-            "\"$(pgrep -f '^gpu-screen-recorder' > /dev/null && echo recording || echo stopped)\""]
+            "pgrep -f '^gpu-screen-recorder' > /dev/null && echo recording || echo stopped"]
         running: true
         stdout: SplitParser {
             onRead: data => {
-                const parts = data.trim().split("\t")
-                root.idleDisabled = parts[0] === "stopped"
-                root.isRecording = parts[2] === "recording"
+                root.isRecording = data.trim() === "recording"
             }
         }
     }
@@ -120,27 +114,6 @@ Item {
                     "omarchy-launch-floating-terminal-with-presentation omarchy-update")
                 onEntered: parent.opacity = 0.7
                 onExited:  parent.opacity = 1.0
-            }
-        }
-
-        // idle disabled indicator
-        Text {
-            visible:                root.idleDisabled
-            anchors.verticalCenter: parent.verticalCenter
-            text:                   "󱫖"
-            color:                  root.accent
-            font.pixelSize:         Style.Typography.barIcon
-            font.family: Style.Typography.mono
-
-            Behavior on opacity { NumberAnimation { duration: 150 } }
-
-            MouseArea {
-                anchors.fill: parent
-                cursorShape:  Qt.PointingHandCursor
-                hoverEnabled: true
-                onClicked:    root.runCmd("omarchy-toggle-idle")
-                onEntered:    parent.opacity = 0.7
-                onExited:     parent.opacity = 1.0
             }
         }
 
