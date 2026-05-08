@@ -499,6 +499,7 @@ Item {
 
                 Text {
                     anchors.centerIn: parent
+                    anchors.verticalCenterOffset: -1
                     text: "󰚩"
                     color: root.cTextPrimary
                     opacity: 0.5

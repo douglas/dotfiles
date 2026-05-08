@@ -124,7 +124,7 @@ ShellRoot {
             if (Array.isArray(command))
                 Quickshell.execDetached(command);
             else
-                Quickshell.execDetached(["bash", "-lc", command]);
+                Quickshell.execDetached(["bash", "-lc", "export PATH=\"$HOME/.local/share/omarchy/bin:$PATH\"; " + command]);
             close();
         }
     }

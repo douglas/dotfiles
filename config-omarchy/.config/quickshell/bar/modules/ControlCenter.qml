@@ -749,9 +749,10 @@ PanelWindow {
                     spacing: 8
                     Repeater {
                         model: [
-                            { icon: "󰌾", hoverColor: theme.accent || "#89b4fa", cmd: ["hyprlock"] },
-                            { icon: "󰜉", hoverColor: "#fab387",                 cmd: ["systemctl", "reboot"] },
-                            { icon: "󰐥", hoverColor: "#f38ba8",                 cmd: ["systemctl", "poweroff"] }
+                            { icon: "󰌾", label: "Lock",     message: "",                    hoverColor: theme.accent || "#89b4fa", cmd: "hyprlock",                confirm: false },
+                            { icon: "󰒲", label: "Suspend",  message: "Suspend the system?",   hoverColor: theme.yellow || "#f9e2af", cmd: "systemctl suspend",       confirm: true },
+                            { icon: "󰜉", label: "Restart",  message: "Restart the system?",   hoverColor: "#fab387",                 cmd: "omarchy-system-reboot",   confirm: true },
+                            { icon: "󰐥", label: "Shutdown", message: "Power off the system?",  hoverColor: "#f38ba8",                 cmd: "omarchy-system-shutdown", confirm: true }
                         ]
                         delegate: Rectangle {
                             width: 30; height: 30; radius: 9
@@ -769,12 +770,12 @@ PanelWindow {
                                 id: btnMa; anchors.fill: parent
                                 cursorShape: Qt.PointingHandCursor; hoverEnabled: true
                                 onClicked: {
-                                    if (modelData.cmd[0] === "hyprlock") {
-                                        Quickshell.execDetached(modelData.cmd)
+                                    if (!modelData.confirm) {
+                                        Quickshell.execDetached(["bash", "-lc", "export PATH=\"$HOME/.local/share/omarchy/bin:$PATH\"; " + modelData.cmd])
                                     } else if (cc.powerActions) {
                                         cc.powerActions.requestAction(
-                                            modelData.cmd[1] === "reboot" ? "Restart" : "Shutdown",
-                                            modelData.cmd[1] === "reboot" ? "Restart the system?" : "Power off the system?",
+                                            modelData.label,
+                                            modelData.message,
                                             modelData.cmd
                                         )
                                     }
