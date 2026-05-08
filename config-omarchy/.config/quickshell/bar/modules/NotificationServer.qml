@@ -1,16 +1,17 @@
 import QtQuick
 import Quickshell
-import Quickshell.Services.Notifications
+import Quickshell.Services.Notifications as QsNotifications
 
 Item {
     id: root
 
     property bool panelOpen: false
     property bool dndEnabled: false
+    property var osdService: null
     property var notifications: []
     property var hiddenToasts: []
 
-    NotificationServer {
+    QsNotifications.NotificationServer {
         id: server
         keepOnReload: true
         actionsSupported: true
@@ -20,8 +21,12 @@ Item {
         onNotification: notif => {
             notif.tracked = true
             root.notifications = [notif, ...root.notifications]
-            if (root.dndEnabled && !root.isCritical(notif))
-                root.hideToast(notif.id)
+            root.hideToast(notif.id)
+            if (root.dndEnabled && !root.isCritical(notif)) {
+                return
+            }
+
+            root.showOsd(notif)
         }
     }
 
@@ -72,6 +77,39 @@ Item {
 
     function appNameFor(notif) {
         return (notif?.appName || "Unknown").trim() || "Unknown"
+    }
+
+    function osdIconFor(notif) {
+        const app = appNameFor(notif).toLowerCase()
+        if (app.includes("kitty") || app.includes("ghostty") || app.includes("terminal"))
+            return "󰆍"
+        if (app.includes("codex"))
+            return "󰚩"
+        if (app.includes("calendar"))
+            return "󰃭"
+        return "󰂚"
+    }
+
+    function osdTitleFor(notif) {
+        return (notif?.summary || appNameFor(notif)).trim() || "Notification"
+    }
+
+    function osdSubtitleFor(notif) {
+        const body = (notif?.body || "").replace(/<[^>]*>/g, "").trim()
+        return body || appNameFor(notif)
+    }
+
+    function showOsd(notif) {
+        if (!root.osdService)
+            return
+
+        root.osdService.showMessage(
+            osdIconFor(notif),
+            osdTitleFor(notif),
+            osdSubtitleFor(notif),
+            root.isCritical(notif) ? "red" : "accent",
+            appNameFor(notif)
+        )
     }
 
     function appNames() {
@@ -146,6 +184,6 @@ Item {
     }
 
     function isCritical(notif) {
-        return notif.urgency === NotificationUrgency.Critical
+        return notif.urgency === QsNotifications.NotificationUrgency.Critical
     }
 }

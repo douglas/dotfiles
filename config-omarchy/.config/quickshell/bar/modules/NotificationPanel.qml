@@ -9,6 +9,7 @@ Item {
     id: root
     property var theme: ({})
     property var settings: null
+    property var notifServer: null
     property real uiScale: 0.0
     property real uiScaleMultiplier: 0.5
     property string appFilter: ""
@@ -64,7 +65,7 @@ Item {
     WlrLayershell {
         id: toastWin
 
-        visible: !notifServer.panelOpen && visibleToasts.length > 0
+        visible: notifServer && !notifServer.panelOpen && visibleToasts.length > 0
 
         color: "transparent"
         anchors {
@@ -85,9 +86,9 @@ Item {
         exclusionMode: ExclusionMode.Ignore
         namespace: "notif-toast"
 
-        property var visibleToasts: notifServer.notifications.filter(
-            n => !notifServer.hiddenToasts.includes(n.id)
-        )
+        property var visibleToasts: notifServer
+            ? notifServer.notifications.filter(n => !notifServer.hiddenToasts.includes(n.id))
+            : []
         property var latest: visibleToasts.length > 0 ? visibleToasts[0] : null
         property bool hasActions: latest && latest.actions && latest.actions.length > 0
 

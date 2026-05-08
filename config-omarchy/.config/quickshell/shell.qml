@@ -315,6 +315,7 @@ ShellRoot {
     
     NotificationPanel {
         theme: shell.palette
+        notifServer: notifServer
         settings: settingsState
         uiScale: shell.uiScale
         uiScaleMultiplier: shell.uiScaleMultiplier
@@ -334,6 +335,7 @@ ShellRoot {
 
     NotificationServer {
         id: notifServer
+        osdService: osdService
     }
 
     Process {
