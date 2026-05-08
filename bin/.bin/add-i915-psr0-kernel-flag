@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+flag="${1:-i915.enable_psr=0}"
+config="/etc/default/limine"
+
+usage() {
+  printf 'Usage: %s [kernel-flag]\n' "${0##*/}"
+  printf 'Default kernel flag: i915.enable_psr=0\n'
+}
+
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+  usage
+  exit 0
+fi
+
+if [[ "$(id -u)" -ne 0 ]]; then
+  if command -v sudo >/dev/null 2>&1; then
+    exec sudo -- "$0" "$@"
+  fi
+
+  printf 'error: this script must run as root because it edits %s\n' "$config" >&2
+  exit 1
+fi
+
+if [[ ! -f "$config" ]]; then
+  printf 'error: expected Omarchy/Limine config not found: %s\n' "$config" >&2
+  exit 1
+fi
+
+if awk -v flag="$flag" '
+  /^[[:space:]]*#/ { next }
+  index(" " $0 " ", " " flag " ") { found = 1 }
+  END { exit found ? 0 : 1 }
+' "$config"; then
+  printf 'Kernel flag already present in %s: %s\n' "$config" "$flag"
+else
+  timestamp="$(date +%Y%m%d-%H%M%S)"
+  backup="${config}.backup-${timestamp}"
+
+  cp -a -- "$config" "$backup"
+  printf 'Created backup: %s\n' "$backup"
+
+  {
+    printf '\n'
+    printf '# Added by %s on %s\n' "${0##*/}" "$(date --iso-8601=seconds)"
+    printf 'KERNEL_CMDLINE[default]+=" %s"\n' "$flag"
+  } >>"$config"
+
+  printf 'Added kernel flag to %s: %s\n' "$config" "$flag"
+fi
+
+if command -v limine-mkinitcpio >/dev/null 2>&1; then
+  printf 'Regenerating Omarchy/Limine boot artifacts with limine-mkinitcpio...\n'
+  limine-mkinitcpio
+elif command -v limine-update >/dev/null 2>&1; then
+  printf 'Regenerating Limine boot entries with limine-update...\n'
+  limine-update
+else
+  printf 'warning: no Limine regeneration command found; run your bootloader update manually.\n' >&2
+fi
+
+printf 'Done. Reboot, then verify with: bat --plain /proc/cmdline\n'
