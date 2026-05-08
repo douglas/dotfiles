@@ -185,7 +185,23 @@ QtObject {
         return scaledTitle(multiplier);
     }
 
+    function scaledCalendarIcon(multiplier) {
+        return scaledListIcon(multiplier);
+    }
+
+    function scaledCalendarHeaderIcon(multiplier) {
+        return scaledCalendarIcon(multiplier);
+    }
+
+    function scaledCalendarNavigationIcon(multiplier) {
+        return scaledCalendarIcon(multiplier);
+    }
+
     function scaledComponentSubtitle(multiplier) {
+        return scaledBody(multiplier);
+    }
+
+    function scaledComponentBody(multiplier) {
         return scaledBody(multiplier);
     }
 

@@ -496,7 +496,7 @@ Item {
                     Text {
                         text: "󰸗"
                         color: root.cAccent
-                        font.pixelSize: Style.Typography.scaledHeaderIcon(root.overlayScale)
+                        font.pixelSize: Style.Typography.scaledCalendarHeaderIcon(root.overlayScale)
                         font.family: Style.Typography.mono
                         Layout.alignment: Qt.AlignVCenter
                     }
@@ -509,7 +509,7 @@ Item {
                         Text {
                             text: root.selectedLabel
                             color: root.cFg
-                            font.pixelSize: Style.Typography.scaledBody(root.overlayScale)
+                            font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
                             font.family: Style.Typography.monoPropo
                             font.weight: Font.DemiBold
                         }
@@ -546,7 +546,7 @@ Item {
                                 anchors.centerIn: parent
                                 text: ""
                                 color: root.settingsOpen ? root.cAccent : settingsHover.containsMouse ? root.cAccent : Qt.alpha(root.cMuted, 0.75)
-                                font.pixelSize: Style.Typography.scaledActionIcon(root.overlayScale)
+                                font.pixelSize: Style.Typography.scaledCalendarIcon(root.overlayScale)
                                 font.family: Style.Typography.mono
                             }
 
@@ -572,7 +572,7 @@ Item {
                                 anchors.centerIn: parent
                                 text: ""
                                 color: refreshHover.containsMouse ? root.cAccent : root.cMuted
-                                font.pixelSize: Style.Typography.scaledActionIcon(root.overlayScale)
+                                font.pixelSize: Style.Typography.scaledCalendarIcon(root.overlayScale)
                                 font.family: Style.Typography.mono
                             }
 
@@ -597,7 +597,7 @@ Item {
                                 anchors.centerIn: parent
                                 text: "󰅖"
                                 color: closeHover.containsMouse ? root.cRed : root.cMuted
-                                font.pixelSize: Style.Typography.scaledCloseIcon(root.overlayScale)
+                                font.pixelSize: Style.Typography.scaledCalendarIcon(root.overlayScale)
                                 font.family: Style.Typography.mono
                             }
 
@@ -635,7 +635,7 @@ Item {
                         Text {
                             text: "‹"
                             color: prevMonthHover.containsMouse ? root.cAccent : root.cMuted
-                            font.pixelSize: Style.Typography.scaledNavigationIcon(root.overlayScale)
+                            font.pixelSize: Style.Typography.scaledCalendarNavigationIcon(root.overlayScale)
                             font.family: Style.Typography.mono
                             Layout.preferredWidth: root.overlayPx(24)
                             horizontalAlignment: Text.AlignHCenter
@@ -654,7 +654,7 @@ Item {
                         Text {
                             text: root.monthTitle()
                             color: root.cFg
-                            font.pixelSize: Style.Typography.scaledBody(root.overlayScale)
+                            font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
                             font.family: Style.Typography.monoPropo
                             font.weight: Font.DemiBold
                             horizontalAlignment: Text.AlignHCenter
@@ -664,7 +664,7 @@ Item {
                         Text {
                             text: "›"
                             color: nextMonthHover.containsMouse ? root.cAccent : root.cMuted
-                            font.pixelSize: Style.Typography.scaledNavigationIcon(root.overlayScale)
+                            font.pixelSize: Style.Typography.scaledCalendarNavigationIcon(root.overlayScale)
                             font.family: Style.Typography.mono
                             Layout.preferredWidth: root.overlayPx(24)
                             horizontalAlignment: Text.AlignHCenter
@@ -777,7 +777,7 @@ Item {
                     Text {
                         text: "Settings"
                         color: root.cFg
-                        font.pixelSize: Style.Typography.scaledBody(root.overlayScale)
+                        font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
                         font.family: Style.Typography.monoPropo
                         font.weight: Font.DemiBold
                         Layout.fillWidth: true
@@ -801,7 +801,7 @@ Item {
                             Text {
                                 text: "Google events"
                                 color: root.cFg
-                                font.pixelSize: Style.Typography.scaledBody(root.overlayScale)
+                                font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
                                 font.family: Style.Typography.monoPropo
                                 font.weight: Font.DemiBold
                             }
@@ -860,7 +860,7 @@ Item {
                     Text {
                         text: "Events"
                         color: root.cFg
-                        font.pixelSize: Style.Typography.scaledBody(root.overlayScale)
+                        font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
                         font.family: Style.Typography.monoPropo
                         font.weight: Font.DemiBold
                         Layout.fillWidth: true
@@ -921,7 +921,7 @@ Item {
                                 Text {
                                     text: row.modelData.title
                                     color: root.cFg
-                                    font.pixelSize: Style.Typography.scaledBody(root.overlayScale)
+                                    font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
                                     font.family: Style.Typography.monoPropo
                                     font.weight: Font.Medium
                                     elide: Text.ElideRight
@@ -943,7 +943,7 @@ Item {
                                 visible: row.modelData.conferenceUrl && row.modelData.conferenceUrl.length > 0
                                 text: "󰍫"
                                 color: root.cAccent
-                                font.pixelSize: Style.Typography.scaledActionIcon(root.overlayScale)
+                                font.pixelSize: Style.Typography.scaledCalendarIcon(root.overlayScale)
                                 font.family: Style.Typography.mono
 
                                 MouseArea {
@@ -958,7 +958,7 @@ Item {
                             Text {
                                 text: "󰏌"
                                 color: root.cMuted
-                                font.pixelSize: Style.Typography.scaledActionIcon(root.overlayScale)
+                                font.pixelSize: Style.Typography.scaledCalendarIcon(root.overlayScale)
                                 font.family: Style.Typography.mono
                             }
 
@@ -982,7 +982,7 @@ Item {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: "󰔟"
                             color: root.cAccent
-                            font.pixelSize: Style.Typography.scaledActionIcon(root.overlayScale)
+                            font.pixelSize: Style.Typography.scaledCalendarIcon(root.overlayScale)
                             font.family: Style.Typography.mono
 
                             RotationAnimation on rotation {
@@ -1010,7 +1010,7 @@ Item {
                         width: parent.width - root.overlayPx(20)
                         text: root.ok ? "No events scheduled for " + root.selectedLabel : root.errorText
                         color: root.ok ? root.cMuted : root.cRed
-                        font.pixelSize: Style.Typography.scaledBody(root.overlayScale)
+                        font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
                         font.family: Style.Typography.monoPropo
                         horizontalAlignment: Text.AlignHCenter
                         wrapMode: Text.WordWrap

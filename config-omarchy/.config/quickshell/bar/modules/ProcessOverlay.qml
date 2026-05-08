@@ -224,7 +224,7 @@ Item {
                         Text {
                             text: root.title
                             color: root.cFg
-                            font.pixelSize: Style.Typography.scaledBody(root.overlayScale)
+                            font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
                             font.family: root.textFont
                             font.weight: Font.DemiBold
                         }
@@ -324,7 +324,7 @@ Item {
                     Text {
                         text: root.listTitle
                         color: root.cFg
-                        font.pixelSize: Style.Typography.scaledBody(root.overlayScale)
+                        font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
                         font.family: root.textFont
                         font.weight: Font.DemiBold
                         Layout.fillWidth: true
@@ -432,7 +432,7 @@ Item {
                                 visible: modelData.rowType !== "process"
                                 text: root.rowExpanded(modelData) ? "⌄" : "›"
                                 color: root.accent
-                                font.pixelSize: Style.Typography.scaledBody(root.overlayScale)
+                                font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
                                 font.family: root.textFont
                                 horizontalAlignment: Text.AlignHCenter
                                 Layout.preferredWidth: root.overlayPx(10)
@@ -441,7 +441,7 @@ Item {
                             Text {
                                 text: modelData.rowType === "process" ? (modelData.name || "process") : (modelData.title || "group")
                                 color: modelData.rowType === "process" ? root.cFg : root.accent
-                                font.pixelSize: modelData.rowType === "process" ? Style.Typography.scaledBody(root.overlayScale) : Style.Typography.scaledComponentSubtitle(root.overlayScale)
+                                font.pixelSize: modelData.rowType === "process" ? Style.Typography.scaledComponentBody(root.overlayScale) : Style.Typography.scaledComponentSubtitle(root.overlayScale)
                                 font.family: root.textFont
                                 font.weight: modelData.rowType === "process" ? Font.Normal : Font.DemiBold
                                 elide: Text.ElideRight
@@ -483,7 +483,7 @@ Item {
                             Text {
                                 text: Number(modelData[root.valueKey] || 0).toFixed(1) + "%"
                                 color: Number(modelData[root.valueKey] || 0) >= 30 ? root.cRed : Number(modelData[root.valueKey] || 0) >= 10 ? root.cYellow : root.accent
-                                font.pixelSize: Style.Typography.scaledBody(root.overlayScale)
+                                font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
                                 font.family: root.textFont
                                 horizontalAlignment: Text.AlignRight
                                 Layout.preferredWidth: root.overlayPx(48)
@@ -573,7 +573,7 @@ Item {
                         anchors.centerIn: parent
                         text: root.emptyText
                         color: root.cMuted
-                        font.pixelSize: Style.Typography.scaledBody(root.overlayScale)
+                        font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
                         font.family: root.textFont
                         opacity: 0.65
                     }
