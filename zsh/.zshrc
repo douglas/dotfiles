@@ -98,3 +98,6 @@ eval "$(dox-env shell-hook zsh)"
 
 # Zoxide (must be initialized at the very end of .zshrc)
 eval "$(zoxide init --cmd cd zsh)"
+
+# bun completions
+[ -s "/home/douglas/.bun/_bun" ] && source "/home/douglas/.bun/_bun"
