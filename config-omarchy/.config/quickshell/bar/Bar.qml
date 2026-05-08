@@ -159,6 +159,7 @@ PanelWindow {
                     fg: root.fg
                     green: root.green
                     muted: root.muted
+                    overlayScale: root.scaleFactor
                     dockBottom: root.barOnBottom
                     quietMode: root.quietMode
                 }
@@ -260,8 +261,10 @@ PanelWindow {
                         accent: root.accent,
                         dim: root.dim,
                         muted: root.muted,
+                        yellow: root.yellow,
                         bg: root.bg
                     })
+                    overlayScale: root.scaleFactor
                 }
 
                 Kef {

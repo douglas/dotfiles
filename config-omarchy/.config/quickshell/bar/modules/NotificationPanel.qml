@@ -78,8 +78,8 @@ Item {
         // FIX A: shrink window to toast width only — not Screen.width.
         // Screen.width was creating a full-width invisible surface that
         // blocked the bar and every other shell element beneath it.
-        implicitWidth: hudBg.width > 0 ? hudBg.width : 400
-        implicitHeight: 44 + collapsedH + (hasActions ? expandedExtra : 0) + 10
+        implicitWidth: root.px(hudBg.width > 0 ? hudBg.width : 400)
+        implicitHeight: root.px(44 + collapsedH + (hasActions ? expandedExtra : 0) + 10)
 
         layer: WlrLayer.Overlay
         keyboardFocus: WlrKeyboardFocus.None
@@ -111,11 +111,11 @@ Item {
         Rectangle {
             id: hudBg
             x: dockCenter
-                ? (parent.width - width) / 2
-                : (dockRight ? parent.width - width - 10 : 10)
+                ? (parent.width - width * root.scaleFactor) / 2
+                : (dockRight ? parent.width - width * root.scaleFactor - root.px(10) : root.px(10))
             y: dockBottom
-                ? parent.height - height - 44
-                : 44
+                ? parent.height - height * root.scaleFactor - root.px(44)
+                : root.px(44)
 
             width: mainRow.implicitWidth + 32
 
@@ -133,7 +133,10 @@ Item {
             border.width: 1
             clip: true
             opacity: 0
-            scale: 0.92
+            scale: root.scaleFactor * revealScale
+            transformOrigin: Item.TopLeft
+
+            property real revealScale: 0.92
 
             // FIX B: HoverHandler tracks hover without consuming any mouse
             // events — clicks fall through to child MouseAreas normally.
@@ -164,7 +167,7 @@ Item {
                     if (toastWin.latest) {
                         toastWin.isHovered = false
                         hudBg.opacity = 0
-                        hudBg.scale = 0.92
+                        hudBg.revealScale = 0.92
                         hudIn.restart()
                         autoDismissTimer.restart()
                     } else {
@@ -176,13 +179,13 @@ Item {
             ParallelAnimation {
                 id: hudIn
                 NumberAnimation { target: hudBg; property: "opacity"; to: 1; duration: 200; easing.type: Easing.OutCubic }
-                NumberAnimation { target: hudBg; property: "scale"; to: 1; duration: 240; easing.type: Easing.OutBack; easing.overshoot: 0.3 }
+                NumberAnimation { target: hudBg; property: "revealScale"; to: 1; duration: 240; easing.type: Easing.OutBack; easing.overshoot: 0.3 }
             }
 
             ParallelAnimation {
                 id: hudOut
                 NumberAnimation { target: hudBg; property: "opacity"; to: 0; duration: 200; easing.type: Easing.InCubic }
-                NumberAnimation { target: hudBg; property: "scale"; to: 0.92; duration: 200; easing.type: Easing.InCubic }
+                NumberAnimation { target: hudBg; property: "revealScale"; to: 0.92; duration: 200; easing.type: Easing.InCubic }
             }
 
             ColumnLayout {

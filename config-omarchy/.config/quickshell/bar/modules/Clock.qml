@@ -13,9 +13,12 @@ Item {
     property real overlayScale: 1.18
     property bool quietMode: false
     readonly property bool use24h: settings ? settings.clockUse24h : true
+    readonly property real popupScale: Math.max(1.0, overlayScale)
 
     implicitWidth:  clockRow.implicitWidth
     implicitHeight: 28
+
+    function overlayPx(value) { return Math.round(value * popupScale) }
 
     function updateTime() {
         const now  = new Date()
@@ -131,11 +134,17 @@ Item {
 
         property bool showing: false
 
-        anchors { top: true }
-        margins { top: 44; }
+        anchors {
+            top: !root.barOnBottom
+            bottom: root.barOnBottom
+        }
+        margins {
+            top: root.barOnBottom ? 0 : root.overlayBarOffset
+            bottom: root.barOnBottom ? root.overlayBarOffset : 0
+        }
 
-        implicitWidth:  220
-        implicitHeight: showing ? calCol.implicitHeight + 16 : 0
+        implicitWidth:  root.overlayPx(220)
+        implicitHeight: showing ? root.overlayPx(calCol.implicitHeight + 16) : 0
 
         color: "transparent"
         exclusiveZone: -1
@@ -165,7 +174,10 @@ Item {
         }
 
         Rectangle {
-            anchors.fill: parent
+            width:        220
+            height:       parent.height / root.popupScale
+            transformOrigin: Item.TopLeft
+            scale:        root.popupScale
             radius:       10
             color:        root.theme.bg    || "#1e1e2e"
             border.color: root.theme.dim   || "#45475a"

@@ -59,8 +59,10 @@ Item {
     property bool hoverOpen: false
     property bool dockBottom: false
     property bool quietMode: false
+    property real overlayScale: 1.0
     property bool titleVisible: true
     property real progressPhase: 0
+    readonly property real popupScale: Math.max(1.0, overlayScale)
 
     implicitWidth: hasMedia ? (titleVisible ? 126 : 28) : 0
     implicitHeight: 28
@@ -74,6 +76,8 @@ Item {
         const seconds = secs % 60
         return minutes + ":" + (seconds < 10 ? "0" : "") + seconds
     }
+
+    function overlayPx(value) { return Math.round(value * popupScale) }
 
     function openCard() {
         if (!root.hasMedia)
@@ -580,8 +584,8 @@ Item {
     PanelWindow {
         id: playerPopup
         visible: true
-        implicitWidth: 318
-        implicitHeight: root.hasMedia && root.hoverOpen ? 106 : 0
+        implicitWidth: root.overlayPx(318)
+        implicitHeight: root.hasMedia && root.hoverOpen ? root.overlayPx(106) : 0
         color: "transparent"
         exclusiveZone: -1
         WlrLayershell.layer: WlrLayer.Overlay
@@ -593,21 +597,23 @@ Item {
             left: true
         }
         margins {
-            top: root.dockBottom ? 0 : Math.max(0, root.mapToItem(null, 0, root.height).y + 10 )
-            bottom: root.dockBottom ? Math.max(0, root.screen.height - root.mapToItem(null, 0, 0).y + 10) : 0
-            left: Math.max(6, root.mapToItem(null, 0, 0).x + 114)
+            top: root.dockBottom ? 0 : Math.max(0, root.mapToItem(null, 0, root.height).y + root.overlayPx(10))
+            bottom: root.dockBottom ? Math.max(0, root.screen.height - root.mapToItem(null, 0, 0).y + root.overlayPx(10)) : 0
+            left: Math.max(root.overlayPx(6), root.mapToItem(null, 0, 0).x + root.overlayPx(114))
         }
 
         Rectangle {
             id: playerCard
-            anchors.fill: parent
+            width: 318
+            height: 106
+            transformOrigin: root.dockBottom ? Item.BottomLeft : Item.TopLeft
             radius: 18
             color: root.cardColor
             border.color: root.cardBorder
             border.width: 1
             clip: true
             opacity: root.hoverOpen && root.hasMedia ? 1 : 0
-            scale: root.hoverOpen && root.hasMedia ? 1 : 0.972
+            scale: root.popupScale * (root.hoverOpen && root.hasMedia ? 1 : 0.972)
 
             Behavior on opacity {
                 NumberAnimation { duration: 160; easing.type: Easing.OutCubic }

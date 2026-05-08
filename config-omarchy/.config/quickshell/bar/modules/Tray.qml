@@ -9,6 +9,10 @@ Item {
     property var theme:      ({})
     property var trayWindow: null
     property var notifServer: null
+    property real overlayScale: 1.0
+    readonly property real popupScale: Math.max(1.0, overlayScale)
+
+    function overlayPx(value) { return Math.round(value * popupScale) }
 
     function _isDirectIconSource(icon) {
         const value = icon || ""
@@ -150,10 +154,10 @@ Item {
                     visible: trayItem.menuShowing
 
                     anchors { top: true; right: true }
-                    margins { top: 38; right: 40 }
+                    margins { top: root.overlayPx(38); right: root.overlayPx(40) }
 
-                    implicitWidth:  menuCol.implicitWidth + 16
-                    implicitHeight: menuCol.implicitHeight + 16
+                    implicitWidth:  root.overlayPx(menuCol.implicitWidth + 16)
+                    implicitHeight: root.overlayPx(menuCol.implicitHeight + 16)
 
                     color:         "transparent"
                     exclusiveZone: -1
@@ -161,7 +165,9 @@ Item {
                     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
                     Rectangle {
-                        anchors.fill: parent
+                        width:  menuCol.implicitWidth + 16
+                        height: parent.height / root.popupScale
+                        transformOrigin: Item.TopRight
                         radius:       10
                         color:        root.theme.bg  || "#1e1e2e"
                         border.color: root.theme.dim  || "#45475a"
@@ -169,8 +175,7 @@ Item {
                         clip:         true
 
                         opacity: trayItem.menuShowing ? 1 : 0
-                        scale:   trayItem.menuShowing ? 1 : 0.95
-                        transformOrigin: Item.Bottom
+                        scale:   root.popupScale * (trayItem.menuShowing ? 1 : 0.95)
 
                         Behavior on opacity {
                             NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
