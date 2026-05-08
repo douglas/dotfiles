@@ -1,0 +1,276 @@
+#!/usr/bin/env bash
+set -u
+
+event="${1:-Unknown}"
+sessions_dir="${CCTOP_SESSIONS_DIR:-$HOME/.cctop/sessions}"
+codex_state_db="${CODEX_STATE_DB:-$HOME/.codex/state_5.sqlite}"
+input="$(cat)"
+
+mkdir -p "$sessions_dir" 2>/dev/null || exit 0
+
+json_value() {
+  local filter="$1"
+  printf "%s" "$input" | jq -r "$filter // empty" 2>/dev/null
+}
+
+proc_start_epoch() {
+  local pid="$1"
+  local stat rest start_ticks boot hz
+
+  [[ -r "/proc/$pid/stat" ]] || return 1
+  stat="$(<"/proc/$pid/stat")" || return 1
+  rest="${stat##*) }"
+  set -- $rest
+  start_ticks="${20:-}"
+  [[ -n "$start_ticks" ]] || return 1
+
+  boot="$(awk '/^btime / { print $2; exit }' /proc/stat 2>/dev/null)" || return 1
+  hz="$(getconf CLK_TCK 2>/dev/null || printf "100")"
+  awk -v boot="$boot" -v ticks="$start_ticks" -v hz="$hz" 'BEGIN { printf "%.2f", boot + ticks / hz }'
+}
+
+iso_from_epoch() {
+  local epoch="${1:-}"
+
+  [[ -n "$epoch" ]] || {
+    date -u +"%Y-%m-%dT%H:%M:%SZ"
+    return
+  }
+
+  date -u -d "@${epoch%.*}" +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || date -u +"%Y-%m-%dT%H:%M:%SZ"
+}
+
+env_value() {
+  local pid="$1"
+  local key="$2"
+
+  [[ -r "/proc/$pid/environ" ]] || return 1
+  tr '\0' '\n' <"/proc/$pid/environ" 2>/dev/null | awk -F= -v key="$key" '$1 == key { sub(/^[^=]*=/, ""); print; exit }'
+}
+
+ppid_of() {
+  local pid="$1"
+  local stat rest
+
+  [[ -r "/proc/$pid/stat" ]] || return 1
+  stat="$(<"/proc/$pid/stat")" || return 1
+  rest="${stat##*) }"
+  set -- $rest
+  printf "%s\n" "${2:-0}"
+}
+
+agent_parent_pid() {
+  local current="$$"
+  local parent comm
+
+  for _ in 1 2 3 4 5 6 7 8; do
+    parent="$(ppid_of "$current" 2>/dev/null)" || break
+    [[ -n "$parent" && "$parent" != "0" && "$parent" != "1" ]] || break
+    comm="$(cat "/proc/$parent/comm" 2>/dev/null || true)"
+    if [[ "$comm" == "codex" || "$comm" == "claude" ]]; then
+      printf "%s\n" "$parent"
+      return 0
+    fi
+    current="$parent"
+  done
+
+  printf "%s\n" "$PPID"
+}
+
+git_branch_for() {
+  local path="$1"
+
+  [[ -d "$path/.git" ]] || git -C "$path" rev-parse --is-inside-work-tree >/dev/null 2>&1 || return 0
+  git -C "$path" branch --show-current 2>/dev/null
+}
+
+codex_thread_for_cwd() {
+  local cwd="$1"
+
+  command -v sqlite3 >/dev/null 2>&1 || return 1
+  [[ -r "$codex_state_db" ]] || return 1
+  sqlite3 "$codex_state_db" "
+    select id
+    from threads
+    where archived = 0 and cwd = '$(printf "%s" "$cwd" | sed "s/'/''/g")'
+    order by coalesce(updated_at_ms, updated_at * 1000) desc,
+             coalesce(created_at_ms, created_at * 1000) desc
+    limit 1;
+  " 2>/dev/null
+}
+
+safe_id_for() {
+  local value="$1"
+  local fallback="$2"
+  local safe
+
+  safe="$(printf "%s" "$value" | tr -cd 'a-zA-Z0-9_-')"
+  [[ -n "$safe" ]] || safe="$fallback"
+  printf "%s\n" "$safe"
+}
+
+text_payload() {
+  printf "%s" "$input" | jq -r '[.. | strings] | join("\n")' 2>/dev/null
+}
+
+payload_needs_user_answer() {
+  local text
+
+  text="$(text_payload | tr '[:upper:]' '[:lower:]')"
+  [[ -n "$text" ]] || return 1
+
+  case "$text" in
+    *"permission"*|*"approval"*|*"approve"*|*"allow this"*|*"do you want"*|*"would you like"*|*"should i"*|*"can i"*|*"please confirm"*|*"confirm"*|*"proceed"*|*"choose"*|*"select an option"*|*"waiting for your"*|*"requires your input"*)
+      return 0
+      ;;
+  esac
+
+  return 1
+}
+
+status_for_event() {
+  local event="$1"
+  local notification_type="$2"
+  local current="$3"
+
+  case "$event" in
+    SessionStart)
+      printf "idle"
+      ;;
+    UserPromptSubmit|PreToolUse|PostToolUse|PostToolUseFailure)
+      printf "working"
+      ;;
+    PermissionRequest)
+      printf "waiting_permission"
+      ;;
+    Notification)
+      case "$notification_type" in
+        permission_prompt)
+          printf "waiting_permission"
+          ;;
+        idle_prompt|elicitation_dialog)
+          printf "waiting_input"
+          ;;
+        *)
+          printf "%s" "$current"
+          ;;
+      esac
+      ;;
+    PreCompact)
+      printf "compacting"
+      ;;
+    PostCompact|SessionStart)
+      printf "idle"
+      ;;
+    Stop)
+      if payload_needs_user_answer; then
+        printf "waiting_input"
+      else
+        printf "idle"
+      fi
+      ;;
+    SessionError)
+      printf "needs_attention"
+      ;;
+    *)
+      printf "%s" "$current"
+      ;;
+  esac
+}
+
+terminal_json() {
+  local old_file="$1"
+  local pid="$2"
+  local old_terminal active hypr_address program tty kitty_socket kitty_window_id kitty_binary
+
+  if [[ -r "$old_file" ]]; then
+    old_terminal="$(jq -c '.terminal // empty' "$old_file" 2>/dev/null)"
+    if [[ -n "$old_terminal" && "$old_terminal" != "null" ]]; then
+      printf "%s\n" "$old_terminal"
+      return
+    fi
+  fi
+
+  active="$(hyprctl activewindow -j 2>/dev/null || printf '{}')"
+  hypr_address="$(printf "%s" "$active" | jq -r '.address // empty' 2>/dev/null)"
+  program="$(env_value "$pid" TERM_PROGRAM 2>/dev/null || true)"
+  [[ -n "$program" ]] || program="terminal"
+  tty="$(readlink "/proc/$pid/fd/0" 2>/dev/null || true)"
+  kitty_socket="$(env_value "$pid" KITTY_LISTEN_ON 2>/dev/null || true)"
+  kitty_window_id="$(env_value "$pid" KITTY_WINDOW_ID 2>/dev/null || true)"
+  kitty_binary="$(command -v kitty 2>/dev/null || true)"
+
+  jq -cn \
+    --arg program "$program" \
+    --arg tty "$tty" \
+    --arg hypr_address "$hypr_address" \
+    --arg kitty_socket "$kitty_socket" \
+    --arg kitty_window_id "$kitty_window_id" \
+    --arg kitty_binary "$kitty_binary" \
+    '{
+      program: $program,
+      tty: $tty,
+      hypr_address: $hypr_address,
+      socket: $kitty_socket,
+      session_id: $kitty_window_id,
+      binary_paths: {
+        kitty: $kitty_binary
+      }
+    }'
+}
+
+cwd="$(json_value '.cwd')"
+[[ -n "$cwd" ]] || cwd="$PWD"
+pid="$(agent_parent_pid)"
+pid_start_time="$(proc_start_epoch "$pid" 2>/dev/null || true)"
+started_at="$(iso_from_epoch "$pid_start_time")"
+session_id="$(json_value '.session_id // .thread_id // .conversation_id')"
+thread_id="$(json_value '.thread_id // .session_id')"
+[[ -n "$thread_id" ]] || thread_id="$(codex_thread_for_cwd "$cwd" 2>/dev/null || true)"
+safe_id="$(safe_id_for "$session_id" "codex-$pid")"
+session_file="$sessions_dir/$pid.json"
+notification_type="$(json_value '.notification_type')"
+current_status="$(jq -r '.status // "idle"' "$session_file" 2>/dev/null || printf "idle")"
+status="$(status_for_event "$event" "$notification_type" "$current_status")"
+now="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+branch="$(git_branch_for "$cwd")"
+terminal="$(terminal_json "$session_file" "$pid")"
+
+if [[ "$event" == "SessionEnd" ]]; then
+  rm -f "$session_file" "$session_file.lock" 2>/dev/null
+  exit 0
+fi
+
+tmp="$session_file.$$"
+jq -cn \
+  --arg session_id "$safe_id" \
+  --arg pid "$pid" \
+  --arg pid_start_time "$pid_start_time" \
+  --arg project_path "$cwd" \
+  --arg project_name "${cwd##*/}" \
+  --arg branch "$branch" \
+  --arg status "$status" \
+  --arg source "codex" \
+  --arg started_at "$started_at" \
+  --arg last_activity "$now" \
+  --arg thread_id "$thread_id" \
+  --argjson terminal "$terminal" \
+  '{
+    session_id: $session_id,
+    pid: ($pid | tonumber),
+    pid_start_time: (if $pid_start_time == "" then null else ($pid_start_time | tonumber) end),
+    project_path: $project_path,
+    project_name: $project_name,
+    branch: $branch,
+    status: $status,
+    source: $source,
+    agent_model: "Codex",
+    started_at: $started_at,
+    last_activity: $last_activity,
+    thread_id: $thread_id,
+    terminal: $terminal
+  }' >"$tmp" 2>/dev/null && mv "$tmp" "$session_file"
+
+if [[ "$event" == "Stop" ]]; then
+  printf '{"continue":true,"suppressOutput":true}\n'
+fi

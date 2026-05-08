@@ -243,7 +243,7 @@ codex_terminal_status_for_project() {
 }
 
 list_cctop_sessions() {
-  local first=1 file json pid pid_start
+  local first=1 file json pid pid_start source thread_id hook_status
 
   printf '['
   [[ -d "$sessions_dir" ]] || {
@@ -258,6 +258,15 @@ list_cctop_sessions() {
     pid="$(jq -r '.pid // empty' "$file" 2>/dev/null)"
     pid_start="$(jq -r '.pid_start_time // empty' "$file" 2>/dev/null)"
     session_alive "$pid" "$pid_start" || continue
+    source="$(jq -r ".source // empty" "$file" 2>/dev/null)"
+    thread_id="$(jq -r ".thread_id // empty" "$file" 2>/dev/null)"
+
+    if [[ "$source" == "codex" && -n "$thread_id" ]]; then
+      hook_status="$(codex_status_for_thread "$thread_id" 2>/dev/null || true)"
+      if [[ "$hook_status" == "waiting_permission" ]]; then
+        json="$(printf "%s" "$json" | jq -c --arg status "$hook_status" ".status = \$status" 2>/dev/null || printf "%s" "$json")"
+      fi
+    fi
 
     if [[ "$first" -eq 0 ]]; then
       printf ','
