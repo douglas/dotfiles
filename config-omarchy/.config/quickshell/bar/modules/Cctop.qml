@@ -71,9 +71,13 @@ Item {
         return Math.round(value * Math.max(1, overlayScale));
     }
 
-    function reload() {
+    function reloadSessions() {
         if (!loadProc.running)
             loadProc.running = true;
+    }
+
+    function reload() {
+        reloadSessions();
 
         if (!historyProc.running)
             historyProc.running = true;
@@ -405,7 +409,7 @@ Item {
     }
 
     Timer {
-        interval: 2500
+        interval: 30000
         repeat: true
         running: !root.quietMode
         onTriggered: root.reload()

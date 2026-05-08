@@ -68,6 +68,10 @@ PanelWindow {
         cctopModule.openPanel(true)
     }
 
+    function refreshCctop() {
+        cctopModule.reloadSessions()
+    }
+
     anchors {
         top: !barOnBottom
         bottom: barOnBottom

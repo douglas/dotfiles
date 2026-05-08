@@ -3,8 +3,6 @@ set -u
 
 sessions_dir="${CCTOP_SESSIONS_DIR:-$HOME/.cctop/sessions}"
 history_dir="${CCTOP_HISTORY_DIR:-$HOME/.cctop/history}"
-codex_state_db="${CODEX_STATE_DB:-$HOME/.codex/state_5.sqlite}"
-codex_logs_db="${CODEX_LOGS_DB:-$HOME/.codex/logs_2.sqlite}"
 
 proc_start_epoch() {
   local pid="$1"
@@ -87,163 +85,8 @@ git_branch_for() {
   git -C "$path" branch --show-current 2>/dev/null
 }
 
-codex_cwd_candidates() {
-  local cwd="$1"
-
-  printf "%s\n" "$cwd"
-  case "$cwd" in
-    "$HOME/src/neosh")
-      printf "%s\n" "$HOME/src/kurama"
-      ;;
-    "$HOME/src/kurama")
-      printf "%s\n" "$HOME/src/neosh"
-      ;;
-  esac
-}
-
-codex_thread_for_cwd() {
-  local cwd="$1"
-  local candidate thread_id
-
-  command -v sqlite3 >/dev/null 2>&1 || return 1
-  [[ -r "$codex_state_db" ]] || return 1
-
-  while IFS= read -r candidate; do
-    [[ -n "$candidate" ]] || continue
-    thread_id="$(sqlite3 "$codex_state_db" "
-      select id
-      from threads
-      where archived = 0 and cwd = '$candidate'
-      order by coalesce(updated_at_ms, updated_at * 1000) desc,
-               coalesce(created_at_ms, created_at * 1000) desc
-      limit 1;
-    " 2>/dev/null)"
-    if [[ -n "$thread_id" ]]; then
-      printf "%s\n" "$thread_id"
-      return 0
-    fi
-  done < <(codex_cwd_candidates "$cwd")
-
-  return 1
-}
-
-codex_log_timestamp() {
-  local thread_id="$1"
-  local predicate="${2:-}"
-
-  command -v sqlite3 >/dev/null 2>&1 || return 1
-  [[ -r "$codex_logs_db" ]] || return 1
-
-  sqlite3 "$codex_logs_db" "
-    select coalesce(max(ts), 0)
-    from logs
-    where thread_id = '$thread_id' $predicate;
-  " 2>/dev/null
-}
-
-codex_status_for_thread() {
-  local thread_id="$1"
-  local now latest_any latest_new latest_close latest_gate_wait latest_gate_release
-
-  latest_any="$(codex_log_timestamp "$thread_id" || printf 0)"
-  latest_new="$(codex_log_timestamp "$thread_id" "and feedback_log_body like '%codex_core::tasks: new%'" || printf 0)"
-  latest_close="$(codex_log_timestamp "$thread_id" "and feedback_log_body like '%codex_core::tasks: close%'" || printf 0)"
-  latest_gate_wait="$(codex_log_timestamp "$thread_id" "and feedback_log_body like '%waiting for tool gate%'" || printf 0)"
-  latest_gate_release="$(codex_log_timestamp "$thread_id" "and (feedback_log_body like '%tool gate released%' or feedback_log_body like '%event.name=\"codex.tool_decision\"%')" || printf 0)"
-  now="$(date +%s)"
-
-  [[ "$latest_any" =~ ^[0-9]+$ ]] || latest_any=0
-  [[ "$latest_new" =~ ^[0-9]+$ ]] || latest_new=0
-  [[ "$latest_close" =~ ^[0-9]+$ ]] || latest_close=0
-  [[ "$latest_gate_wait" =~ ^[0-9]+$ ]] || latest_gate_wait=0
-  [[ "$latest_gate_release" =~ ^[0-9]+$ ]] || latest_gate_release=0
-
-  if (( latest_gate_wait > latest_gate_release && latest_gate_wait >= now - 3600 )); then
-    printf "waiting_permission"
-  elif (( latest_any > latest_close + 2 && latest_any >= now - 120 )); then
-    printf "working"
-  elif (( latest_new > latest_close )); then
-    printf "working"
-  else
-    printf "idle"
-  fi
-}
-
-codex_last_activity_for_thread() {
-  local thread_id="$1"
-  local latest_any
-
-  latest_any="$(codex_log_timestamp "$thread_id" || printf 0)"
-  [[ "$latest_any" =~ ^[0-9]+$ && "$latest_any" -gt 0 ]] || return 1
-  iso_from_epoch "$latest_any"
-}
-
-codex_title_is_working() {
-  case "$1" in
-    "⠋ "*|"⠙ "*|"⠹ "*|"⠸ "*|"⠼ "*|"⠴ "*|"⠦ "*|"⠧ "*|"⠇ "*|"⠏ "*)
-      return 0
-      ;;
-  esac
-
-  return 1
-}
-
-codex_status_title_hints() {
-  local cwd="$1"
-  local candidate base branch value
-
-  while IFS= read -r candidate; do
-    base="${candidate##*/}"
-    for value in "$base" "${base:0:20}" "${base:0:16}"; do
-      [[ -n "$value" ]] && printf "%s\n" "${value,,}"
-    done
-  done < <(codex_cwd_candidates "$cwd")
-
-  branch="$(git_branch_for "$cwd")"
-  for value in "$branch" "${branch:0:20}" "${branch:0:16}"; do
-    [[ -n "$value" ]] && printf "%s\n" "${value,,}"
-  done
-}
-
-codex_terminal_status_for_project() {
-  local cwd="$1"
-  local clients title initial combined hint
-
-  command -v hyprctl >/dev/null 2>&1 || return 1
-  command -v jq >/dev/null 2>&1 || return 1
-  clients="$(hyprctl clients -j 2>/dev/null)" || return 1
-
-  while IFS=$'\t' read -r title initial; do
-    combined="${title,,} ${initial,,}"
-    while IFS= read -r hint; do
-      [[ -n "$hint" ]] || continue
-      [[ "$combined" == *"$hint"* ]] || continue
-
-      if [[ "$combined" == *"action required"* || "$combined" == *"approval"* || "$combined" == *"permission"* ]]; then
-        printf "waiting_permission"
-        return 0
-      fi
-
-      if codex_title_is_working "$title"; then
-        printf "working"
-        return 0
-      fi
-
-      printf "idle"
-      return 0
-    done < <(codex_status_title_hints "$cwd")
-  done < <(printf "%s" "$clients" | jq -r '
-    .[]
-    | select((((.class // "") + " " + (.initialClass // "")) | ascii_downcase | test("ghostty|kitty|terminal|wezterm|foot|alacritty")))
-    | [(.title // ""), (.initialTitle // "")]
-    | @tsv
-  ' 2>/dev/null)
-
-  return 1
-}
-
 list_cctop_sessions() {
-  local first=1 file json pid pid_start source thread_id hook_status
+  local first=1 file json pid pid_start
 
   printf '['
   [[ -d "$sessions_dir" ]] || {
@@ -258,15 +101,6 @@ list_cctop_sessions() {
     pid="$(jq -r '.pid // empty' "$file" 2>/dev/null)"
     pid_start="$(jq -r '.pid_start_time // empty' "$file" 2>/dev/null)"
     session_alive "$pid" "$pid_start" || continue
-    source="$(jq -r ".source // empty" "$file" 2>/dev/null)"
-    thread_id="$(jq -r ".thread_id // empty" "$file" 2>/dev/null)"
-
-    if [[ "$source" == "codex" && -n "$thread_id" ]]; then
-      hook_status="$(codex_status_for_thread "$thread_id" 2>/dev/null || true)"
-      if [[ "$hook_status" == "waiting_permission" ]]; then
-        json="$(printf "%s" "$json" | jq -c --arg status "$hook_status" ".status = \$status" 2>/dev/null || printf "%s" "$json")"
-      fi
-    fi
 
     if [[ "$first" -eq 0 ]]; then
       printf ','
@@ -278,7 +112,7 @@ list_cctop_sessions() {
 }
 
 list_codex_sessions() {
-  local first=1 pid cwd tty program branch start_epoch started_at last_activity status title_status thread_id kitty_socket kitty_window_id kitty_binary
+  local first=1 pid cwd tty program branch start_epoch started_at last_activity status kitty_socket kitty_window_id kitty_binary
 
   printf '['
   while IFS= read -r pid; do
@@ -297,23 +131,8 @@ list_codex_sessions() {
     branch="$(git_branch_for "$cwd")"
     start_epoch="$(proc_start_epoch "$pid" 2>/dev/null || true)"
     started_at="$(iso_from_epoch "$start_epoch")"
-    thread_id="$(codex_thread_for_cwd "$cwd" 2>/dev/null || true)"
-    if [[ -n "$thread_id" ]]; then
-      status="$(codex_status_for_thread "$thread_id" 2>/dev/null || printf idle)"
-      last_activity="$(codex_last_activity_for_thread "$thread_id" 2>/dev/null || printf "%s" "$started_at")"
-    else
-      status="idle"
-      last_activity="$started_at"
-    fi
-    title_status="$(codex_terminal_status_for_project "$cwd" 2>/dev/null || true)"
-    case "$title_status" in
-      waiting_permission|working)
-        status="$title_status"
-        ;;
-      idle)
-        [[ "$status" == "working" ]] || status="idle"
-        ;;
-    esac
+    status="idle"
+    last_activity="$started_at"
 
     if [[ "$first" -eq 0 ]]; then
       printf ','

@@ -219,6 +219,11 @@ terminal_json() {
     }'
 }
 
+notify_quickshell() {
+  command -v quickshell >/dev/null 2>&1 || return 0
+  quickshell ipc call refreshCctop handle >/dev/null 2>&1 || true
+}
+
 cwd="$(json_value '.cwd')"
 [[ -n "$cwd" ]] || cwd="$PWD"
 pid="$(agent_parent_pid)"
@@ -238,6 +243,7 @@ terminal="$(terminal_json "$session_file" "$pid")"
 
 if [[ "$event" == "SessionEnd" ]]; then
   rm -f "$session_file" "$session_file.lock" 2>/dev/null
+  notify_quickshell
   exit 0
 fi
 
@@ -270,6 +276,7 @@ jq -cn \
     thread_id: $thread_id,
     terminal: $terminal
   }' >"$tmp" 2>/dev/null && mv "$tmp" "$session_file"
+notify_quickshell
 
 if [[ "$event" == "Stop" ]]; then
   printf '{"continue":true,"suppressOutput":true}\n'

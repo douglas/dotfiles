@@ -749,6 +749,13 @@ ShellRoot {
     }
 
     IpcHandler {
+        target: "refreshCctop"
+        function handle() {
+            bar.refreshCctop()
+        }
+    }
+
+    IpcHandler {
         function handle() {
             notifServer.toggleDnd();
         }
