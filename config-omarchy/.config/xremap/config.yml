@@ -119,8 +119,8 @@ keymap:
       F18-j: Super-j
 
       # macOS-like screenshots (Cmd+Shift+3/4/5)
-      F18-Shift-3: { launch: ["omarchy-cmd-screenshot", "fullscreen"] }
-      F18-Shift-4: { launch: ["omarchy-cmd-screenshot", "region"] }
+      F18-Shift-3: { launch: ["omarchy-capture-screenshot", "fullscreen"] }
+      F18-Shift-4: { launch: ["omarchy-capture-screenshot", "region"] }
       F18-Shift-5: { launch: ["omarchy-menu", "capture"] }
 
   # ============================================================
@@ -285,6 +285,6 @@ keymap:
       F18-j: Super-j
 
       # macOS-like screenshots (Cmd+Shift+3/4/5)
-      F18-Shift-3: { launch: ["omarchy-cmd-screenshot", "fullscreen"] }
-      F18-Shift-4: { launch: ["omarchy-cmd-screenshot", "region"] }
+      F18-Shift-3: { launch: ["omarchy-capture-screenshot", "fullscreen"] }
+      F18-Shift-4: { launch: ["omarchy-capture-screenshot", "region"] }
       F18-Shift-5: { launch: ["omarchy-menu", "capture"] }

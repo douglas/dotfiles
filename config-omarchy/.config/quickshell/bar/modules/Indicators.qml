@@ -68,7 +68,7 @@ Item {
     }
 
     Timer {
-        interval: 3000
+        interval: 1000
         running:  !root.quietMode
         repeat:   true
         onTriggered: refreshLiveStatus()
@@ -87,6 +87,11 @@ Item {
         proc.onExited.connect(function() { proc.destroy() })
         proc.command = ["bash", "-c", "export PATH=\"$HOME/.local/share/omarchy/bin:$PATH\"; " + cmd]
         proc.running = true
+    }
+
+    function stopRecording() {
+        root.isRecording = false
+        runCmd("omarchy-capture-screenrecording --stop-recording")
     }
 
     // ── UI ────────────────────────────────────────────────────────
@@ -138,12 +143,12 @@ Item {
         //     }
         // }
 
-        // screen recording indicator — pulsing red when active
+        // screen recording indicator — blinking red when active
         Text {
             id:                     recordingIcon
             visible:                root.isRecording
             anchors.verticalCenter: parent.verticalCenter
-            text:                   "󰻂"
+            text:                   ""
             color:                  root.red
             font.pixelSize:         Style.Typography.barIcon
             font.family: Style.Typography.mono
@@ -158,7 +163,7 @@ Item {
             MouseArea {
                 anchors.fill: parent
                 cursorShape:  Qt.PointingHandCursor
-                onClicked: root.runCmd("export PATH=\"$HOME/.local/share/omarchy/bin:$PATH\"; omarchy-cmd-screenrecord --stop-recording")
+                onClicked: root.stopRecording()
             }
         }
     }

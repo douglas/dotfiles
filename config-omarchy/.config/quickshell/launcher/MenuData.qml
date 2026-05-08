@@ -46,26 +46,26 @@ QtObject {
                 "children": [{
                     "icon": "",
                     "label": "Screenshot",
-                    "cmd": "omarchy-cmd-screenshot"
+                    "cmd": "omarchy-capture-screenshot"
                 }, {
                     "icon": "",
                     "label": "Screenrecord",
                     "children": [{
                         "icon": "",
                         "label": "No audio",
-                        "cmd": "nohup omarchy-cmd-screenrecord </dev/null >/dev/null 2>&1 &"
+                        "cmd": "nohup omarchy-capture-screenrecording </dev/null >/dev/null 2>&1 &"
                     }, {
                         "icon": "",
                         "label": "Desktop audio",
-                        "cmd": "nohup omarchy-cmd-screenrecord --with-desktop-audio </dev/null >/dev/null 2>&1 &"
+                        "cmd": "nohup omarchy-capture-screenrecording --with-desktop-audio </dev/null >/dev/null 2>&1 &"
                     }, {
                         "icon": "",
                         "label": "Desktop + microphone",
-                        "cmd": "nohup omarchy-cmd-screenrecord --with-desktop-audio --with-microphone-audio </dev/null >/dev/null 2>&1 &"
+                        "cmd": "nohup omarchy-capture-screenrecording --with-desktop-audio --with-microphone-audio </dev/null >/dev/null 2>&1 &"
                     }, {
                         "icon": "",
                         "label": "Desktop + mic + webcam",
-                        "cmd": "nohup omarchy-cmd-screenrecord --with-desktop-audio --with-microphone-audio --with-webcam </dev/null >/dev/null 2>&1 &"
+                        "cmd": "nohup omarchy-capture-screenrecording --with-desktop-audio --with-microphone-audio --with-webcam </dev/null >/dev/null 2>&1 &"
                     }]
                 }, {
                     "icon": "󰴱",
