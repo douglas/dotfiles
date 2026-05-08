@@ -352,7 +352,7 @@ FloatingWindow {
                     Text {
                         text: root.files.length + " " + (root.files.length === 1 ? root.activeProfile.singular : root.activeProfile.plural)
                         color: Qt.alpha(theme.muted || "#585b70", 0.55)
-                        font.pixelSize: Style.Typography.body
+                        font.pixelSize: Style.Typography.recentBody
                         font.family: Style.Typography.mono
                     }
 
@@ -413,7 +413,7 @@ FloatingWindow {
                         anchors.centerIn: parent
                         text: fileScanner.running ? root.activeProfile.loadingText : root.activeProfile.emptyText
                         color: Qt.alpha(theme.muted || "#585b70", 0.6)
-                        font.pixelSize: Style.Typography.body
+                        font.pixelSize: Style.Typography.recentBody
                         font.family: Style.Typography.mono
                     }
 
@@ -505,7 +505,7 @@ FloatingWindow {
                                                 color: theme.fg || "#cdd6f4"
                                                 horizontalAlignment: Text.AlignHCenter
                                                 elide: Text.ElideMiddle
-                                                font.pixelSize: Style.Typography.titleSmall
+                                                font.pixelSize: Style.Typography.recentTitle
                                                 font.family: Style.Typography.mono
                                                 font.weight: Font.DemiBold
                                             }
@@ -515,7 +515,7 @@ FloatingWindow {
                                                 text: root.selectedFile.extension ? root.selectedFile.extension.toUpperCase() + " file" : "File"
                                                 color: Qt.alpha(theme.muted || "#585b70", 0.72)
                                                 horizontalAlignment: Text.AlignHCenter
-                                                font.pixelSize: Style.Typography.body
+                                                font.pixelSize: Style.Typography.recentBody
                                                 font.family: Style.Typography.mono
                                             }
 
@@ -558,7 +558,7 @@ FloatingWindow {
                                     Layout.fillWidth: true
                                     text: root.selectedFile.name || ""
                                     color: theme.fg || "#cdd6f4"
-                                    font.pixelSize: Style.Typography.body
+                                    font.pixelSize: Style.Typography.recentBody
                                     font.family: Style.Typography.mono
                                     elide: Text.ElideMiddle
                                 }
@@ -566,7 +566,7 @@ FloatingWindow {
                                 Text {
                                     text: (root.selectedIdx + 1) + " / " + root.files.length
                                     color: Qt.alpha(theme.muted || "#585b70", 0.72)
-                                    font.pixelSize: Style.Typography.body
+                                    font.pixelSize: Style.Typography.recentBody
                                     font.family: Style.Typography.mono
                                 }
 
@@ -684,7 +684,7 @@ FloatingWindow {
                                                     Layout.fillWidth: true
                                                     text: delegateItem.fileData.name || ""
                                                     color: selected ? (theme.accent || "#89b4fa") : (theme.fg || "#cdd6f4")
-                                                    font.pixelSize: Style.Typography.body
+                                                    font.pixelSize: Style.Typography.recentBody
                                                     font.family: Style.Typography.mono
                                                     elide: Text.ElideMiddle
                                                     maximumLineCount: 2
@@ -787,7 +787,7 @@ FloatingWindow {
                             Layout.fillWidth: true
                             text: root.activeProfile.settingLabel
                             color: theme.fg || "#cdd6f4"
-                            font.pixelSize: Style.Typography.body
+                            font.pixelSize: Style.Typography.recentBody
                             font.family: Style.Typography.mono
                             font.weight: Font.Medium
                         }
@@ -795,7 +795,7 @@ FloatingWindow {
                         Text {
                             text: root.fileLimit
                             color: theme.accent || "#89b4fa"
-                            font.pixelSize: Style.Typography.bodyLarge
+                            font.pixelSize: Style.Typography.settingsPreview
                             font.family: Style.Typography.mono
                             font.weight: Font.DemiBold
                         }
@@ -833,7 +833,7 @@ FloatingWindow {
                                     anchors.centerIn: parent
                                     text: modelData.label
                                     color: theme.fg || "#cdd6f4"
-                                    font.pixelSize: Style.Typography.body
+                                    font.pixelSize: Style.Typography.recentBody
                                     font.family: Style.Typography.mono
                                 }
 

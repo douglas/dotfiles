@@ -498,7 +498,7 @@ done
                                     anchors.centerIn: parent
                                     text: "✓"
                                     color: "#000000"
-                                    font.pixelSize: Style.Typography.componentMeta
+                                    font.pixelSize: Style.Typography.checkIcon
                                     font.weight: Font.Bold
                                 }
 

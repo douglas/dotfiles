@@ -189,7 +189,7 @@ Item {
                                 Text {
                                     text: modelData.preview
                                     color: root.currentIcon() === modelData.key ? t("accent", "#9ccfa0") : Qt.alpha(t("fg", "#eef6ef"), 0.72)
-                                    font.pixelSize: Style.Typography.bodyLarge
+                                    font.pixelSize: Style.Typography.settingsPreview
                                     font.family: modelData.family
                                     font.weight: Font.DemiBold
                                 }
@@ -370,7 +370,7 @@ Item {
                                 Text {
                                     text: "A"
                                     color: root.launcherIconSize() === modelData.value ? t("accent", "#9ccfa0") : Qt.alpha(t("fg", "#eef6ef"), 0.72)
-                                    font.pixelSize: Style.Typography.px(modelData.value)
+                                    font.pixelSize: Style.Typography.customPreview(modelData.value)
                                     font.family: Style.Typography.text
                                     font.weight: Font.DemiBold
                                 }

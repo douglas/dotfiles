@@ -201,7 +201,7 @@ Item {
                                 Layout.fillWidth: true
                                 text: root.service ? root.service.title : "OSD"
                                 color: root.t("fg", "#cdd6f4")
-                                font.pixelSize: Style.Typography.title
+                                font.pixelSize: Style.Typography.osdTitle
                                 font.weight: Font.DemiBold
                                 font.family: Style.Typography.mono
                                 elide: Text.ElideRight
@@ -210,7 +210,7 @@ Item {
                             Text {
                                 text: root.service ? root.service.valueText : "0%"
                                 color: root.t("muted", "#585b70")
-                                font.pixelSize: Style.Typography.body
+                                font.pixelSize: Style.Typography.osdBody
                                 font.weight: Font.Medium
                                 font.family: Style.Typography.mono
                             }
@@ -221,7 +221,7 @@ Item {
                             Layout.fillWidth: true
                             text: root.service ? root.service.subtitle : ""
                             color: root.t("muted", "#585b70")
-                            font.pixelSize: Style.Typography.body
+                            font.pixelSize: Style.Typography.osdBody
                             font.family: Style.Typography.mono
                             elide: Text.ElideRight
                         }

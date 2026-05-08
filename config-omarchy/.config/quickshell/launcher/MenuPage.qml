@@ -167,7 +167,7 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
                         text: mitem.label || ""
                         color: isSelected ? (theme.fg || "#cdd6f4") : Qt.alpha(theme.fg || "#cdd6f4", 0.75)
-                        font.pixelSize: Style.Typography.body
+                        font.pixelSize: Style.Typography.launcherItemBody
                         font.family: Style.Typography.mono
                         font.weight: isSelected ? Font.Medium : Font.Normal
 
@@ -224,7 +224,7 @@ Item {
                     visible: mitem.terminal !== undefined && mitem.children === undefined
                     text: "󰆍"
                     color: Qt.alpha(theme.muted || "#585b70", isSelected ? 0.6 : 0.3)
-                    font.pixelSize: Style.Typography.componentSubtitle
+                    font.pixelSize: Style.Typography.terminalIcon
                     font.family: Style.Typography.mono
 
                     Behavior on color {

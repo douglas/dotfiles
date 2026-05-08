@@ -65,7 +65,7 @@ Item {
 
                 anchors.verticalCenter: parent.verticalCenter
                 color: theme.fg || "#cdd6f4"
-                font.pixelSize: Style.Typography.bodyLarge
+                font.pixelSize: Style.Typography.barText
                 font.family: Style.Typography.mono
                 font.weight: Font.Medium
             }

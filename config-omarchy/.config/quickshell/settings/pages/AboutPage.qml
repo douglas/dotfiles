@@ -79,7 +79,7 @@ Item {
                                 anchors.centerIn: parent
                                 text: "NK"
                                 color: t("accent", "#9ccfa0")
-                                font.pixelSize: Style.Typography.bodyLarge
+                                font.pixelSize: Style.Typography.settingsPreview
                                 font.family: Style.Typography.text
                                 font.weight: Font.DemiBold
                             }
@@ -93,7 +93,7 @@ Item {
                             Text {
                                 text: "Kurama for Omarchy setups"
                                 color: t("fg", "#eef6ef")
-                                font.pixelSize: Style.Typography.titleSmall
+                                font.pixelSize: Style.Typography.componentTitle
                                 font.family: Style.Typography.text
                                 font.weight: Font.DemiBold
                             }

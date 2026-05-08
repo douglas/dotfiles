@@ -110,7 +110,7 @@ PanelWindow {
                     anchors.verticalCenter: parent.verticalCenter
                     text: root.launcherIconText
                     color: root.accent
-                    font.pixelSize: Style.Typography.px(root.launcherIconSize)
+                    font.pixelSize: Style.Typography.customIcon(root.launcherIconSize)
                     font.family: root.launcherIconFont
 
                     Behavior on color {

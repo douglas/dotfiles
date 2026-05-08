@@ -221,7 +221,7 @@ Item {
                     Text {
                         text: toastWin.latest ? (toastWin.latest.summary || "") : ""
                         color: t("fg", "#cdd6f4")
-                        font.pixelSize: Style.Typography.body
+                        font.pixelSize: Style.Typography.notificationBody
                         font.weight: Font.DemiBold
                         font.family: Style.Typography.text
                         elide: Text.ElideRight
@@ -729,7 +729,7 @@ Item {
                                 Layout.fillWidth: true
                                 text: latest.summary || ""
                                 color: t("fg", "#cdd6f4")
-                                font.pixelSize: Style.Typography.body
+                                font.pixelSize: Style.Typography.notificationBody
                                 font.weight: Font.DemiBold
                                 font.family: Style.Typography.text
                                 elide: Text.ElideRight

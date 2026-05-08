@@ -16,7 +16,7 @@ Rectangle {
         anchors.centerIn: parent
         text: parent.label
         color: "#cdd6f4"
-        font.pixelSize: Style.Typography.px(parent.size)
+        font.pixelSize: Style.Typography.customIcon(parent.size)
     }
 
     MouseArea {

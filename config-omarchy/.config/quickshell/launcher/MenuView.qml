@@ -324,7 +324,7 @@ Item {
                     Text {
                         text: "›"
                         color: Qt.alpha(theme.muted || "#585b70", 0.4)
-                        font.pixelSize: Style.Typography.componentMeta
+                        font.pixelSize: Style.Typography.breadcrumbIcon
                         font.family: Style.Typography.mono
                     }
 
@@ -361,7 +361,7 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 text: "󰍉"
                 color: theme.accent || "#89b4fa"
-                font.pixelSize: Style.Typography.componentSubtitle
+                font.pixelSize: Style.Typography.searchIcon
                 font.family: Style.Typography.mono
             }
 
@@ -462,7 +462,7 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                     text: root.searchText
                     color: theme.fg || "#cdd6f4"
-                    font.pixelSize: Style.Typography.body
+                    font.pixelSize: Style.Typography.launcherItemBody
                     font.family: Style.Typography.mono
 
                     Behavior on color {
@@ -773,7 +773,7 @@ Item {
                                 Text {
                                     text: mitem.label || ""
                                     color: isSelected ? (theme.fg || "#cdd6f4") : Qt.alpha(theme.fg || "#cdd6f4", 0.75)
-                                    font.pixelSize: Style.Typography.body
+                                    font.pixelSize: Style.Typography.launcherItemBody
                                     font.family: Style.Typography.mono
                                     font.weight: isSelected ? Font.Medium : Font.Normal
 

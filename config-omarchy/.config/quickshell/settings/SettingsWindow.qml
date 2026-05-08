@@ -233,7 +233,7 @@ PanelWindow {
                         Text {
                             text: "Kurama Settings"
                             color: root.t("fg", "#eef6ef")
-                            font.pixelSize: Style.Typography.display
+                            font.pixelSize: Style.Typography.settingsTitle
                             font.family: Style.Typography.monoPropo
                             font.weight: Font.DemiBold
                             textFormat: Text.RichText
@@ -286,7 +286,7 @@ PanelWindow {
                                     Text {
                                         text: "NK"
                                         color: root.t("accent", "#9ccfa0")
-                                        font.pixelSize: Style.Typography.heading
+                                        font.pixelSize: Style.Typography.settingsSectionTitle
                                         font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
@@ -346,7 +346,7 @@ PanelWindow {
                                     Text {
                                         text: ""
                                         color: root.t("accent", "#9ccfa0")
-                                        font.pixelSize: Style.Typography.body
+                                        font.pixelSize: Style.Typography.settingsBody
                                         font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
@@ -420,7 +420,7 @@ PanelWindow {
                                     Text {
                                         text: ""
                                         color: root.t("accent", "#9ccfa0")
-                                        font.pixelSize: Style.Typography.body
+                                        font.pixelSize: Style.Typography.settingsBody
                                         font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
@@ -494,7 +494,7 @@ PanelWindow {
                                     Text {
                                         text: ""
                                         color: root.t("accent", "#9ccfa0")
-                                        font.pixelSize: Style.Typography.body
+                                        font.pixelSize: Style.Typography.settingsBody
                                         font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
@@ -568,7 +568,7 @@ PanelWindow {
                                     Text {
                                         text: ""
                                         color: root.t("accent", "#9ccfa0")
-                                        font.pixelSize: Style.Typography.body
+                                        font.pixelSize: Style.Typography.settingsBody
                                         font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
@@ -642,7 +642,7 @@ PanelWindow {
                                     Text {
                                         text: ""
                                         color: root.t("accent", "#9ccfa0")
-                                        font.pixelSize: Style.Typography.body
+                                        font.pixelSize: Style.Typography.settingsBody
                                         font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
@@ -716,7 +716,7 @@ PanelWindow {
                                     Text {
                                         text: ""
                                         color: root.t("accent", "#9ccfa0")
-                                        font.pixelSize: Style.Typography.body
+                                        font.pixelSize: Style.Typography.settingsBody
                                         font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
@@ -790,7 +790,7 @@ PanelWindow {
                                     Text {
                                         text: ""
                                         color: root.t("accent", "#9ccfa0")
-                                        font.pixelSize: Style.Typography.body
+                                        font.pixelSize: Style.Typography.settingsBody
                                         font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
@@ -858,7 +858,7 @@ PanelWindow {
                                     Text {
                                         text: root.currentPageMeta().label
                                         color: root.t("fg", "#eef6ef")
-                                        font.pixelSize: Style.Typography.title
+                                        font.pixelSize: Style.Typography.settingsPageTitle
                                         font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }

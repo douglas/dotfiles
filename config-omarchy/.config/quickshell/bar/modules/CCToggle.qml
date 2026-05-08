@@ -25,7 +25,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             text: icon
             color: active ? (theme.accent || "#89b4fa") : (theme.muted || "#585b70")
-            font.pixelSize: Style.Typography.heading
+            font.pixelSize: Style.Typography.toggleIcon
             font.family: Style.Typography.mono
 
             Behavior on color {

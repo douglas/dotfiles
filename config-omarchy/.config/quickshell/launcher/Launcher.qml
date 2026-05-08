@@ -244,7 +244,7 @@ PanelWindow {
                     Text {
                         text: "Go › Apps"
                         color: theme.fg || "#cdd6f4"
-                        font.pixelSize: Style.Typography.titleSmall
+                        font.pixelSize: Style.Typography.launcherTitle
                         font.family: Style.Typography.mono
                         font.weight: Font.DemiBold
                     }
@@ -285,7 +285,7 @@ PanelWindow {
                                 width: parent.width
                                 text: appSearchText
                                 color: theme.fg || "#cdd6f4"
-                                font.pixelSize: Style.Typography.bodyLarge
+                                font.pixelSize: Style.Typography.launcherInputText
                                 font.family: Style.Typography.mono
                                 elide: Text.ElideRight
                             }

@@ -211,7 +211,7 @@ Item {
                     Text {
                         text: root.icon
                         color: root.accent
-                        font.pixelSize: Style.Typography.scaledHeading(root.overlayScale)
+                        font.pixelSize: Style.Typography.scaledHeaderIcon(root.overlayScale)
                         font.family: root.iconFont
                         Layout.alignment: Qt.AlignVCenter
                     }

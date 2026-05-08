@@ -412,7 +412,7 @@ Item {
                                     text: "✓"
                                     visible: root.googleEventsEnabled()
                                     color: t("accent", "#9ccfa0")
-                                    font.pixelSize: Style.Typography.componentMeta
+                                    font.pixelSize: Style.Typography.checkIcon
                                     font.family: Style.Typography.text
                                     font.weight: Font.DemiBold
                                 }

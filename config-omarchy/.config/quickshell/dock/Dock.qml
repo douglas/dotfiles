@@ -730,7 +730,7 @@ PanelWindow {
             anchors.centerIn: parent
             text: glyph !== "" ? glyph : label.slice(0, 1).toUpperCase()
             color: root.cAccent
-            font.pixelSize: Style.Typography.px(btn.glyphSize)
+            font.pixelSize: Style.Typography.customIcon(btn.glyphSize)
             font.family: glyphFont
         }
         scale: btn.hovered ? 1.1 : 1.0

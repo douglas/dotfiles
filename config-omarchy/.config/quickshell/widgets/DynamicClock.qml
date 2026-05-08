@@ -293,7 +293,7 @@ PanelWindow {
                     Text {
                         text: pad(root.use24h ? root.now.getHours() : root.hour12(root.now.getHours()))
                         color: nWhite
-                        font.pixelSize: Style.Typography.display5Xl
+                        font.pixelSize: Style.Typography.clockDisplay
                         font.family: root.textFont
                         font.weight: Font.Bold
                         font.letterSpacing: 0
@@ -306,7 +306,7 @@ PanelWindow {
 
                         text: ":"
                         color: nDim
-                        font.pixelSize: Style.Typography.display5Xl
+                        font.pixelSize: Style.Typography.clockDisplay
                         font.family: root.textFont
                         font.weight: Font.Bold
                         font.letterSpacing: 0
@@ -332,7 +332,7 @@ PanelWindow {
                     Text {
                         text: pad(root.now.getMinutes())
                         color: nGray
-                        font.pixelSize: Style.Typography.display5Xl
+                        font.pixelSize: Style.Typography.clockDisplay
                         font.family: root.textFont
                         font.weight: Font.Bold
                         font.letterSpacing: 0

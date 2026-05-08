@@ -33,6 +33,9 @@ QtObject {
     readonly property int actionIcon: iconLarge
     readonly property int closeIcon: iconLarge
     readonly property int searchIcon: actionIcon
+    readonly property int checkIcon: iconSmall
+    readonly property int breadcrumbIcon: iconSmall
+    readonly property int terminalIcon: listIcon
     readonly property int tileIcon: display
     readonly property int placeholderIcon: displayXl
     readonly property int previewIcon: display3Xl
@@ -41,6 +44,30 @@ QtObject {
     readonly property int componentSubtitle: body
     readonly property int componentBody: body
     readonly property int componentMeta: bodySmall
+    readonly property int barText: bodyLarge
+    readonly property int dialogTitle: titleSmall
+    readonly property int launcherTitle: titleSmall
+    readonly property int launcherInputText: bodyLarge
+    readonly property int launcherItemTitle: bodyLarge
+    readonly property int launcherItemBody: body
+    readonly property int recentTitle: titleSmall
+    readonly property int recentBody: body
+    readonly property int settingsTitle: display
+    readonly property int settingsSectionTitle: heading
+    readonly property int settingsPageTitle: title
+    readonly property int settingsBody: body
+    readonly property int settingsPreview: bodyLarge
+    readonly property int widgetDisplay: display4Xl
+    readonly property int clockDisplay: display5Xl
+    readonly property int pomodoroDisplay: display4Xl
+    readonly property int taskTitle: bodyLarge
+    readonly property int statValue: display
+    readonly property int trayBody: body
+    readonly property int osdTitle: title
+    readonly property int osdBody: body
+    readonly property int notificationBody: body
+    readonly property int toggleIcon: heading
+    readonly property int controlTitle: bodyLarge
     readonly property string mono: "JetBrainsMono Nerd Font"
     readonly property string monoPropo: "JetBrainsMono Nerd Font Propo"
     readonly property string text: "JetBrains Mono"
@@ -154,12 +181,24 @@ QtObject {
         return scaledPx(30, multiplier);
     }
 
+    function scaledNavigationIcon(multiplier) {
+        return scaledTitle(multiplier);
+    }
+
     function scaledComponentSubtitle(multiplier) {
         return scaledBody(multiplier);
     }
 
     function scaledComponentMeta(multiplier) {
         return scaledBodySmall(multiplier);
+    }
+
+    function customIcon(value) {
+        return px(value);
+    }
+
+    function customPreview(value) {
+        return px(value);
     }
 
 }

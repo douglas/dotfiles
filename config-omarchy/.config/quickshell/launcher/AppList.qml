@@ -253,7 +253,7 @@ Item {
                     width: parent.width - 118
                     text: modelData.name
                     color: isSelected ? (theme.fg || "#cdd6f4") : Qt.alpha(theme.fg || "#cdd6f4", 0.5)
-                    font.pixelSize: Style.Typography.bodyLarge
+                    font.pixelSize: Style.Typography.launcherItemTitle
                     font.family: Style.Typography.mono
                     font.weight: isSelected ? Font.Medium : Font.Normal
                     elide: Text.ElideRight

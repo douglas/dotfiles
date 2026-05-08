@@ -383,7 +383,7 @@ PanelWindow {
                             anchors.centerIn: parent
                             text: "󰌑"
                             color: cAccent
-                            font.pixelSize: Style.Typography.componentSubtitle
+                            font.pixelSize: Style.Typography.checkIcon
                             font.family: root.iconFont
                         }
 

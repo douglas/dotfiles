@@ -235,7 +235,7 @@ PanelWindow {
                 Text {
                     text: root.formatTime(root.remaining)
                     color: cFg
-                    font.pixelSize: Style.Typography.display4Xl
+                    font.pixelSize: Style.Typography.pomodoroDisplay
                     font.family: root.textFont
                     font.weight: Font.Bold
                     font.letterSpacing: 0

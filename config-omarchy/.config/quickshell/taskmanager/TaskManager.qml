@@ -686,7 +686,7 @@ PanelWindow {
                     Text {
                         text: "Task Manager"
                         color: root.cFg
-                        font.pixelSize: Style.Typography.bodyLarge
+                        font.pixelSize: Style.Typography.taskTitle
                         font.weight: Font.DemiBold
                         font.family: Style.Typography.text
                     }
@@ -739,7 +739,7 @@ PanelWindow {
                             anchors.centerIn: parent
                             text: "✕"
                             color: root.cFg
-                            font.pixelSize: Style.Typography.componentMeta
+                            font.pixelSize: Style.Typography.closeIcon
                             font.family: Style.Typography.text
                         }
 
@@ -1299,7 +1299,7 @@ PanelWindow {
                                                     anchors.centerIn: parent
                                                     text: "✓"
                                                     color: root.cAccent
-                                                    font.pixelSize: Style.Typography.componentMeta
+                                                    font.pixelSize: Style.Typography.checkIcon
                                                     visible: isSelected
                                                 }
 
@@ -1713,7 +1713,7 @@ PanelWindow {
             Text {
                 text: Math.round(value) + "%"
                 color: root.cFg
-                font.pixelSize: Style.Typography.display
+                font.pixelSize: Style.Typography.statValue
                 font.weight: Font.DemiBold
                 font.family: Style.Typography.text
             }

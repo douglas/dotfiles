@@ -496,7 +496,7 @@ Item {
                     Text {
                         text: "󰸗"
                         color: root.cAccent
-                        font.pixelSize: Style.Typography.scaledHeading(root.overlayScale)
+                        font.pixelSize: Style.Typography.scaledHeaderIcon(root.overlayScale)
                         font.family: Style.Typography.mono
                         Layout.alignment: Qt.AlignVCenter
                     }
@@ -635,7 +635,7 @@ Item {
                         Text {
                             text: "‹"
                             color: prevMonthHover.containsMouse ? root.cAccent : root.cMuted
-                            font.pixelSize: Style.Typography.scaledTitle(root.overlayScale)
+                            font.pixelSize: Style.Typography.scaledNavigationIcon(root.overlayScale)
                             font.family: Style.Typography.mono
                             Layout.preferredWidth: root.overlayPx(24)
                             horizontalAlignment: Text.AlignHCenter
@@ -664,7 +664,7 @@ Item {
                         Text {
                             text: "›"
                             color: nextMonthHover.containsMouse ? root.cAccent : root.cMuted
-                            font.pixelSize: Style.Typography.scaledTitle(root.overlayScale)
+                            font.pixelSize: Style.Typography.scaledNavigationIcon(root.overlayScale)
                             font.family: Style.Typography.mono
                             Layout.preferredWidth: root.overlayPx(24)
                             horizontalAlignment: Text.AlignHCenter

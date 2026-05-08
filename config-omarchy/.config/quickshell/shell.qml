@@ -457,7 +457,7 @@ ShellRoot {
                         Text {
                             text: powerActions.title
                             color: shell.fg
-                            font.pixelSize: Style.Typography.titleSmall
+                            font.pixelSize: Style.Typography.dialogTitle
                             font.family: Style.Typography.monoPropo
                             font.weight: Font.DemiBold
                         }

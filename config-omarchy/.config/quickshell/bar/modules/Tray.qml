@@ -302,7 +302,7 @@ Item {
                     visible: text !== ""
                     color: root._glyphColor(modelData, trayItem.hovered)
                     opacity: root._glyphOpacity(modelData, trayItem.hovered)
-                    font.pixelSize: Style.Typography.body
+                    font.pixelSize: Style.Typography.trayBody
                     font.family: Style.Typography.mono
                     font.weight: Font.Medium
                     renderType: Text.NativeRendering

@@ -733,7 +733,7 @@ PanelWindow {
                         Text {
                             text: Quickshell.env("USER") || "user"
                             color: theme.fg || "#cdd6f4"
-                            font.pixelSize: Style.Typography.bodyLarge; font.family: Style.Typography.monoPropo
+                            font.pixelSize: Style.Typography.controlTitle; font.family: Style.Typography.monoPropo
                             font.weight: Font.Medium
                         }
                         Text {
