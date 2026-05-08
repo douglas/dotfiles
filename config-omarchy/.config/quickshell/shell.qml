@@ -32,7 +32,11 @@ ShellRoot {
     property string highlight: "#cba6f7"
     property string red: "#f38ba8"
     property string green: "#a6e3a1"
+    property string yellow: "#f9e2af"
+    property string blue: "#89b4fa"
+    property string cyan: "#94e2d5"
     property string muted: "#585b70"
+    property bool omarchyThemeLoaded: false
     readonly property var palette: ({
         "bg": shell.bg,
         "fg": shell.fg,
@@ -41,7 +45,11 @@ ShellRoot {
         "muted": shell.muted,
         "highlight": shell.highlight,
         "red": shell.red,
-        "green": shell.green
+        "green": shell.green,
+        "yellow": shell.yellow,
+        "blue": shell.blue,
+        "cyan": shell.cyan,
+        "omarchyThemeLoaded": shell.omarchyThemeLoaded
     })
 
     function envScale(name, fallback) {
@@ -64,6 +72,10 @@ ShellRoot {
         highlight = get("color5") || highlight;
         red = get("color1") || red;
         green = get("color2") || green;
+        yellow = get("color3") || yellow;
+        blue = get("color4") || blue;
+        cyan = get("color6") || cyan;
+        omarchyThemeLoaded = true;
     }
 
     SettingsState {
@@ -115,18 +127,18 @@ ShellRoot {
                 Quickshell.execDetached(["bash", "-lc", command]);
             close();
         }
-
     }
 
     Process {
         id: themeLoader
 
         command: ["bash", "-lc", "cat " + shell.omarchyThemeColorsPath + " 2>/dev/null"]
-        running: settingsState.googleCalendarEventsEnabled
+        running: true
         onExited: {
             if (themeLoader.stdout.buf.length > 10)
                 parseToml(themeLoader.stdout.buf);
-
+            else
+                omarchyThemeLoaded = false;
             themeLoader.stdout.buf = "";
         }
 
@@ -204,6 +216,10 @@ ShellRoot {
         highlight: shell.highlight
         red: shell.red
         green: shell.green
+        yellow: shell.yellow
+        blue: shell.blue
+        cyan: shell.cyan
+        omarchyThemeLoaded: shell.omarchyThemeLoaded
         muted: shell.muted
         quietMode: shell.overviewActive
     }
@@ -723,6 +739,13 @@ ShellRoot {
         }
 
         target: "openTaskManager"
+    }
+
+    IpcHandler {
+        target: "openCctop"
+        function handle() {
+            bar.toggleCctop()
+        }
     }
 
     IpcHandler {

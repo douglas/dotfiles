@@ -126,7 +126,7 @@ Item {
 
     function shortContainerName(name, id) {
         let display = String(name || id || "");
-        display = display.replace(/^dox-compose_/, "");
+        display = display.replace(/^[a-z0-9-]+-compose_/, "");
         display = display.replace(/_[0-9]+$/, "");
         return display || String(id || "container");
     }

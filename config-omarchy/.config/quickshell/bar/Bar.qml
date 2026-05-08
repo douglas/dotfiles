@@ -26,7 +26,10 @@ PanelWindow {
     property string red:       "#f38ba8"
     property string green:     "#a6e3a1"
     property string yellow:    "#f9e2af"
+    property string blue:      "#89b4fa"
+    property string cyan:      "#94e2d5"
     property string muted:     "#585b70"
+    property bool omarchyThemeLoaded: false
     readonly property string launcherIconPreset: settings?.launcherIconPreset || "omarchy"
     readonly property string launcherIconText: launcherIconPreset === "arch"
         ? ""
@@ -59,6 +62,10 @@ PanelWindow {
 
     function px(value) {
         return Math.round(value * scaleFactor)
+    }
+
+    function toggleCctop() {
+        cctopModule.openPanel(true)
     }
 
     anchors {
@@ -301,7 +308,37 @@ PanelWindow {
                         bg: root.bg,
                         red: root.red
                     })
-                    onOpened: statsModule.showing = false
+                    onOpened: {
+                        statsModule.showing = false
+                        cctopModule.showing = false
+                    }
+                }
+
+                Cctop {
+                    id: cctopModule
+                    anchors.verticalCenter: parent.verticalCenter
+                    barOnBottom: root.barOnBottom
+                    overlayBarOffset: root.px(root.reservedSpace + 6)
+                    overlayScale: root.scaleFactor
+                    quietMode: root.quietMode
+                    theme: ({
+                        fg: root.fg,
+                        accent: root.accent,
+                        dim: root.dim,
+                        muted: root.muted,
+                        bg: root.bg,
+                        red: root.red,
+                        green: root.green,
+                        yellow: root.yellow,
+                        blue: root.blue,
+                        cyan: root.cyan,
+                        highlight: root.highlight,
+                        omarchyThemeLoaded: root.omarchyThemeLoaded
+                    })
+                    onOpened: {
+                        statsModule.showing = false
+                        batteryModule.showing = false
+                    }
                 }
 
                 Stats {
@@ -321,7 +358,10 @@ PanelWindow {
                         muted: root.muted,
                         bg: root.bg
                     })
-                    onOpened: batteryModule.showing = false
+                    onOpened: {
+                        batteryModule.showing = false
+                        cctopModule.showing = false
+                    }
                 }
 
                 Rectangle {

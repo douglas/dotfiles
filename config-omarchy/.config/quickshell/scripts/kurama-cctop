@@ -1,0 +1,750 @@
+#!/usr/bin/env bash
+set -u
+
+sessions_dir="${CCTOP_SESSIONS_DIR:-$HOME/.cctop/sessions}"
+history_dir="${CCTOP_HISTORY_DIR:-$HOME/.cctop/history}"
+
+proc_start_epoch() {
+  local pid="$1"
+  local stat rest start_ticks boot hz
+
+  [[ -r "/proc/$pid/stat" ]] || return 1
+  stat="$(<"/proc/$pid/stat")" || return 1
+  rest="${stat##*) }"
+  set -- $rest
+  start_ticks="${20:-}"
+  [[ -n "$start_ticks" ]] || return 1
+
+  boot="$(awk '/^btime / { print $2; exit }' /proc/stat 2>/dev/null)" || return 1
+  hz="$(getconf CLK_TCK 2>/dev/null || printf '100')"
+  awk -v boot="$boot" -v ticks="$start_ticks" -v hz="$hz" 'BEGIN { printf "%.2f", boot + ticks / hz }'
+}
+
+session_alive() {
+  local pid="${1:-}"
+  local expected_start="${2:-}"
+  local state ppid current
+
+  [[ -n "$pid" ]] || return 1
+  [[ "$pid" =~ ^[0-9]+$ ]] || return 1
+  [[ -d "/proc/$pid" ]] || return 1
+  kill -0 "$pid" 2>/dev/null || return 1
+
+  if [[ -r "/proc/$pid/stat" ]]; then
+    local stat rest
+    stat="$(<"/proc/$pid/stat")" || return 1
+    rest="${stat##*) }"
+    set -- $rest
+    state="${1:-}"
+    ppid="${2:-0}"
+    [[ "$state" == "Z" ]] && return 1
+    [[ "$ppid" == "1" && "$state" != "S" ]] && return 1
+  fi
+
+  if [[ -n "$expected_start" ]]; then
+    current="$(proc_start_epoch "$pid" 2>/dev/null)" || return 1
+    awk -v a="$current" -v b="$expected_start" 'BEGIN { d = a - b; if (d < 0) d = -d; exit(d <= 2.0 ? 0 : 1) }'
+  fi
+}
+
+iso_from_epoch() {
+  local epoch="${1:-}"
+
+  [[ -n "$epoch" ]] || {
+    date -u +"%Y-%m-%dT%H:%M:%SZ"
+    return
+  }
+
+  date -u -d "@${epoch%.*}" +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || date -u +"%Y-%m-%dT%H:%M:%SZ"
+}
+
+env_value() {
+  local pid="$1"
+  local key="$2"
+
+  [[ -r "/proc/$pid/environ" ]] || return 1
+  tr '\0' '\n' <"/proc/$pid/environ" 2>/dev/null | awk -F= -v key="$key" '$1 == key { sub(/^[^=]*=/, ""); print; exit }'
+}
+
+ghostty_surface_id_for_pid() {
+  local pid="$1"
+
+  [[ -r "/proc/$pid/cgroup" ]] || return 1
+  awk -F'app-ghostty-surface-transient-|\\.scope' '
+    NF > 1 {
+      print $2
+      exit
+    }
+  ' "/proc/$pid/cgroup"
+}
+
+git_branch_for() {
+  local path="$1"
+
+  [[ -d "$path/.git" ]] || git -C "$path" rev-parse --is-inside-work-tree >/dev/null 2>&1 || return 0
+  git -C "$path" branch --show-current 2>/dev/null
+}
+
+list_cctop_sessions() {
+  local first=1 file json pid pid_start
+
+  printf '['
+  [[ -d "$sessions_dir" ]] || {
+    printf ']'
+    return
+  }
+
+  for file in "$sessions_dir"/*.json; do
+    [[ -f "$file" ]] || continue
+    json="$(jq -c 'select(type == "object") | select((.ended_at // "") == "")' "$file" 2>/dev/null)" || continue
+    [[ -n "$json" ]] || continue
+    pid="$(jq -r '.pid // empty' "$file" 2>/dev/null)"
+    pid_start="$(jq -r '.pid_start_time // empty' "$file" 2>/dev/null)"
+    session_alive "$pid" "$pid_start" || continue
+
+    if [[ "$first" -eq 0 ]]; then
+      printf ','
+    fi
+    printf '%s' "$json"
+    first=0
+  done
+  printf ']'
+}
+
+list_codex_sessions() {
+  local first=1 pid cwd tty program branch start_epoch started_at kitty_socket kitty_window_id kitty_binary
+
+  printf '['
+  while IFS= read -r pid; do
+    [[ "$pid" =~ ^[0-9]+$ ]] || continue
+    session_alive "$pid" || continue
+
+    cwd="$(readlink "/proc/$pid/cwd" 2>/dev/null || true)"
+    [[ -n "$cwd" && -d "$cwd" ]] || continue
+
+    tty="$(readlink "/proc/$pid/fd/0" 2>/dev/null || true)"
+    program="$(env_value "$pid" TERM_PROGRAM 2>/dev/null || true)"
+    [[ -n "$program" ]] || program="terminal"
+    kitty_socket="$(env_value "$pid" KITTY_LISTEN_ON 2>/dev/null || true)"
+    kitty_window_id="$(env_value "$pid" KITTY_WINDOW_ID 2>/dev/null || true)"
+    kitty_binary="$(command -v kitty 2>/dev/null || true)"
+    branch="$(git_branch_for "$cwd")"
+    start_epoch="$(proc_start_epoch "$pid" 2>/dev/null || true)"
+    started_at="$(iso_from_epoch "$start_epoch")"
+
+    if [[ "$first" -eq 0 ]]; then
+      printf ','
+    fi
+
+    jq -cn \
+      --arg pid "$pid" \
+      --arg pid_start_time "$start_epoch" \
+      --arg project_path "$cwd" \
+      --arg project_name "${cwd##*/}" \
+      --arg branch "$branch" \
+      --arg started_at "$started_at" \
+      --arg terminal_program "$program" \
+      --arg terminal_tty "$tty" \
+      --arg ghostty_surface_id "$(ghostty_surface_id_for_pid "$pid" 2>/dev/null || true)" \
+      --arg kitty_socket "$kitty_socket" \
+      --arg kitty_window_id "$kitty_window_id" \
+      --arg kitty_binary "$kitty_binary" \
+      '{
+        session_id: ("codex-" + $pid),
+        pid: ($pid | tonumber),
+        pid_start_time: (if $pid_start_time == "" then null else ($pid_start_time | tonumber) end),
+        project_path: $project_path,
+        project_name: $project_name,
+        branch: $branch,
+        status: "working",
+        source: "codex",
+        started_at: $started_at,
+        last_activity: $started_at,
+        terminal: {
+          program: $terminal_program,
+          tty: $terminal_tty,
+          ghostty_surface_id: $ghostty_surface_id,
+          socket: $kitty_socket,
+          session_id: $kitty_window_id,
+          binary_paths: {
+            kitty: $kitty_binary
+          }
+        }
+      }'
+    first=0
+  done < <(ps -eo pid=,comm= 2>/dev/null | awk '$2 == "codex" { print $1 }')
+  printf ']'
+}
+
+list_sessions() {
+  jq -cs 'add | unique_by(.pid // .session_id)' \
+    <(list_cctop_sessions) \
+    <(list_codex_sessions) 2>/dev/null || printf '[]'
+}
+
+list_history() {
+  local files=()
+  local active_paths
+
+  [[ -d "$history_dir" ]] || {
+    printf '[]'
+    return
+  }
+
+  for file in "$history_dir"/*.json; do
+    [[ -f "$file" ]] && files+=("$file")
+  done
+
+  [[ "${#files[@]}" -gt 0 ]] || {
+    printf '[]'
+    return
+  }
+
+  active_paths="$(list_sessions | jq -c '[.[].project_path]')"
+
+  jq -s --argjson active "$active_paths" '
+    map(select(type == "object"))
+    | group_by(.project_path // "")
+    | map({
+        latest: max_by(.ended_at // .last_activity // ""),
+        session_count: length
+      })
+    | map(select((.latest.project_path // "") as $path | ($active | index($path) | not)))
+    | sort_by(.latest.ended_at // .latest.last_activity // "")
+    | reverse
+    | .[:10]
+    | map({
+        project_path: .latest.project_path,
+        project_name: .latest.project_name,
+        last_branch: .latest.branch,
+        last_session_at: (.latest.ended_at // .latest.last_activity),
+        session_count: .session_count,
+        last_editor: (.latest.terminal.program // ""),
+        workspace_file: .latest.workspace_file
+      })
+  ' "${files[@]}" 2>/dev/null || printf '[]'
+}
+
+session_file_for_pid() {
+  local target="$1"
+  local file pid
+
+  [[ -d "$sessions_dir" ]] || return 1
+  for file in "$sessions_dir"/*.json; do
+    [[ -f "$file" ]] || continue
+    pid="$(jq -r '.pid // empty' "$file" 2>/dev/null)"
+    [[ "$pid" == "$target" ]] || continue
+    printf '%s\n' "$file"
+    return 0
+  done
+  return 1
+}
+
+ppid_of() {
+  local pid="$1"
+  local stat rest
+
+  [[ -r "/proc/$pid/stat" ]] || return 1
+  stat="$(<"/proc/$pid/stat")" || return 1
+  rest="${stat##*) }"
+  set -- $rest
+  printf '%s\n' "${2:-0}"
+}
+
+title_hints_for_values() {
+  printf '%s\n' "$@" | awk '
+    {
+      value = tolower($0)
+      gsub(/^[[:space:]]+|[[:space:]]+$/, "", value)
+      if (length(value) < 3) next
+      if (!seen[value]++) print value
+      if (length(value) > 20) {
+        prefix20 = substr(value, 1, 20)
+        if (!seen[prefix20]++) print prefix20
+      }
+      if (length(value) > 16) {
+        prefix16 = substr(value, 1, 16)
+        if (!seen[prefix16]++) print prefix16
+      }
+    }
+  '
+}
+
+window_for_pid() {
+  local pid="$1"
+  local clients current address parent
+
+  [[ "$pid" =~ ^[0-9]+$ ]] || return 1
+  clients="$(hyprctl clients -j 2>/dev/null)" || return 1
+  current="$pid"
+
+  for _ in 1 2 3 4 5 6 7 8; do
+    address="$(printf '%s' "$clients" | jq -r --argjson pid "$current" '[.[] | select(.pid == $pid) | .address] | unique | if length == 1 then .[0] else empty end' 2>/dev/null)"
+    if [[ -n "$address" && "$address" != "null" ]]; then
+      printf '%s\n' "$address"
+      return 0
+    fi
+
+    parent="$(ppid_of "$current" 2>/dev/null)" || break
+    [[ -n "$parent" && "$parent" != "0" && "$parent" != "1" ]] || break
+    current="$parent"
+  done
+
+  return 1
+}
+
+terminal_title_hints() {
+  local session_file="$1"
+  local project_path="$2"
+  local project_name session_name branch base
+
+  project_name="$(jq -r '.project_name // empty' "$session_file" 2>/dev/null)"
+  session_name="$(jq -r '.session_name // empty' "$session_file" 2>/dev/null)"
+  branch="$(jq -r '.branch // empty' "$session_file" 2>/dev/null)"
+  base="${project_path##*/}"
+
+  title_hints_for_values "$project_name" "$session_name" "$base" "$branch"
+}
+
+window_for_terminal_title() {
+  local session_file="$1"
+  local project_path="$2"
+  local clients hint address
+
+  clients="$(hyprctl clients -j 2>/dev/null)" || return 1
+
+  while IFS= read -r hint; do
+    [[ -n "$hint" ]] || continue
+    address="$(printf '%s' "$clients" | jq -r --arg hint "${hint,,}" '
+      [
+        .[]
+        | select((((.class // "") + " " + (.initialClass // "")) | ascii_downcase | test("ghostty|kitty|alacritty|wezterm|terminal|foot")))
+        | select(((.title // "") | ascii_downcase | contains($hint)) or ((.initialTitle // "") | ascii_downcase | contains($hint)))
+        | .address
+      ]
+      | unique
+      | if length == 1 then .[0] else empty end
+    ' 2>/dev/null)"
+    if [[ -n "$address" && "$address" != "null" ]]; then
+      printf '%s\n' "$address"
+      return 0
+    fi
+  done < <(terminal_title_hints "$session_file" "$project_path")
+
+  return 1
+}
+
+window_for_live_process_title() {
+  local pid="$1"
+  local project_path="$2"
+  local clients base branch address hint
+
+  [[ -n "$project_path" && -d "$project_path" ]] || return 1
+  clients="$(hyprctl clients -j 2>/dev/null)" || return 1
+  base="${project_path##*/}"
+  branch="$(git_branch_for "$project_path")"
+
+  while IFS= read -r hint; do
+    [[ -n "$hint" ]] || continue
+    address="$(printf '%s' "$clients" | jq -r --arg hint "$hint" '
+      [
+        .[]
+        | select((((.class // "") + " " + (.initialClass // "")) | ascii_downcase | test("ghostty|kitty|alacritty|wezterm|terminal|foot")))
+        | select(((.title // "") | ascii_downcase | contains($hint)) or ((.initialTitle // "") | ascii_downcase | contains($hint)))
+        | .address
+      ]
+      | unique
+      | if length == 1 then .[0] else empty end
+    ' 2>/dev/null)"
+    if [[ -n "$address" && "$address" != "null" ]]; then
+      printf '%s\n' "$address"
+      return 0
+    fi
+  done < <(title_hints_for_values "$base" "$branch" "$project_path" "${project_path/#$HOME/~}")
+
+  return 1
+}
+
+window_for_stored_address() {
+  local session_file="$1"
+  local clients address
+
+  address="$(jq -r '.terminal.hypr_address // empty' "$session_file" 2>/dev/null)"
+  [[ -n "$address" ]] || return 1
+
+  clients="$(hyprctl clients -j 2>/dev/null)" || return 1
+  printf '%s' "$clients" | jq -e --arg address "$address" '.[] | select(.address == $address)' >/dev/null 2>&1 || return 1
+  printf '%s\n' "$address"
+}
+
+focus_kitty() {
+  local session_file="$1"
+  local socket window_id binary
+
+  socket="$(jq -r '.terminal.socket // empty' "$session_file" 2>/dev/null)"
+  window_id="$(jq -r '.terminal.session_id // empty' "$session_file" 2>/dev/null)"
+  binary="$(jq -r '.terminal.binary_paths.kitty // empty' "$session_file" 2>/dev/null)"
+  [[ -n "$binary" ]] || binary="$(command -v kitty 2>/dev/null || true)"
+  [[ -n "$socket" && -n "$window_id" && -x "$binary" ]] || return 1
+
+  "$binary" @ --to "$socket" focus-window --match "id:$window_id" >/dev/null 2>&1
+}
+
+focus_kitty_for_pid() {
+  local pid="$1"
+  local socket window_id binary
+
+  socket="$(env_value "$pid" KITTY_LISTEN_ON 2>/dev/null || true)"
+  window_id="$(env_value "$pid" KITTY_WINDOW_ID 2>/dev/null || true)"
+  binary="$(command -v kitty 2>/dev/null || true)"
+  [[ -n "$socket" && -n "$window_id" && -x "$binary" ]] || return 1
+
+  "$binary" @ --to "$socket" focus-window --match "id:$window_id" >/dev/null 2>&1
+}
+
+focus_ghostty_surface_id() {
+  local surface_id="$1"
+
+  [[ "$surface_id" =~ ^[0-9]+$ ]] || return 1
+  command -v gdbus >/dev/null 2>&1 || return 1
+
+  gdbus call \
+    --session \
+    --dest com.mitchellh.ghostty \
+    --object-path /com/mitchellh/ghostty \
+    --method org.gtk.Actions.Activate \
+    present-surface \
+    "[<uint64 $surface_id>]" \
+    "{}" >/dev/null 2>&1
+}
+
+focus_ghostty_for_pid() {
+  local pid="$1"
+  local surface_id
+
+  surface_id="$(ghostty_surface_id_for_pid "$pid" 2>/dev/null || true)"
+  focus_ghostty_surface_id "$surface_id"
+}
+
+ghostty_tab_target_for_project() {
+  local project_path="$1"
+
+  [[ -n "$project_path" ]] || return 1
+  command -v python3 >/dev/null 2>&1 || return 1
+  command -v hyprctl >/dev/null 2>&1 || return 1
+
+  python3 -c '
+import json
+import re
+import subprocess
+import sys
+
+try:
+    import gi
+    gi.require_version("Atspi", "2.0")
+    from gi.repository import Atspi
+except Exception:
+    sys.exit(1)
+
+target = sys.argv[1].rstrip("/").split("/")[-1]
+if not target:
+    sys.exit(1)
+
+def normalize(value):
+    value = (value or "").casefold()
+    value = re.sub(r"[\u2800-\u28ff]+", " ", value)
+    value = re.sub(r"[^a-z0-9._/-]+", " ", value)
+    return " ".join(value.split())
+
+def compact(value):
+    return re.sub(r"[^a-z0-9]+", "", normalize(value))
+
+def matches(name, needle):
+    name_norm = normalize(name)
+    needle_norm = normalize(needle)
+    if not name_norm or not needle_norm:
+        return False
+    if needle_norm in name_norm or name_norm in needle_norm:
+        return True
+
+    name_compact = compact(name)
+    needle_compact = compact(needle)
+    return (
+        len(name_compact) >= 8
+        and (
+            needle_compact in name_compact
+            or needle_compact.startswith(name_compact)
+        )
+    )
+
+def walk(accessible):
+    yield accessible
+    try:
+        count = accessible.get_child_count()
+    except Exception:
+        return
+
+    for index in range(count):
+        try:
+            child = accessible.get_child_at_index(index)
+        except Exception:
+            continue
+        yield from walk(child)
+
+try:
+    desktop = Atspi.get_desktop(0)
+except Exception:
+    sys.exit(1)
+
+frames = []
+for app_index in range(desktop.get_child_count()):
+    try:
+        app = desktop.get_child_at_index(app_index)
+    except Exception:
+        continue
+
+    for frame_index in range(app.get_child_count()):
+        try:
+            frame = app.get_child_at_index(frame_index)
+        except Exception:
+            continue
+
+        if (frame.get_role_name() or "") != "frame":
+            continue
+
+        tabs = [
+            node.get_name() or ""
+            for node in walk(frame)
+            if (node.get_role_name() or "") == "page tab"
+        ]
+        if tabs:
+            frames.append((frame.get_name() or "", tabs))
+
+clients = json.loads(
+    subprocess.check_output(
+        ["hyprctl", "clients", "-j"],
+        stderr=subprocess.DEVNULL,
+        text=True,
+    )
+)
+
+for frame_title, tabs in frames:
+    tab_index = None
+    for index, tab_title in enumerate(tabs, start=1):
+        if matches(tab_title, target):
+            tab_index = index
+            break
+
+    if tab_index is None:
+        continue
+
+    frame_norm = normalize(frame_title)
+    candidates = []
+    for client in clients:
+        client_class = (
+            (client.get("class") or "")
+            + " "
+            + (client.get("initialClass") or "")
+        ).casefold()
+        if "ghostty" not in client_class:
+            continue
+
+        title_norm = normalize(client.get("title") or "")
+        initial_title_norm = normalize(client.get("initialTitle") or "")
+        if (
+            title_norm == frame_norm
+            or initial_title_norm == frame_norm
+            or (frame_norm and frame_norm in title_norm)
+            or (title_norm and title_norm in frame_norm)
+        ):
+            candidates.append(client.get("address") or "")
+
+    candidates = [address for address in dict.fromkeys(candidates) if address]
+    if len(candidates) == 1:
+        print(f"{candidates[0]}\t{tab_index}")
+        sys.exit(0)
+
+sys.exit(1)
+' "$project_path"
+}
+
+focus_ghostty_tab_for_project() {
+  local project_path="$1"
+  local target address tab_index
+
+  command -v wtype >/dev/null 2>&1 || return 1
+  target="$(ghostty_tab_target_for_project "$project_path" 2>/dev/null)" || return 1
+  IFS=$'\t' read -r address tab_index <<< "$target"
+
+  [[ -n "$address" && "$tab_index" =~ ^[0-9]+$ ]] || return 1
+  [[ "$tab_index" -ge 1 && "$tab_index" -le 9 ]] || return 1
+
+  hyprctl dispatch focuswindow "address:$address" >/dev/null 2>&1 || return 1
+  sleep 0.08
+  wtype -M alt "$tab_index" -m alt >/dev/null 2>&1
+}
+
+focus_ghostty_session_file() {
+  local session_file="$1"
+  local surface_id
+
+  surface_id="$(jq -r '.terminal.ghostty_surface_id // empty' "$session_file" 2>/dev/null)"
+  focus_ghostty_surface_id "$surface_id"
+}
+
+focus_multiplexer() {
+  local session_file="$1"
+  local name binary session_name pane_id socket
+
+  name="$(jq -r '.terminal.multiplexer.name // empty' "$session_file" 2>/dev/null)"
+  case "$name" in
+    zellij)
+      session_name="$(jq -r '.terminal.multiplexer.session_name // empty' "$session_file" 2>/dev/null)"
+      pane_id="$(jq -r '.terminal.multiplexer.pane_id // empty' "$session_file" 2>/dev/null)"
+      binary="$(jq -r '.terminal.multiplexer.binary_path // empty' "$session_file" 2>/dev/null)"
+      [[ -n "$binary" ]] || binary="$(command -v zellij 2>/dev/null || true)"
+      [[ -n "$session_name" && -n "$pane_id" && -x "$binary" ]] || return 1
+      "$binary" --session "$session_name" action focus-pane-id "$pane_id" >/dev/null 2>&1
+      ;;
+    tmux)
+      socket="$(jq -r '.terminal.multiplexer.socket // empty' "$session_file" 2>/dev/null)"
+      pane_id="$(jq -r '.terminal.multiplexer.pane_id // empty' "$session_file" 2>/dev/null)"
+      binary="$(jq -r '.terminal.multiplexer.binary_path // empty' "$session_file" 2>/dev/null)"
+      [[ -n "$binary" ]] || binary="$(command -v tmux 2>/dev/null || true)"
+      [[ -n "$socket" && -n "$pane_id" && -x "$binary" ]] || return 1
+      "$binary" -S "$socket" select-window -t "$pane_id" >/dev/null 2>&1 || return 1
+      "$binary" -S "$socket" select-pane -t "$pane_id" >/dev/null 2>&1
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+focus_session() {
+  local pid="${1:-}"
+  local project_path="${2:-}"
+  local session_file address
+
+  if [[ -n "$pid" && "$pid" =~ ^[0-9]+$ ]]; then
+    session_file="$(session_file_for_pid "$pid" 2>/dev/null || true)"
+    if [[ -n "$session_file" ]]; then
+      focus_ghostty_tab_for_project "$project_path" && {
+        focus_multiplexer "$session_file" || true
+        return 0
+      }
+
+      if focus_ghostty_session_file "$session_file"; then
+        sleep 0.08
+        address="$(window_for_terminal_title "$session_file" "$project_path" 2>/dev/null || true)"
+        if [[ -z "$address" ]]; then
+          sleep 0.12
+          address="$(window_for_terminal_title "$session_file" "$project_path" 2>/dev/null || true)"
+        fi
+        if [[ -n "$address" ]]; then
+          hyprctl dispatch focuswindow "address:$address" >/dev/null 2>&1 && {
+            focus_multiplexer "$session_file" || true
+            return 0
+          }
+        fi
+        return 0
+      fi
+
+      focus_kitty "$session_file" && {
+        focus_multiplexer "$session_file" || true
+        return 0
+      }
+
+      address="$(window_for_terminal_title "$session_file" "$project_path" 2>/dev/null || true)"
+      if [[ -n "$address" ]]; then
+        hyprctl dispatch focuswindow "address:$address" >/dev/null 2>&1 && {
+          focus_multiplexer "$session_file" || true
+          return 0
+        }
+      fi
+
+      address="$(window_for_stored_address "$session_file" 2>/dev/null || true)"
+      if [[ -n "$address" ]]; then
+        hyprctl dispatch focuswindow "address:$address" >/dev/null 2>&1 && {
+          focus_multiplexer "$session_file" || true
+          return 0
+        }
+      fi
+    fi
+
+    focus_kitty_for_pid "$pid" && {
+      if [[ -n "${session_file:-}" ]]; then
+        focus_multiplexer "$session_file" || true
+      fi
+      return 0
+    }
+
+    focus_ghostty_tab_for_project "$project_path" && {
+      if [[ -n "${session_file:-}" ]]; then
+        focus_multiplexer "$session_file" || true
+      fi
+      return 0
+    }
+
+    if focus_ghostty_for_pid "$pid"; then
+      sleep 0.08
+      address="$(window_for_live_process_title "$pid" "$project_path" 2>/dev/null || true)"
+      if [[ -z "$address" ]]; then
+        sleep 0.12
+        address="$(window_for_live_process_title "$pid" "$project_path" 2>/dev/null || true)"
+      fi
+      if [[ -n "$address" ]]; then
+        hyprctl dispatch focuswindow "address:$address" >/dev/null 2>&1 && {
+          if [[ -n "${session_file:-}" ]]; then
+            focus_multiplexer "$session_file" || true
+          fi
+          return 0
+        }
+      fi
+      return 0
+    fi
+
+    address="$(window_for_live_process_title "$pid" "$project_path" 2>/dev/null || true)"
+    if [[ -n "$address" ]]; then
+      hyprctl dispatch focuswindow "address:$address" >/dev/null 2>&1 && {
+        if [[ -n "${session_file:-}" ]]; then
+          focus_multiplexer "$session_file" || true
+        fi
+        return 0
+      }
+    fi
+
+    address="$(window_for_pid "$pid" 2>/dev/null || true)"
+    if [[ -n "$address" ]]; then
+      hyprctl dispatch focuswindow "address:$address" >/dev/null 2>&1 && {
+        if [[ -n "${session_file:-}" ]]; then
+          focus_multiplexer "$session_file" || true
+        fi
+        return 0
+      }
+    fi
+  fi
+
+  if [[ -z "$pid" && -n "$project_path" && -d "$project_path" ]]; then
+    xdg-open "$project_path" >/dev/null 2>&1 &
+    return 0
+  fi
+
+  return 1
+}
+
+case "${1:-sessions}" in
+  sessions)
+    list_sessions
+    ;;
+  history)
+    list_history
+    ;;
+  focus)
+    focus_session "${2:-}" "${3:-}"
+    ;;
+  *)
+    printf 'usage: kurama-cctop sessions|history|focus [pid] [project_path]\n' >&2
+    exit 2
+    ;;
+esac
