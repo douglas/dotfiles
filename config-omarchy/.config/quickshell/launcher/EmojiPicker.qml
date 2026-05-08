@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Io
+import "../style" as Style
 
 PanelWindow {
     id: root
@@ -221,16 +222,16 @@ PanelWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         text: "😊"
                         color: theme.accent || "#89b4fa"
-                        font.pixelSize: 11
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.bodySmall
+                        font.family: Style.Typography.mono
                     }
 
                     Text {
                         anchors.verticalCenter: parent.verticalCenter
                         text: "Emoji Picker"
                         color: theme.fg || "#cdd6f4"
-                        font.pixelSize: 11
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.bodySmall
+                        font.family: Style.Typography.mono
                         font.weight: Font.Medium
                     }
 
@@ -240,8 +241,8 @@ PanelWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         text: showCopied ? ("Copied " + copiedEmoji) : ""
                         color: theme.accent || "#89b4fa"
-                        font.pixelSize: 9
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.caption
+                        font.family: Style.Typography.mono
                         opacity: showCopied ? 1 : 0
                         Behavior on opacity {
                             NumberAnimation { duration: 160; easing.type: Easing.OutCubic }
@@ -267,16 +268,16 @@ PanelWindow {
                             anchors.verticalCenter: parent.verticalCenter
                             text: "󰍉"
                             color: theme.accent || "#89b4fa"
-                            font.pixelSize: 11
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: Style.Typography.bodySmall
+                            font.family: Style.Typography.mono
                         }
 
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
                             text: searchText
                             color: theme.fg || "#cdd6f4"
-                            font.pixelSize: 11
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: Style.Typography.bodySmall
+                            font.family: Style.Typography.mono
                         }
 
                         Rectangle {
@@ -353,7 +354,7 @@ PanelWindow {
                                 Text {
                                     anchors.verticalCenter: parent.verticalCenter
                                     text: modelData.emoji
-                                    font.pixelSize: 14
+                                    font.pixelSize: Style.Typography.titleSmall
                                 }
                                 Text {
                                     anchors.verticalCenter: parent.verticalCenter
@@ -361,8 +362,8 @@ PanelWindow {
                                     color: isSelected
                                         ? (theme.fg || "#cdd6f4")
                                         : Qt.alpha(theme.fg || "#cdd6f4", 0.5)
-                                    font.pixelSize: 11
-                                    font.family: "JetBrainsMono Nerd Font"
+                                    font.pixelSize: Style.Typography.bodySmall
+                                    font.family: Style.Typography.mono
                                     elide: Text.ElideRight
                                     width: parent.width - 30
                                 }
@@ -395,15 +396,15 @@ PanelWindow {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: loadError !== "" ? "Emoji list not found" : "No matches"
                             color: theme.fg || "#cdd6f4"
-                            font.pixelSize: 10
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: Style.Typography.label
+                            font.family: Style.Typography.mono
                         }
                         Text {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: loadError !== "" ? loadError : "Try another search term."
                             color: theme.muted || "#585b70"
-                            font.pixelSize: 9
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: Style.Typography.caption
+                            font.family: Style.Typography.mono
                         }
                     }
                 }

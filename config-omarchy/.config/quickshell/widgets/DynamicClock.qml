@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
+import "../style" as Style
 
 PanelWindow {
     id: root
@@ -29,7 +30,7 @@ PanelWindow {
     property string lastWallpaper: ""
     readonly property int cardW: 220
     readonly property int cardH: 130
-    readonly property string textFont: "JetBrainsMono Nerd Font Propo"
+    readonly property string textFont: Style.Typography.monoPropo
     readonly property real detectedScale: screen && screen.devicePixelRatio > 0 ? screen.devicePixelRatio : 1
     readonly property real scaleFactor: Math.max(1, uiScale > 0 ? uiScale : detectedScale * uiScaleMultiplier)
     readonly property int safeMargin: px(24)
@@ -292,7 +293,7 @@ PanelWindow {
                     Text {
                         text: pad(root.use24h ? root.now.getHours() : root.hour12(root.now.getHours()))
                         color: nWhite
-                        font.pixelSize: 48
+                        font.pixelSize: Style.Typography.display5Xl
                         font.family: root.textFont
                         font.weight: Font.Bold
                         font.letterSpacing: 0
@@ -305,7 +306,7 @@ PanelWindow {
 
                         text: ":"
                         color: nDim
-                        font.pixelSize: 48
+                        font.pixelSize: Style.Typography.display5Xl
                         font.family: root.textFont
                         font.weight: Font.Bold
                         font.letterSpacing: 0
@@ -331,7 +332,7 @@ PanelWindow {
                     Text {
                         text: pad(root.now.getMinutes())
                         color: nGray
-                        font.pixelSize: 48
+                        font.pixelSize: Style.Typography.display5Xl
                         font.family: root.textFont
                         font.weight: Font.Bold
                         font.letterSpacing: 0
@@ -360,7 +361,7 @@ PanelWindow {
                     Text {
                         text: Qt.formatDate(root.now, "ddd").toUpperCase() + " · " + Qt.formatDate(root.now, "dd MMM").toUpperCase()
                         color: nMuted
-                        font.pixelSize: 9
+                        font.pixelSize: Style.Typography.caption
                         font.family: root.textFont
                         font.letterSpacing: 0
                     }

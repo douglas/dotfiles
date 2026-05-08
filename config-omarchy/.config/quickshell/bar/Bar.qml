@@ -4,6 +4,7 @@ import Quickshell.Io
 import QtQuick
 import QtQuick.Layouts
 import "modules"
+import "../style" as Style
 
 PanelWindow {
     id: root
@@ -109,7 +110,7 @@ PanelWindow {
                     anchors.verticalCenter: parent.verticalCenter
                     text: root.launcherIconText
                     color: root.accent
-                    font.pixelSize: root.launcherIconSize
+                    font.pixelSize: Style.Typography.px(root.launcherIconSize)
                     font.family: root.launcherIconFont
 
                     Behavior on color {
@@ -208,8 +209,8 @@ PanelWindow {
                     Text {
                         anchors.centerIn: parent
                         text: ""
-                        font.pixelSize: 13
-                        font.family: "JetBrainsMono Nerd Font Propo"
+                        font.pixelSize: Style.Typography.bodyLarge
+                        font.family: Style.Typography.monoPropo
                         color: controlCenter.showing ? root.accent : root.muted
 
                         Behavior on color { ColorAnimation { duration: 150 } }
@@ -230,8 +231,8 @@ PanelWindow {
                         : root.notifServer && root.notifServer.notifications.length > 0
                             ? "󱅫"
                             : "󰂚"
-                    font.pixelSize: 14
-                    font.family: "JetBrainsMono Nerd Font Propo"
+                    font.pixelSize: Style.Typography.titleSmall
+                    font.family: Style.Typography.monoPropo
                     color: root.notifServer && root.notifServer.dndEnabled
                         ? root.red
                         : root.notifServer && root.notifServer.panelOpen

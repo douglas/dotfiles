@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import Quickshell
 import Quickshell.Io
+import "../style" as Style
 
 Item {
     id: list
@@ -159,7 +160,7 @@ Item {
         anchors.fill: parent
         model:        list.filteredApps
         clip:         true
-        spacing:      1
+        spacing:      2
 
         displaced: Transition {
             NumberAnimation { properties: "x,y"; duration: 120; easing.type: Easing.OutCubic }
@@ -168,7 +169,7 @@ Item {
         delegate: Item {
             id:     appDelegate
             width:  lv.width
-            height: 34
+            height: 38
 
             property bool isSelected: index === list.selectedIdx
 
@@ -245,13 +246,15 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left:           parent.left
                     anchors.leftMargin:     16
+                    width:                  parent.width - 118
                     text:           modelData.name
                     color:          isSelected
                         ? (theme.fg || "#cdd6f4")
                         : Qt.alpha(theme.fg || "#cdd6f4", 0.5)
-                    font.pixelSize: 11
-                    font.family:    "JetBrainsMono Nerd Font"
+                    font.pixelSize: Style.Typography.bodyLarge
+                    font.family: Style.Typography.mono
                     font.weight:    isSelected ? Font.Medium : Font.Normal
+                    elide:          Text.ElideRight
 
                     Behavior on color {
                         ColorAnimation { duration: 100 }
@@ -267,8 +270,8 @@ Item {
                     opacity:                isSelected ? 1 : 0
                     text:                   modelData.exec.split(" ")[0].split("/").pop()
                     color:                  Qt.alpha(theme.muted || "#585b70", 0.4)
-                    font.pixelSize:         9
-                    font.family:            "JetBrainsMono Nerd Font"
+                    font.pixelSize:         Style.Typography.label
+                    font.family: Style.Typography.mono
 
                     Behavior on opacity {
                         NumberAnimation { duration: 120; easing.type: Easing.OutCubic }

@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Services.SystemTray
 import Quickshell.Widgets
+import "../../style" as Style
 
 Item {
     id: root
@@ -235,8 +236,8 @@ Item {
                                             color:                  modelData.enabled
                                                                     ? (root.theme.fg    || "#cdd6f4")
                                                                     : (root.theme.muted || "#585b70")
-                                            font.pixelSize:         11
-                                            font.family:            "JetBrainsMono Nerd Font"
+                                            font.pixelSize:         Style.Typography.bodySmall
+                                            font.family: Style.Typography.mono
                                         }
 
                                         MouseArea {
@@ -301,8 +302,8 @@ Item {
                     visible: text !== ""
                     color: root._glyphColor(modelData, trayItem.hovered)
                     opacity: root._glyphOpacity(modelData, trayItem.hovered)
-                    font.pixelSize: 12
-                    font.family: "JetBrainsMono Nerd Font"
+                    font.pixelSize: Style.Typography.body
+                    font.family: Style.Typography.mono
                     font.weight: Font.Medium
                     renderType: Text.NativeRendering
 
@@ -342,8 +343,8 @@ Item {
                                           ? modelData.tooltipTitle
                                           : modelData.title
                         color:            root.theme.fg || "#cdd6f4"
-                        font.pixelSize:   10
-                        font.family:      "JetBrainsMono Nerd Font"
+                        font.pixelSize:   Style.Typography.label
+                        font.family: Style.Typography.mono
                     }
                 }
 

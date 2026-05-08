@@ -338,7 +338,7 @@ Item {
         id: batteryPill
 
         anchors.centerIn: parent
-        label: "BATT"
+        label: "BAT"
         value: root.percentage
         accent: root.cAccent
         trackColor: root.cDim

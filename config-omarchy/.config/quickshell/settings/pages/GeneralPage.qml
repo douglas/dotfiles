@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import "../../style" as Style
 
 Item {
     id: root
@@ -108,8 +109,8 @@ Item {
                     Text {
                         text: "Launcher icon"
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                        font.pixelSize: 9
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.caption
+                        font.family: Style.Typography.text
                     }
 
                     Repeater {
@@ -137,7 +138,7 @@ Item {
                                 Text {
                                     text: modelData.preview
                                     color: root.currentIcon() === modelData.key ? t("accent", "#9ccfa0") : Qt.alpha(t("fg", "#eef6ef"), 0.72)
-                                    font.pixelSize: 13
+                                    font.pixelSize: Style.Typography.bodyLarge
                                     font.family: modelData.family
                                     font.weight: Font.DemiBold
                                 }
@@ -149,16 +150,16 @@ Item {
                                     Text {
                                         text: modelData.label
                                         color: t("fg", "#eef6ef")
-                                        font.pixelSize: 9
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.caption
+                                        font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
 
                                     Text {
                                         text: modelData.desc
                                         color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                        font.pixelSize: 7
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.nano
+                                        font.family: Style.Typography.text
                                         Layout.fillWidth: true
                                     }
                                 }
@@ -190,8 +191,8 @@ Item {
                     Text {
                         text: "Workspace style"
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                        font.pixelSize: 9
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.caption
+                        font.family: Style.Typography.text
                     }
 
                     Repeater {
@@ -232,8 +233,8 @@ Item {
                                         color: root.currentWorkspaceStyle() === modelData.key
                                             ? t("accent", "#9ccfa0")
                                             : Qt.alpha(t("fg", "#eef6ef"), 0.68)
-                                        font.pixelSize: modelData.key === "pulse" ? 12 : 8
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: modelData.key === "pulse" ? Style.Typography.body : Style.Typography.micro
+                                        font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
                                 }
@@ -245,16 +246,16 @@ Item {
                                     Text {
                                         text: modelData.label
                                         color: t("fg", "#eef6ef")
-                                        font.pixelSize: 9
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.caption
+                                        font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
 
                                     Text {
                                         text: modelData.desc
                                         color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                        font.pixelSize: 7
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.nano
+                                        font.family: Style.Typography.text
                                         Layout.fillWidth: true
                                     }
                                 }
@@ -286,8 +287,8 @@ Item {
                     Text {
                         text: "Launcher icon size"
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                        font.pixelSize: 9
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.caption
+                        font.family: Style.Typography.text
                     }
 
                     Repeater {
@@ -315,8 +316,8 @@ Item {
                                 Text {
                                     text: "A"
                                     color: root.launcherIconSize() === modelData.value ? t("accent", "#9ccfa0") : Qt.alpha(t("fg", "#eef6ef"), 0.72)
-                                    font.pixelSize: modelData.value
-                                    font.family: "JetBrains Mono"
+                                    font.pixelSize: Style.Typography.px(modelData.value)
+                                    font.family: Style.Typography.text
                                     font.weight: Font.DemiBold
                                 }
 
@@ -327,16 +328,16 @@ Item {
                                     Text {
                                         text: modelData.label
                                         color: t("fg", "#eef6ef")
-                                        font.pixelSize: 9
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.caption
+                                        font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
 
                                     Text {
                                         text: modelData.desc
                                         color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                        font.pixelSize: 7
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.nano
+                                        font.family: Style.Typography.text
                                         Layout.fillWidth: true
                                     }
                                 }
@@ -344,8 +345,8 @@ Item {
                                 Text {
                                     text: modelData.value + "px"
                                     color: Qt.alpha(t("muted", "#9fb29f"), 0.72)
-                                    font.pixelSize: 8
-                                    font.family: "JetBrains Mono"
+                                    font.pixelSize: Style.Typography.micro
+                                    font.family: Style.Typography.text
                                     font.weight: Font.Medium
                                 }
                             }
@@ -376,8 +377,8 @@ Item {
                     Text {
                         text: "Window behavior"
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                        font.pixelSize: 9
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.caption
+                        font.family: Style.Typography.text
                     }
 
                     Rectangle {
@@ -401,8 +402,8 @@ Item {
                             Text {
                                 text: root.rememberWindowPosition() ? "On" : "Off"
                                 color: t("accent", "#9ccfa0")
-                                font.pixelSize: 8
-                                font.family: "JetBrains Mono"
+                                font.pixelSize: Style.Typography.micro
+                                font.family: Style.Typography.text
                                 font.weight: Font.DemiBold
                             }
 
@@ -413,16 +414,16 @@ Item {
                                 Text {
                                     text: "Remember window position"
                                     color: t("fg", "#eef6ef")
-                                    font.pixelSize: 9
-                                    font.family: "JetBrains Mono"
+                                    font.pixelSize: Style.Typography.caption
+                                    font.family: Style.Typography.text
                                     font.weight: Font.DemiBold
                                 }
 
                                 Text {
                                     text: "Keep the dragged settings window where you left it."
                                     color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                    font.pixelSize: 7
-                                    font.family: "JetBrains Mono"
+                                    font.pixelSize: Style.Typography.nano
+                                    font.family: Style.Typography.text
                                 }
                             }
                         }
@@ -455,8 +456,8 @@ Item {
                             Text {
                                 text: root.openOnGeneralAlways() ? "On" : "Off"
                                 color: t("accent", "#9ccfa0")
-                                font.pixelSize: 8
-                                font.family: "JetBrains Mono"
+                                font.pixelSize: Style.Typography.micro
+                                font.family: Style.Typography.text
                                 font.weight: Font.DemiBold
                             }
 
@@ -467,16 +468,16 @@ Item {
                                 Text {
                                     text: "Open settings on General tab always"
                                     color: t("fg", "#eef6ef")
-                                    font.pixelSize: 9
-                                    font.family: "JetBrains Mono"
+                                    font.pixelSize: Style.Typography.caption
+                                    font.family: Style.Typography.text
                                     font.weight: Font.DemiBold
                                 }
 
                                 Text {
                                     text: "Always start on General instead of the last tab you used."
                                     color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                    font.pixelSize: 7
-                                    font.family: "JetBrains Mono"
+                                    font.pixelSize: Style.Typography.nano
+                                    font.family: Style.Typography.text
                                 }
                             }
                         }
@@ -504,8 +505,8 @@ Item {
                                 anchors.centerIn: parent
                                 text: "Center Window Now"
                                 color: Qt.alpha(t("fg", "#eef6ef"), 0.8)
-                                font.pixelSize: 9
-                                font.family: "JetBrains Mono"
+                                font.pixelSize: Style.Typography.caption
+                                font.family: Style.Typography.text
                                 font.weight: Font.Medium
                             }
 

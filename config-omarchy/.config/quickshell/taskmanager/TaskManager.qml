@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
+import "../style" as Style
 
 PanelWindow {
     id: root
@@ -561,8 +562,8 @@ PanelWindow {
 
                 RowLayout {
                     anchors.fill: parent; anchors.leftMargin: 16; anchors.rightMargin: 12; spacing: 8
-                    Text { text: "Task Manager"; color: root.cFg; font.pixelSize: 13; font.weight: Font.DemiBold; font.family: "JetBrains Mono" }
-                    Text { text: "·  system monitor"; color: root.cDim; font.pixelSize: 10; font.family: "JetBrains Mono" }
+                    Text { text: "Task Manager"; color: root.cFg; font.pixelSize: Style.Typography.bodyLarge; font.weight: Font.DemiBold; font.family: Style.Typography.text }
+                    Text { text: "·  system monitor"; color: root.cDim; font.pixelSize: Style.Typography.label; font.family: Style.Typography.text }
                     Item { Layout.fillWidth: true }
 
                     // Pause button
@@ -575,7 +576,7 @@ PanelWindow {
                             anchors.centerIn: parent
                             text: root.paused ? "" : ""
                             color: root.paused ? root.cYellow : root.cFg
-                            font.pixelSize: 8; font.family: "JetBrains Mono"
+                            font.pixelSize: Style.Typography.micro; font.family: Style.Typography.text
                         }
                         MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: root.paused = !root.paused }
                     }
@@ -584,7 +585,7 @@ PanelWindow {
                         width: 22; height: 22; radius: 6
                         color: Qt.alpha(root.cMuted, 0.22)
                         border.color: Qt.alpha(root.cBorder, 0.4); border.width: 1
-                        Text { anchors.centerIn: parent; text: "✕"; color: root.cFg; font.pixelSize: 9; font.family: "JetBrains Mono" }
+                        Text { anchors.centerIn: parent; text: "✕"; color: root.cFg; font.pixelSize: Style.Typography.caption; font.family: Style.Typography.text }
                         MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: root.showing = false }
                     }
                 }
@@ -610,7 +611,7 @@ PanelWindow {
                             Text {
                                 id: tabLabel; anchors.centerIn: parent; text: modelData
                                 color: active ? root.cAccent : root.cDim
-                                font.pixelSize: 11; font.family: "JetBrains Mono"
+                                font.pixelSize: Style.Typography.bodySmall; font.family: Style.Typography.text
                                 font.weight: active ? Font.DemiBold : Font.Normal
                             }
                             MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: root.activeTab = index }
@@ -618,7 +619,7 @@ PanelWindow {
                     }
 
                     Item { Layout.fillWidth: true }
-                    Text { text: "Tab · / · ↑↓ · k"; color: Qt.alpha(root.cDim, 0.5); font.pixelSize: 9; font.family: "JetBrains Mono" }
+                    Text { text: "Tab · / · ↑↓ · k"; color: Qt.alpha(root.cDim, 0.5); font.pixelSize: Style.Typography.caption; font.family: Style.Typography.text }
                 }
             }
 
@@ -655,7 +656,7 @@ PanelWindow {
                         Column {
                             anchors.fill: parent; anchors.margins: 12; spacing: 6
 
-                            Text { text: "CPU  —  last " + root.graphWindow; color: root.cDim; font.pixelSize: 10; font.family: "JetBrains Mono" }
+                            Text { text: "CPU  —  last " + root.graphWindow; color: root.cDim; font.pixelSize: Style.Typography.label; font.family: Style.Typography.text }
 
                             Item {
                                 width: parent.width; height: parent.height - 22
@@ -672,7 +673,7 @@ PanelWindow {
                                                 anchors.right: parent.right; anchors.rightMargin: 4
                                                 anchors.top: parent.top; anchors.topMargin: -6
                                                 text: modelData; color: Qt.alpha(root.cDim, 0.5)
-                                                font.pixelSize: 8; font.family: "JetBrains Mono"
+                                                font.pixelSize: Style.Typography.micro; font.family: Style.Typography.text
                                             }
                                         }
                                     }
@@ -682,7 +683,7 @@ PanelWindow {
                                             anchors.right: parent.right; anchors.rightMargin: 4
                                             anchors.top: parent.top; anchors.topMargin: -6
                                             text: "0%"; color: Qt.alpha(root.cDim, 0.5)
-                                            font.pixelSize: 8; font.family: "JetBrains Mono"
+                                            font.pixelSize: Style.Typography.micro; font.family: Style.Typography.text
                                         }
                                     }
                                 }
@@ -775,14 +776,14 @@ PanelWindow {
                                 anchors.verticalCenter: parent.verticalCenter
                                 anchors.leftMargin: 10; anchors.rightMargin: 8
                                 color: root.cFg; text: root.processSearch
-                                font.pixelSize: 11; font.family: "JetBrains Mono"
+                                font.pixelSize: Style.Typography.bodySmall; font.family: Style.Typography.text
                                 selectionColor: Qt.alpha(root.cAccent, 0.35); selectedTextColor: root.cFg
                                 onTextChanged: root.processSearch = text
                             }
                             Text {
                                 anchors.left: processSearchInput.left; anchors.verticalCenter: parent.verticalCenter
                                 text: ""
-                                color: root.cDim; font.pixelSize: 10; font.family: "JetBrains Mono"
+                                color: root.cDim; font.pixelSize: Style.Typography.label; font.family: Style.Typography.text
                                 visible: processSearchInput.text.length === 0
                             }
                             Rectangle {
@@ -792,7 +793,7 @@ PanelWindow {
                                 color: Qt.alpha(root.cMuted, 0.18)
                                 border.color: Qt.alpha(root.cBorder, 0.5); border.width: 1
                                 visible: processSearchInput.text.length > 0
-                                Text { anchors.centerIn: parent; text: "×"; color: root.cFg; font.pixelSize: 11; font.family: "JetBrains Mono" }
+                                Text { anchors.centerIn: parent; text: "×"; color: root.cFg; font.pixelSize: Style.Typography.bodySmall; font.family: Style.Typography.text }
                                 MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: processSearchInput.text = "" }
                             }
                         }
@@ -807,7 +808,7 @@ PanelWindow {
                                 anchors.centerIn: parent
                                 text: "Kill (" + Object.keys(root.selectedPids).length + ")"
                                 color: Object.keys(root.selectedPids).length > 0 ? root.cRed : root.cDim
-                                font.pixelSize: 10; font.family: "JetBrains Mono"; font.weight: Font.DemiBold
+                                font.pixelSize: Style.Typography.label; font.family: Style.Typography.text; font.weight: Font.DemiBold
                             }
                             MouseArea {
                                 anchors.fill: parent
@@ -827,7 +828,7 @@ PanelWindow {
                                 anchors.centerIn: parent
                                 text: root.processAdvanced ? "Advanced" : "Safe"
                                 color: root.processAdvanced ? root.cAccent : root.cDim
-                                font.pixelSize: 10; font.family: "JetBrains Mono"; font.weight: Font.DemiBold
+                                font.pixelSize: Style.Typography.label; font.family: Style.Typography.text; font.weight: Font.DemiBold
                             }
                             MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: root.processAdvanced = !root.processAdvanced }
                         }
@@ -839,7 +840,7 @@ PanelWindow {
                             ? root.processNotice
                             : ((root.processAdvanced ? "Advanced mode" : "Safe mode") + " · Showing " + root.filteredProcesses.length + " process(es)" + (root.paused ? "  ·   paused" : ""))
                         color: root.processNotice !== "" ? root.cAccent : root.cDim
-                        font.pixelSize: 10; font.family: "JetBrains Mono"; elide: Text.ElideRight
+                        font.pixelSize: Style.Typography.label; font.family: Style.Typography.text; elide: Text.ElideRight
                     }
 
                     // Header
@@ -901,7 +902,7 @@ PanelWindow {
                                                 border.color: isSelected ? Qt.alpha(root.cAccent, 0.7) : Qt.alpha(root.cBorder, 0.4)
                                                 border.width: 1
                                                 visible: !protectedProc
-                                                Text { anchors.centerIn: parent; text: "✓"; color: root.cAccent; font.pixelSize: 9; visible: isSelected }
+                                                Text { anchors.centerIn: parent; text: "✓"; color: root.cAccent; font.pixelSize: Style.Typography.caption; visible: isSelected }
                                                 MouseArea {
                                                     anchors.fill: parent; cursorShape: Qt.PointingHandCursor
                                                     onClicked: {
@@ -925,7 +926,7 @@ PanelWindow {
                                                     anchors.right: parent.right; anchors.rightMargin: 4
                                                     anchors.verticalCenter: parent.verticalCenter
                                                     text: row.cpu; color: root.cpuColor(row.cpu)
-                                                    font.pixelSize: 11; font.family: "JetBrains Mono"
+                                                    font.pixelSize: Style.Typography.bodySmall; font.family: Style.Typography.text
                                                     font.weight: Number(row.cpu) >= 10 ? Font.DemiBold : Font.Normal
                                                 }
                                             }
@@ -956,7 +957,7 @@ PanelWindow {
                                                 color:        protectedProc ? Qt.alpha(root.cMuted, 0.10) : Qt.alpha(root.cMuted, 0.20)
                                                 border.color: Qt.alpha(root.cBorder, protectedProc ? 0.25 : 0.4); border.width: 1
                                                 opacity: hovered ? 1 : 0
-                                                Text { anchors.centerIn: parent; text: "×"; color: protectedProc ? root.cDim : root.cRed; font.pixelSize: 12; font.family: "JetBrains Mono" }
+                                                Text { anchors.centerIn: parent; text: "×"; color: protectedProc ? root.cDim : root.cRed; font.pixelSize: Style.Typography.body; font.family: Style.Typography.text }
                                                 MouseArea {
                                                     anchors.fill: parent; enabled: hovered
                                                     cursorShape: protectedProc ? Qt.ForbiddenCursor : Qt.PointingHandCursor
@@ -995,7 +996,7 @@ PanelWindow {
 
                     RowLayout {
                         Layout.fillWidth: true; spacing: 6
-                        Text { text: "Window"; color: root.cDim; font.pixelSize: 10; font.family: "JetBrains Mono" }
+                        Text { text: "Window"; color: root.cDim; font.pixelSize: Style.Typography.label; font.family: Style.Typography.text }
                         Repeater {
                             model: ["30s", "1m", "5m"]
                             delegate: Rectangle {
@@ -1005,12 +1006,12 @@ PanelWindow {
                                 color:        active ? Qt.alpha(root.cAccent, 0.16) : root.cSurface
                                 border.color: active ? Qt.alpha(root.cAccent, 0.50) : Qt.alpha(root.cBorder, 0.45)
                                 border.width: 1
-                                Text { anchors.centerIn: parent; text: modelData; color: active ? root.cAccent : root.cDim; font.pixelSize: 9; font.family: "JetBrains Mono"; font.weight: active ? Font.DemiBold : Font.Normal }
+                                Text { anchors.centerIn: parent; text: modelData; color: active ? root.cAccent : root.cDim; font.pixelSize: Style.Typography.caption; font.family: Style.Typography.text; font.weight: active ? Font.DemiBold : Font.Normal }
                                 MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: root.graphWindow = modelData }
                             }
                         }
                         Item { Layout.fillWidth: true }
-                        Text { text: root.paused ? " paused" : ""; color: root.cYellow; font.pixelSize: 10; font.family: "JetBrains Mono" }
+                        Text { text: root.paused ? " paused" : ""; color: root.cYellow; font.pixelSize: Style.Typography.label; font.family: Style.Typography.text }
                     }
 
                     GridLayout {
@@ -1084,8 +1085,8 @@ PanelWindow {
 
         Column {
             anchors.fill: parent; anchors.margins: 12; spacing: 5
-            Text { text: label; color: root.cDim; font.pixelSize: 10; font.family: "JetBrains Mono"; font.letterSpacing: 0.6 }
-            Text { text: Math.round(value) + "%"; color: root.cFg; font.pixelSize: 20; font.weight: Font.DemiBold; font.family: "JetBrains Mono" }
+            Text { text: label; color: root.cDim; font.pixelSize: Style.Typography.label; font.family: Style.Typography.text; font.letterSpacing: 0.6 }
+            Text { text: Math.round(value) + "%"; color: root.cFg; font.pixelSize: Style.Typography.display; font.weight: Font.DemiBold; font.family: Style.Typography.text }
             Item {
                 width: parent.width; height: 4
                 Rectangle {
@@ -1103,7 +1104,7 @@ PanelWindow {
                     }
                 }
             }
-            Text { text: detail; color: root.cDim; font.pixelSize: 9; font.family: "JetBrains Mono"; elide: Text.ElideRight; width: parent.width }
+            Text { text: detail; color: root.cDim; font.pixelSize: Style.Typography.caption; font.family: Style.Typography.text; elide: Text.ElideRight; width: parent.width }
         }
     }
 
@@ -1134,7 +1135,7 @@ PanelWindow {
                             anchors.right: parent.right; anchors.rightMargin: 2
                             anchors.top: parent.top; anchors.topMargin: -6
                             text: modelData; color: Qt.alpha(root.cDim, 0.5)
-                            font.pixelSize: 7; font.family: "JetBrains Mono"
+                            font.pixelSize: Style.Typography.nano; font.family: Style.Typography.text
                         }
                     }
                 }
@@ -1144,7 +1145,7 @@ PanelWindow {
                         anchors.right: parent.right; anchors.rightMargin: 2
                         anchors.top: parent.top; anchors.topMargin: -6
                         text: "0%"; color: Qt.alpha(root.cDim, 0.5)
-                        font.pixelSize: 7; font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.nano; font.family: Style.Typography.text
                     }
                 }
                 Item { width: 30; height: 22 }
@@ -1153,7 +1154,7 @@ PanelWindow {
             Column {
                 width: parent.width - 30; height: parent.height; spacing: 6
 
-                Text { text: label; color: root.cDim; font.pixelSize: 10; font.family: "JetBrains Mono" }
+                Text { text: label; color: root.cDim; font.pixelSize: Style.Typography.label; font.family: Style.Typography.text }
 
                 Item {
                     width: parent.width; height: parent.height - 22
@@ -1270,7 +1271,7 @@ PanelWindow {
 
         Column {
             anchors.fill: parent; anchors.margins: 12; spacing: 0
-            Text { text: label; color: root.cDim; font.pixelSize: 10; font.family: "JetBrains Mono"; font.letterSpacing: 0.6; bottomPadding: 8 }
+            Text { text: label; color: root.cDim; font.pixelSize: Style.Typography.label; font.family: Style.Typography.text; font.letterSpacing: 0.6; bottomPadding: 8 }
             Repeater {
                 model: rows.length
                 delegate: Rectangle {
@@ -1279,9 +1280,9 @@ PanelWindow {
                     Rectangle { anchors.bottom: parent.bottom; width: parent.width; height: 1; color: Qt.alpha(root.cBorder, 0.35); visible: index < rows.length - 1 }
                     RowLayout {
                         anchors.fill: parent
-                        Text { text: rows[index].k; color: root.cDim; font.pixelSize: 11; font.family: "JetBrains Mono" }
+                        Text { text: rows[index].k; color: root.cDim; font.pixelSize: Style.Typography.bodySmall; font.family: Style.Typography.text }
                         Item { Layout.fillWidth: true }
-                        Text { text: rows[index].v; color: root.cFg; font.pixelSize: 11; font.weight: Font.DemiBold; font.family: "JetBrains Mono"; elide: Text.ElideLeft; Layout.maximumWidth: 220 }
+                        Text { text: rows[index].v; color: root.cFg; font.pixelSize: Style.Typography.bodySmall; font.weight: Font.DemiBold; font.family: Style.Typography.text; elide: Text.ElideLeft; Layout.maximumWidth: 220 }
                     }
                 }
             }
@@ -1302,7 +1303,7 @@ PanelWindow {
             anchors.fill: parent; anchors.leftMargin: 4; anchors.rightMargin: 4
             text: parent.text + (parent.activeSort ? (root.processSortDescending ? " ↓" : " ↑") : "")
             color: parent.activeSort ? root.cAccent : root.cDim
-            font.pixelSize: 9; font.family: "JetBrains Mono"; font.letterSpacing: 0.5
+            font.pixelSize: Style.Typography.caption; font.family: Style.Typography.text; font.letterSpacing: 0.5
             horizontalAlignment: parent.rightAlign ? Text.AlignRight : Text.AlignLeft
             verticalAlignment: Text.AlignVCenter
         }
@@ -1324,7 +1325,7 @@ PanelWindow {
         Text {
             anchors.fill: parent; anchors.leftMargin: 4; anchors.rightMargin: 4
             text: parent.text; color: parent.dim ? root.cDim : root.cFg
-            font.pixelSize: 11; font.family: "JetBrains Mono"
+            font.pixelSize: Style.Typography.bodySmall; font.family: Style.Typography.text
             horizontalAlignment: parent.rightAlign ? Text.AlignRight : Text.AlignLeft
             verticalAlignment: Text.AlignVCenter; elide: Text.ElideRight
         }

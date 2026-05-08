@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import "../style" as Style
 
 Item {
     id: root
@@ -139,8 +140,8 @@ Item {
                         color:          isSelected
                             ? (theme.accent || "#89b4fa")
                             : Qt.alpha(theme.fg || "#cdd6f4", 0.55)
-                        font.pixelSize: 13
-                        font.family:    "JetBrainsMono Nerd Font", "Omarchy"
+                        font.pixelSize: Style.Typography.bodyLarge
+                        font.family: Style.Typography.mono, "Omarchy"
                         width:          20
 
                         Behavior on color {
@@ -154,8 +155,8 @@ Item {
                         color:          isSelected
                             ? (theme.fg || "#cdd6f4")
                             : Qt.alpha(theme.fg || "#cdd6f4", 0.75)
-                        font.pixelSize: 12
-                        font.family:    "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.body
+                        font.family: Style.Typography.mono
                         font.weight:    isSelected ? Font.Medium : Font.Normal
 
                         Behavior on color {
@@ -172,8 +173,8 @@ Item {
                     visible:                mitem.children !== undefined
                     text:                   ""
                     color:                  Qt.alpha(theme.muted || "#585b70", isSelected ? 0.8 : 0.4)
-                    font.pixelSize:         10
-                    font.family:            "JetBrainsMono Nerd Font"
+                    font.pixelSize:         Style.Typography.label
+                    font.family: Style.Typography.mono
 
                     Behavior on color {
                         ColorAnimation { duration: 120 }
@@ -196,8 +197,8 @@ Item {
                     visible:                mitem.terminal !== undefined && mitem.children === undefined
                     text:                   "󰆍"
                     color:                  Qt.alpha(theme.muted || "#585b70", isSelected ? 0.6 : 0.3)
-                    font.pixelSize:         10
-                    font.family:            "JetBrainsMono Nerd Font"
+                    font.pixelSize:         Style.Typography.label
+                    font.family: Style.Typography.mono
 
                     Behavior on color {
                         ColorAnimation { duration: 120 }

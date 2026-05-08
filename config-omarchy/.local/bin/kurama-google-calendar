@@ -23,10 +23,11 @@ def state_dir():
     return Path.home() / ".local" / "state" / "kurama"
 
 
-def run_gcalcli():
+def run_gcalcli(target_date):
     if not shutil.which("gcalcli"):
         return None, "gcalcli is not installed"
 
+    next_date = target_date + timedelta(days=1)
     cmd = [
         "gcalcli",
         "--nocolor",
@@ -35,8 +36,8 @@ def run_gcalcli():
         "--nodeclined",
         "--details",
         "all",
-        "today",
-        "tomorrow",
+        target_date.isoformat(),
+        next_date.isoformat(),
     ]
 
     try:
@@ -65,15 +66,15 @@ def parse_time(value):
     return datetime.strptime(value, "%H:%M").time()
 
 
-def event_intersects_today(row, today):
+def event_intersects_day(row, target_date):
     start_date = parse_date(row["start_date"])
     end_date = parse_date(row["end_date"])
 
     if row.get("start_time"):
-        return start_date == today
+        return start_date == target_date
 
     # Google all-day event end dates are exclusive.
-    return start_date <= today < end_date
+    return start_date <= target_date < end_date
 
 
 def normalize_event(row, index):
@@ -112,31 +113,32 @@ def normalize_event(row, index):
     }
 
 
-def load_events():
-    output, error = run_gcalcli()
+def load_events(target_date=None):
+    target_date = target_date or date.today()
+    output, error = run_gcalcli(target_date)
     if error:
         return {"ok": False, "error": error, "events": []}
 
     rows = list(csv.DictReader(output.splitlines(), delimiter="\t"))
-    today = date.today()
     events = [
         normalize_event(row, index)
         for index, row in enumerate(rows)
-        if row.get("start_date") and row.get("end_date") and event_intersects_today(row, today)
+        if row.get("start_date") and row.get("end_date") and event_intersects_day(row, target_date)
     ]
 
     events.sort(key=lambda event: (event["allDay"], event["start"], event["title"].lower()))
 
     return {
         "ok": True,
-        "date": today.isoformat(),
+        "date": target_date.isoformat(),
         "generatedAt": datetime.now().isoformat(timespec="seconds"),
         "events": events,
     }
 
 
-def print_today(_args):
-    print(json.dumps(load_events(), ensure_ascii=False))
+def print_today(args):
+    target_date = parse_date(args.date) if args.date else date.today()
+    print(json.dumps(load_events(target_date), ensure_ascii=False))
     return 0
 
 
@@ -246,7 +248,8 @@ def main():
     parser = argparse.ArgumentParser(description="Kurama Google Calendar helper")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    today_parser = subparsers.add_parser("today", help="print today's events as JSON")
+    today_parser = subparsers.add_parser("today", help="print events for today or a YYYY-MM-DD date as JSON")
+    today_parser.add_argument("date", nargs="?")
     today_parser.set_defaults(func=print_today)
 
     watch_parser = subparsers.add_parser("watch", help="notify before today's meetings")

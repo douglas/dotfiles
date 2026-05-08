@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
+import "../../style" as Style
 
 Item {
     id: root
@@ -176,8 +177,8 @@ Item {
                             visible: !coverArt.visible
                             text: "󰎆"
                             color: root.toneColor()
-                            font.pixelSize: root.px(20)
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: Style.Typography.display
+                            font.family: Style.Typography.mono
                         }
                     }
 
@@ -192,26 +193,26 @@ Item {
                             Text {
                                 text: root.service ? root.service.icon : "󰕾"
                                 color: root.toneColor()
-                                font.pixelSize: root.px(19)
-                                font.family: "JetBrainsMono Nerd Font"
+                                font.pixelSize: Style.Typography.headingLarge
+                                font.family: Style.Typography.mono
                             }
 
                             Text {
                                 Layout.fillWidth: true
                                 text: root.service ? root.service.title : "OSD"
                                 color: root.t("fg", "#cdd6f4")
-                                font.pixelSize: root.px(15)
+                                font.pixelSize: Style.Typography.title
                                 font.weight: Font.DemiBold
-                                font.family: "JetBrainsMono Nerd Font"
+                                font.family: Style.Typography.mono
                                 elide: Text.ElideRight
                             }
 
                             Text {
                                 text: root.service ? root.service.valueText : "0%"
                                 color: root.t("muted", "#585b70")
-                                font.pixelSize: root.px(12)
+                                font.pixelSize: Style.Typography.body
                                 font.weight: Font.Medium
-                                font.family: "JetBrainsMono Nerd Font"
+                                font.family: Style.Typography.mono
                             }
                         }
 
@@ -220,8 +221,8 @@ Item {
                             Layout.fillWidth: true
                             text: root.service ? root.service.subtitle : ""
                             color: root.t("muted", "#585b70")
-                            font.pixelSize: root.px(12)
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: Style.Typography.body
+                            font.family: Style.Typography.mono
                             elide: Text.ElideRight
                         }
                     }

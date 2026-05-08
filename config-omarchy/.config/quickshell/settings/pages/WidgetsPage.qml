@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import "../../style" as Style
 
 Item {
     id: root
@@ -25,6 +26,15 @@ Item {
     function setCalendarEnabled(val) {
         if (root.state)
             root.state.calendarWidgetEnabled = val
+    }
+
+    function googleEventsEnabled() {
+        return root.state ? root.state.googleCalendarEventsEnabled : false
+    }
+
+    function setGoogleEventsEnabled(val) {
+        if (root.state)
+            root.state.googleCalendarEventsEnabled = val
     }
 
     function pomodoroEnabled() {
@@ -74,8 +84,8 @@ Item {
                     Text {
                         text: "Clock widget"
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                        font.pixelSize: 9
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.caption
+                        font.family: Style.Typography.text
                     }
 
                     Rectangle {
@@ -99,16 +109,16 @@ Item {
                                 Text {
                                     text: "Desktop clock"
                                     color: t("fg", "#eef6ef")
-                                    font.pixelSize: 9
-                                    font.family: "JetBrains Mono"
+                                    font.pixelSize: Style.Typography.caption
+                                    font.family: Style.Typography.text
                                     font.weight: Font.DemiBold
                                 }
 
                                 Text {
                                     text: "Show the floating desktop clock widget."
                                     color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                    font.pixelSize: 7
-                                    font.family: "JetBrains Mono"
+                                    font.pixelSize: Style.Typography.nano
+                                    font.family: Style.Typography.text
                                 }
                             }
 
@@ -161,16 +171,16 @@ Item {
                             Text {
                                 text: "Time format"
                                 color: t("fg", "#eef6ef")
-                                font.pixelSize: 9
-                                font.family: "JetBrains Mono"
+                                font.pixelSize: Style.Typography.caption
+                                font.family: Style.Typography.text
                                 font.weight: Font.DemiBold
                             }
 
                             Text {
                                 text: "Switch between 24-hour and 12-hour time."
                                 color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                font.pixelSize: 7
-                                font.family: "JetBrains Mono"
+                                font.pixelSize: Style.Typography.nano
+                                font.family: Style.Typography.text
                             }
                         }
 
@@ -205,8 +215,8 @@ Item {
                                 color: (root.state && root.state.clockUse24h)
                                     ? t("bg", "#0b100c")
                                     : Qt.alpha(t("fg", "#eef6ef"), 0.6)
-                                font.pixelSize: 8
-                                font.family: "JetBrains Mono"
+                                font.pixelSize: Style.Typography.micro
+                                font.family: Style.Typography.text
                                 font.weight: Font.DemiBold
                             }
 
@@ -218,8 +228,8 @@ Item {
                                 color: (root.state && !root.state.clockUse24h)
                                     ? t("bg", "#0b100c")
                                     : Qt.alpha(t("fg", "#eef6ef"), 0.6)
-                                font.pixelSize: 8
-                                font.family: "JetBrains Mono"
+                                font.pixelSize: Style.Typography.micro
+                                font.family: Style.Typography.text
                                 font.weight: Font.DemiBold
                             }
 
@@ -243,7 +253,7 @@ Item {
                 color: Qt.darker(t("bg", "#0b100c"), 1.04)
                 border.color: Qt.alpha(t("accent", "#9ccfa0"), 0.1)
                 border.width: 1
-                implicitHeight: 92
+                implicitHeight: 146
 
                 ColumnLayout {
                     anchors.fill: parent
@@ -253,8 +263,8 @@ Item {
                     Text {
                         text: "Calendar widget"
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                        font.pixelSize: 9
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.caption
+                        font.family: Style.Typography.text
                     }
 
                     Rectangle {
@@ -278,16 +288,16 @@ Item {
                                 Text {
                                     text: "Desktop calendar"
                                     color: t("fg", "#eef6ef")
-                                    font.pixelSize: 9
-                                    font.family: "JetBrains Mono"
+                                    font.pixelSize: Style.Typography.caption
+                                    font.family: Style.Typography.text
                                     font.weight: Font.DemiBold
                                 }
 
                                 Text {
                                     text: "Show the floating calendar widget."
                                     color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                    font.pixelSize: 7
-                                    font.family: "JetBrains Mono"
+                                    font.pixelSize: Style.Typography.nano
+                                    font.family: Style.Typography.text
                                 }
                             }
 
@@ -328,6 +338,72 @@ Item {
                             }
                         }
                     }
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 46
+                        radius: 10
+                        color: Qt.alpha(t("dim", "#45475a"), 0.14)
+                        border.color: Qt.alpha(t("accent", "#9ccfa0"), 0.08)
+                        border.width: 1
+
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.leftMargin: 12
+                            anchors.rightMargin: 12
+                            spacing: 10
+
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 1
+
+                                Text {
+                                    text: "Google events"
+                                    color: t("fg", "#eef6ef")
+                                    font.pixelSize: Style.Typography.caption
+                                    font.family: Style.Typography.text
+                                    font.weight: Font.DemiBold
+                                }
+
+                                Text {
+                                    text: "Fetch daily events in the bar calendar."
+                                    color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
+                                    font.pixelSize: Style.Typography.nano
+                                    font.family: Style.Typography.text
+                                }
+                            }
+
+                            Rectangle {
+                                Layout.preferredWidth: 20
+                                Layout.preferredHeight: 20
+                                radius: 5
+                                color: root.googleEventsEnabled()
+                                    ? Qt.alpha(t("accent", "#9ccfa0"), 0.22)
+                                    : Qt.alpha(t("dim", "#45475a"), 0.35)
+                                border.color: root.googleEventsEnabled()
+                                    ? Qt.alpha(t("accent", "#9ccfa0"), 0.64)
+                                    : Qt.alpha(t("accent", "#9ccfa0"), 0.16)
+                                border.width: 1
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: "✓"
+                                    visible: root.googleEventsEnabled()
+                                    color: t("accent", "#9ccfa0")
+                                    font.pixelSize: Style.Typography.caption
+                                    font.family: Style.Typography.text
+                                    font.weight: Font.DemiBold
+                                }
+                            }
+
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.setGoogleEventsEnabled(!root.googleEventsEnabled())
+                        }
+                    }
                 }
             }
 
@@ -347,8 +423,8 @@ Item {
                     Text {
                         text: "Todo widget"
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                        font.pixelSize: 9
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.caption
+                        font.family: Style.Typography.text
                     }
 
                     Rectangle {
@@ -372,16 +448,16 @@ Item {
                                 Text {
                                     text: "Desktop todo"
                                     color: t("fg", "#eef6ef")
-                                    font.pixelSize: 9
-                                    font.family: "JetBrains Mono"
+                                    font.pixelSize: Style.Typography.caption
+                                    font.family: Style.Typography.text
                                     font.weight: Font.DemiBold
                                 }
 
                                 Text {
                                     text: "Quick tasks you can check off."
                                     color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                    font.pixelSize: 7
-                                    font.family: "JetBrains Mono"
+                                    font.pixelSize: Style.Typography.nano
+                                    font.family: Style.Typography.text
                                 }
                             }
 
@@ -441,8 +517,8 @@ Item {
                     Text {
                         text: "Pomodoro widget"
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                        font.pixelSize: 9
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.caption
+                        font.family: Style.Typography.text
                     }
 
                     Rectangle {
@@ -466,16 +542,16 @@ Item {
                                 Text {
                                     text: "Desktop pomodoro"
                                     color: t("fg", "#eef6ef")
-                                    font.pixelSize: 9
-                                    font.family: "JetBrains Mono"
+                                    font.pixelSize: Style.Typography.caption
+                                    font.family: Style.Typography.text
                                     font.weight: Font.DemiBold
                                 }
 
                                 Text {
                                     text: "25 min focus + 5 min break with alerts."
                                     color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                    font.pixelSize: 7
-                                    font.family: "JetBrains Mono"
+                                    font.pixelSize: Style.Typography.nano
+                                    font.family: Style.Typography.text
                                 }
                             }
 

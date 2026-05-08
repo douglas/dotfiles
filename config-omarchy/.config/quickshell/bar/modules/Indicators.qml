@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Io
+import "../../style" as Style
 
 Item {
     id: root
@@ -106,8 +107,8 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             text:                   ""
             color:                  root.green
-            font.pixelSize:         13
-            font.family:            "JetBrainsMono Nerd Font"
+            font.pixelSize:         Style.Typography.bodyLarge
+            font.family: Style.Typography.mono
 
             Behavior on opacity { NumberAnimation { duration: 150 } }
 
@@ -128,8 +129,8 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             text:                   "󱫖"
             color:                  root.accent
-            font.pixelSize:         13
-            font.family:            "JetBrainsMono Nerd Font"
+            font.pixelSize:         Style.Typography.bodyLarge
+            font.family: Style.Typography.mono
 
             Behavior on opacity { NumberAnimation { duration: 150 } }
 
@@ -149,8 +150,8 @@ Item {
         //     anchors.verticalCenter: parent.verticalCenter
         //     text:                   "󰂛"
         //     color:                  root.accent
-        //     font.pixelSize:         13
-        //     font.family:            "JetBrainsMono Nerd Font"
+        //     font.pixelSize:         Style.Typography.bodyLarge
+        //     font.family: Style.Typography.mono
 
         //     Behavior on opacity { NumberAnimation { duration: 150 } }
 
@@ -171,8 +172,8 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             text:                   "󰻂"
             color:                  root.red
-            font.pixelSize:         13
-            font.family:            "JetBrainsMono Nerd Font"
+            font.pixelSize:         Style.Typography.bodyLarge
+            font.family: Style.Typography.mono
 
             SequentialAnimation on opacity {
                 loops:   Animation.Infinite

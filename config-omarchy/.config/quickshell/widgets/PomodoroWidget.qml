@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
+import "../style" as Style
 
 PanelWindow {
     // no easing for direct drag
@@ -26,7 +27,7 @@ PanelWindow {
     property real dragTop: 0
     readonly property int cardW: 220
     readonly property int cardH: 140
-    readonly property string textFont: "JetBrainsMono Nerd Font Propo"
+    readonly property string textFont: Style.Typography.monoPropo
     readonly property real detectedScale: screen && screen.devicePixelRatio > 0 ? screen.devicePixelRatio : 1
     readonly property real scaleFactor: Math.max(1, uiScale > 0 ? uiScale : detectedScale * uiScaleMultiplier)
     readonly property int safeMargin: px(24)
@@ -212,7 +213,7 @@ PanelWindow {
                     Text {
                         text: root.mode === "focus" ? "FOCUS" : "BREAK"
                         color: root.mode === "focus" ? cAccent : cMuted
-                        font.pixelSize: 10
+                        font.pixelSize: Style.Typography.label
                         font.family: root.textFont
                         font.weight: Font.DemiBold
                         font.letterSpacing: 0
@@ -225,7 +226,7 @@ PanelWindow {
                     Text {
                         text: root.cycleCount > 0 ? "x" + root.cycleCount : ""
                         color: cDim
-                        font.pixelSize: 9
+                        font.pixelSize: Style.Typography.caption
                         font.family: root.textFont
                     }
 
@@ -234,7 +235,7 @@ PanelWindow {
                 Text {
                     text: root.formatTime(root.remaining)
                     color: cFg
-                    font.pixelSize: 34
+                    font.pixelSize: Style.Typography.display4Xl
                     font.family: root.textFont
                     font.weight: Font.Bold
                     font.letterSpacing: 0
@@ -280,7 +281,7 @@ PanelWindow {
                             anchors.centerIn: parent
                             text: root.running ? "Pause" : "Start"
                             color: cFg
-                            font.pixelSize: 9
+                            font.pixelSize: Style.Typography.caption
                             font.family: root.textFont
                             font.weight: Font.DemiBold
                         }
@@ -305,7 +306,7 @@ PanelWindow {
                             anchors.centerIn: parent
                             text: "Reset"
                             color: Qt.alpha(cFg, 0.75)
-                            font.pixelSize: 9
+                            font.pixelSize: Style.Typography.caption
                             font.family: root.textFont
                             font.weight: Font.DemiBold
                         }

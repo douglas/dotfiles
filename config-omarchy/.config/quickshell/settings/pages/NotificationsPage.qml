@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import "../../style" as Style
 
 Item {
     id: root
@@ -31,7 +32,7 @@ Item {
     function sendTestNotification() {
         Quickshell.execDetached([
             "bash", "-lc",
-            "notify-send -a Quickshell -u normal 'Quickshell Settings' 'This is a test notification.'"
+            "notify-send -a Kurama -u normal 'Kurama Settings' 'This is a test notification.'"
         ])
     }
 
@@ -55,8 +56,8 @@ Item {
                 Text {
                     text: "Toast location"
                     color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                    font.pixelSize: 9
-                    font.family: "JetBrains Mono"
+                    font.pixelSize: Style.Typography.caption
+                    font.family: Style.Typography.text
                 }
 
                 GridLayout {
@@ -90,8 +91,8 @@ Item {
                                 color: root.currentPosition() === modelData.key
                                     ? t("fg", "#eef6ef")
                                     : Qt.alpha(t("fg", "#eef6ef"), 0.72)
-                                font.pixelSize: 9
-                                font.family: "JetBrains Mono"
+                                font.pixelSize: Style.Typography.caption
+                                font.family: Style.Typography.text
                                 font.weight: Font.Medium
                             }
 
@@ -120,8 +121,8 @@ Item {
                             anchors.centerIn: parent
                             text: "Send test notification"
                             color: t("fg", "#eef6ef")
-                            font.pixelSize: 9
-                            font.family: "JetBrains Mono"
+                            font.pixelSize: Style.Typography.caption
+                            font.family: Style.Typography.text
                             font.weight: Font.DemiBold
                         }
 
@@ -144,8 +145,8 @@ Item {
                             anchors.centerIn: parent
                             text: "Reset"
                             color: Qt.alpha(t("fg", "#eef6ef"), 0.8)
-                            font.pixelSize: 9
-                            font.family: "JetBrains Mono"
+                            font.pixelSize: Style.Typography.caption
+                            font.family: Style.Typography.text
                             font.weight: Font.Medium
                         }
 
@@ -175,23 +176,23 @@ Item {
                 Text {
                     text: "Current"
                     color: Qt.alpha(t("muted", "#9fb29f"), 0.74)
-                    font.pixelSize: 8
-                    font.family: "JetBrains Mono"
+                    font.pixelSize: Style.Typography.micro
+                    font.family: Style.Typography.text
                 }
 
                 Text {
                     text: root.currentPosition()
                     color: t("fg", "#eef6ef")
-                    font.pixelSize: 11
-                    font.family: "JetBrains Mono"
+                    font.pixelSize: Style.Typography.bodySmall
+                    font.family: Style.Typography.text
                     font.weight: Font.DemiBold
                 }
 
                 Text {
                     text: "Top center is the default toast position."
                     color: Qt.alpha(t("muted", "#9fb29f"), 0.55)
-                    font.pixelSize: 8
-                    font.family: "JetBrains Mono"
+                    font.pixelSize: Style.Typography.micro
+                    font.family: Style.Typography.text
                     Layout.fillWidth: true
                     wrapMode: Text.WordWrap
                 }

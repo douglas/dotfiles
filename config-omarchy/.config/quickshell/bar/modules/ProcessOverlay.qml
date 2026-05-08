@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
+import "../../style" as Style
 
 Item {
     id: root
@@ -28,8 +29,8 @@ Item {
     property var displayRows: []
     property string emptyText: "no data"
     property bool showPids: false
-    readonly property string textFont: "JetBrainsMono Nerd Font Propo"
-    readonly property string iconFont: "JetBrainsMono Nerd Font"
+    readonly property string textFont: Style.Typography.monoPropo
+    readonly property string iconFont: Style.Typography.mono
     readonly property color cBg: theme.bg || "#1e1e2e"
     readonly property color cFg: theme.fg || "#cdd6f4"
     readonly property color cMuted: theme.muted || "#585b70"
@@ -209,7 +210,7 @@ Item {
                     Text {
                         text: root.icon
                         color: root.accent
-                        font.pixelSize: root.overlayPx(18)
+                        font.pixelSize: Style.Typography.scaledHeading(root.overlayScale)
                         font.family: root.iconFont
                         Layout.alignment: Qt.AlignVCenter
                     }
@@ -222,7 +223,7 @@ Item {
                         Text {
                             text: root.title
                             color: root.cFg
-                            font.pixelSize: root.overlayPx(12)
+                            font.pixelSize: Style.Typography.scaledBody(root.overlayScale)
                             font.family: root.textFont
                             font.weight: Font.DemiBold
                         }
@@ -230,7 +231,7 @@ Item {
                         Text {
                             text: root.subtitle
                             color: root.cMuted
-                            font.pixelSize: root.overlayPx(10)
+                            font.pixelSize: Style.Typography.scaledBodySmall(root.overlayScale)
                             font.family: root.textFont
                         }
 
@@ -240,7 +241,7 @@ Item {
                         visible: root.notice !== ""
                         text: root.notice
                         color: root.accent
-                        font.pixelSize: root.overlayPx(9)
+                        font.pixelSize: Style.Typography.scaledLabel(root.overlayScale)
                         font.family: root.textFont
                         elide: Text.ElideRight
                         Layout.maximumWidth: root.overlayPx(120)
@@ -259,7 +260,7 @@ Item {
                         Text {
                             text: ""
                             color: refreshHover.containsMouse ? root.accent : root.cMuted
-                            font.pixelSize: root.overlayPx(13)
+                            font.pixelSize: Style.Typography.scaledBodyLarge(root.overlayScale)
                             font.family: root.iconFont
 
                             MouseArea {
@@ -284,7 +285,7 @@ Item {
                         Text {
                             text: "󰅖"
                             color: closeHover.containsMouse ? root.cRed : root.cMuted
-                            font.pixelSize: root.overlayPx(13)
+                            font.pixelSize: Style.Typography.scaledBodyLarge(root.overlayScale)
                             font.family: root.iconFont
 
                             MouseArea {
@@ -322,7 +323,7 @@ Item {
                     Text {
                         text: root.listTitle
                         color: root.cFg
-                        font.pixelSize: root.overlayPx(12)
+                        font.pixelSize: Style.Typography.scaledBody(root.overlayScale)
                         font.family: root.textFont
                         font.weight: Font.DemiBold
                         Layout.fillWidth: true
@@ -378,7 +379,7 @@ Item {
                             anchors.verticalCenter: parent.verticalCenter
                             text: "PID"
                             color: root.cMuted
-                            font.pixelSize: root.overlayPx(10)
+                            font.pixelSize: Style.Typography.scaledBodySmall(root.overlayScale)
                             font.family: root.textFont
                         }
 
@@ -429,7 +430,7 @@ Item {
                                 visible: modelData.rowType !== "process"
                                 text: root.rowExpanded(modelData) ? "⌄" : "›"
                                 color: root.accent
-                                font.pixelSize: root.overlayPx(12)
+                                font.pixelSize: Style.Typography.scaledBody(root.overlayScale)
                                 font.family: root.textFont
                                 horizontalAlignment: Text.AlignHCenter
                                 Layout.preferredWidth: root.overlayPx(10)
@@ -438,7 +439,7 @@ Item {
                             Text {
                                 text: modelData.rowType === "process" ? (modelData.name || "process") : (modelData.title || "group")
                                 color: modelData.rowType === "process" ? root.cFg : root.accent
-                                font.pixelSize: root.overlayPx(modelData.rowType === "process" ? 12 : 11)
+                                font.pixelSize: modelData.rowType === "process" ? Style.Typography.scaledBody(root.overlayScale) : Style.Typography.scaledBodySmall(root.overlayScale)
                                 font.family: root.textFont
                                 font.weight: modelData.rowType === "process" ? Font.Normal : Font.DemiBold
                                 elide: Text.ElideRight
@@ -459,7 +460,7 @@ Item {
                                 visible: root.copyableBranch(modelData) && String(modelData.fullTitle || "") !== String(modelData.title || "")
                                 text: modelData.fullTitle || ""
                                 color: root.cMuted
-                                font.pixelSize: root.overlayPx(9)
+                                font.pixelSize: Style.Typography.scaledLabel(root.overlayScale)
                                 font.family: root.textFont
                                 elide: Text.ElideMiddle
                                 horizontalAlignment: Text.AlignLeft
@@ -470,7 +471,7 @@ Item {
                                 visible: modelData.rowType !== "process" && String(modelData.subtitle || "") !== ""
                                 text: modelData.subtitle || ""
                                 color: root.cMuted
-                                font.pixelSize: root.overlayPx(9)
+                                font.pixelSize: Style.Typography.scaledLabel(root.overlayScale)
                                 font.family: root.textFont
                                 elide: Text.ElideRight
                                 horizontalAlignment: Text.AlignRight
@@ -480,7 +481,7 @@ Item {
                             Text {
                                 text: Number(modelData[root.valueKey] || 0).toFixed(1) + "%"
                                 color: Number(modelData[root.valueKey] || 0) >= 30 ? root.cRed : Number(modelData[root.valueKey] || 0) >= 10 ? root.cYellow : root.accent
-                                font.pixelSize: root.overlayPx(12)
+                                font.pixelSize: Style.Typography.scaledBody(root.overlayScale)
                                 font.family: root.textFont
                                 horizontalAlignment: Text.AlignRight
                                 Layout.preferredWidth: root.overlayPx(48)
@@ -490,7 +491,7 @@ Item {
                                 visible: root.showPids && modelData.rowType === "process"
                                 text: String(modelData.pid || "")
                                 color: root.cMuted
-                                font.pixelSize: root.overlayPx(10)
+                                font.pixelSize: Style.Typography.scaledBodySmall(root.overlayScale)
                                 font.family: root.textFont
                                 horizontalAlignment: Text.AlignRight
                                 Layout.preferredWidth: root.showPids ? root.overlayPx(44) : 0
@@ -500,7 +501,7 @@ Item {
                                 visible: modelData.rowType === "process"
                                 text: "󰆴"
                                 color: killHover.containsMouse ? root.cRed : root.cMuted
-                                font.pixelSize: root.overlayPx(13)
+                                font.pixelSize: Style.Typography.scaledBodyLarge(root.overlayScale)
                                 font.family: root.iconFont
 
                                 MouseArea {
@@ -537,7 +538,7 @@ Item {
                         anchors.centerIn: parent
                         text: root.emptyText
                         color: root.cMuted
-                        font.pixelSize: root.overlayPx(12)
+                        font.pixelSize: Style.Typography.scaledBody(root.overlayScale)
                         font.family: root.textFont
                         opacity: 0.65
                     }

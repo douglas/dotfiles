@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import "../../style" as Style
 
 Rectangle {
     property string icon:   ""
@@ -30,8 +31,8 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             text:           icon
             color:          active ? (theme.accent || "#89b4fa") : (theme.muted || "#585b70")
-            font.pixelSize: 18
-            font.family:    "JetBrainsMono Nerd Font"
+            font.pixelSize: Style.Typography.heading
+            font.family: Style.Typography.mono
             Behavior on color { ColorAnimation { duration: 200 } }
         }
 
@@ -39,8 +40,8 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             text:           label
             color:          active ? (theme.fg || "#cdd6f4") : (theme.muted || "#585b70")
-            font.pixelSize: 9
-            font.family:    "JetBrainsMono Nerd Font"
+            font.pixelSize: Style.Typography.caption
+            font.family: Style.Typography.mono
             elide:          Text.ElideRight
             width:          parent.parent.width - 16
             horizontalAlignment: Text.AlignHCenter

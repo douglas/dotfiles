@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Widgets
+import "../style" as Style
 
 PanelWindow {
     id: root
@@ -710,7 +711,7 @@ PanelWindow {
         property var theme: ({})
         property string label: ""
         property string glyph: ""
-        property string glyphFont: "JetBrainsMono Nerd Font Propo"
+        property string glyphFont: Style.Typography.monoPropo
         property int glyphSize: 15
         signal activated()
 
@@ -729,7 +730,7 @@ PanelWindow {
             anchors.centerIn: parent
             text: glyph !== "" ? glyph : label.slice(0, 1).toUpperCase()
             color: root.cAccent
-            font.pixelSize: btn.glyphSize
+            font.pixelSize: Style.Typography.px(btn.glyphSize)
             font.family: glyphFont
         }
         scale: btn.hovered ? 1.1 : 1.0
@@ -797,8 +798,8 @@ PanelWindow {
             anchors.verticalCenterOffset: -1
             text: iconImg.visible ? "" : (root._customGlyph(entry.name || entry.key || "") || (entry.name || entry.key || "?").slice(0, 1).toUpperCase())
             color: running ? root.cAccent : root.cFg
-            font.pixelSize: 13
-            font.family: "JetBrainsMono Nerd Font Propo"
+            font.pixelSize: Style.Typography.bodyLarge
+            font.family: Style.Typography.monoPropo
         }
 
         // Running / focused dot
@@ -830,9 +831,9 @@ PanelWindow {
                 anchors.centerIn: parent
                 text: notifCount > 9 ? "9+" : String(notifCount)
                 color: root.cBg
-                font.pixelSize: 7
+                font.pixelSize: Style.Typography.nano
                 font.bold: true
-                font.family: "JetBrainsMono Nerd Font Propo"
+                font.family: Style.Typography.monoPropo
             }
         }
 

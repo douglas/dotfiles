@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
 import "pages"
+import "../style" as Style
 
 PanelWindow {
     id: root
@@ -164,8 +165,8 @@ PanelWindow {
                     anchors.centerIn: parent
                     text: "✕"
                     color: root.t("fg", "#eef6ef")
-                    font.pixelSize: 10
-                    font.family: "JetBrains Mono"
+                    font.pixelSize: Style.Typography.label
+                    font.family: Style.Typography.text
                 }
 
                 MouseArea {
@@ -220,8 +221,8 @@ PanelWindow {
                         Text {
                             text: "Kurama Settings"
                             color: root.t("fg", "#eef6ef")
-                            font.pixelSize: 20
-                            font.family: "JetBrainsMono Nerd Font Propo "
+                            font.pixelSize: Style.Typography.display
+                            font.family: Style.Typography.monoPropo
                             font.weight: Font.DemiBold
                             textFormat: Text.RichText
                         }
@@ -229,8 +230,8 @@ PanelWindow {
                         Text {
                             text: "Setting Manager for Kurama."
                             color: Qt.alpha(root.t("muted", "#9fb29f"), 0.7)
-                            font.pixelSize: 9
-                            font.family: "JetBrains Mono"
+                            font.pixelSize: Style.Typography.caption
+                            font.family: Style.Typography.text
                         }
                     }
 
@@ -270,26 +271,26 @@ PanelWindow {
                                     spacing: 3
 
                                     Text {
-                                        text: "QS"
+                                        text: "NK"
                                         color: root.t("accent", "#9ccfa0")
-                                        font.pixelSize: 18
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.heading
+                                        font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
 
                                     Text {
                                         text: "Local shell config"
                                         color: root.t("fg", "#eef6ef")
-                                        font.pixelSize: 9
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.caption
+                                        font.family: Style.Typography.text
                                         font.weight: Font.Medium
                                     }
 
                                     Text {
                                         text: "Control panel"
                                         color: Qt.alpha(root.t("muted", "#9fb29f"), 0.65)
-                                        font.pixelSize: 8
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.micro
+                                        font.family: Style.Typography.text
                                     }
                                 }
                             }
@@ -322,8 +323,8 @@ PanelWindow {
                                     Text {
                                         text: ""
                                         color: root.t("accent", "#9ccfa0")
-                                        font.pixelSize: 12
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.body
+                                        font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
 
@@ -334,16 +335,16 @@ PanelWindow {
                                         Text {
                                             text: root.pages[0].label
                                             color: root.pageIndex === 0 ? root.t("fg", "#eef6ef") : Qt.alpha(root.t("fg", "#eef6ef"), 0.8)
-                                            font.pixelSize: 9
-                                            font.family: "JetBrains Mono"
+                                            font.pixelSize: Style.Typography.caption
+                                            font.family: Style.Typography.text
                                             font.weight: Font.DemiBold
                                         }
 
                                         Text {
                                             text: root.pages[0].desc
                                             color: Qt.alpha(root.t("muted", "#9fb29f"), 0.58)
-                                            font.pixelSize: 7
-                                            font.family: "JetBrains Mono"
+                                            font.pixelSize: Style.Typography.nano
+                                            font.family: Style.Typography.text
                                             elide: Text.ElideRight
                                             Layout.fillWidth: true
                                         }
@@ -385,8 +386,8 @@ PanelWindow {
                                     Text {
                                         text: ""
                                         color: root.t("accent", "#9ccfa0")
-                                        font.pixelSize: 12
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.body
+                                        font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
 
@@ -397,16 +398,16 @@ PanelWindow {
                                         Text {
                                             text: root.pages[1].label
                                             color: root.pageIndex === 1 ? root.t("fg", "#eef6ef") : Qt.alpha(root.t("fg", "#eef6ef"), 0.8)
-                                            font.pixelSize: 9
-                                            font.family: "JetBrains Mono"
+                                            font.pixelSize: Style.Typography.caption
+                                            font.family: Style.Typography.text
                                             font.weight: Font.DemiBold
                                         }
 
                                         Text {
                                             text: root.pages[1].desc
                                             color: Qt.alpha(root.t("muted", "#9fb29f"), 0.58)
-                                            font.pixelSize: 7
-                                            font.family: "JetBrains Mono"
+                                            font.pixelSize: Style.Typography.nano
+                                            font.family: Style.Typography.text
                                             elide: Text.ElideRight
                                             Layout.fillWidth: true
                                         }
@@ -448,8 +449,8 @@ PanelWindow {
                                     Text {
                                         text: ""
                                         color: root.t("accent", "#9ccfa0")
-                                        font.pixelSize: 12
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.body
+                                        font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
 
@@ -460,16 +461,16 @@ PanelWindow {
                                         Text {
                                             text: root.pages[2].label
                                             color: root.pageIndex === 2 ? root.t("fg", "#eef6ef") : Qt.alpha(root.t("fg", "#eef6ef"), 0.8)
-                                            font.pixelSize: 9
-                                            font.family: "JetBrains Mono"
+                                            font.pixelSize: Style.Typography.caption
+                                            font.family: Style.Typography.text
                                             font.weight: Font.DemiBold
                                         }
 
                                         Text {
                                             text: root.pages[2].desc
                                             color: Qt.alpha(root.t("muted", "#9fb29f"), 0.58)
-                                            font.pixelSize: 7
-                                            font.family: "JetBrains Mono"
+                                            font.pixelSize: Style.Typography.nano
+                                            font.family: Style.Typography.text
                                             elide: Text.ElideRight
                                             Layout.fillWidth: true
                                         }
@@ -511,8 +512,8 @@ PanelWindow {
                                     Text {
                                         text: ""
                                         color: root.t("accent", "#9ccfa0")
-                                        font.pixelSize: 12
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.body
+                                        font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
 
@@ -523,16 +524,16 @@ PanelWindow {
                                         Text {
                                             text: root.pages[3].label
                                             color: root.pageIndex === 3 ? root.t("fg", "#eef6ef") : Qt.alpha(root.t("fg", "#eef6ef"), 0.8)
-                                            font.pixelSize: 9
-                                            font.family: "JetBrains Mono"
+                                            font.pixelSize: Style.Typography.caption
+                                            font.family: Style.Typography.text
                                             font.weight: Font.DemiBold
                                         }
 
                                         Text {
                                             text: root.pages[3].desc
                                             color: Qt.alpha(root.t("muted", "#9fb29f"), 0.58)
-                                            font.pixelSize: 7
-                                            font.family: "JetBrains Mono"
+                                            font.pixelSize: Style.Typography.nano
+                                            font.family: Style.Typography.text
                                             elide: Text.ElideRight
                                             Layout.fillWidth: true
                                         }
@@ -574,8 +575,8 @@ PanelWindow {
                                     Text {
                                         text: ""
                                         color: root.t("accent", "#9ccfa0")
-                                        font.pixelSize: 12
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.body
+                                        font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
 
@@ -586,16 +587,16 @@ PanelWindow {
                                         Text {
                                             text: root.pages[4].label
                                             color: root.pageIndex === 4 ? root.t("fg", "#eef6ef") : Qt.alpha(root.t("fg", "#eef6ef"), 0.8)
-                                            font.pixelSize: 9
-                                            font.family: "JetBrains Mono"
+                                            font.pixelSize: Style.Typography.caption
+                                            font.family: Style.Typography.text
                                             font.weight: Font.DemiBold
                                         }
 
                                         Text {
                                             text: root.pages[4].desc
                                             color: Qt.alpha(root.t("muted", "#9fb29f"), 0.58)
-                                            font.pixelSize: 7
-                                            font.family: "JetBrains Mono"
+                                            font.pixelSize: Style.Typography.nano
+                                            font.family: Style.Typography.text
                                             elide: Text.ElideRight
                                             Layout.fillWidth: true
                                         }
@@ -637,8 +638,8 @@ PanelWindow {
                                     Text {
                                         text: ""
                                         color: root.t("accent", "#9ccfa0")
-                                        font.pixelSize: 12
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.body
+                                        font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
 
@@ -649,16 +650,16 @@ PanelWindow {
                                         Text {
                                             text: root.pages[5].label
                                             color: root.pageIndex === 5 ? root.t("fg", "#eef6ef") : Qt.alpha(root.t("fg", "#eef6ef"), 0.8)
-                                            font.pixelSize: 9
-                                            font.family: "JetBrains Mono"
+                                            font.pixelSize: Style.Typography.caption
+                                            font.family: Style.Typography.text
                                             font.weight: Font.DemiBold
                                         }
 
                                         Text {
                                             text: root.pages[5].desc
                                             color: Qt.alpha(root.t("muted", "#9fb29f"), 0.58)
-                                            font.pixelSize: 7
-                                            font.family: "JetBrains Mono"
+                                            font.pixelSize: Style.Typography.nano
+                                            font.family: Style.Typography.text
                                             elide: Text.ElideRight
                                             Layout.fillWidth: true
                                         }
@@ -700,8 +701,8 @@ PanelWindow {
                                     Text {
                                         text: ""
                                         color: root.t("accent", "#9ccfa0")
-                                        font.pixelSize: 12
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.body
+                                        font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
 
@@ -712,16 +713,16 @@ PanelWindow {
                                         Text {
                                             text: root.pages[6].label
                                             color: root.pageIndex === 6 ? root.t("fg", "#eef6ef") : Qt.alpha(root.t("fg", "#eef6ef"), 0.8)
-                                            font.pixelSize: 9
-                                            font.family: "JetBrains Mono"
+                                            font.pixelSize: Style.Typography.caption
+                                            font.family: Style.Typography.text
                                             font.weight: Font.DemiBold
                                         }
 
                                         Text {
                                             text: root.pages[6].desc
                                             color: Qt.alpha(root.t("muted", "#9fb29f"), 0.58)
-                                            font.pixelSize: 7
-                                            font.family: "JetBrains Mono"
+                                            font.pixelSize: Style.Typography.nano
+                                            font.family: Style.Typography.text
                                             elide: Text.ElideRight
                                             Layout.fillWidth: true
                                         }
@@ -763,16 +764,16 @@ PanelWindow {
                                     Text {
                                         text: root.currentPageMeta().label
                                         color: root.t("fg", "#eef6ef")
-                                        font.pixelSize: 15
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.title
+                                        font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
 
                                     Text {
                                         text: root.currentPageMeta().desc
                                         color: Qt.alpha(root.t("muted", "#9fb29f"), 0.68)
-                                        font.pixelSize: 9
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.caption
+                                        font.family: Style.Typography.text
                                     }
                                 }
 

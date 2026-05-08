@@ -1,16 +1,17 @@
+import QtQuick
+import QtQuick.Layouts
 //@ pragma UseQApplication
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
-import QtQuick
-import QtQuick.Layouts
 import "bar"
 import "bar/modules"
 import "dock"
-import "settings"
 import "launcher"
-import "widgets"
+import "settings"
 import "taskmanager"
+import "widgets"
+import "style" as Style
 
 ShellRoot {
     id: shell
@@ -19,38 +20,54 @@ ShellRoot {
     readonly property string omarchyCurrentDir: homeDir + "/.config/omarchy/current"
     readonly property string omarchyThemeNamePath: omarchyCurrentDir + "/theme.name"
     readonly property string omarchyThemeColorsPath: omarchyCurrentDir + "/theme/colors.toml"
-    readonly property real uiScale: Math.min(2.5, envScale("QS_UI_SCALE", 0.0))
+    readonly property real uiScale: Math.min(2.5, envScale("QS_UI_SCALE", 0))
     readonly property real uiScaleMultiplier: Math.max(0.25, Math.min(2.5, envScale("QS_UI_SCALE_MULTIPLIER", 0.6)))
     readonly property real barScaleMultiplier: Math.max(0.25, Math.min(2.5, envScale("QS_BAR_SCALE_MULTIPLIER", uiScaleMultiplier)))
-    readonly property real popupScale: Math.max(1.0, Math.min(2.5, envScale("QS_POPUP_SCALE", uiScale > 0 ? uiScale : 1.0)))
+    readonly property real popupScale: Math.max(1, Math.min(2.5, envScale("QS_POPUP_SCALE", uiScale > 0 ? uiScale : 1)))
     property bool overviewActive: false
-
-    property string bg:        "#1e1e2e"
-    property string fg:        "#cdd6f4"
-    property string accent:    "#89b4fa"
-    property string dim:       "#45475a"
+    property string bg: "#1e1e2e"
+    property string fg: "#cdd6f4"
+    property string accent: "#89b4fa"
+    property string dim: "#45475a"
     property string highlight: "#cba6f7"
-    property string red:       "#f38ba8"
-    property string green:     "#a6e3a1"
-    property string muted:     "#585b70"
+    property string red: "#f38ba8"
+    property string green: "#a6e3a1"
+    property string muted: "#585b70"
     readonly property var palette: ({
-        bg:        shell.bg,
-        fg:        shell.fg,
-        accent:    shell.accent,
-        dim:       shell.dim,
-        muted:     shell.muted,
-        highlight: shell.highlight,
-        red:       shell.red,
-        green:     shell.green
+        "bg": shell.bg,
+        "fg": shell.fg,
+        "accent": shell.accent,
+        "dim": shell.dim,
+        "muted": shell.muted,
+        "highlight": shell.highlight,
+        "red": shell.red,
+        "green": shell.green
     })
+
+    function envScale(name, fallback) {
+        const value = Number(Quickshell.env(name) || fallback);
+        return isNaN(value) ? fallback : value;
+    }
+
+    function parseToml(raw) {
+        function get(key) {
+            const rx = new RegExp('(?:^|\\n)' + key + '\\s*=\\s*"(#[0-9a-fA-F]{3,8})"');
+            const m = raw.match(rx);
+            return m ? m[1] : null;
+        }
+
+        bg = get("background") || bg;
+        fg = get("foreground") || fg;
+        accent = get("accent") || accent;
+        dim = get("color0") || dim;
+        muted = get("color8") || muted;
+        highlight = get("color5") || highlight;
+        red = get("color1") || red;
+        green = get("color2") || green;
+    }
 
     SettingsState {
         id: settingsState
-    }
-
-    function envScale(name, fallback) {
-        const value = Number(Quickshell.env(name) || fallback)
-        return isNaN(value) ? fallback : value
     }
 
     QtObject {
@@ -63,111 +80,101 @@ ShellRoot {
         property int selectedIndex: 0
 
         function requestAction(titleText, messageText, cmd) {
-            title = titleText
-            message = messageText
-            command = cmd
-            selectedIndex = 0
-            open = true
+            title = titleText;
+            message = messageText;
+            command = cmd;
+            selectedIndex = 0;
+            open = true;
         }
 
         function close() {
-            open = false
-            command = null
-            selectedIndex = 0
+            open = false;
+            command = null;
+            selectedIndex = 0;
         }
 
         function moveSelection(delta) {
-            selectedIndex = (selectedIndex + delta + 2) % 2
+            selectedIndex = (selectedIndex + delta + 2) % 2;
         }
 
         function activateSelected() {
-            if (selectedIndex === 0) close()
-            else confirm()
+            if (selectedIndex === 0)
+                close();
+            else
+                confirm();
         }
 
         function confirm() {
             if (!command) {
-                close()
-                return
+                close();
+                return ;
             }
-
             if (Array.isArray(command))
-                Quickshell.execDetached(command)
+                Quickshell.execDetached(command);
             else
-                Quickshell.execDetached(["bash", "-lc", command])
-
-            close()
+                Quickshell.execDetached(["bash", "-lc", command]);
+            close();
         }
-    }
 
-    function parseToml(raw) {
-        function get(key) {
-            const rx = new RegExp('(?:^|\\n)' + key + '\\s*=\\s*"(#[0-9a-fA-F]{3,8})"')
-            const m  = raw.match(rx)
-            return m ? m[1] : null
-        }
-        bg        = get("background") || bg
-        fg        = get("foreground") || fg
-        accent    = get("accent")     || accent
-        dim       = get("color0")     || dim
-        muted     = get("color8")     || muted
-        highlight = get("color5")     || highlight
-        red       = get("color1")     || red
-        green     = get("color2")     || green
     }
 
     Process {
         id: themeLoader
+
         command: ["bash", "-lc", "cat " + shell.omarchyThemeColorsPath + " 2>/dev/null"]
-        running: true
-        stdout: SplitParser {
-            property string buf: ""
-            onRead: data => buf += data + "\n"
-        }
+        running: settingsState.googleCalendarEventsEnabled
         onExited: {
             if (themeLoader.stdout.buf.length > 10)
-                parseToml(themeLoader.stdout.buf)
-            themeLoader.stdout.buf = ""
+                parseToml(themeLoader.stdout.buf);
+
+            themeLoader.stdout.buf = "";
         }
+
+        stdout: SplitParser {
+            property string buf: ""
+
+            onRead: (data) => {
+                return buf += data + "\n";
+            }
+        }
+
     }
 
     Process {
         id: themeWatcher
-        command: ["bash", "-lc",
-            "if command -v inotifywait >/dev/null 2>&1; then " +
-            "  exec inotifywait -m -e close_write " + shell.omarchyThemeNamePath + "; " +
-            "else " +
-            "  last=''; " +
-            "  while true; do " +
-            "    cur=$(stat -c %Y " + shell.omarchyThemeNamePath + " 2>/dev/null || echo missing); " +
-            "    if [ \"$cur\" != \"$last\" ]; then printf 'changed\\n'; last=\"$cur\"; fi; " +
-            "    sleep 3; " +
-            "  done; " +
-            "fi"
-        ]
+
+        command: ["bash", "-lc", "if command -v inotifywait >/dev/null 2>&1; then " + "  exec inotifywait -m -e close_write " + shell.omarchyThemeNamePath + "; " + "else " + "  last=''; " + "  while true; do " + "    cur=$(stat -c %Y " + shell.omarchyThemeNamePath + " 2>/dev/null || echo missing); " + "    if [ \"$cur\" != \"$last\" ]; then printf 'changed\\n'; last=\"$cur\"; fi; " + "    sleep 3; " + "  done; " + "fi"]
         running: true
+
         stdout: SplitParser {
-            onRead: _ => {
-                themeLoader.stdout.buf = ""
-                themeLoader.running = false
-                themeLoader.running = true
+            onRead: (_) => {
+                themeLoader.stdout.buf = "";
+                themeLoader.running = false;
+                themeLoader.running = true;
             }
         }
+
     }
 
     Process {
         id: submapProbe
+
         command: ["bash", "-lc", "hyprctl submap 2>/dev/null"]
         running: true
+        onExited: {
+            const current = (submapProbe.stdout.buf || "").trim();
+            shell.overviewActive = current === "hyprtasking";
+            submapProbe.stdout.buf = "";
+        }
+
         stdout: SplitParser {
             property string buf: ""
-            onRead: data => buf += data
+
+            onRead: (data) => {
+                return buf += data;
+            }
         }
-        onExited: {
-            const current = (submapProbe.stdout.buf || "").trim()
-            shell.overviewActive = current === "hyprtasking"
-            submapProbe.stdout.buf = ""
-        }
+
     }
 
     Timer {
@@ -176,26 +183,28 @@ ShellRoot {
         running: true
         onTriggered: {
             if (!submapProbe.running)
-                submapProbe.running = true
+                submapProbe.running = true;
+
         }
     }
 
     Bar {
         id: bar
-        launcher:  appLauncher
+
+        launcher: appLauncher
         notifServer: notifServer
         powerActions: powerActions
         settings: settingsState
         uiScale: shell.uiScale
         uiScaleMultiplier: shell.barScaleMultiplier
-        bg:        shell.bg
-        fg:        shell.fg
-        accent:    shell.accent
-        dim:       shell.dim
+        bg: shell.bg
+        fg: shell.fg
+        accent: shell.accent
+        dim: shell.dim
         highlight: shell.highlight
-        red:       shell.red
-        green:     shell.green
-        muted:     shell.muted
+        red: shell.red
+        green: shell.green
+        muted: shell.muted
         quietMode: shell.overviewActive
     }
 
@@ -211,6 +220,7 @@ ShellRoot {
 
     ControlCenter {
         id: controlCenter
+
         theme: shell.palette
         notifServer: notifServer
         powerActions: powerActions
@@ -221,6 +231,7 @@ ShellRoot {
 
     Launcher {
         id: appLauncher
+
         theme: shell.palette
         powerActions: powerActions
         uiScale: shell.uiScale
@@ -229,30 +240,35 @@ ShellRoot {
 
     ThemePicker {
         id: themePicker
+
         theme: shell.palette
         uiScale: shell.popupScale
     }
 
     BgPicker {
         id: bgPicker
+
         theme: shell.palette
         uiScale: shell.popupScale
     }
 
     KeybindViewer {
         id: keybindViewer
+
         theme: shell.palette
         uiScale: shell.popupScale
     }
 
     Clipboard {
         id: clipboardManager
+
         theme: shell.palette
         uiScale: shell.popupScale
     }
 
     RecentFilesOverlay {
         id: recentFilesOverlay
+
         theme: shell.palette
         settings: settingsState
         uiScale: shell.popupScale
@@ -260,18 +276,21 @@ ShellRoot {
 
     EmojiPicker {
         id: emojiPicker
+
         theme: shell.palette
         uiScale: shell.popupScale
     }
 
     TaskManager {
         id: taskManager
+
         theme: shell.palette
         uiScale: shell.popupScale
     }
 
     DynamicClock {
         id: desktopClock
+
         theme: shell.palette
         settings: settingsState
         quietMode: shell.overviewActive
@@ -281,6 +300,7 @@ ShellRoot {
 
     CalendarWidget {
         id: desktopCalendar
+
         theme: shell.palette
         settings: settingsState
         quietMode: shell.overviewActive
@@ -290,6 +310,7 @@ ShellRoot {
 
     PomodoroWidget {
         id: pomodoroWidget
+
         theme: shell.palette
         settings: settingsState
         quietMode: shell.overviewActive
@@ -299,6 +320,7 @@ ShellRoot {
 
     TodoWidget {
         id: todoWidget
+
         theme: shell.palette
         settings: settingsState
         quietMode: shell.overviewActive
@@ -308,11 +330,12 @@ ShellRoot {
 
     SettingsWindow {
         id: settingsWindow
+
         theme: shell.palette
         state: settingsState
         uiScale: shell.popupScale
     }
-    
+
     NotificationPanel {
         theme: shell.palette
         notifServer: notifServer
@@ -323,6 +346,7 @@ ShellRoot {
 
     OsdService {
         id: osdService
+
         quietMode: shell.overviewActive
     }
 
@@ -335,63 +359,67 @@ ShellRoot {
 
     NotificationServer {
         id: notifServer
+
         osdService: osdService
     }
 
     Process {
         id: googleCalendarWatcher
-        command: [
-            "bash",
-            "-lc",
-            "helper=\"$HOME/.local/bin/kurama-google-calendar\"; " +
-            "if [ -x \"$helper\" ]; then exec \"$helper\" watch --thresholds 10,5,1; " +
-            "elif command -v kurama-google-calendar >/dev/null 2>&1; then exec kurama-google-calendar watch --thresholds 10,5,1; " +
-            "else exec sleep infinity; fi"
-        ]
+
+        command: ["bash", "-lc", "helper=\"$HOME/.local/bin/kurama-google-calendar\"; " + "if [ -x \"$helper\" ]; then exec \"$helper\" watch --thresholds 10,5,1; " + "elif command -v kurama-google-calendar >/dev/null 2>&1; then exec kurama-google-calendar watch --thresholds 10,5,1; " + "else exec sleep infinity; fi"]
         running: true
     }
 
     IpcHandler {
-        target: "openSettings"
         function handle() {
-            settingsWindow.showing = true
+            settingsWindow.showing = true;
         }
+
+        target: "openSettings"
     }
 
     PanelWindow {
         id: powerConfirm
+
         visible: powerActions.open
         color: "transparent"
-        anchors { top: true; left: true; right: true; bottom: true }
         exclusiveZone: 0
         WlrLayershell.layer: WlrLayer.Overlay
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
-
         onVisibleChanged: {
             if (visible)
-                powerConfirmKeyScope.forceActiveFocus()
+                powerConfirmKeyScope.forceActiveFocus();
+
+        }
+
+        anchors {
+            top: true
+            left: true
+            right: true
+            bottom: true
         }
 
         FocusScope {
             id: powerConfirmKeyScope
+
             anchors.fill: parent
             focus: powerActions.open
-
-            Keys.onPressed: event => {
-                if (!powerActions.open) return
+            Keys.onPressed: (event) => {
+                if (!powerActions.open)
+                    return ;
 
                 if (event.key === Qt.Key_Left || event.key === Qt.Key_Up || event.key === Qt.Key_Backtab) {
-                    powerActions.moveSelection(-1)
-                    event.accepted = true
+                    powerActions.moveSelection(-1);
+                    event.accepted = true;
                 } else if (event.key === Qt.Key_Right || event.key === Qt.Key_Down || event.key === Qt.Key_Tab) {
-                    powerActions.moveSelection(1)
-                    event.accepted = true
+                    powerActions.moveSelection(1);
+                    event.accepted = true;
                 } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space) {
-                    powerActions.activateSelected()
-                    event.accepted = true
+                    powerActions.activateSelected();
+                    event.accepted = true;
                 } else if (event.key === Qt.Key_Escape) {
-                    powerActions.close()
-                    event.accepted = true
+                    powerActions.close();
+                    event.accepted = true;
                 }
             }
 
@@ -401,6 +429,7 @@ ShellRoot {
 
                 Rectangle {
                     id: powerConfirmCard
+
                     width: 320
                     implicitHeight: contentColumn.implicitHeight + 32
                     transformOrigin: Item.Center
@@ -412,21 +441,15 @@ ShellRoot {
                     opacity: powerActions.open ? 1 : 0
                     scale: shell.popupScale * (powerActions.open ? 1 : 0.96)
 
-                    Behavior on opacity {
-                        NumberAnimation { duration: 140; easing.type: Easing.OutCubic }
-                    }
-
-                    Behavior on scale {
-                        NumberAnimation { duration: 170; easing.type: Easing.OutCubic }
-                    }
-
                     MouseArea {
                         anchors.fill: parent
-                        onClicked: {}
+                        onClicked: {
+                        }
                     }
 
                     ColumnLayout {
                         id: contentColumn
+
                         anchors.fill: parent
                         anchors.margins: 16
                         spacing: 12
@@ -434,16 +457,16 @@ ShellRoot {
                         Text {
                             text: powerActions.title
                             color: shell.fg
-                            font.pixelSize: 14
-                            font.family: "JetBrainsMono Nerd Font Propo"
+                            font.pixelSize: Style.Typography.titleSmall
+                            font.family: Style.Typography.monoPropo
                             font.weight: Font.DemiBold
                         }
 
                         Text {
                             text: powerActions.message
                             color: shell.muted
-                            font.pixelSize: 10
-                            font.family: "JetBrainsMono Nerd Font Propo"
+                            font.pixelSize: Style.Typography.label
+                            font.family: Style.Typography.monoPropo
                             wrapMode: Text.WordWrap
                             Layout.fillWidth: true
                         }
@@ -454,25 +477,20 @@ ShellRoot {
 
                             Rectangle {
                                 id: cancelButton
+
                                 Layout.fillWidth: true
                                 height: 32
                                 radius: 9
-                                color: powerActions.selectedIndex === 0
-                                    ? Qt.alpha(shell.accent, 0.16)
-                                    : Qt.alpha(shell.dim, 0.45)
-                                border.color: powerActions.selectedIndex === 0
-                                    ? Qt.alpha(shell.accent, 0.5)
-                                    : Qt.alpha(shell.dim, 0.7)
+                                color: powerActions.selectedIndex === 0 ? Qt.alpha(shell.accent, 0.16) : Qt.alpha(shell.dim, 0.45)
+                                border.color: powerActions.selectedIndex === 0 ? Qt.alpha(shell.accent, 0.5) : Qt.alpha(shell.dim, 0.7)
                                 border.width: 1
-                                Behavior on color { ColorAnimation { duration: 120 } }
-                                Behavior on border.color { ColorAnimation { duration: 120 } }
 
                                 Text {
                                     anchors.centerIn: parent
                                     text: "Cancel"
                                     color: powerActions.selectedIndex === 0 ? shell.accent : shell.fg
-                                    font.pixelSize: 10
-                                    font.family: "JetBrainsMono Nerd Font Propo"
+                                    font.pixelSize: Style.Typography.label
+                                    font.family: Style.Typography.monoPropo
                                 }
 
                                 MouseArea {
@@ -482,31 +500,41 @@ ShellRoot {
                                     onEntered: powerActions.selectedIndex = 0
                                     onClicked: powerActions.close()
                                 }
+
+                                Behavior on color {
+                                    ColorAnimation {
+                                        duration: 120
+                                    }
+
+                                }
+
+                                Behavior on border.color {
+                                    ColorAnimation {
+                                        duration: 120
+                                    }
+
+                                }
+
                             }
 
                             Rectangle {
                                 id: confirmButton
+
                                 readonly property bool armed: powerActions.selectedIndex === 1
 
                                 Layout.fillWidth: true
                                 height: 32
                                 radius: 9
-                                color: armed
-                                    ? Qt.alpha(shell.red, 0.28)
-                                    : Qt.alpha(shell.dim, 0.35)
-                                border.color: armed
-                                    ? Qt.alpha(shell.red, 0.72)
-                                    : Qt.alpha(shell.dim, 0.55)
+                                color: armed ? Qt.alpha(shell.red, 0.28) : Qt.alpha(shell.dim, 0.35)
+                                border.color: armed ? Qt.alpha(shell.red, 0.72) : Qt.alpha(shell.dim, 0.55)
                                 border.width: 1
-                                Behavior on color { ColorAnimation { duration: 120 } }
-                                Behavior on border.color { ColorAnimation { duration: 120 } }
 
                                 Text {
                                     anchors.centerIn: parent
                                     text: "Confirm"
                                     color: confirmButton.armed ? shell.fg : shell.muted
-                                    font.pixelSize: 10
-                                    font.family: "JetBrainsMono Nerd Font Propo"
+                                    font.pixelSize: Style.Typography.label
+                                    font.family: Style.Typography.monoPropo
                                     font.weight: Font.DemiBold
                                 }
 
@@ -515,287 +543,349 @@ ShellRoot {
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: {
                                         if (confirmButton.armed)
-                                            powerActions.confirm()
+                                            powerActions.confirm();
                                         else
-                                            powerActions.selectedIndex = 1
+                                            powerActions.selectedIndex = 1;
                                     }
                                 }
+
+                                Behavior on color {
+                                    ColorAnimation {
+                                        duration: 120
+                                    }
+
+                                }
+
+                                Behavior on border.color {
+                                    ColorAnimation {
+                                        duration: 120
+                                    }
+
+                                }
+
                             }
+
                         }
+
                     }
+
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: 140
+                            easing.type: Easing.OutCubic
+                        }
+
+                    }
+
+                    Behavior on scale {
+                        NumberAnimation {
+                            duration: 170
+                            easing.type: Easing.OutCubic
+                        }
+
+                    }
+
                 }
+
             }
+
         }
+
     }
 
-    // ALL IpcHandler here for keybinds 
+    // ALL IpcHandler here for keybinds
     IpcHandler {
+        function handle() {
+            keybindViewer.showing = true;
+        }
+
         target: "openKeybindings"
-        function handle() {
-            keybindViewer.showing = true
-        }
     }
 
     IpcHandler {
+        function handle() {
+            appLauncher.mode = "menu";
+            appLauncher.showing = true;
+        }
+
         target: "openMenu"
-        function handle() {
-            appLauncher.mode    = "menu"
-            appLauncher.showing = true
-        }
     }
 
     IpcHandler {
+        function handle() {
+            appLauncher.mode = "apps";
+            appLauncher.appSearchText = "";
+            appLauncher.showing = true;
+        }
+
         target: "openApps"
-        function handle() {
-            appLauncher.mode          = "apps"
-            appLauncher.appSearchText = ""
-            appLauncher.showing       = true
-        }
     }
 
     IpcHandler {
+        function handle() {
+            themePicker.showing = true;
+        }
+
         target: "openThemes"
-        function handle() {
-            themePicker.showing = true
-        }
     }
 
     IpcHandler {
+        function handle() {
+            themePicker.showing = true;
+        }
+
         target: "openThemePicker"
-        function handle() {
-            themePicker.showing = true
-        }
     }
 
     IpcHandler {
+        function handle() {
+            bgPicker.showing = true;
+        }
+
         target: "openBackgroundPicker"
-        function handle() {
-            bgPicker.showing = true
-        }
     }
 
     IpcHandler {
+        function handle() {
+            appLauncher.openScreenrecord();
+        }
+
         target: "openScreenrecord"
-        function handle() {
-            appLauncher.openScreenrecord()
-        }
     }
 
     IpcHandler {
+        function handle() {
+            appLauncher.openSystem();
+        }
+
         target: "openSystem"
-        function handle() {
-            appLauncher.openSystem()
-        }
     }
 
     IpcHandler {
+        function handle() {
+            appLauncher.openToggle();
+        }
+
         target: "openToggle"
-        function handle() {
-            appLauncher.openToggle()
-        }
     }
 
     IpcHandler {
+        function handle() {
+            clipboardManager.showing = true;
+        }
+
         target: "openClipboard"
-        function handle() {
-            clipboardManager.showing = true
-        }
     }
 
     IpcHandler {
+        function handle() {
+            recentFilesOverlay.toggleMode("pictures");
+        }
+
         target: "openPictures"
-        function handle() {
-            recentFilesOverlay.toggleMode("pictures")
-        }
     }
 
     IpcHandler {
+        function handle() {
+            recentFilesOverlay.toggleMode("downloads");
+        }
+
         target: "openDownloads"
-        function handle() {
-            recentFilesOverlay.toggleMode("downloads")
-        }
     }
 
     IpcHandler {
-        target: "openRecentFiles"
         function handle() {
-            recentFilesOverlay.toggleMode("pictures")
+            recentFilesOverlay.toggleMode("pictures");
         }
 
         function pictures() {
-            recentFilesOverlay.toggleMode("pictures")
+            recentFilesOverlay.toggleMode("pictures");
         }
 
         function downloads() {
-            recentFilesOverlay.toggleMode("downloads")
+            recentFilesOverlay.toggleMode("downloads");
         }
+
+        target: "openRecentFiles"
     }
 
     IpcHandler {
+        function handle() {
+            emojiPicker.showing = true;
+        }
+
         target: "openEmojiPicker"
-        function handle() {
-            emojiPicker.showing = true
-        }
     }
 
     IpcHandler {
+        function handle() {
+            taskManager.showing = true;
+        }
+
         target: "openTaskManager"
-        function handle() {
-            taskManager.showing = true
-        }
     }
 
-
     IpcHandler {
+        function handle() {
+            notifServer.toggleDnd();
+        }
+
         target: "toggleDnd"
-        function handle() {
-            notifServer.toggleDnd()
-        }
     }
 
     IpcHandler {
+        function handle() {
+            notifServer.panelOpen = true;
+        }
+
         target: "openNotifications"
-        function handle() {
-            notifServer.panelOpen = true
-        }
     }
 
     IpcHandler {
-        target: "dismissLastNotification"
         function handle() {
             if (notifServer.notifications.length > 0)
-                notifServer.dismiss(notifServer.notifications[0])
+                notifServer.dismiss(notifServer.notifications[0]);
+
         }
+
+        target: "dismissLastNotification"
     }
 
     IpcHandler {
+        function handle() {
+            notifServer.clearAll();
+        }
+
         target: "clearNotifications"
-        function handle() {
-            notifServer.clearAll()
-        }
     }
 
     IpcHandler {
+        function handle() {
+            osdService.showMessage("", "Picture path copied", "Ready to paste", "green", "Copied");
+        }
+
         target: "osdPictureCopied"
-        function handle() {
-            osdService.showMessage("", "Picture path copied", "Ready to paste", "green", "Copied")
-        }
     }
 
     IpcHandler {
+        function handle() {
+            osdService.showMessage("󰧧", "No recent picture found", "~/Pictures has no supported images", "red", "");
+        }
+
         target: "osdPictureMissing"
-        function handle() {
-            osdService.showMessage("󰧧", "No recent picture found", "~/Pictures has no supported images", "red", "")
-        }
     }
 
     IpcHandler {
+        function handle() {
+            osdService.showVolume();
+        }
+
         target: "osdVolume"
-        function handle() {
-            osdService.showVolume()
-        }
     }
 
     IpcHandler {
+        function handle() {
+            osdService.volumeStep(5);
+        }
+
         target: "osdVolumeUp"
-        function handle() {
-            osdService.volumeStep(5)
-        }
     }
 
     IpcHandler {
+        function handle() {
+            osdService.volumeStep(-5);
+        }
+
         target: "osdVolumeDown"
-        function handle() {
-            osdService.volumeStep(-5)
-        }
     }
 
     IpcHandler {
+        function handle() {
+            osdService.toggleMute();
+        }
+
         target: "osdVolumeMute"
-        function handle() {
-            osdService.toggleMute()
-        }
     }
 
     IpcHandler {
+        function handle() {
+            osdService.showBrightness();
+        }
+
         target: "osdBrightness"
-        function handle() {
-            osdService.showBrightness()
-        }
     }
 
     IpcHandler {
+        function handle() {
+            osdService.brightnessStep(5);
+        }
+
         target: "osdBrightnessUp"
-        function handle() {
-            osdService.brightnessStep(5)
-        }
     }
 
     IpcHandler {
+        function handle() {
+            osdService.brightnessStep(-5);
+        }
+
         target: "osdBrightnessDown"
-        function handle() {
-            osdService.brightnessStep(-5)
-        }
     }
 
     IpcHandler {
+        function handle() {
+            osdService.showMic();
+        }
+
         target: "osdMic"
-        function handle() {
-            osdService.showMic()
-        }
     }
 
     IpcHandler {
+        function handle() {
+            osdService.showMediaStatus();
+        }
+
         target: "osdMedia"
-        function handle() {
-            osdService.showMediaStatus()
-        }
     }
 
     IpcHandler {
+        function handle() {
+            osdService.mediaPlayPause();
+        }
+
         target: "osdMediaPlayPause"
-        function handle() {
-            osdService.mediaPlayPause()
-        }
     }
 
     IpcHandler {
+        function handle() {
+            osdService.mediaNext();
+        }
+
         target: "osdMediaNext"
-        function handle() {
-            osdService.mediaNext()
-        }
     }
 
     IpcHandler {
-        target: "osdMediaPrev"
         function handle() {
-            osdService.mediaPrev()
+            osdService.mediaPrev();
         }
+
+        target: "osdMediaPrev"
     }
 
-    // Click Catcher Here 
+    // Click Catcher Here
     ClickCatcher {
-        active: appLauncher.showing
-            || themePicker.showing
-            || bgPicker.showing
-            || keybindViewer.showing
-            || clipboardManager.showing
-            || notifServer.panelOpen
-            || controlCenter.showing
-            || controlCenter.wifiManagerOpen
-            || controlCenter.btManagerOpen
+        active: appLauncher.showing || themePicker.showing || bgPicker.showing || keybindViewer.showing || clipboardManager.showing || notifServer.panelOpen || controlCenter.showing || controlCenter.wifiManagerOpen || controlCenter.btManagerOpen
         topInset: controlCenter.showing && !bar.barOnBottom ? bar.exclusiveZone : 0
         bottomInset: controlCenter.showing && bar.barOnBottom ? bar.exclusiveZone : 0
         onClicked: {
-            appLauncher.showing   = false
-            themePicker.showing   = false
-            bgPicker.showing      = false
-            keybindViewer.showing = false
-            clipboardManager.showing = false
-            notifServer.panelOpen = false
-            controlCenter.showing = false
-            controlCenter.wifiManagerOpen = false
-            controlCenter.btManagerOpen = false
+            appLauncher.showing = false;
+            themePicker.showing = false;
+            bgPicker.showing = false;
+            keybindViewer.showing = false;
+            clipboardManager.showing = false;
+            notifServer.panelOpen = false;
+            controlCenter.showing = false;
+            controlCenter.wifiManagerOpen = false;
+            controlCenter.btManagerOpen = false;
         }
     }
 

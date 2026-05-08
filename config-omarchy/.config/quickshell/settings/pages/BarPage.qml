@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import "../../style" as Style
 
 Item {
     id: root
@@ -66,8 +67,8 @@ Item {
                     Text {
                         text: "Visual treatment"
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                        font.pixelSize: 9
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.caption
+                        font.family: Style.Typography.text
                     }
 
                     Repeater {
@@ -95,8 +96,8 @@ Item {
                                 Text {
                                     text: root.currentStyle() === modelData.key ? "*" : ""
                                     color: t("accent", "#9ccfa0")
-                                    font.pixelSize: 10
-                                    font.family: "JetBrains Mono"
+                                    font.pixelSize: Style.Typography.label
+                                    font.family: Style.Typography.text
                                     font.weight: Font.DemiBold
                                 }
 
@@ -107,16 +108,16 @@ Item {
                                     Text {
                                         text: modelData.label
                                         color: t("fg", "#eef6ef")
-                                        font.pixelSize: 9
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.caption
+                                        font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
 
                                     Text {
                                         text: modelData.desc
                                         color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                        font.pixelSize: 7
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.nano
+                                        font.family: Style.Typography.text
                                         Layout.fillWidth: true
                                     }
                                 }
@@ -148,8 +149,8 @@ Item {
                     Text {
                         text: "Placement"
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                        font.pixelSize: 9
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.caption
+                        font.family: Style.Typography.text
                     }
 
                     Repeater {
@@ -177,8 +178,8 @@ Item {
                                 Text {
                                     text: root.currentPosition() === modelData.key ? "*" : ""
                                     color: t("accent", "#9ccfa0")
-                                    font.pixelSize: 10
-                                    font.family: "JetBrains Mono"
+                                    font.pixelSize: Style.Typography.label
+                                    font.family: Style.Typography.text
                                     font.weight: Font.DemiBold
                                 }
 
@@ -189,16 +190,16 @@ Item {
                                     Text {
                                         text: modelData.label
                                         color: t("fg", "#eef6ef")
-                                        font.pixelSize: 9
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.caption
+                                        font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
 
                                     Text {
                                         text: modelData.desc
                                         color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                        font.pixelSize: 7
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.nano
+                                        font.family: Style.Typography.text
                                         Layout.fillWidth: true
                                     }
                                 }
@@ -230,15 +231,15 @@ Item {
                     Text {
                         text: "Current"
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.74)
-                        font.pixelSize: 8
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.micro
+                        font.family: Style.Typography.text
                     }
 
                     Text {
                         text: root.currentStyle() + " / " + root.currentPosition()
                         color: t("fg", "#eef6ef")
-                        font.pixelSize: 11
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.bodySmall
+                        font.family: Style.Typography.text
                         font.weight: Font.DemiBold
                     }
 
@@ -246,8 +247,8 @@ Item {
                         width: parent.width
                         text: "Changes apply live to the main bar."
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.55)
-                        font.pixelSize: 8
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.micro
+                        font.family: Style.Typography.text
                         wrapMode: Text.WordWrap
                     }
                 }

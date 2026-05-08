@@ -1,4 +1,5 @@
 import QtQuick
+import "../style" as Style
 
 Rectangle {
     property string label: ""
@@ -16,7 +17,7 @@ Rectangle {
         anchors.centerIn: parent
         text: parent.label
         color: "#cdd6f4"
-        font.pixelSize: parent.size
+        font.pixelSize: Style.Typography.px(parent.size)
     }
 
     MouseArea {

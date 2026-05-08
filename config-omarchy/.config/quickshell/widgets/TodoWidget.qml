@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
+import "../style" as Style
 
 PanelWindow {
     id: root
@@ -25,8 +26,8 @@ PanelWindow {
     property real dragStartTop: 0
     readonly property int cardW: 220
     readonly property int cardH: 220
-    readonly property string textFont: "JetBrainsMono Nerd Font Propo"
-    readonly property string iconFont: "JetBrainsMono Nerd Font"
+    readonly property string textFont: Style.Typography.monoPropo
+    readonly property string iconFont: Style.Typography.mono
     readonly property real detectedScale: screen && screen.devicePixelRatio > 0 ? screen.devicePixelRatio : 1
     readonly property real scaleFactor: Math.max(1, uiScale > 0 ? uiScale : detectedScale * uiScaleMultiplier)
     readonly property int safeMargin: px(24)
@@ -246,7 +247,7 @@ PanelWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         text: "TO-DO LIST"
                         color: cFg
-                        font.pixelSize: 11
+                        font.pixelSize: Style.Typography.bodySmall
                         font.family: root.textFont
                         font.weight: Font.DemiBold
                     }
@@ -269,7 +270,7 @@ PanelWindow {
                                 return i.done;
                             }).length + "/" + root.items.length
                             color: cAccent
-                            font.pixelSize: 8
+                            font.pixelSize: Style.Typography.micro
                             font.family: root.textFont
                         }
 
@@ -291,7 +292,7 @@ PanelWindow {
                             anchors.centerIn: parent
                             text: showInput ? "" : ""
                             color: showInput ? cAccent : cMuted
-                            font.pixelSize: 13
+                            font.pixelSize: Style.Typography.bodyLarge
                             font.family: root.iconFont
                             font.weight: Font.Light
                         }
@@ -344,7 +345,7 @@ PanelWindow {
                         anchors.rightMargin: 6
                         text: root.inputText
                         color: cFg
-                        font.pixelSize: 10
+                        font.pixelSize: Style.Typography.label
                         font.family: root.textFont
                         selectionColor: Qt.alpha(cAccent, 0.35)
                         selectedTextColor: cFg
@@ -360,7 +361,7 @@ PanelWindow {
                             anchors.fill: parent
                             text: "add a task..."
                             color: cDim
-                            font.pixelSize: 10
+                            font.pixelSize: Style.Typography.label
                             font.family: root.textFont
                             visible: textInput.text.length === 0
                         }
@@ -382,7 +383,7 @@ PanelWindow {
                             anchors.centerIn: parent
                             text: "󰌑"
                             color: cAccent
-                            font.pixelSize: 10
+                            font.pixelSize: Style.Typography.label
                             font.family: root.iconFont
                         }
 
@@ -504,7 +505,7 @@ PanelWindow {
 
                                         text: todoRow.item.text
                                         color: todoRow.item.done ? cDim : cFg
-                                        font.pixelSize: 10
+                                        font.pixelSize: Style.Typography.label
                                         font.family: root.textFont
                                         font.strikeout: todoRow.item.done
                                         anchors.verticalCenter: parent.verticalCenter
@@ -531,7 +532,7 @@ PanelWindow {
                                     anchors.verticalCenter: parent.verticalCenter
                                     text: "× "
                                     color: cDim
-                                    font.pixelSize: 13
+                                    font.pixelSize: Style.Typography.bodyLarge
                                     font.family: root.textFont
                                     visible: todoRow.hovered
 
@@ -564,7 +565,7 @@ PanelWindow {
                                 anchors.centerIn: parent
                                 text: "no tasks — enjoy the day"
                                 color: cDim
-                                font.pixelSize: 9
+                                font.pixelSize: Style.Typography.caption
                                 font.family: root.textFont
                                 font.italic: true
                             }
@@ -620,7 +621,7 @@ PanelWindow {
                         anchors.bottomMargin: 2
                         text: "clear done"
                         color: cDim
-                        font.pixelSize: 8
+                        font.pixelSize: Style.Typography.micro
                         font.family: root.textFont
 
                         MouseArea {

@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell.Io
+import "../../style" as Style
 
 Item {
     id: root
@@ -74,8 +75,8 @@ Item {
         opacity: root.statusClass.indexOf("on") !== -1
             ? (root.hovered ? 1.0 : 0.95)
             : (root.hovered ? 0.75 : 0.4)
-        font.pixelSize: 13
-        font.family: "JetBrainsMono Nerd Font"
+        font.pixelSize: Style.Typography.bodyLarge
+        font.family: Style.Typography.mono
 
         Behavior on color { ColorAnimation { duration: 150 } }
         Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
@@ -105,8 +106,8 @@ Item {
             anchors.centerIn: parent
             text: root.tooltip
             color: root.theme.fg || "#cdd6f4"
-            font.pixelSize: 10
-            font.family: "JetBrainsMono Nerd Font"
+            font.pixelSize: Style.Typography.label
+            font.family: Style.Typography.mono
         }
     }
 

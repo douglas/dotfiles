@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
+import "../../style" as Style
 
 Item {
     id: root
@@ -59,8 +60,8 @@ Item {
                 id:             timeText
                 anchors.verticalCenter: parent.verticalCenter
                 color:          theme.fg || "#cdd6f4"
-                font.pixelSize: 13
-                font.family:    "JetBrainsMono Nerd Font"
+                font.pixelSize: Style.Typography.bodyLarge
+                font.family: Style.Typography.mono
                 font.weight:    Font.Medium
             }
 
@@ -69,8 +70,8 @@ Item {
                 visible:        !root.use24h
                 anchors.verticalCenter: parent.verticalCenter
                 color:          theme.accent || "#89b4fa"
-                font.pixelSize: 9
-                font.family:    "JetBrainsMono Nerd Font"
+                font.pixelSize: Style.Typography.caption
+                font.family: Style.Typography.mono
                 font.weight:    Font.Medium
                 bottomPadding:  1
             }
@@ -88,27 +89,22 @@ Item {
             id:             dateText
             anchors.verticalCenter: parent.verticalCenter
             color:          theme.fg || "#cdd6f4"
-            font.pixelSize: 11
-            font.family:    "JetBrainsMono Nerd Font"
+            font.pixelSize: Style.Typography.bodySmall
+            font.family: Style.Typography.mono
         }
 
-        Rectangle {
-            width:                  1
-            height:                 10
-            color:                  theme.dim || "#45475a"
-            opacity:                0.5
-            anchors.verticalCenter: parent.verticalCenter
-        }
+    }
 
-        GoogleCalendar {
-            anchors.verticalCenter: parent.verticalCenter
-            barWindow: root.barWindow
-            barOnBottom: root.barOnBottom
-            overlayBarOffset: root.overlayBarOffset
-            overlayScale: root.overlayScale
-            quietMode: root.quietMode
-            theme: root.theme
-        }
+    GoogleCalendar {
+        id: agendaCalendar
+        showTrigger: false
+        barWindow: root.barWindow
+        barOnBottom: root.barOnBottom
+        overlayBarOffset: root.overlayBarOffset
+        overlayScale: root.overlayScale
+        quietMode: root.quietMode
+        settings: root.settings
+        theme: root.theme
     }
 
     MouseArea {
@@ -117,216 +113,8 @@ Item {
         width: Math.max(0, dateText.x + dateText.width)
         height: parent.height
         hoverEnabled: true
-        onEntered:    calWindow.showing = true
-        onExited:     hideTimer.start()
+        cursorShape: Qt.PointingHandCursor
+        onClicked: agendaCalendar.showing = !agendaCalendar.showing
     }
 
-    Timer {
-        id:       hideTimer
-        interval: 300
-        onTriggered: if (!calHover.containsMouse) calWindow.showing = false
-    }
-
-    // ── Calendar window ───────────────────────────
-    PanelWindow {
-        id:      calWindow
-        visible: !root.quietMode
-
-        property bool showing: false
-
-        anchors {
-            top: !root.barOnBottom
-            bottom: root.barOnBottom
-        }
-        margins {
-            top: root.barOnBottom ? 0 : root.overlayBarOffset
-            bottom: root.barOnBottom ? root.overlayBarOffset : 0
-        }
-
-        implicitWidth:  root.overlayPx(220)
-        implicitHeight: showing ? root.overlayPx(calCol.implicitHeight + 16) : 0
-
-        color: "transparent"
-        exclusiveZone: -1
-        WlrLayershell.layer:         WlrLayer.Overlay
-        WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
-
-        Behavior on implicitHeight {
-            NumberAnimation { duration: 140; easing.type: Easing.OutCubic }
-        }
-
-        property int viewYear:  new Date().getFullYear()
-        property int viewMonth: new Date().getMonth()
-        property var today:     new Date()
-
-        function daysInMonth(y, m)     { return new Date(y, m + 1, 0).getDate() }
-        function firstDayOfMonth(y, m) {
-            const d = new Date(y, m, 1).getDay()
-            return (d + 6) % 7
-        }
-        function prevMonth() {
-            if (viewMonth === 0) { viewMonth = 11; viewYear-- }
-            else viewMonth--
-        }
-        function nextMonth() {
-            if (viewMonth === 11) { viewMonth = 0; viewYear++ }
-            else viewMonth++
-        }
-
-        Rectangle {
-            width:        220
-            height:       parent.height / root.popupScale
-            transformOrigin: Item.TopLeft
-            scale:        root.popupScale
-            radius:       10
-            color:        root.theme.bg    || "#1e1e2e"
-            border.color: root.theme.dim   || "#45475a"
-            border.width: 1
-            clip:         true
-            opacity:      calWindow.showing ? 1 : 0
-            Behavior on opacity {
-                NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
-            }
-
-            MouseArea {
-                id:           calHover
-                anchors.fill: parent
-                hoverEnabled: true
-                onEntered:    hideTimer.stop()
-                onExited:     hideTimer.start()
-            }
-
-            Column {
-                id:            calCol
-                anchors.left:  parent.left
-                anchors.right: parent.right
-                anchors.top:   parent.top
-                anchors.margins: 8
-                spacing:       6
-
-                // ── Month header ──────────────────
-                Row {
-                    width:  parent.width
-                    height: 20
-
-                    Text {
-                        text:           "‹"
-                        color:          root.theme.muted || "#585b70"
-                        font.pixelSize: 14
-                        font.family:    "JetBrainsMono Nerd Font"
-                        width:          20
-                        horizontalAlignment: Text.AlignHCenter
-                        MouseArea {
-                            anchors.fill: parent
-                            cursorShape:  Qt.PointingHandCursor
-                            onClicked:    calWindow.prevMonth()
-                        }
-                    }
-
-                    Text {
-                        text: {
-                            const months = ["January","February","March","April",
-                                            "May","June","July","August",
-                                            "September","October","November","December"]
-                            return months[calWindow.viewMonth] + " " + calWindow.viewYear
-                        }
-                        color:          root.theme.fg || "#cdd6f4"
-                        font.pixelSize: 11
-                        font.family:    "JetBrainsMono Nerd Font"
-                        font.weight:    Font.Medium
-                        horizontalAlignment: Text.AlignHCenter
-                        width:          parent.width - 40
-
-                        Behavior on opacity {
-                            NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
-                        }
-                    }
-
-                    Text {
-                        text:           "›"
-                        color:          root.theme.muted || "#585b70"
-                        font.pixelSize: 14
-                        font.family:    "JetBrainsMono Nerd Font"
-                        width:          20
-                        horizontalAlignment: Text.AlignHCenter
-                        MouseArea {
-                            anchors.fill: parent
-                            cursorShape:  Qt.PointingHandCursor
-                            onClicked:    calWindow.nextMonth()
-                        }
-                    }
-                }
-
-                // ── Day labels ────────────────────
-                Row {
-                    width:   parent.width
-                    spacing: 0
-                    Repeater {
-                        model: ["Mo","Tu","We","Th","Fr","Sa","Su"]
-                        Text {
-                            width:          calCol.width / 7
-                            text:           modelData
-                            color:          root.theme.muted || "#585b70"
-                            font.pixelSize: 9
-                            font.family:    "JetBrainsMono Nerd Font"
-                            horizontalAlignment: Text.AlignHCenter
-                        }
-                    }
-                }
-
-                // ── Day grid ──────────────────────
-                Grid {
-                    id:      dayGrid
-                    columns: 7
-                    width:   parent.width
-                    spacing: 0
-
-                    Behavior on opacity {
-                        NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
-                    }
-
-                    Repeater {
-                        model: {
-                            const offset = calWindow.firstDayOfMonth(calWindow.viewYear, calWindow.viewMonth)
-                            const days   = calWindow.daysInMonth(calWindow.viewYear, calWindow.viewMonth)
-                            return offset + days
-                        }
-
-                        Item {
-                            width:  dayGrid.width / 7
-                            height: 22
-
-                            readonly property int  dayNum:  index - calWindow.firstDayOfMonth(calWindow.viewYear, calWindow.viewMonth) + 1
-                            readonly property bool isValid: index >= calWindow.firstDayOfMonth(calWindow.viewYear, calWindow.viewMonth)
-                            readonly property bool isToday:
-                                isValid &&
-                                dayNum === calWindow.today.getDate() &&
-                                calWindow.viewMonth === calWindow.today.getMonth() &&
-                                calWindow.viewYear  === calWindow.today.getFullYear()
-
-                            Rectangle {
-                                anchors.centerIn: parent
-                                width:   18; height: 18; radius: 9
-                                color:   isToday ? (root.theme.accent || "#89b4fa") : "transparent"
-                                visible: isValid
-                            }
-
-                            Text {
-                                anchors.centerIn: parent
-                                text:    isValid ? dayNum : ""
-                                color:   isToday
-                                         ? (root.theme.bg || "#1e1e2e")
-                                         : (root.theme.fg || "#cdd6f4")
-                                opacity: isValid ? 1.0 : 0.0
-                                font.pixelSize: 10
-                                font.family:    "JetBrainsMono Nerd Font"
-                                font.weight:    isToday ? Font.Bold : Font.Normal
-                                horizontalAlignment: Text.AlignHCenter
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 }

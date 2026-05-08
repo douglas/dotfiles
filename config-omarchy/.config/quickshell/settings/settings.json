@@ -11,6 +11,7 @@
   "clockWidgetPosX": 0.00008182490892531877,
   "clockWidgetPosY": 0.3105270127118645,
   "calendarWidgetEnabled": false,
+  "googleCalendarEventsEnabled": true,
   "calendarWidgetPosX": 0,
   "calendarWidgetPosY": 0.948265625,
   "pomodoroWidgetEnabled": false,

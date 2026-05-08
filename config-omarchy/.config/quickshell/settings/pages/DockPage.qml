@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import "../../style" as Style
 
 Item {
     id: root
@@ -57,8 +58,8 @@ Item {
                         Text {
                             text: "Dock"
                             color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                            font.pixelSize: 9
-                            font.family: "JetBrains Mono"
+                            font.pixelSize: Style.Typography.caption
+                            font.family: Style.Typography.text
                         }
 
                         Rectangle {
@@ -82,16 +83,16 @@ Item {
                                     Text {
                                         text: "Show dock"
                                         color: t("fg", "#eef6ef")
-                                        font.pixelSize: 9
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.caption
+                                        font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
 
                                     Text {
                                         text: "Toggle dock visibility."
                                         color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                        font.pixelSize: 7
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.nano
+                                        font.family: Style.Typography.text
                                     }
                                 }
 
@@ -154,16 +155,16 @@ Item {
                                     Text {
                                         text: "Smart auto hide"
                                         color: t("fg", "#eef6ef")
-                                        font.pixelSize: 9
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.caption
+                                        font.family: Style.Typography.text
                                         font.weight: Font.DemiBold
                                     }
 
                                     Text {
                                         text: "Hide the dock when focused on window and shows on hovering in the bottom area (Always show on empty desktop)"
                                         color: Qt.alpha(t("muted", "#9fb29f"), 0.58)
-                                        font.pixelSize: 7
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.nano
+                                        font.family: Style.Typography.text
                                     }
                                 }
 

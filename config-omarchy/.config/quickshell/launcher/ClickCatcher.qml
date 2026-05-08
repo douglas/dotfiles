@@ -9,17 +9,28 @@ PanelWindow {
     property int topInset: 0
     property int bottomInset: 0
 
-    signal clicked
+    signal clicked()
 
-    anchors { left: true; right: true; top: true; bottom: true }
-    margins { top: root.topInset; bottom: root.bottomInset }
-    color:         "transparent"
+    color: "transparent"
     exclusiveZone: -1
-    visible:       active
+    visible: active
     WlrLayershell.layer: WlrLayer.Top
+
+    anchors {
+        left: true
+        right: true
+        top: true
+        bottom: true
+    }
+
+    margins {
+        top: root.topInset
+        bottom: root.bottomInset
+    }
 
     MouseArea {
         anchors.fill: parent
-        onClicked:    root.clicked()
+        onClicked: root.clicked()
     }
+
 }

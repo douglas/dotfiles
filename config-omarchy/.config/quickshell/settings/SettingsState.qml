@@ -20,6 +20,7 @@ Item {
     property real clockWidgetPosX: 0.8
     property real clockWidgetPosY: 0.8
     property bool calendarWidgetEnabled: false
+    property bool googleCalendarEventsEnabled: false
     property real calendarWidgetPosX: 0.7
     property real calendarWidgetPosY: 0.7
     property bool pomodoroWidgetEnabled: false
@@ -51,6 +52,7 @@ Item {
         clockWidgetPosX: 0.8,
         clockWidgetPosY: 0.8,
         calendarWidgetEnabled: false,
+        googleCalendarEventsEnabled: false,
         calendarWidgetPosX: 0.7,
         calendarWidgetPosY: 0.7,
         pomodoroWidgetEnabled: false,
@@ -81,6 +83,7 @@ Item {
         clockWidgetPosX = defaults.clockWidgetPosX
         clockWidgetPosY = defaults.clockWidgetPosY
         calendarWidgetEnabled = defaults.calendarWidgetEnabled
+        googleCalendarEventsEnabled = defaults.googleCalendarEventsEnabled
         calendarWidgetPosX = defaults.calendarWidgetPosX
         calendarWidgetPosY = defaults.calendarWidgetPosY
         pomodoroWidgetEnabled = defaults.pomodoroWidgetEnabled
@@ -133,6 +136,8 @@ Item {
                 clockWidgetPosY = Math.max(0, Math.min(1, data.clockWidgetPosY))
             if (typeof data.calendarWidgetEnabled === "boolean")
                 calendarWidgetEnabled = data.calendarWidgetEnabled
+            if (typeof data.googleCalendarEventsEnabled === "boolean")
+                googleCalendarEventsEnabled = data.googleCalendarEventsEnabled
             if (typeof data.calendarWidgetPosX === "number")
                 calendarWidgetPosX = Math.max(0, Math.min(1, data.calendarWidgetPosX))
             if (typeof data.calendarWidgetPosY === "number")
@@ -184,6 +189,7 @@ Item {
             clockWidgetPosX: clockWidgetPosX,
             clockWidgetPosY: clockWidgetPosY,
             calendarWidgetEnabled: calendarWidgetEnabled,
+            googleCalendarEventsEnabled: googleCalendarEventsEnabled,
             calendarWidgetPosX: calendarWidgetPosX,
             calendarWidgetPosY: calendarWidgetPosY,
             pomodoroWidgetEnabled: pomodoroWidgetEnabled,
@@ -236,6 +242,7 @@ Item {
     onClockWidgetPosXChanged: save()
     onClockWidgetPosYChanged: save()
     onCalendarWidgetEnabledChanged: save()
+    onGoogleCalendarEventsEnabledChanged: save()
     onCalendarWidgetPosXChanged: save()
     onCalendarWidgetPosYChanged: save()
     onPomodoroWidgetEnabledChanged: save()

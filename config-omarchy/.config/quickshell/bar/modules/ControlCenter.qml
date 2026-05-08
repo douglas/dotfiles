@@ -5,6 +5,7 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Io
 import Quickshell.Services.Pipewire
+import "../../style" as Style
 
 PanelWindow {
     id: cc
@@ -20,7 +21,6 @@ PanelWindow {
         ? screen.devicePixelRatio
         : 1.0
     property real btManagerScale: Math.max(1.0, Math.min(2.5, uiScale > 0 ? uiScale : detectedScale * uiScaleMultiplier))
-    property real btManagerFontScale: Math.max(1.0, btManagerScale * 0.86)
     readonly property int panelWidth: 284
     readonly property int openAnimationMs: envDuration("QS_CC_OPEN_MS", 0)
     readonly property int closeAnimationMs: envDuration("QS_CC_CLOSE_MS", 0)
@@ -96,10 +96,6 @@ PanelWindow {
 
     function btpx(value) {
         return Math.round(value * btManagerScale)
-    }
-
-    function btfont(value) {
-        return Math.round(value * btManagerFontScale)
     }
 
     function envNumber(name, fallback) {
@@ -728,8 +724,8 @@ PanelWindow {
                         color: Qt.alpha(theme.accent || "#89b4fa", 0.15)
                         border.color: Qt.alpha(theme.accent || "#89b4fa", 0.4); border.width: 1
                         Text {
-                            anchors.centerIn: parent; text: "󰀄"; font.pixelSize: 20
-                            font.family: "JetBrainsMono Nerd Font Propo"; color: theme.accent || "#89b4fa"
+                            anchors.centerIn: parent; text: "󰀄"; font.pixelSize: Style.Typography.display
+                            font.family: Style.Typography.monoPropo; color: theme.accent || "#89b4fa"
                         }
                     }
                     Column {
@@ -737,13 +733,13 @@ PanelWindow {
                         Text {
                             text: Quickshell.env("USER") || "user"
                             color: theme.fg || "#cdd6f4"
-                            font.pixelSize: 13; font.family: "JetBrainsMono Nerd Font Propo"
+                            font.pixelSize: Style.Typography.bodyLarge; font.family: Style.Typography.monoPropo
                             font.weight: Font.Medium
                         }
                         Text {
                             text: Quickshell.env("HOSTNAME") || "localhost"
                             color: theme.muted || "#585b70"
-                            font.pixelSize: 10; font.family: "JetBrainsMono Nerd Font Propo"
+                            font.pixelSize: Style.Typography.label; font.family: Style.Typography.monoPropo
                         }
                     }
                 }
@@ -764,8 +760,8 @@ PanelWindow {
                                 : Qt.alpha(theme.dim || "#45475a", 0.4)
                             Behavior on color { ColorAnimation { duration: 130 } }
                             Text {
-                                anchors.centerIn: parent; text: modelData.icon; font.pixelSize: 15
-                                font.family: "JetBrainsMono Nerd Font Propo"
+                                anchors.centerIn: parent; text: modelData.icon; font.pixelSize: Style.Typography.title
+                                font.family: Style.Typography.monoPropo
                                 color: btnMa.containsMouse ? modelData.hoverColor : (theme.muted || "#585b70")
                                 Behavior on color { ColorAnimation { duration: 130 } }
                             }
@@ -818,7 +814,7 @@ PanelWindow {
                             text: cc.ethernetActive ? "󰈀" : cc.wifiEnabled ? "󰤨" : "󰤭"
                             color: (cc.ethernetActive || cc.wifiEnabled)
                                 ? (theme.accent || "#89b4fa") : (theme.muted || "#585b70")
-                            font.pixelSize: 20; font.family: "JetBrainsMono Nerd Font Propo"
+                            font.pixelSize: Style.Typography.display; font.family: Style.Typography.monoPropo
                             Behavior on color { ColorAnimation { duration: 160 } }
                         }
                         Text {
@@ -828,7 +824,7 @@ PanelWindow {
                                     ? cc.wifiSsid
                                     : (cc.wifiEnabled ? "Manage networks" : "Wi-Fi off"))
                             color: cc.ethernetActive ? (theme.muted || "#585b70") : cc.wifiStateColor()
-                            font.pixelSize: 8; font.family: "JetBrainsMono Nerd Font Propo"
+                            font.pixelSize: Style.Typography.micro; font.family: Style.Typography.monoPropo
                             elide: Text.ElideRight; width: parent.parent.width - 10
                             horizontalAlignment: Text.AlignHCenter
                         }
@@ -868,8 +864,8 @@ PanelWindow {
                             color: cc.wifiEnabled
                                 ? (theme.accent || "#89b4fa")
                                 : (theme.muted || "#585b70")
-                            font.pixelSize: 8
-                            font.family: "JetBrainsMono Nerd Font Propo"
+                            font.pixelSize: Style.Typography.micro
+                            font.family: Style.Typography.monoPropo
                             font.weight: Font.DemiBold
                         }
 
@@ -910,7 +906,7 @@ PanelWindow {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: cc.btEnabled ? "󰂱" : "󰂲"
                             color: cc.btEnabled ? (theme.accent || "#89b4fa") : (theme.muted || "#585b70")
-                            font.pixelSize: 20; font.family: "JetBrainsMono Nerd Font Propo"
+                            font.pixelSize: Style.Typography.display; font.family: Style.Typography.monoPropo
                             Behavior on color { ColorAnimation { duration: 160 } }
                         }
                         Text {
@@ -921,7 +917,7 @@ PanelWindow {
                                     ? (cc.btEnabled ? "Manage devices" : "Bluetooth off")
                                     : cc.bluetoothUnavailableLabel("No adapter"))
                             color: theme.muted || "#585b70"
-                            font.pixelSize: 8; font.family: "JetBrainsMono Nerd Font Propo"
+                            font.pixelSize: Style.Typography.micro; font.family: Style.Typography.monoPropo
                             elide: Text.ElideRight
                             width: parent.parent.width - 10
                             horizontalAlignment: Text.AlignHCenter
@@ -965,8 +961,8 @@ PanelWindow {
                             color: cc.btEnabled
                                 ? (theme.accent || "#89b4fa")
                                 : (theme.muted || "#585b70")
-                            font.pixelSize: 8
-                            font.family: "JetBrainsMono Nerd Font Propo"
+                            font.pixelSize: Style.Typography.micro
+                            font.family: Style.Typography.monoPropo
                             font.weight: Font.DemiBold
                         }
 
@@ -996,21 +992,21 @@ PanelWindow {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: cc.dndEnabled ? "󰂛" : "󰂚"
                             color: cc.dndEnabled ? "#fab387" : (theme.muted || "#585b70")
-                            font.pixelSize: 20; font.family: "JetBrainsMono Nerd Font Propo"
+                            font.pixelSize: Style.Typography.display; font.family: Style.Typography.monoPropo
                             Behavior on color { ColorAnimation { duration: 160 } }
                         }
                         Text {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: "DND"
                             color: cc.dndEnabled ? (theme.fg || "#cdd6f4") : (theme.muted || "#585b70")
-                            font.pixelSize: 10; font.family: "JetBrainsMono Nerd Font Propo"
+                            font.pixelSize: Style.Typography.label; font.family: Style.Typography.monoPropo
                             font.weight: Font.Medium
                         }
                         Text {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: cc.dndEnabled ? "On" : "Off"
                             color: theme.muted || "#585b70"
-                            font.pixelSize: 8; font.family: "JetBrainsMono Nerd Font Propo"
+                            font.pixelSize: Style.Typography.micro; font.family: Style.Typography.monoPropo
                         }
                     }
                     MouseArea {
@@ -1026,7 +1022,7 @@ PanelWindow {
                 visible: cc.showWifiList && cc.wifiNetworks.length > 0
                 Text {
                     text: "Available Networks"; color: theme.muted || "#585b70"
-                    font.pixelSize: 9; font.family: "JetBrainsMono Nerd Font Propo"; bottomPadding: 2
+                    font.pixelSize: Style.Typography.caption; font.family: Style.Typography.monoPropo; bottomPadding: 2
                 }
                 Repeater {
                     model: cc.wifiNetworks
@@ -1042,19 +1038,19 @@ PanelWindow {
                             Text {
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: modelData.signal > 66 ? "󰤨" : modelData.signal > 33 ? "󰤢" : "󰤟"
-                                color: theme.accent || "#89b4fa"; font.pixelSize: 13; font.family: "JetBrainsMono Nerd Font Propo"
+                                color: theme.accent || "#89b4fa"; font.pixelSize: Style.Typography.bodyLarge; font.family: Style.Typography.monoPropo
                             }
                             Text {
                                 anchors.verticalCenter: parent.verticalCenter; text: modelData.ssid
                                 color: modelData.ssid === cc.wifiSsid ? (theme.accent || "#89b4fa") : (theme.fg || "#cdd6f4")
-                                font.pixelSize: 10; font.family: "JetBrainsMono Nerd Font Propo"
+                                font.pixelSize: Style.Typography.label; font.family: Style.Typography.monoPropo
                                 font.weight: modelData.ssid === cc.wifiSsid ? Font.Medium : Font.Normal
                                 elide: Text.ElideRight; width: parent.width - 44
                             }
                             Text {
                                 anchors.verticalCenter: parent.verticalCenter
                                 visible: modelData.secure; text: "󰌾"
-                                color: theme.muted || "#585b70"; font.pixelSize: 10; font.family: "JetBrainsMono Nerd Font Propo"
+                                color: theme.muted || "#585b70"; font.pixelSize: Style.Typography.label; font.family: Style.Typography.monoPropo
                             }
                         }
                         MouseArea {
@@ -1076,7 +1072,7 @@ PanelWindow {
                 visible: cc.showBtList && cc.btDevices.length > 0
                 Text {
                     text: "Paired Devices"; color: theme.muted || "#585b70"
-                    font.pixelSize: 9; font.family: "JetBrainsMono Nerd Font Propo"; bottomPadding: 2
+                    font.pixelSize: Style.Typography.caption; font.family: Style.Typography.monoPropo; bottomPadding: 2
                 }
                 Repeater {
                     model: cc.btDevices
@@ -1092,11 +1088,11 @@ PanelWindow {
                             Text {
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: "󰂯"; color: theme.accent || "#89b4fa"
-                                font.pixelSize: 14; font.family: "JetBrainsMono Nerd Font Propo"
+                                font.pixelSize: Style.Typography.titleSmall; font.family: Style.Typography.monoPropo
                             }
                             Text {
                                 anchors.verticalCenter: parent.verticalCenter; text: modelData.name
-                                color: theme.fg || "#cdd6f4"; font.pixelSize: 10; font.family: "JetBrainsMono Nerd Font Propo"
+                                color: theme.fg || "#cdd6f4"; font.pixelSize: Style.Typography.label; font.family: Style.Typography.monoPropo
                                 elide: Text.ElideRight; width: parent.parent.width - 50
                             }
                         }
@@ -1223,16 +1219,16 @@ PanelWindow {
                         Layout.alignment: Qt.AlignVCenter
                         text: "Wi-Fi Manager"
                         color: cc.theme.fg || "#cdd6f4"
-                        font.pixelSize: cc.btfont(11)
-                        font.family: "JetBrainsMono Nerd Font Propo"
+                        font.pixelSize: Style.Typography.bodySmall
+                        font.family: Style.Typography.monoPropo
                         font.weight: Font.Medium
                     }
                     Text {
                         Layout.alignment: Qt.AlignVCenter
                         text: "✕"
                         color: wifiCloseMa.containsMouse ? (cc.theme.red || "#f38ba8") : (cc.theme.muted || "#585b70")
-                        font.pixelSize: cc.btfont(8)
-                        font.family: "JetBrainsMono Nerd Font Propo"
+                        font.pixelSize: Style.Typography.micro
+                        font.family: Style.Typography.monoPropo
                         MouseArea {
                             id: wifiCloseMa
                             anchors.fill: parent
@@ -1265,8 +1261,8 @@ PanelWindow {
                             Layout.alignment: Qt.AlignVCenter
                             text: cc.wifiEnabled ? "󰤨" : "󰤭"
                             color: cc.wifiEnabled ? (cc.theme.accent || "#89b4fa") : (cc.theme.muted || "#585b70")
-                            font.pixelSize: cc.btfont(13)
-                            font.family: "JetBrainsMono Nerd Font Propo"
+                            font.pixelSize: Style.Typography.bodyLarge
+                            font.family: Style.Typography.monoPropo
                         }
                         Text {
                             Layout.fillWidth: true
@@ -1277,16 +1273,16 @@ PanelWindow {
                                     : cc.wifiStateLabel())
                                 : "Wi-Fi Off"
                             color: cc.theme.fg || "#cdd6f4"
-                            font.pixelSize: cc.btfont(11)
-                            font.family: "JetBrainsMono Nerd Font Propo"
+                            font.pixelSize: Style.Typography.bodySmall
+                            font.family: Style.Typography.monoPropo
                             elide: Text.ElideRight
                         }
                         Text {
                             Layout.alignment: Qt.AlignVCenter
                             text: cc.wifiEnabled ? "Disable" : "Enable"
                             color: cc.theme.accent || "#89b4fa"
-                            font.pixelSize: cc.btfont(11)
-                            font.family: "JetBrainsMono Nerd Font Propo"
+                            font.pixelSize: Style.Typography.bodySmall
+                            font.family: Style.Typography.monoPropo
                         }
                     }
                     MouseArea {
@@ -1320,8 +1316,8 @@ PanelWindow {
                             Layout.alignment: Qt.AlignVCenter
                             text: "Rescan Networks"
                             color: cc.theme.muted || "#585b70"
-                            font.pixelSize: cc.btfont(11)
-                            font.family: "JetBrainsMono Nerd Font Propo"
+                            font.pixelSize: Style.Typography.bodySmall
+                            font.family: Style.Typography.monoPropo
                         }
                         RowLayout {
                             Layout.alignment: Qt.AlignVCenter
@@ -1341,8 +1337,8 @@ PanelWindow {
                             Text {
                                 text: cc.wifiScanning ? "Scanning" : "Scan"
                                 color: cc.theme.accent || "#89b4fa"
-                                font.pixelSize: cc.btfont(11)
-                                font.family: "JetBrainsMono Nerd Font Propo"
+                                font.pixelSize: Style.Typography.bodySmall
+                                font.family: Style.Typography.monoPropo
                             }
                         }
                     }
@@ -1392,24 +1388,24 @@ PanelWindow {
                                         Layout.alignment: Qt.AlignVCenter
                                         text: modelData.signal > 66 ? "󰤨" : modelData.signal > 33 ? "󰤢" : "󰤟"
                                         color: cc.theme.accent || "#89b4fa"
-                                        font.pixelSize: cc.btfont(12)
-                                        font.family: "JetBrainsMono Nerd Font Propo"
+                                        font.pixelSize: Style.Typography.body
+                                        font.family: Style.Typography.monoPropo
                                     }
                                     Text {
                                         Layout.alignment: Qt.AlignVCenter
                                         Layout.fillWidth: true
                                         text: modelData.ssid
                                         color: modelData.ssid === cc.wifiSsid ? (cc.theme.accent || "#89b4fa") : (cc.theme.fg || "#cdd6f4")
-                                        font.pixelSize: cc.btfont(11)
-                                        font.family: "JetBrainsMono Nerd Font Propo"
+                                        font.pixelSize: Style.Typography.bodySmall
+                                        font.family: Style.Typography.monoPropo
                                         elide: Text.ElideRight
                                     }
                                     Text {
                                         Layout.alignment: Qt.AlignVCenter
                                         text: modelData.ssid === cc.wifiSsid && cc.wifiState !== "" ? cc.wifiState : (modelData.secure ? "secure" : "")
                                         color: modelData.ssid === cc.wifiSsid ? cc.wifiStateColor() : (cc.theme.muted || "#585b70")
-                                        font.pixelSize: cc.btfont(9)
-                                        font.family: "JetBrainsMono Nerd Font Propo"
+                                        font.pixelSize: Style.Typography.caption
+                                        font.family: Style.Typography.monoPropo
                                     }
                                     RowLayout {
                                         Layout.alignment: Qt.AlignVCenter
@@ -1427,8 +1423,8 @@ PanelWindow {
                                                 anchors.centerIn: parent
                                                 text: modelData.ssid === cc.wifiSsid ? "Disconnect" : "Connect"
                                                 color: cc.theme.accent || "#89b4fa"
-                                                font.pixelSize: cc.btfont(9)
-                                                font.family: "JetBrainsMono Nerd Font Propo"
+                                                font.pixelSize: Style.Typography.caption
+                                                font.family: Style.Typography.monoPropo
                                             }
                                             MouseArea {
                                                 anchors.fill: parent
@@ -1458,8 +1454,8 @@ PanelWindow {
                                                 anchors.centerIn: parent
                                                 text: "Forget"
                                                 color: cc.theme.muted || "#585b70"
-                                                font.pixelSize: cc.btfont(9)
-                                                font.family: "JetBrainsMono Nerd Font Propo"
+                                                font.pixelSize: Style.Typography.caption
+                                                font.family: Style.Typography.monoPropo
                                             }
                                             MouseArea {
                                                 anchors.fill: parent
@@ -1490,8 +1486,8 @@ PanelWindow {
                                 anchors.centerIn: parent
                                 text: "No networks found"
                                 color: cc.theme.muted || "#585b70"
-                                font.pixelSize: cc.btfont(11)
-                                font.family: "JetBrainsMono Nerd Font Propo"
+                                font.pixelSize: Style.Typography.bodySmall
+                                font.family: Style.Typography.monoPropo
                             }
                         }
                     }
@@ -1535,16 +1531,16 @@ PanelWindow {
                         Text {
                             text: "Secure Wi‑Fi Network"
                             color: cc.theme.fg || "#cdd6f4"
-                            font.pixelSize: cc.btfont(11)
-                            font.family: "JetBrainsMono Nerd Font Propo"
+                            font.pixelSize: Style.Typography.bodySmall
+                            font.family: Style.Typography.monoPropo
                             font.weight: Font.Medium
                         }
 
                         Text {
                             text: cc.wifiPasswordSsid
                             color: cc.theme.muted || "#585b70"
-                            font.pixelSize: cc.btfont(9)
-                            font.family: "JetBrainsMono Nerd Font Propo"
+                            font.pixelSize: Style.Typography.caption
+                            font.family: Style.Typography.monoPropo
                             elide: Text.ElideRight
                         }
 
@@ -1567,8 +1563,8 @@ PanelWindow {
                                 anchors.rightMargin: cc.btpx(10)
                                 text: cc.wifiPasswordText
                                 color: cc.theme.fg || "#cdd6f4"
-                                font.pixelSize: cc.btfont(10)
-                                font.family: "JetBrainsMono Nerd Font Propo"
+                                font.pixelSize: Style.Typography.label
+                                font.family: Style.Typography.monoPropo
                                 echoMode: TextInput.Password
                                 selectionColor: Qt.alpha(cc.theme.accent || "#89b4fa", 0.35)
                                 selectedTextColor: cc.theme.fg || "#cdd6f4"
@@ -1587,8 +1583,8 @@ PanelWindow {
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: "Password"
                                 color: cc.theme.muted || "#585b70"
-                                font.pixelSize: cc.btfont(10)
-                                font.family: "JetBrainsMono Nerd Font Propo"
+                                font.pixelSize: Style.Typography.label
+                                font.family: Style.Typography.monoPropo
                                 visible: passwordInput.text.length === 0
                             }
                         }
@@ -1597,8 +1593,8 @@ PanelWindow {
                             visible: cc.wifiPasswordError !== ""
                             text: cc.wifiPasswordError
                             color: cc.theme.red || "#f38ba8"
-                            font.pixelSize: cc.btfont(9)
-                            font.family: "JetBrainsMono Nerd Font Propo"
+                            font.pixelSize: Style.Typography.caption
+                            font.family: Style.Typography.monoPropo
                             wrapMode: Text.WordWrap
                             width: parent.width
                         }
@@ -1616,8 +1612,8 @@ PanelWindow {
                                     anchors.centerIn: parent
                                     text: "Cancel"
                                     color: cc.theme.muted || "#585b70"
-                                    font.pixelSize: cc.btfont(9)
-                                    font.family: "JetBrainsMono Nerd Font Propo"
+                                    font.pixelSize: Style.Typography.caption
+                                    font.family: Style.Typography.monoPropo
                                 }
                                 MouseArea {
                                     anchors.fill: parent
@@ -1640,8 +1636,8 @@ PanelWindow {
                                     anchors.centerIn: parent
                                     text: cc.wifiPasswordWorking ? "Connecting" : "Connect"
                                     color: cc.theme.accent || "#89b4fa"
-                                    font.pixelSize: cc.btfont(9)
-                                    font.family: "JetBrainsMono Nerd Font Propo"
+                                    font.pixelSize: Style.Typography.caption
+                                    font.family: Style.Typography.monoPropo
                                 }
                                 MouseArea {
                                     anchors.fill: parent
@@ -1717,16 +1713,16 @@ PanelWindow {
                         Layout.alignment: Qt.AlignVCenter
                         text: "Bluetooth Manager"
                         color: cc.theme.fg || "#cdd6f4"
-                        font.pixelSize: cc.btfont(11)
-                        font.family: "JetBrainsMono Nerd Font Propo"
+                        font.pixelSize: Style.Typography.bodySmall
+                        font.family: Style.Typography.monoPropo
                         font.weight: Font.Medium
                     }
                     Text {
                         Layout.alignment: Qt.AlignVCenter
                         text: "✕"
                         color: btCloseMa.containsMouse ? (cc.theme.red || "#f38ba8") : (cc.theme.muted || "#585b70")
-                        font.pixelSize: cc.btfont(8)
-                        font.family: "JetBrainsMono Nerd Font Propo"
+                        font.pixelSize: Style.Typography.micro
+                        font.family: Style.Typography.monoPropo
                         MouseArea {
                             id: btCloseMa
                             anchors.fill: parent
@@ -1753,8 +1749,8 @@ PanelWindow {
                             Layout.alignment: Qt.AlignVCenter
                             text: cc.btEnabled ? "󰂱" : "󰂲"
                             color: cc.btEnabled ? (cc.theme.accent || "#89b4fa") : (cc.theme.muted || "#585b70")
-                            font.pixelSize: cc.btfont(13)
-                            font.family: "JetBrainsMono Nerd Font Propo"
+                            font.pixelSize: Style.Typography.bodyLarge
+                            font.family: Style.Typography.monoPropo
                         }
                         Text {
                             Layout.fillWidth: true
@@ -1763,15 +1759,15 @@ PanelWindow {
                                 ? (cc.btEnabled ? "Bluetooth On" : "Bluetooth Off")
                                 : cc.bluetoothUnavailableLabel("Bluetooth adapter not found")
                             color: cc.theme.fg || "#cdd6f4"
-                            font.pixelSize: cc.btfont(11)
-                            font.family: "JetBrainsMono Nerd Font Propo"
+                            font.pixelSize: Style.Typography.bodySmall
+                            font.family: Style.Typography.monoPropo
                         }
                         Text {
                             Layout.alignment: Qt.AlignVCenter
                             text: cc.hasBluetoothDevice ? (cc.btEnabled ? "Disable" : "Enable") : ""
                             color: cc.theme.accent || "#89b4fa"
-                            font.pixelSize: cc.btfont(11)
-                            font.family: "JetBrainsMono Nerd Font Propo"
+                            font.pixelSize: Style.Typography.bodySmall
+                            font.family: Style.Typography.monoPropo
                         }
                     }
                     MouseArea {
@@ -1811,8 +1807,8 @@ PanelWindow {
                             Layout.alignment: Qt.AlignVCenter
                             text: cc.hasBluetoothDevice ? "Scan nearby devices" : cc.bluetoothUnavailableLabel("No Bluetooth adapter found")
                             color: cc.hasBluetoothDevice ? (cc.theme.muted || "#585b70") : (cc.theme.red || "#f38ba8")
-                            font.pixelSize: cc.btfont(11)
-                            font.family: "JetBrainsMono Nerd Font Propo"
+                            font.pixelSize: Style.Typography.bodySmall
+                            font.family: Style.Typography.monoPropo
                         }
                         RowLayout {
                             Layout.alignment: Qt.AlignVCenter
@@ -1832,8 +1828,8 @@ PanelWindow {
                             Text {
                                 text: cc.hasBluetoothDevice ? (cc.btScanning ? "Scanning" : "Scan") : ""
                                 color: cc.theme.accent || "#89b4fa"
-                                font.pixelSize: cc.btfont(11)
-                                font.family: "JetBrainsMono Nerd Font Propo"
+                                font.pixelSize: Style.Typography.bodySmall
+                                font.family: Style.Typography.monoPropo
                             }
                         }
                     }
@@ -1895,16 +1891,16 @@ PanelWindow {
                                             Layout.alignment: Qt.AlignVCenter
                                             text: "󰂯"
                                             color: cc.theme.accent || "#89b4fa"
-                                            font.pixelSize: cc.btfont(12)
-                                            font.family: "JetBrainsMono Nerd Font Propo"
+                                            font.pixelSize: Style.Typography.body
+                                            font.family: Style.Typography.monoPropo
                                         }
                                         Text {
                                             Layout.fillWidth: true
                                             Layout.alignment: Qt.AlignVCenter
                                             text: modelData.name
                                             color: cc.theme.fg || "#cdd6f4"
-                                            font.pixelSize: cc.btfont(11)
-                                            font.family: "JetBrainsMono Nerd Font Propo"
+                                            font.pixelSize: Style.Typography.bodySmall
+                                            font.family: Style.Typography.monoPropo
                                             elide: Text.ElideRight
                                         }
                                         Text {
@@ -1912,8 +1908,8 @@ PanelWindow {
                                             visible: modelData.battery >= 0
                                             text: "󰁹 " + modelData.battery + "%"
                                             color: cc.theme.muted || "#585b70"
-                                            font.pixelSize: cc.btfont(9)
-                                            font.family: "JetBrainsMono Nerd Font Propo"
+                                            font.pixelSize: Style.Typography.caption
+                                            font.family: Style.Typography.monoPropo
                                         }
                                         Text {
                                             Layout.alignment: Qt.AlignVCenter
@@ -1923,8 +1919,8 @@ PanelWindow {
                                                 : modelData.trusted
                                                     ? (cc.theme.green || "#a6e3a1")
                                                     : (cc.theme.red || "#f38ba8")
-                                            font.pixelSize: cc.btfont(9)
-                                            font.family: "JetBrainsMono Nerd Font Propo"
+                                            font.pixelSize: Style.Typography.caption
+                                            font.family: Style.Typography.monoPropo
                                         }
                                     }
 
@@ -1945,8 +1941,8 @@ PanelWindow {
                                                 anchors.centerIn: parent
                                                 text: "connect"
                                                 color: cc.theme.accent || "#89b4fa"
-                                                font.pixelSize: cc.btfont(9)
-                                                font.family: "JetBrainsMono Nerd Font Propo"
+                                                font.pixelSize: Style.Typography.caption
+                                                font.family: Style.Typography.monoPropo
                                             }
                                             MouseArea {
                                                 anchors.fill: parent
@@ -1968,8 +1964,8 @@ PanelWindow {
                                                 anchors.centerIn: parent
                                                 text: "disconnect"
                                                 color: "#fab387"
-                                                font.pixelSize: cc.btfont(9)
-                                                font.family: "JetBrainsMono Nerd Font Propo"
+                                                font.pixelSize: Style.Typography.caption
+                                                font.family: Style.Typography.monoPropo
                                             }
                                             MouseArea {
                                                 anchors.fill: parent
@@ -1990,8 +1986,8 @@ PanelWindow {
                                                 anchors.centerIn: parent
                                                 text: "remove"
                                                 color: cc.theme.red || "#f38ba8"
-                                                font.pixelSize: cc.btfont(9)
-                                                font.family: "JetBrainsMono Nerd Font Propo"
+                                                font.pixelSize: Style.Typography.caption
+                                                font.family: Style.Typography.monoPropo
                                             }
                                             MouseArea {
                                                 anchors.fill: parent
@@ -2027,8 +2023,8 @@ PanelWindow {
                                     anchors.horizontalCenter: parent.horizontalCenter
                                     text: cc.hasBluetoothDevice ? "No devices found" : cc.bluetoothUnavailableLabel("Bluetooth adapter not detected")
                                     color: cc.hasBluetoothDevice ? (cc.theme.fg || "#cdd6f4") : (cc.theme.red || "#f38ba8")
-                                    font.pixelSize: cc.btfont(11)
-                                    font.family: "JetBrainsMono Nerd Font Propo"
+                                    font.pixelSize: Style.Typography.bodySmall
+                                    font.family: Style.Typography.monoPropo
                                 }
                                 Text {
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -2036,8 +2032,8 @@ PanelWindow {
                                         ? "Click Scan to discover"
                                         : (cc.hasBluetoothctl ? "Enable Bluetooth in system" : "Use Omarchy Bluetooth TUI")
                                     color: cc.theme.muted || "#585b70"
-                                    font.pixelSize: cc.btfont(9)
-                                    font.family: "JetBrainsMono Nerd Font Propo"
+                                    font.pixelSize: Style.Typography.caption
+                                    font.family: Style.Typography.monoPropo
                                 }
                             }
                         }

@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Io
 import Quickshell.Services.Mpris
+import "../../style" as Style
 
 Item {
     id: root
@@ -548,8 +549,8 @@ Item {
                 height: parent.height
                 text: root.trackTitle
                 color: root.fg
-                font.pixelSize: 10
-                font.family: "JetBrainsMono Nerd Font"
+                font.pixelSize: Style.Typography.label
+                font.family: Style.Typography.mono
                 verticalAlignment: Text.AlignVCenter
 
                 onTextChanged: x = 0
@@ -779,8 +780,8 @@ Item {
                         visible: !coverImage.visible
                         text: "󰎆"
                         color: Qt.alpha(root.paletteAccent, 0.82)
-                        font.pixelSize: 22
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.displayLarge
+                        font.family: Style.Typography.mono
                     }
                 }
 
@@ -792,8 +793,8 @@ Item {
                         width: parent.width
                         text: root.trackTitle
                         color: root.strongText
-                        font.pixelSize: 11
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.bodySmall
+                        font.family: Style.Typography.text
                         font.weight: Font.DemiBold
                         elide: Text.ElideRight
                     }
@@ -802,8 +803,8 @@ Item {
                         width: parent.width
                         text: root.trackArtist !== "" ? root.trackArtist : (root.trackAlbum !== "" ? root.trackAlbum : "Media")
                         color: root.mutedText
-                        font.pixelSize: 9
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.caption
+                        font.family: Style.Typography.text
                         elide: Text.ElideRight
                     }
 
@@ -811,8 +812,8 @@ Item {
                         width: parent.width
                         text: root.elapsedLabel + " / " + root.durationLabel
                         color: root.softText
-                        font.pixelSize: 10
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.label
+                        font.family: Style.Typography.text
                     }
 
                     Item {
@@ -827,8 +828,8 @@ Item {
                         Text {
                             text: "󰒮"
                             color: root.mutedText
-                            font.pixelSize: 10
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: Style.Typography.label
+                            font.family: Style.Typography.mono
 
                             MouseArea {
                                 anchors.fill: parent
@@ -891,8 +892,8 @@ Item {
                         Text {
                             text: "󰒭"
                             color: root.mutedText
-                            font.pixelSize: 10
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: Style.Typography.label
+                            font.family: Style.Typography.mono
 
                             MouseArea {
                                 anchors.fill: parent
@@ -916,8 +917,8 @@ Item {
                         anchors.centerIn: parent
                         text: root.isPlaying ? "󰏤" : "󰐊"
                         color: root.paletteAccent
-                        font.pixelSize: 15
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.title
+                        font.family: Style.Typography.mono
                     }
 
                     MouseArea {

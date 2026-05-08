@@ -1,4 +1,5 @@
 import QtQuick
+import "../style" as Style
 
 Item {
     id: root
@@ -43,8 +44,8 @@ Item {
                 color: selected
                     ? (theme.accent || "#89b4fa")
                     : Qt.alpha(theme.muted || "#585b70", 0.75)
-                font.pixelSize: 11
-                font.family: "JetBrainsMono Nerd Font"
+                font.pixelSize: Style.Typography.bodySmall
+                font.family: Style.Typography.mono
             }
 
             Text {
@@ -53,8 +54,8 @@ Item {
                 text: (entry && entry.preview) ? entry.preview : ""
                 color: theme.fg || "#cdd6f4"
                 elide: Text.ElideRight
-                font.pixelSize: 11
-                font.family: "JetBrainsMono Nerd Font"
+                font.pixelSize: Style.Typography.bodySmall
+                font.family: Style.Typography.mono
             }
 
             Item { width: 1; height: 1 }
@@ -63,8 +64,8 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 text: "✕"
                 color: Qt.alpha(theme.red || "#f38ba8", rowMa.containsMouse ? 0.95 : 0.75)
-                font.pixelSize: 9
-                font.family: "JetBrainsMono Nerd Font"
+                font.pixelSize: Style.Typography.caption
+                font.family: Style.Typography.mono
 
                 MouseArea {
                     anchors.fill: parent

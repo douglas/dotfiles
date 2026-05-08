@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Io
+import "../style" as Style
 
 
 Item {
@@ -281,8 +282,8 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 text:           ""
                 color:          Qt.alpha(theme.accent || "#89b4fa", 0.7)
-                font.pixelSize: 11
-                font.family:    "JetBrainsMono Nerd Font"
+                font.pixelSize: Style.Typography.bodySmall
+                font.family: Style.Typography.mono
                 MouseArea {
                     anchors.fill:    parent
                     anchors.margins: -6
@@ -295,8 +296,8 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 text:           "Go"
                 color:          Qt.alpha(theme.muted || "#585b70", 0.5)
-                font.pixelSize: 9
-                font.family:    "JetBrainsMono Nerd Font"
+                font.pixelSize: Style.Typography.caption
+                font.family: Style.Typography.mono
             }
 
             Repeater {
@@ -306,16 +307,16 @@ Item {
                     Text {
                         text:           "›"
                         color:          Qt.alpha(theme.muted || "#585b70", 0.4)
-                        font.pixelSize: 9
-                        font.family:    "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.caption
+                        font.family: Style.Typography.mono
                     }
                     Text {
                         text:           modelData.title
                         color:          index === navStack.length - 1
                             ? (theme.fg || "#cdd6f4")
                             : Qt.alpha(theme.muted || "#585b70", 0.5)
-                        font.pixelSize: 9
-                        font.family:    "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.caption
+                        font.family: Style.Typography.mono
                         font.weight:    index === navStack.length - 1 ? Font.Medium : Font.Normal
                     }
                 }
@@ -337,23 +338,23 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 text:           "󰍉"
                 color:          theme.accent || "#89b4fa"
-                font.pixelSize: 11
-                font.family:    "JetBrainsMono Nerd Font"
+                font.pixelSize: Style.Typography.bodySmall
+                font.family: Style.Typography.mono
             }
             Text {
                 anchors.verticalCenter: parent.verticalCenter
                 text:           "Global Search"
                 color:          theme.accent || "#89b4fa"
-                font.pixelSize: 9
-                font.family:    "JetBrainsMono Nerd Font"
+                font.pixelSize: Style.Typography.caption
+                font.family: Style.Typography.mono
                 font.weight:    Font.Medium
             }
             Text {
                 anchors.verticalCenter: parent.verticalCenter
                 text:           "— esc to cancel"
                 color:          Qt.alpha(theme.muted || "#585b70", 0.4)
-                font.pixelSize: 9
-                font.family:    "JetBrainsMono Nerd Font"
+                font.pixelSize: Style.Typography.caption
+                font.family: Style.Typography.mono
             }
         }
 
@@ -404,8 +405,8 @@ Item {
                     color:          globalSearch
                         ? (theme.accent || "#89b4fa")
                         : Qt.alpha(theme.accent || "#89b4fa", 0.7)
-                    font.pixelSize: 13
-                    font.family:    "JetBrainsMono Nerd Font"
+                    font.pixelSize: Style.Typography.bodyLarge
+                    font.family: Style.Typography.mono
 
                     Behavior on color {
                         ColorAnimation { duration: 200 }
@@ -424,8 +425,8 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                     text:           root.searchText
                     color:          theme.fg || "#cdd6f4"
-                    font.pixelSize: 12
-                    font.family:    "JetBrainsMono Nerd Font"
+                    font.pixelSize: Style.Typography.body
+                    font.family: Style.Typography.mono
 
                     Behavior on color {
                         ColorAnimation { duration: 150 }
@@ -452,7 +453,7 @@ Item {
                     visible:        root.searchText !== ""
                     text:           "✕"
                     color:          Qt.alpha(theme.muted || "#585b70", 0.5)
-                    font.pixelSize: 10
+                    font.pixelSize: Style.Typography.label
                     MouseArea {
                         anchors.fill:    parent
                         anchors.margins: -4
@@ -476,8 +477,8 @@ Item {
                     ? (globalPage.results ? globalPage.results.length : 0) + " results"
                     : (currentPage.filteredItems ? currentPage.filteredItems.length : 0) + " items"
                 color:          Qt.alpha(theme.muted || "#585b70", 0.45)
-                font.pixelSize: 9
-                font.family:    "JetBrainsMono Nerd Font"
+                font.pixelSize: Style.Typography.caption
+                font.family: Style.Typography.mono
             }
             Item { width: 1; height: 1; Layout.fillWidth: true }
             Text {
@@ -487,8 +488,8 @@ Item {
                         ? "⌫ back  ↑↓  ↵ open  esc"
                         : "type to search  ↑↓  ↵ open  esc"
                 color:          Qt.alpha(theme.muted || "#585b70", 0.3)
-                font.pixelSize: 9
-                font.family:    "JetBrainsMono Nerd Font"
+                font.pixelSize: Style.Typography.caption
+                font.family: Style.Typography.mono
             }
         }
 
@@ -664,8 +665,8 @@ Item {
                                 color:          isSelected
                                     ? (theme.accent || "#89b4fa")
                                     : Qt.alpha(theme.fg || "#cdd6f4", 0.55)
-                                font.pixelSize: 13
-                                font.family:    "JetBrainsMono Nerd Font"
+                                font.pixelSize: Style.Typography.bodyLarge
+                                font.family: Style.Typography.mono
                                 width:          20
 
                                 Behavior on color {
@@ -684,8 +685,8 @@ Item {
                                     color:          isSelected
                                         ? (theme.fg || "#cdd6f4")
                                         : Qt.alpha(theme.fg || "#cdd6f4", 0.75)
-                                    font.pixelSize: 12
-                                    font.family:    "JetBrainsMono Nerd Font"
+                                    font.pixelSize: Style.Typography.body
+                                    font.family: Style.Typography.mono
                                     font.weight:    isSelected ? Font.Medium : Font.Normal
 
                                     Behavior on color {
@@ -697,8 +698,8 @@ Item {
                                     visible:        mitem.path && mitem.path.length > 0
                                     text:           mitem.path ? mitem.path.join(" › ") : ""
                                     color:          Qt.alpha(theme.muted || "#585b70", isSelected ? 0.6 : 0.35)
-                                    font.pixelSize: 9
-                                    font.family:    "JetBrainsMono Nerd Font"
+                                    font.pixelSize: Style.Typography.caption
+                                    font.family: Style.Typography.mono
 
                                     Behavior on color {
                                         ColorAnimation { duration: 120 }
@@ -713,8 +714,8 @@ Item {
                                 visible:                mitem.terminal !== undefined && mitem.terminal !== null
                                 text:                   "󰆍"
                                 color:                  Qt.alpha(theme.muted || "#585b70", isSelected ? 0.6 : 0.3)
-                                font.pixelSize:         10
-                                font.family:            "JetBrainsMono Nerd Font"
+                                font.pixelSize:         Style.Typography.label
+                                font.family: Style.Typography.mono
 
                                 Behavior on color {
                                     ColorAnimation { duration: 120 }

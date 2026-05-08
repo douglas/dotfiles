@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import "../../style" as Style
 
 Item {
     id: root
@@ -83,10 +84,10 @@ Item {
 
                             Text {
                                 anchors.centerIn: parent
-                                text: "QS"
+                                text: "NK"
                                 color: t("accent", "#9ccfa0")
-                                font.pixelSize: 13
-                                font.family: "JetBrains Mono"
+                                font.pixelSize: Style.Typography.bodyLarge
+                                font.family: Style.Typography.text
                                 font.weight: Font.DemiBold
                             }
                         }
@@ -96,18 +97,18 @@ Item {
                             spacing: 4
 
                             Text {
-                                text: "Anom Shell for Omarchy setups"
+                                text: "Kurama for Omarchy setups"
                                 color: t("fg", "#eef6ef")
-                                font.pixelSize: 14
-                                font.family: "JetBrains Mono"
+                                font.pixelSize: Style.Typography.titleSmall
+                                font.family: Style.Typography.text
                                 font.weight: Font.DemiBold
                             }
 
                             Text {
                                 text: "A custom Quickshell setup tuned for Omarchy workflows."
                                 color: Qt.alpha(t("muted", "#9fb29f"), 0.74)
-                                font.pixelSize: 9
-                                font.family: "JetBrains Mono"
+                                font.pixelSize: Style.Typography.caption
+                                font.family: Style.Typography.text
                             }
                         }
 
@@ -123,8 +124,8 @@ Item {
                                 anchors.centerIn: parent
                                 text: "MIT"
                                 color: t("accent", "#9ccfa0")
-                                font.pixelSize: 8
-                                font.family: "JetBrains Mono"
+                                font.pixelSize: Style.Typography.micro
+                                font.family: Style.Typography.text
                                 font.weight: Font.DemiBold
                             }
                         }
@@ -134,8 +135,8 @@ Item {
                         Layout.fillWidth: true
                         text: "Launcher, themed settings, media OSD, notifications, bar layouts, tray handling, and shell controls in one compact config."
                         color: Qt.alpha(t("fg", "#eef6ef"), 0.82)
-                        font.pixelSize: 9
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.caption
+                        font.family: Style.Typography.text
                         wrapMode: Text.WordWrap
                     }
 
@@ -155,8 +156,8 @@ Item {
                                 anchors.centerIn: parent
                                 text: "Bar: " + (root.state ? root.state.barStyle : "dock")
                                 color: Qt.alpha(t("fg", "#eef6ef"), 0.84)
-                                font.pixelSize: 8
-                                font.family: "JetBrains Mono"
+                                font.pixelSize: Style.Typography.micro
+                                font.family: Style.Typography.text
                                 font.weight: Font.Medium
                             }
                         }
@@ -173,8 +174,8 @@ Item {
                                 anchors.centerIn: parent
                                 text: "Workspaces: " + (root.state ? root.state.workspaceStyle : "og")
                                 color: Qt.alpha(t("fg", "#eef6ef"), 0.84)
-                                font.pixelSize: 8
-                                font.family: "JetBrains Mono"
+                                font.pixelSize: Style.Typography.micro
+                                font.family: Style.Typography.text
                                 font.weight: Font.Medium
                             }
                         }
@@ -191,8 +192,8 @@ Item {
                                 anchors.centerIn: parent
                                 text: "OSD: " + (root.state ? root.state.osdPosition : "bottom-center")
                                 color: Qt.alpha(t("fg", "#eef6ef"), 0.84)
-                                font.pixelSize: 8
-                                font.family: "JetBrains Mono"
+                                font.pixelSize: Style.Typography.micro
+                                font.family: Style.Typography.text
                                 font.weight: Font.Medium
                             }
                         }
@@ -217,37 +218,37 @@ Item {
                     Text {
                         text: "Config Root"
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.8)
-                        font.pixelSize: 8
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.micro
+                        font.family: Style.Typography.text
                     }
 
                     Text {
                         text: root.configDir
                         color: t("fg", "#eef6ef")
-                        font.pixelSize: 10
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.label
+                        font.family: Style.Typography.text
                         font.weight: Font.DemiBold
                     }
 
                     Text {
                         text: "Notification position: " + (root.state ? root.state.notificationPosition : "top-center")
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.72)
-                        font.pixelSize: 8
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.micro
+                        font.family: Style.Typography.text
                     }
 
                     Text {
                         text: "Bar position: " + (root.state ? root.state.barPosition : "top")
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.72)
-                        font.pixelSize: 8
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.micro
+                        font.family: Style.Typography.text
                     }
 
                     Text {
                         text: "Launcher icon: " + (root.state ? root.state.launcherIconPreset : "omarchy")
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.72)
-                        font.pixelSize: 8
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.micro
+                        font.family: Style.Typography.text
                     }
                 }
             }
@@ -270,8 +271,8 @@ Item {
                         id: mitTitle
                         text: "MIT License"
                         color: t("fg", "#eef6ef")
-                        font.pixelSize: 11
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.bodySmall
+                        font.family: Style.Typography.text
                         font.weight: Font.DemiBold
                     }
 
@@ -280,8 +281,8 @@ Item {
                         Layout.fillWidth: true
                         text: "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software.\n\nThe software is provided \"as is\", without warranty of any kind, express or implied, including but not limited to merchantability, fitness for a particular purpose, and noninfringement."
                         color: Qt.alpha(t("muted", "#9fb29f"), 0.68)
-                        font.pixelSize: 8
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.micro
+                        font.family: Style.Typography.text
                         wrapMode: Text.WordWrap
                         lineHeight: 1.18
                         lineHeightMode: Text.ProportionalHeight
@@ -309,8 +310,8 @@ Item {
                         anchors.centerIn: parent
                         text: "Open config folder"
                         color: t("fg", "#eef6ef")
-                        font.pixelSize: 9
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.caption
+                        font.family: Style.Typography.text
                         font.weight: Font.DemiBold
                     }
 
@@ -338,8 +339,8 @@ Item {
                         anchors.centerIn: parent
                         text: "Open shell.qml"
                         color: Qt.alpha(t("fg", "#eef6ef"), 0.8)
-                        font.pixelSize: 9
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.caption
+                        font.family: Style.Typography.text
                         font.weight: Font.Medium
                     }
 

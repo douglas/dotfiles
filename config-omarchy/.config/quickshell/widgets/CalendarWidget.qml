@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
+import "../style" as Style
 
 PanelWindow {
     // no easing for direct drag
@@ -26,7 +27,7 @@ PanelWindow {
     property real dragTop: 0
     readonly property int cardW: 220
     readonly property int cardH: 220
-    readonly property string textFont: "JetBrainsMono Nerd Font Propo"
+    readonly property string textFont: Style.Typography.monoPropo
     readonly property real detectedScale: screen && screen.devicePixelRatio > 0 ? screen.devicePixelRatio : 1
     readonly property real scaleFactor: Math.max(1, uiScale > 0 ? uiScale : detectedScale * uiScaleMultiplier)
     readonly property int safeMargin: px(24)
@@ -136,7 +137,7 @@ PanelWindow {
                     Text {
                         text: Qt.formatDate(root.now, "MMMM").toUpperCase()
                         color: cFg
-                        font.pixelSize: 11
+                        font.pixelSize: Style.Typography.bodySmall
                         font.family: root.textFont
                         font.weight: Font.DemiBold
                     }
@@ -144,7 +145,7 @@ PanelWindow {
                     Text {
                         text: Qt.formatDate(root.now, "yyyy")
                         color: cMuted
-                        font.pixelSize: 9
+                        font.pixelSize: Style.Typography.caption
                         font.family: root.textFont
                     }
 
@@ -169,7 +170,7 @@ PanelWindow {
                                 anchors.centerIn: parent
                                 text: modelData
                                 color: cDim
-                                font.pixelSize: 7
+                                font.pixelSize: Style.Typography.nano
                                 font.family: root.textFont
                             }
 
@@ -204,7 +205,7 @@ PanelWindow {
                                 anchors.centerIn: parent
                                 text: inMonth ? String(day) : ""
                                 color: isToday ? cBg : (inMonth ? cFg : cDim)
-                                font.pixelSize: 10
+                                font.pixelSize: Style.Typography.label
                                 font.family: root.textFont
                             }
 

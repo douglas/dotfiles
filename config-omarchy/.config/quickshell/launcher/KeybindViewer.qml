@@ -4,6 +4,7 @@ import QtQuick.Controls
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Io
+import "../style" as Style
 
 PanelWindow {
     id: root
@@ -157,16 +158,16 @@ PanelWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         text:           "󰌌"
                         color:          theme.accent || "#89b4fa"
-                        font.pixelSize: 11
-                        font.family:    "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.bodySmall
+                        font.family: Style.Typography.mono
                     }
 
                     Text {
                         anchors.verticalCenter: parent.verticalCenter
                         text:           "Keybindings"
                         color:          theme.fg || "#cdd6f4"
-                        font.pixelSize: 11
-                        font.family:    "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.bodySmall
+                        font.family: Style.Typography.mono
                         font.weight:    Font.Medium
                     }
 
@@ -176,15 +177,15 @@ PanelWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         text:           root.filteredBindings.length + " bindings"
                         color:          Qt.alpha(theme.muted || "#585b70", 0.45)
-                        font.pixelSize: 8
-                        font.family:    "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.micro
+                        font.family: Style.Typography.mono
                     }
 
                     Text {
                         anchors.verticalCenter: parent.verticalCenter
                         text:           "✕"
                         color:          Qt.alpha(theme.muted || "#585b70", 0.5)
-                        font.pixelSize: 8
+                        font.pixelSize: Style.Typography.micro
                         MouseArea {
                             anchors.fill:    parent
                             anchors.margins: -6
@@ -212,16 +213,16 @@ PanelWindow {
                             anchors.verticalCenter: parent.verticalCenter
                             text:           "󰍉"
                             color:          theme.accent || "#89b4fa"
-                            font.pixelSize: 11
-                            font.family:    "JetBrainsMono Nerd Font"
+                            font.pixelSize: Style.Typography.bodySmall
+                            font.family: Style.Typography.mono
                         }
 
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
                             text:           root.searchText
                             color:          theme.fg || "#cdd6f4"
-                            font.pixelSize: 11
-                            font.family:    "JetBrainsMono Nerd Font"
+                            font.pixelSize: Style.Typography.bodySmall
+                            font.family: Style.Typography.mono
                         }
 
                         Rectangle {
@@ -243,7 +244,7 @@ PanelWindow {
                             visible:        root.searchText !== ""
                             text:           "✕"
                             color:          Qt.alpha(theme.muted || "#585b70", 0.5)
-                            font.pixelSize: 8
+                            font.pixelSize: Style.Typography.micro
                             MouseArea {
                                 anchors.fill:    parent
                                 anchors.margins: -4
@@ -259,15 +260,15 @@ PanelWindow {
                     Text {
                         text:           root.filteredBindings.length + " results"
                         color:          Qt.alpha(theme.muted || "#585b70", 0.4)
-                        font.pixelSize: 8
-                        font.family:    "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.micro
+                        font.family: Style.Typography.mono
                     }
                     Item { Layout.fillWidth: true }
                     Text {
                         text:           "↑↓ nav  esc close"
                         color:          Qt.alpha(theme.muted || "#585b70", 0.3)
-                        font.pixelSize: 8
-                        font.family:    "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.micro
+                        font.family: Style.Typography.mono
                     }
                 }
 
@@ -280,8 +281,8 @@ PanelWindow {
                         anchors.centerIn: parent
                         text:             "Loading keybindings…"
                         color:            Qt.alpha(theme.muted || "#585b70", 0.4)
-                        font.pixelSize:   10
-                        font.family:      "JetBrainsMono Nerd Font"
+                        font.pixelSize:   Style.Typography.label
+                        font.family: Style.Typography.mono
                     }
                 }
 
@@ -379,8 +380,8 @@ PanelWindow {
                                         color:            isSelected
                                             ? (theme.accent || "#89b4fa")
                                             : Qt.alpha(theme.fg || "#cdd6f4", 0.8)
-                                        font.pixelSize:   9
-                                        font.family:      "JetBrainsMono Nerd Font"
+                                        font.pixelSize:   Style.Typography.caption
+                                        font.family: Style.Typography.mono
                                         font.weight:      Font.Medium
 
                                         Behavior on color {
@@ -393,8 +394,8 @@ PanelWindow {
                                     anchors.verticalCenter: parent.verticalCenter
                                     text:           "  →  "
                                     color:          Qt.alpha(theme.muted || "#585b70", 0.4)
-                                    font.pixelSize: 9
-                                    font.family:    "JetBrainsMono Nerd Font"
+                                    font.pixelSize: Style.Typography.caption
+                                    font.family: Style.Typography.mono
                                 }
 
                                 Text {
@@ -403,8 +404,8 @@ PanelWindow {
                                     color:          isSelected
                                         ? (theme.fg || "#cdd6f4")
                                         : Qt.alpha(theme.fg || "#cdd6f4", 0.65)
-                                    font.pixelSize: 10
-                                    font.family:    "JetBrainsMono Nerd Font"
+                                    font.pixelSize: Style.Typography.label
+                                    font.family: Style.Typography.mono
                                     elide:          Text.ElideRight
                                     width:          listView.width - comboText.implicitWidth - 80
 

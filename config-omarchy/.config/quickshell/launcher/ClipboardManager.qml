@@ -3,66 +3,80 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
+import "../style" as Style
 
 PanelWindow {
     id: root
 
     property bool showing: false
-    property var theme: ({})
-    property real uiScale: Math.max(1.0, Math.min(1.4, Math.min(width / 1920, height / 1080) * 1.25))
+    property var theme: ({
+    })
+    property real uiScale: Math.max(1, Math.min(1.4, Math.min(width / 1920, height / 1080) * 1.25))
+    property string searchText: ""
 
-    anchors { left: true; right: true; top: true; bottom: true }
     color: "transparent"
     exclusiveZone: 0
     visible: showing
-
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
+    onShowingChanged: {
+        if (showing) {
+            searchText = "";
+            service.refresh();
+            focusTimer.start();
+        }
+    }
+
+    anchors {
+        left: true
+        right: true
+        top: true
+        bottom: true
+    }
 
     ClipboardService {
         id: service
+
         active: root.showing
         query: root.searchText
     }
 
-    property string searchText: ""
-
     FocusScope {
         id: focusScope
+
         anchors.fill: parent
         focus: true
-
-        Keys.onPressed: e => {
+        Keys.onPressed: (e) => {
             if (e.key === Qt.Key_Escape) {
                 if (root.searchText.length > 0)
-                    root.searchText = ""
+                    root.searchText = "";
                 else
-                    root.showing = false
-                e.accepted = true
+                    root.showing = false;
+                e.accepted = true;
             } else if (e.key === Qt.Key_Down) {
-                service.moveDown()
-                listView.positionViewAtIndex(service.selectedIdx, ListView.Contain)
-                e.accepted = true
+                service.moveDown();
+                listView.positionViewAtIndex(service.selectedIdx, ListView.Contain);
+                e.accepted = true;
             } else if (e.key === Qt.Key_Up) {
-                service.moveUp()
-                listView.positionViewAtIndex(service.selectedIdx, ListView.Contain)
-                e.accepted = true
+                service.moveUp();
+                listView.positionViewAtIndex(service.selectedIdx, ListView.Contain);
+                e.accepted = true;
             } else if (e.key === Qt.Key_Return || e.key === Qt.Key_Enter) {
-                service.copySelected()
-                root.showing = false
-                e.accepted = true
+                service.copySelected();
+                root.showing = false;
+                e.accepted = true;
             } else if (e.key === Qt.Key_Delete) {
-                service.deleteSelected()
-                e.accepted = true
+                service.deleteSelected();
+                e.accepted = true;
             } else if (e.key === Qt.Key_Backspace) {
                 if (root.searchText.length > 0)
-                    root.searchText = root.searchText.slice(0, -1)
+                    root.searchText = root.searchText.slice(0, -1);
                 else
-                    root.showing = false
-                e.accepted = true
+                    root.showing = false;
+                e.accepted = true;
             } else if (e.text && e.text.length === 1 && e.text.charCodeAt(0) >= 32) {
-                root.searchText += e.text
-                e.accepted = true
+                root.searchText += e.text;
+                e.accepted = true;
             }
         }
 
@@ -73,6 +87,7 @@ PanelWindow {
 
         Rectangle {
             id: card
+
             anchors.centerIn: parent
             width: 700
             height: 440
@@ -83,21 +98,12 @@ PanelWindow {
             border.color: theme.dim || "#45475a"
             border.width: 1
             clip: true
-
             opacity: root.showing ? 1 : 0
-            transform: Translate {
-                y: root.showing ? 0 : 20
-                Behavior on y {
-                    NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
-                }
-            }
-            Behavior on opacity {
-                NumberAnimation { duration: 180; easing.type: Easing.OutCubic }
-            }
 
             MouseArea {
                 anchors.fill: parent
-                onClicked: {}
+                onClicked: {
+                }
             }
 
             ColumnLayout {
@@ -113,20 +119,22 @@ PanelWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         text: "󰆈"
                         color: theme.accent || "#89b4fa"
-                        font.pixelSize: 11
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.bodySmall
+                        font.family: Style.Typography.mono
                     }
 
                     Text {
                         anchors.verticalCenter: parent.verticalCenter
                         text: "Clipboard"
                         color: theme.fg || "#cdd6f4"
-                        font.pixelSize: 11
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.bodySmall
+                        font.family: Style.Typography.mono
                         font.weight: Font.Medium
                     }
 
-                    Item { Layout.fillWidth: true }
+                    Item {
+                        Layout.fillWidth: true
+                    }
 
                     Rectangle {
                         height: 22
@@ -134,15 +142,16 @@ PanelWindow {
                         radius: 11
                         color: Qt.alpha(theme.red || "#f38ba8", 0.16)
                         border.width: 1
-                        border.color: Qt.alpha(theme.red || "#f38ba8", 0.30)
+                        border.color: Qt.alpha(theme.red || "#f38ba8", 0.3)
 
                         Text {
                             id: clearAllText
+
                             anchors.centerIn: parent
                             text: "clear all"
                             color: Qt.alpha(theme.red || "#f38ba8", 0.95)
-                            font.pixelSize: 9
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: Style.Typography.caption
+                            font.family: Style.Typography.mono
                             font.weight: Font.Medium
                         }
 
@@ -151,14 +160,15 @@ PanelWindow {
                             cursorShape: Qt.PointingHandCursor
                             onClicked: service.clearAll()
                         }
+
                     }
 
                     Text {
                         anchors.verticalCenter: parent.verticalCenter
                         text: "✕"
                         color: Qt.alpha(theme.muted || "#585b70", 0.6)
-                        font.pixelSize: 8
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.micro
+                        font.family: Style.Typography.mono
 
                         MouseArea {
                             anchors.fill: parent
@@ -166,7 +176,9 @@ PanelWindow {
                             cursorShape: Qt.PointingHandCursor
                             onClicked: root.showing = false
                         }
+
                     }
+
                 }
 
                 Rectangle {
@@ -187,16 +199,16 @@ PanelWindow {
                             anchors.verticalCenter: parent.verticalCenter
                             text: "󰍉"
                             color: theme.accent || "#89b4fa"
-                            font.pixelSize: 11
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: Style.Typography.bodySmall
+                            font.family: Style.Typography.mono
                         }
 
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
                             text: root.searchText
                             color: theme.fg || "#cdd6f4"
-                            font.pixelSize: 11
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: Style.Typography.bodySmall
+                            font.family: Style.Typography.mono
                         }
 
                         Rectangle {
@@ -205,12 +217,25 @@ PanelWindow {
                             height: 13
                             radius: 1
                             color: theme.accent || "#89b4fa"
+
                             SequentialAnimation on opacity {
                                 loops: Animation.Infinite
                                 running: root.showing
-                                NumberAnimation { to: 0; duration: 530; easing.type: Easing.InOutSine }
-                                NumberAnimation { to: 1; duration: 530; easing.type: Easing.InOutSine }
+
+                                NumberAnimation {
+                                    to: 0
+                                    duration: 530
+                                    easing.type: Easing.InOutSine
+                                }
+
+                                NumberAnimation {
+                                    to: 1
+                                    duration: 530
+                                    easing.type: Easing.InOutSine
+                                }
+
                             }
+
                         }
 
                         Text {
@@ -218,33 +243,43 @@ PanelWindow {
                             visible: root.searchText !== ""
                             text: "✕"
                             color: Qt.alpha(theme.muted || "#585b70", 0.5)
-                            font.pixelSize: 8
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: Style.Typography.micro
+                            font.family: Style.Typography.mono
+
                             MouseArea {
                                 anchors.fill: parent
                                 anchors.margins: -4
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: root.searchText = ""
                             }
+
                         }
+
                     }
+
                 }
 
                 Row {
                     Layout.fillWidth: true
+
                     Text {
                         text: service.filtered.length + " items"
                         color: Qt.alpha(theme.muted || "#585b70", 0.45)
-                        font.pixelSize: 8
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.micro
+                        font.family: Style.Typography.mono
                     }
-                    Item { Layout.fillWidth: true }
+
+                    Item {
+                        Layout.fillWidth: true
+                    }
+
                     Text {
                         text: "↵ copy  del remove  esc close"
                         color: Qt.alpha(theme.muted || "#585b70", 0.35)
-                        font.pixelSize: 8
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.micro
+                        font.family: Style.Typography.mono
                     }
+
                 }
 
                 Item {
@@ -256,9 +291,10 @@ PanelWindow {
                         anchors.centerIn: parent
                         text: "Loading clipboard history..."
                         color: Qt.alpha(theme.muted || "#585b70", 0.5)
-                        font.pixelSize: 10
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.label
+                        font.family: Style.Typography.mono
                     }
+
                 }
 
                 Item {
@@ -273,9 +309,10 @@ PanelWindow {
                         width: parent.width - 40
                         wrapMode: Text.Wrap
                         color: Qt.alpha(theme.red || "#f38ba8", 0.85)
-                        font.pixelSize: 9
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.caption
+                        font.family: Style.Typography.mono
                     }
+
                 }
 
                 RowLayout {
@@ -289,6 +326,7 @@ PanelWindow {
 
                         ListView {
                             id: listView
+
                             anchors.fill: parent
                             visible: !service.loading && service.backendError === "" && service.filtered.length > 0
                             model: service.filtered
@@ -305,11 +343,12 @@ PanelWindow {
                                 selected: index === service.selectedIdx
                                 theme: root.theme
                                 onClicked: {
-                                    service.select(index)
-                                    listView.positionViewAtIndex(service.selectedIdx, ListView.Contain)
+                                    service.select(index);
+                                    listView.positionViewAtIndex(service.selectedIdx, ListView.Contain);
                                 }
                                 onRemoveRequested: service.deleteEntry(modelData)
                             }
+
                         }
 
                         Item {
@@ -320,10 +359,12 @@ PanelWindow {
                                 anchors.centerIn: parent
                                 text: root.searchText.length > 0 ? "No matches found" : "Clipboard is empty"
                                 color: Qt.alpha(theme.muted || "#585b70", 0.5)
-                                font.pixelSize: 10
-                                font.family: "JetBrainsMono Nerd Font"
+                                font.pixelSize: Style.Typography.label
+                                font.family: Style.Typography.mono
                             }
+
                         }
+
                     }
 
                     Rectangle {
@@ -335,10 +376,6 @@ PanelWindow {
                         border.width: 1
                         border.color: Qt.alpha(theme.accent || "#89b4fa", 0.22)
                         clip: true
-
-                        Behavior on Layout.preferredWidth {
-                            NumberAnimation { duration: 130; easing.type: Easing.OutCubic }
-                        }
 
                         Column {
                             anchors.fill: parent
@@ -361,40 +398,70 @@ PanelWindow {
                                     smooth: true
                                     cache: false
                                 }
+
                             }
 
                             Text {
                                 text: "Image Preview"
                                 color: theme.fg || "#cdd6f4"
-                                font.pixelSize: 9
-                                font.family: "JetBrainsMono Nerd Font"
+                                font.pixelSize: Style.Typography.caption
+                                font.family: Style.Typography.mono
                                 font.weight: Font.Medium
                             }
 
                             Text {
                                 text: service.previewMime
                                 color: Qt.alpha(theme.muted || "#585b70", 0.7)
-                                font.pixelSize: 8
-                                font.family: "JetBrainsMono Nerd Font"
+                                font.pixelSize: Style.Typography.micro
+                                font.family: Style.Typography.mono
                             }
-                        }
-                    }
-                }
-            }
-        }
-    }
 
-    onShowingChanged: {
-        if (showing) {
-            searchText = ""
-            service.refresh()
-            focusTimer.start()
+                        }
+
+                        Behavior on Layout.preferredWidth {
+                            NumberAnimation {
+                                duration: 130
+                                easing.type: Easing.OutCubic
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            transform: Translate {
+                y: root.showing ? 0 : 20
+
+                Behavior on y {
+                    NumberAnimation {
+                        duration: 220
+                        easing.type: Easing.OutCubic
+                    }
+
+                }
+
+            }
+
+            Behavior on opacity {
+                NumberAnimation {
+                    duration: 180
+                    easing.type: Easing.OutCubic
+                }
+
+            }
+
         }
+
     }
 
     Timer {
         id: focusTimer
+
         interval: 50
         onTriggered: focusScope.forceActiveFocus()
     }
+
 }

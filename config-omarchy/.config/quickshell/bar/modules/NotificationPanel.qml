@@ -4,6 +4,7 @@ import QtQuick.Controls
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Services.Notifications
+import "../../style" as Style
 
 Item {
     id: root
@@ -211,8 +212,8 @@ Item {
                     Text {
                         text: toastWin.latest ? (toastWin.latest.appName || "") : ""
                         color: Qt.rgba(1,1,1,0.38)
-                        font.pixelSize: 11
-                        font.family: "JetBrains Mono"
+                        font.pixelSize: Style.Typography.bodySmall
+                        font.family: Style.Typography.text
                     }
 
                     Rectangle { width: 1; height: 10; color: Qt.rgba(1,1,1,0.12) }
@@ -220,9 +221,9 @@ Item {
                     Text {
                         text: toastWin.latest ? (toastWin.latest.summary || "") : ""
                         color: t("fg", "#cdd6f4")
-                        font.pixelSize: 12
+                        font.pixelSize: Style.Typography.body
                         font.weight: Font.DemiBold
-                        font.family: "JetBrains Mono"
+                        font.family: Style.Typography.text
                         elide: Text.ElideRight
                         Layout.maximumWidth: 300
                     }
@@ -237,14 +238,14 @@ Item {
                             anchors.centerIn: parent
                             text: "+" + (toastWin.visibleToasts.length - 1)
                             color: Qt.rgba(1,1,1,0.35)
-                            font.pixelSize: 10
-                            font.family: "JetBrains Mono"
+                            font.pixelSize: Style.Typography.label
+                            font.family: Style.Typography.text
                         }
                     }
 
                     Text {
                         text: "✕"
-                        font.pixelSize: 9
+                        font.pixelSize: Style.Typography.caption
                         color: xhov.containsMouse ? t("fg", "#cdd6f4") : Qt.rgba(1,1,1,0.2)
                         Behavior on color { ColorAnimation { duration: 80 } }
                         MouseArea {
@@ -293,8 +294,8 @@ Item {
                                 text: modelData.text
                                 color: hudActMa.containsMouse
                                     ? t("bg", "#1e1e2e") : t("fg", "#cdd6f4")
-                                font.pixelSize: 11
-                                font.family: "JetBrains Mono"
+                                font.pixelSize: Style.Typography.bodySmall
+                                font.family: Style.Typography.text
                                 Behavior on color { ColorAnimation { duration: 80 } }
                             }
                             MouseArea {
@@ -366,9 +367,9 @@ Item {
                         Text {
                             text: "Notifications"
                             color: t("fg", "#cdd6f4")
-                            font.pixelSize: 10
+                            font.pixelSize: Style.Typography.label
                             font.weight: Font.DemiBold
-                            font.family: "JetBrains Mono"
+                            font.family: Style.Typography.text
                         }
 
                         Rectangle {
@@ -382,9 +383,9 @@ Item {
                                 anchors.centerIn: parent
                                 text: notifServer.notifications.length
                                 color: t("accent", "#89b4fa")
-                                font.pixelSize: 8
+                                font.pixelSize: Style.Typography.micro
                                 font.weight: Font.Bold
-                                font.family: "JetBrains Mono"
+                                font.family: Style.Typography.text
                             }
                         }
 
@@ -411,8 +412,8 @@ Item {
                                 color: grpHov.containsMouse || root.groupedView
                                     ? t("accent", "#89b4fa")
                                     : Qt.alpha(t("fg", "#cdd6f4"), 0.70)
-                                font.pixelSize: 8
-                                font.family: "JetBrains Mono"
+                                font.pixelSize: Style.Typography.micro
+                                font.family: Style.Typography.text
                             }
 
                             MouseArea {
@@ -446,8 +447,8 @@ Item {
                                 color: clrHov.containsMouse
                                     ? t("red", "#f38ba8")
                                     : Qt.alpha(t("fg", "#cdd6f4"), 0.70)
-                                font.pixelSize: 8
-                                font.family: "JetBrains Mono"
+                                font.pixelSize: Style.Typography.micro
+                                font.family: Style.Typography.text
                                 Behavior on color { ColorAnimation { duration: 100 } }
                             }
 
@@ -502,8 +503,8 @@ Item {
                                     anchors.centerIn: parent
                                     text: modelData
                                     color: active ? t("accent", "#89b4fa") : Qt.alpha(t("fg", "#cdd6f4"), 0.72)
-                                    font.pixelSize: 8
-                                    font.family: "JetBrains Mono"
+                                    font.pixelSize: Style.Typography.micro
+                                    font.family: Style.Typography.text
                                 }
 
                                 MouseArea {
@@ -683,8 +684,8 @@ Item {
                                 Text {
                                     text: latest.appName
                                     color: Qt.rgba(1,1,1,0.3)
-                                    font.pixelSize: 10
-                                    font.family: "JetBrains Mono"
+                                    font.pixelSize: Style.Typography.label
+                                    font.family: Style.Typography.text
                                     Layout.fillWidth: true
                                     elide: Text.ElideRight
                                 }
@@ -700,15 +701,15 @@ Item {
                                         anchors.centerIn: parent
                                         text: modelData.count
                                         color: t("accent", "#89b4fa")
-                                        font.pixelSize: 8
-                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: Style.Typography.micro
+                                        font.family: Style.Typography.text
                                         font.weight: Font.Bold
                                     }
                                 }
 
                                 Text {
                                     text: "✕"
-                                    font.pixelSize: 9
+                                    font.pixelSize: Style.Typography.caption
                                     color: dxhov.containsMouse
                                         ? t("red", "#f38ba8") : Qt.rgba(1,1,1,0.18)
                                     Behavior on color { ColorAnimation { duration: 80 } }
@@ -728,9 +729,9 @@ Item {
                                 Layout.fillWidth: true
                                 text: latest.summary || ""
                                 color: t("fg", "#cdd6f4")
-                                font.pixelSize: 12
+                                font.pixelSize: Style.Typography.body
                                 font.weight: Font.DemiBold
-                                font.family: "JetBrains Mono"
+                                font.family: Style.Typography.text
                                 elide: Text.ElideRight
                             }
 
@@ -740,8 +741,8 @@ Item {
                                 Layout.fillWidth: true
                                 text: latest.body || ""
                                 color: Qt.rgba(1,1,1,0.38)
-                                font.pixelSize: 11
-                                font.family: "JetBrains Mono"
+                                font.pixelSize: Style.Typography.bodySmall
+                                font.family: Style.Typography.text
                                 wrapMode: Text.WordWrap
                                 maximumLineCount: 2
                                 elide: Text.ElideRight
@@ -752,8 +753,8 @@ Item {
                                 Layout.fillWidth: true
                                 text: "Collapsed " + modelData.count + " notifications from " + latest.appName
                                 color: Qt.alpha(t("fg", "#cdd6f4"), 0.44)
-                                font.pixelSize: 9
-                                font.family: "JetBrains Mono"
+                                font.pixelSize: Style.Typography.caption
+                                font.family: Style.Typography.text
                                 elide: Text.ElideRight
                             }
 
@@ -778,8 +779,8 @@ Item {
                                             text: modelData.text
                                             color: pAMa.containsMouse
                                                 ? t("bg", "#1e1e2e") : t("fg", "#cdd6f4")
-                                            font.pixelSize: 10
-                                            font.family: "JetBrains Mono"
+                                            font.pixelSize: Style.Typography.label
+                                            font.family: Style.Typography.text
                                             Behavior on color { ColorAnimation { duration: 80 } }
                                         }
                                         MouseArea {
@@ -807,16 +808,16 @@ Item {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: "󰂛"
                             color: t("muted", "#585b70")
-                            font.pixelSize: 30
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: Style.Typography.display3Xl
+                            font.family: Style.Typography.mono
                             opacity: 0.5
                         }
                         Text {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: root.appFilter !== "" ? "no notifications for filter" : "no notifications"
                             color: t("muted", "#585b70")
-                            font.pixelSize: 11
-                            font.family: "JetBrains Mono"
+                            font.pixelSize: Style.Typography.bodySmall
+                            font.family: Style.Typography.text
                             opacity: 0.5
                         }
                     }

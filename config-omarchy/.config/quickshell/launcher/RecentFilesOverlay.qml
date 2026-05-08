@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
+import "../style" as Style
 
 FloatingWindow {
     id: root
@@ -320,15 +321,15 @@ FloatingWindow {
                     Text {
                         text: root.activeProfile.icon
                         color: theme.accent || "#89b4fa"
-                        font.pixelSize: 13
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.bodyLarge
+                        font.family: Style.Typography.mono
                     }
 
                     Text {
                         text: root.activeProfile.title
                         color: theme.fg || "#cdd6f4"
-                        font.pixelSize: 13
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.bodyLarge
+                        font.family: Style.Typography.mono
                         font.weight: Font.Medium
                     }
 
@@ -339,8 +340,8 @@ FloatingWindow {
                             ? root.activeProfile.singular
                             : root.activeProfile.plural)
                         color: Qt.alpha(theme.muted || "#585b70", 0.55)
-                        font.pixelSize: 9
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.caption
+                        font.family: Style.Typography.mono
                     }
 
                     Rectangle {
@@ -359,8 +360,8 @@ FloatingWindow {
                             color: root.settingsOpen
                                 ? (theme.accent || "#89b4fa")
                                 : Qt.alpha(theme.muted || "#585b70", 0.75)
-                            font.pixelSize: 10
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: Style.Typography.label
+                            font.family: Style.Typography.mono
                         }
 
                         MouseArea {
@@ -373,8 +374,8 @@ FloatingWindow {
                     Text {
                         text: "✕"
                         color: Qt.alpha(theme.muted || "#585b70", 0.7)
-                        font.pixelSize: 9
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.caption
+                        font.family: Style.Typography.mono
 
                         MouseArea {
                             anchors.fill: parent
@@ -394,8 +395,8 @@ FloatingWindow {
                         anchors.centerIn: parent
                         text: fileScanner.running ? root.activeProfile.loadingText : root.activeProfile.emptyText
                         color: Qt.alpha(theme.muted || "#585b70", 0.6)
-                        font.pixelSize: 10
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.label
+                        font.family: Style.Typography.mono
                     }
                 }
 
@@ -475,8 +476,8 @@ FloatingWindow {
                                                 anchors.horizontalCenter: parent.horizontalCenter
                                                 text: root.fileIcon(root.selectedFile)
                                                 color: theme.accent || "#89b4fa"
-                                                font.pixelSize: 72
-                                                font.family: "JetBrainsMono Nerd Font"
+                                                font.pixelSize: Style.Typography.display6Xl
+                                                font.family: Style.Typography.mono
                                             }
 
                                             Text {
@@ -485,8 +486,8 @@ FloatingWindow {
                                                 color: theme.fg || "#cdd6f4"
                                                 horizontalAlignment: Text.AlignHCenter
                                                 elide: Text.ElideMiddle
-                                                font.pixelSize: 14
-                                                font.family: "JetBrainsMono Nerd Font"
+                                                font.pixelSize: Style.Typography.titleSmall
+                                                font.family: Style.Typography.mono
                                                 font.weight: Font.DemiBold
                                             }
 
@@ -497,8 +498,8 @@ FloatingWindow {
                                                     : "File"
                                                 color: Qt.alpha(theme.muted || "#585b70", 0.72)
                                                 horizontalAlignment: Text.AlignHCenter
-                                                font.pixelSize: 10
-                                                font.family: "JetBrainsMono Nerd Font"
+                                                font.pixelSize: Style.Typography.label
+                                                font.family: Style.Typography.mono
                                             }
                                         }
                                     }
@@ -535,16 +536,16 @@ FloatingWindow {
                                     Layout.fillWidth: true
                                     text: root.selectedFile.name || ""
                                     color: theme.fg || "#cdd6f4"
-                                    font.pixelSize: 11
-                                    font.family: "JetBrainsMono Nerd Font"
+                                    font.pixelSize: Style.Typography.bodySmall
+                                    font.family: Style.Typography.mono
                                     elide: Text.ElideMiddle
                                 }
 
                                 Text {
                                     text: (root.selectedIdx + 1) + " / " + root.files.length
                                     color: Qt.alpha(theme.muted || "#585b70", 0.72)
-                                    font.pixelSize: 9
-                                    font.family: "JetBrainsMono Nerd Font"
+                                    font.pixelSize: Style.Typography.caption
+                                    font.family: Style.Typography.mono
                                 }
                             }
                         }
@@ -644,8 +645,8 @@ FloatingWindow {
                                                     visible: delegateItem.fileData.isImage !== true
                                                     text: root.fileIcon(delegateItem.fileData)
                                                     color: theme.accent || "#89b4fa"
-                                                    font.pixelSize: 28
-                                                    font.family: "JetBrainsMono Nerd Font"
+                                                    font.pixelSize: Style.Typography.display2Xl
+                                                    font.family: Style.Typography.mono
                                                 }
                                             }
 
@@ -660,8 +661,8 @@ FloatingWindow {
                                                     color: selected
                                                         ? (theme.accent || "#89b4fa")
                                                         : (theme.fg || "#cdd6f4")
-                                                    font.pixelSize: 9
-                                                    font.family: "JetBrainsMono Nerd Font"
+                                                    font.pixelSize: Style.Typography.caption
+                                                    font.family: Style.Typography.mono
                                                     elide: Text.ElideMiddle
                                                     maximumLineCount: 2
                                                     wrapMode: Text.WrapAnywhere
@@ -672,8 +673,8 @@ FloatingWindow {
                                                 Text {
                                                     text: "#" + (index + 1)
                                                     color: Qt.alpha(theme.muted || "#585b70", 0.62)
-                                                    font.pixelSize: 8
-                                                    font.family: "JetBrainsMono Nerd Font"
+                                                    font.pixelSize: Style.Typography.micro
+                                                    font.family: Style.Typography.mono
                                                 }
                                             }
                                         }
@@ -749,16 +750,16 @@ FloatingWindow {
                             Layout.fillWidth: true
                             text: root.activeProfile.settingLabel
                             color: theme.fg || "#cdd6f4"
-                            font.pixelSize: 10
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: Style.Typography.label
+                            font.family: Style.Typography.mono
                             font.weight: Font.Medium
                         }
 
                         Text {
                             text: root.fileLimit
                             color: theme.accent || "#89b4fa"
-                            font.pixelSize: 12
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: Style.Typography.body
+                            font.family: Style.Typography.mono
                             font.weight: Font.DemiBold
                         }
                     }
@@ -787,8 +788,8 @@ FloatingWindow {
                                     anchors.centerIn: parent
                                     text: modelData.label
                                     color: theme.fg || "#cdd6f4"
-                                    font.pixelSize: 9
-                                    font.family: "JetBrainsMono Nerd Font"
+                                    font.pixelSize: Style.Typography.caption
+                                    font.family: Style.Typography.mono
                                 }
 
                                 MouseArea {

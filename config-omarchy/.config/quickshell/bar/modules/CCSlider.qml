@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import "../../style" as Style
 
 Item {
     property string icon:  ""
@@ -26,8 +27,8 @@ Item {
             Layout.alignment: Qt.AlignVCenter
             text: icon
             color: iconMa.containsMouse ? (c("fg", "#cdd6f4")) : (c("muted", "#585b70"))
-            font.pixelSize: 15
-            font.family: "JetBrainsMono Nerd Font"
+            font.pixelSize: Style.Typography.title
+            font.family: Style.Typography.mono
             Behavior on color { ColorAnimation { duration: 120 } }
 
             MouseArea {

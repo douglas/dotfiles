@@ -4,6 +4,7 @@ import QtQuick.Controls
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Io
+import "../style" as Style
 
 PanelWindow {
     id: root
@@ -218,16 +219,16 @@ done
                         anchors.verticalCenter: parent.verticalCenter
                         text: ""
                         color: theme.accent || "#89b4fa"
-                        font.pixelSize: 11
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.bodySmall
+                        font.family: Style.Typography.mono
                     }
 
                     Text {
                         anchors.verticalCenter: parent.verticalCenter
                         text: "Backgrounds"
                         color: theme.fg || "#cdd6f4"
-                        font.pixelSize: 11
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.bodySmall
+                        font.family: Style.Typography.mono
                         font.weight: Font.Medium
                     }
 
@@ -237,15 +238,15 @@ done
                         anchors.verticalCenter: parent.verticalCenter
                         text: root.filteredBackgrounds.length + " images"
                         color: Qt.alpha(theme.muted || "#585b70", 0.45)
-                        font.pixelSize: 8
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.micro
+                        font.family: Style.Typography.mono
                     }
 
                     Text {
                         anchors.verticalCenter: parent.verticalCenter
                         text: "✕"
                         color: Qt.alpha(theme.muted || "#585b70", 0.5)
-                        font.pixelSize: 8
+                        font.pixelSize: Style.Typography.micro
                         MouseArea {
                             anchors.fill: parent
                             anchors.margins: -6
@@ -273,16 +274,16 @@ done
                             anchors.verticalCenter: parent.verticalCenter
                             text: "󰍉"
                             color: theme.accent || "#89b4fa"
-                            font.pixelSize: 11
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: Style.Typography.bodySmall
+                            font.family: Style.Typography.mono
                         }
 
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
                             text: root.searchText
                             color: theme.fg || "#cdd6f4"
-                            font.pixelSize: 11
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: Style.Typography.bodySmall
+                            font.family: Style.Typography.mono
                         }
 
                         Rectangle {
@@ -304,7 +305,7 @@ done
                             visible: root.searchText !== ""
                             text: "✕"
                             color: Qt.alpha(theme.muted || "#585b70", 0.5)
-                            font.pixelSize: 8
+                            font.pixelSize: Style.Typography.micro
                             MouseArea {
                                 anchors.fill: parent
                                 anchors.margins: -4
@@ -318,8 +319,8 @@ done
                 Text {
                     text: "↑↓ nav  ↵ apply  esc close"
                     color: Qt.alpha(theme.muted || "#585b70", 0.3)
-                    font.pixelSize: 8
-                    font.family: "JetBrainsMono Nerd Font"
+                    font.pixelSize: Style.Typography.micro
+                    font.family: Style.Typography.mono
                 }
 
                 Item {
@@ -331,8 +332,8 @@ done
                         anchors.centerIn: parent
                         text: "Loading backgrounds..."
                         color: Qt.alpha(theme.muted || "#585b70", 0.4)
-                        font.pixelSize: 9
-                        font.family: "JetBrainsMono Nerd Font"
+                        font.pixelSize: Style.Typography.caption
+                        font.family: Style.Typography.mono
                     }
                 }
 
@@ -446,8 +447,8 @@ done
                                         anchors.centerIn: parent
                                         text: "󰸌"
                                         color: Qt.alpha(theme.fg || "#cdd6f4", 0.15)
-                                        font.pixelSize: 24
-                                        font.family: "JetBrainsMono Nerd Font"
+                                        font.pixelSize: Style.Typography.displayXl
+                                        font.family: Style.Typography.mono
                                     }
                                 }
                             }
@@ -466,7 +467,7 @@ done
                                     anchors.centerIn: parent
                                     text: "✓"
                                     color: "#000000"
-                                    font.pixelSize: 7
+                                    font.pixelSize: Style.Typography.nano
                                     font.weight: Font.Bold
                                 }
                             }
@@ -488,8 +489,8 @@ done
                                     color: isSelected
                                         ? (theme.accent || "#89b4fa")
                                         : (theme.fg || "#cdd6f4")
-                                    font.pixelSize: 9
-                                    font.family: "JetBrainsMono Nerd Font"
+                                    font.pixelSize: Style.Typography.caption
+                                    font.family: Style.Typography.mono
                                     font.weight: isSelected ? Font.Medium : Font.Normal
                                     elide: Text.ElideRight
 

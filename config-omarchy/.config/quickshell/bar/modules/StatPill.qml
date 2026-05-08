@@ -1,4 +1,5 @@
 import QtQuick
+import "../../style" as Style
 
 Item {
     id: root
@@ -15,8 +16,6 @@ Item {
     implicitHeight: 28
 
     anchors.verticalCenter: parent ? parent.verticalCenter : undefined
-
-    property bool hovered: ma.containsMouse
 
     MouseArea {
         id: ma
@@ -36,18 +35,18 @@ Item {
         Text {
             anchors.verticalCenter: parent.verticalCenter
             text:           label
-            color:          hovered ? accent : textColor
-            font.pixelSize: 10
-            font.family:    "JetBrains Mono"
-            opacity:        hovered ? 1.0 : 0.5
+            color:          textColor
+            font.pixelSize: Style.Typography.label
+            font.family: Style.Typography.text
+            opacity:        0.5
         }
 
         Text {
             anchors.verticalCenter: parent.verticalCenter
             text:           Math.round(value) + "%"
             color:          accent
-            font.pixelSize: 10
-            font.family:    "JetBrains Mono"
+            font.pixelSize: Style.Typography.label
+            font.family: Style.Typography.text
         }
     }
 }
