@@ -13,9 +13,13 @@ Item {
     property string green:  "#a6e3a1"
     property string fg:     "#cdd6f4"
     property bool quietMode: false
+    property bool showUpdateIndicator: true
+    property bool showRecordingIndicator: true
 
     implicitWidth:  indicatorRow.implicitWidth
     implicitHeight: 28
+    visible:        (showUpdateIndicator && updateAvailable)
+        || (showRecordingIndicator && isRecording)
 
     function refreshLiveStatus() {
         liveStatusProc.running = false
@@ -30,7 +34,7 @@ Item {
         command: ["bash", "-c",
             "export PATH=\"$HOME/.local/share/omarchy/bin:$PATH\"; " +
             "omarchy-update-available 2>/dev/null; echo $?"]
-        running: true
+        running: root.showUpdateIndicator
         stdout: SplitParser {
             property string buf: ""
             onRead: data => buf += data + "\n"
@@ -44,7 +48,7 @@ Item {
 
     Timer {
         interval: 21600000 // 6 hours
-        running:  !root.quietMode
+        running:  root.showUpdateIndicator && !root.quietMode
         repeat:   true
         onTriggered: {
             updateChecker.running = false
@@ -59,7 +63,7 @@ Item {
         id: liveStatusProc
         command: ["bash", "-c",
             "pgrep -f '^gpu-screen-recorder' > /dev/null && echo recording || echo stopped"]
-        running: true
+        running: root.showRecordingIndicator
         stdout: SplitParser {
             onRead: data => {
                 root.isRecording = data.trim() === "recording"
@@ -69,12 +73,12 @@ Item {
 
     Timer {
         interval: 1000
-        running:  !root.quietMode
+        running:  root.showRecordingIndicator && !root.quietMode
         repeat:   true
         onTriggered: refreshLiveStatus()
     }
 
-    onQuietModeChanged: if (!quietMode) refreshLiveStatus()
+    onQuietModeChanged: if (!quietMode && showRecordingIndicator) refreshLiveStatus()
 
     // ── shell helpers ─────────────────────────────────────────────
     property int _cmdSeq: 0
@@ -102,7 +106,7 @@ Item {
 
         // update indicator
         Text {
-            visible:                root.updateAvailable
+            visible:                root.showUpdateIndicator && root.updateAvailable
             anchors.verticalCenter: parent.verticalCenter
             text:                   ""
             color:                  root.green
@@ -144,14 +148,40 @@ Item {
         // }
 
         // screen recording indicator — blinking red when active
-        Text {
+        Item {
             id:                     recordingIcon
-            visible:                root.isRecording
+            readonly property int visualSize: Math.max(
+                12,
+                Math.round(Style.Typography.rightClusterIcon / 2) * 2
+            )
+            readonly property int stopSize: Math.max(
+                4,
+                Math.round((visualSize * 0.42) / 2) * 2
+            )
+
+            visible:                root.showRecordingIndicator && root.isRecording
             anchors.verticalCenter: parent.verticalCenter
-            text:                   ""
-            color:                  root.red
-            font.pixelSize:         Style.Typography.barIcon
-            font.family: Style.Typography.mono
+            width:                  visualSize + 4
+            height:                 width
+
+            Rectangle {
+                id:              recordingRing
+                width:           recordingIcon.visualSize
+                height:          width
+                anchors.centerIn: parent
+                radius:          width / 2
+                color:           Qt.alpha(root.red, 0.12)
+                border.color:    root.red
+                border.width:    1
+            }
+
+            Rectangle {
+                anchors.centerIn: recordingRing
+                width:            recordingIcon.stopSize
+                height:           width
+                radius:           Math.max(1, Math.round(width / 4))
+                color:            root.red
+            }
 
             SequentialAnimation on opacity {
                 loops:   Animation.Infinite
