@@ -76,7 +76,20 @@ Item {
     }
 
     function appNameFor(notif) {
-        return (notif?.appName || "Unknown").trim() || "Unknown"
+        const name = (
+            notif?.appName ||
+            notif?.applicationName ||
+            notif?.desktopEntry ||
+            ""
+        ).trim()
+        if (name !== "") return name
+        if ((notif?.summary || "").startsWith("Quickshell")) return "Quickshell"
+        return "Unknown"
+    }
+
+    function osdAppNameFor(notif) {
+        const name = appNameFor(notif)
+        return name === "Unknown" ? "" : name
     }
 
     function osdIconFor(notif) {
@@ -99,6 +112,26 @@ Item {
         return body || appNameFor(notif)
     }
 
+    function defaultActionFor(notif) {
+        const actions = notif?.actions || []
+        for (const action of actions) {
+            if ((action?.identifier || "").toLowerCase() === "default")
+                return action
+        }
+        for (const action of actions) {
+            const text = (action?.text || "").toLowerCase()
+            if (text.includes("open") || text.includes("show") || text.includes("activate"))
+                return action
+        }
+        return null
+    }
+
+    function activateNotification(notif) {
+        const action = defaultActionFor(notif)
+        if (action) action.invoke()
+        root.hideToast(notif.id)
+    }
+
     function showOsd(notif) {
         if (!root.osdService)
             return
@@ -108,7 +141,8 @@ Item {
             osdTitleFor(notif),
             osdSubtitleFor(notif),
             root.isCritical(notif) ? "red" : "accent",
-            appNameFor(notif)
+            osdAppNameFor(notif),
+            function() { root.activateNotification(notif) }
         )
     }
 

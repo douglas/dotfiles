@@ -12,6 +12,8 @@ Item {
     property string valueText: "0%"
     property string artUrl: ""
     property bool mediaMode: false
+    property bool messageMode: false
+    property var messageAction: null
     property int value: 0
     property string tone: "accent"
     property int waveBars: 22
@@ -47,13 +49,15 @@ Item {
         valueText = value + "%"
         artUrl = ""
         mediaMode = false
+        messageMode = false
+        messageAction = null
         tone = toneName
         hideTimer.interval = 1400
         showing = true
         hideTimer.restart()
     }
 
-    function showMessage(iconGlyph, titleText, subtitleText, toneName, valueLabel) {
+    function showMessage(iconGlyph, titleText, subtitleText, toneName, valueLabel, activateAction) {
         icon = iconGlyph
         title = titleText
         subtitle = subtitleText || ""
@@ -61,10 +65,18 @@ Item {
         valueText = valueLabel || ""
         artUrl = ""
         mediaMode = false
+        messageMode = true
+        messageAction = activateAction || null
         tone = toneName || "accent"
-        hideTimer.interval = 1600
+        hideTimer.interval = 4200
         showing = true
         hideTimer.restart()
+    }
+
+    function activateMessage() {
+        if (messageAction)
+            messageAction()
+        showing = false
     }
 
     function _formatSeconds(totalSeconds) {
@@ -94,6 +106,8 @@ Item {
             : _formatSeconds(positionSecs)
         artUrl = snapshot.artUrl
         mediaMode = true
+        messageMode = false
+        messageAction = null
         tone = snapshot.tone
 
         if (restartHide !== false) {

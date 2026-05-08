@@ -16,8 +16,9 @@ Item {
 
     readonly property string osdPosition: settings?.osdPosition || "top-right"
     readonly property real reveal: service && service.showing ? 1 : 0
-    readonly property int panelWidth: px(service && service.mediaMode ? 370 : 320)
-    readonly property int panelHeight: px(service && service.mediaMode ? 100 : 76)
+    readonly property bool messageMode: service && service.messageMode
+    readonly property int panelWidth: px(service && service.mediaMode ? 370 : (messageMode ? 410 : 320))
+    readonly property int panelHeight: px(service && service.mediaMode ? 100 : (messageMode ? 96 : 76))
     readonly property int topOffset: px(58)
     readonly property int edgeOffset: px(18)
 
@@ -127,6 +128,17 @@ Item {
                 }
             }
 
+            MouseArea {
+                anchors.fill: parent
+                z: 10
+                enabled: root.messageMode
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    if (root.service)
+                        root.service.activateMessage()
+                }
+            }
+
             ColumnLayout {
                 anchors.fill: parent
                 anchors.leftMargin: root.px(14)
@@ -180,7 +192,7 @@ Item {
                             Text {
                                 text: root.service ? root.service.icon : "󰕾"
                                 color: root.toneColor()
-                                font.pixelSize: root.px(16)
+                                font.pixelSize: root.px(19)
                                 font.family: "JetBrainsMono Nerd Font"
                             }
 
@@ -188,7 +200,7 @@ Item {
                                 Layout.fillWidth: true
                                 text: root.service ? root.service.title : "OSD"
                                 color: root.t("fg", "#cdd6f4")
-                                font.pixelSize: root.px(13)
+                                font.pixelSize: root.px(15)
                                 font.weight: Font.DemiBold
                                 font.family: "JetBrainsMono Nerd Font"
                                 elide: Text.ElideRight
@@ -197,7 +209,7 @@ Item {
                             Text {
                                 text: root.service ? root.service.valueText : "0%"
                                 color: root.t("muted", "#585b70")
-                                font.pixelSize: root.px(11)
+                                font.pixelSize: root.px(12)
                                 font.weight: Font.Medium
                                 font.family: "JetBrainsMono Nerd Font"
                             }
@@ -208,7 +220,7 @@ Item {
                             Layout.fillWidth: true
                             text: root.service ? root.service.subtitle : ""
                             color: root.t("muted", "#585b70")
-                            font.pixelSize: root.px(10)
+                            font.pixelSize: root.px(12)
                             font.family: "JetBrainsMono Nerd Font"
                             elide: Text.ElideRight
                         }
