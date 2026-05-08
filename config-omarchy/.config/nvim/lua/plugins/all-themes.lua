@@ -22,6 +22,16 @@ return {
 		priority = 1000,
 	},
 	{
+		"bjarneo/vantablack.nvim",
+		lazy = true,
+		priority = 1000,
+	},
+	{
+		"bjarneo/white.nvim",
+		lazy = true,
+		priority = 1000,
+	},
+	{
 		"catppuccin/nvim",
 		name = "catppuccin",
 		lazy = true,
@@ -70,6 +80,21 @@ return {
 	},
 	{
 		"folke/tokyonight.nvim",
+		lazy = true,
+		priority = 1000,
+	},
+	{
+		"OldJobobo/miasma.nvim",
+		lazy = true,
+		priority = 1000,
+	},
+	{
+		"OldJobobo/retro-82.nvim",
+		lazy = true,
+		priority = 1000,
+	},
+	{
+		"omacom-io/lumon.nvim",
 		lazy = true,
 		priority = 1000,
 	},

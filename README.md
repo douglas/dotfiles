@@ -7,10 +7,10 @@ Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/), s
 Each top-level directory is a **stow package** — running `stow <package>` symlinks its contents into `$HOME`. Configs are layered so shared settings live in one place while OS- and hardware-specific overrides stay separate:
 
 ```
-config/                 # Shared app configs (bat, nvim, ghostty, zellij, yazi, etc.)
+config/                 # Shared app configs (bat, ghostty, zellij, yazi, etc.)
 config-linux/           # Linux-only system files (udev rules, systemd hooks)
 config-macos/           # macOS-only configs (Cursor editor)
-config-omarchy/         # Omarchy/Hyprland base (quickshell, waybar, walker, keybindings)
+config-omarchy/         # Omarchy base (nvim, quickshell, waybar, walker, keybindings)
 config-omarchy-desktop/ # Desktop overrides (font size, window dimensions)
 config-omarchy-laptop/  # Laptop overrides (font size, window dimensions)
 config-fedora-desktop/  # Fedora/GNOME desktop (future)
@@ -57,10 +57,10 @@ update-dotfiles
 | `bin` | Scripts in `~/.bin`: `git-cob`, `update-dotfiles`, `install-tools.sh`, and others |
 | `git` | `.gitconfig` and `.gitignore` — delta pager, difftastic, aliases, SSH signing |
 | `zsh` | `.zshrc` and `~/.zsh/` — extensions (git, fzf, networking, Rails), Catppuccin theme |
-| `config` | Shared `~/.config/` for bat, bottom, btop, delta, ghostty, nvim, yazi, zed, zellij, starship |
+| `config` | Shared `~/.config/` for bat, bottom, btop, delta, ghostty, yazi, zed, zellij, starship |
 | `config-linux` | System files: xremap config/service, sleep hook, Keychron udev rule |
 | `config-macos` | Cursor editor settings and keybindings |
-| `config-omarchy` | Hyprland base config, Quickshell, Waybar, Walker, Omarchy hooks and theming |
+| `config-omarchy` | Neovim, Hyprland base config, Quickshell, Waybar, Walker, Omarchy hooks and theming |
 | `config-omarchy-desktop` | Ghostty machine config, Zed settings, Hyprland envs for desktop |
 | `config-omarchy-laptop` | Ghostty machine config, Zed settings, Hyprland envs/monitors for laptop |
 | `config-fedora-desktop` | Fedora/GNOME desktop config (future) |
