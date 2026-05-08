@@ -117,13 +117,21 @@ Item {
     }
 
     MouseArea {
+        id: triggerArea
+
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
         width: Math.max(0, dateText.x + dateText.width)
         height: parent.height
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-        onClicked: agendaCalendar.showing = !agendaCalendar.showing
+        onClicked: {
+            if (agendaCalendar.showing) {
+                agendaCalendar.closeFromTrigger();
+                return ;
+            }
+            agendaCalendar.toggleFromTrigger();
+        }
     }
 
 }

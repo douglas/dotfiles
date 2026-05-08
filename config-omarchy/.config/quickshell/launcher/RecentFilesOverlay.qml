@@ -333,27 +333,20 @@ FloatingWindow {
                     Text {
                         text: root.activeProfile.icon
                         color: theme.accent || "#89b4fa"
-                        font.pixelSize: Style.Typography.actionIcon
+                        font.pixelSize: Style.Typography.recentHeaderIcon
                         font.family: Style.Typography.mono
                     }
 
                     Text {
                         text: root.activeProfile.title
                         color: theme.fg || "#cdd6f4"
-                        font.pixelSize: Style.Typography.componentTitle
+                        font.pixelSize: Style.Typography.recentTitle
                         font.family: Style.Typography.mono
                         font.weight: Font.Medium
                     }
 
                     Item {
                         Layout.fillWidth: true
-                    }
-
-                    Text {
-                        text: root.files.length + " " + (root.files.length === 1 ? root.activeProfile.singular : root.activeProfile.plural)
-                        color: Qt.alpha(theme.muted || "#585b70", 0.55)
-                        font.pixelSize: Style.Typography.recentBody
-                        font.family: Style.Typography.mono
                     }
 
                     Rectangle {
@@ -368,7 +361,7 @@ FloatingWindow {
                             anchors.centerIn: parent
                             text: ""
                             color: root.settingsOpen ? (theme.accent || "#89b4fa") : Qt.alpha(theme.muted || "#585b70", 0.75)
-                            font.pixelSize: Style.Typography.actionIcon
+                            font.pixelSize: Style.Typography.recentActionIcon
                             font.family: Style.Typography.mono
                         }
 
@@ -390,7 +383,7 @@ FloatingWindow {
                             anchors.centerIn: parent
                             text: "󰅖"
                             color: Qt.alpha(theme.muted || "#585b70", 0.7)
-                            font.pixelSize: Style.Typography.closeIcon
+                            font.pixelSize: Style.Typography.recentCloseIcon
                             font.family: Style.Typography.mono
                         }
 
@@ -495,7 +488,7 @@ FloatingWindow {
                                                 anchors.horizontalCenter: parent.horizontalCenter
                                                 text: root.fileIcon(root.selectedFile)
                                                 color: theme.accent || "#89b4fa"
-                                                font.pixelSize: Style.Typography.largePreviewIcon
+                                                font.pixelSize: Style.Typography.recentLargePreviewIcon
                                                 font.family: Style.Typography.mono
                                             }
 
@@ -669,7 +662,7 @@ FloatingWindow {
                                                     visible: delegateItem.fileData.isImage !== true
                                                     text: root.fileIcon(delegateItem.fileData)
                                                     color: theme.accent || "#89b4fa"
-                                                    font.pixelSize: Style.Typography.previewIcon
+                                                    font.pixelSize: Style.Typography.recentPreviewIcon
                                                     font.family: Style.Typography.mono
                                                 }
 
@@ -698,7 +691,7 @@ FloatingWindow {
                                                 Text {
                                                     text: "#" + (index + 1)
                                                     color: Qt.alpha(theme.muted || "#585b70", 0.62)
-                                                    font.pixelSize: Style.Typography.componentSubtitle
+                                                    font.pixelSize: Style.Typography.recentMeta
                                                     font.family: Style.Typography.mono
                                                 }
 
@@ -795,7 +788,7 @@ FloatingWindow {
                         Text {
                             text: root.fileLimit
                             color: theme.accent || "#89b4fa"
-                            font.pixelSize: Style.Typography.settingsPreview
+                            font.pixelSize: Style.Typography.recentSettingsValue
                             font.family: Style.Typography.mono
                             font.weight: Font.DemiBold
                         }

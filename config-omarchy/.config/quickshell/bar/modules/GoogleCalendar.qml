@@ -20,6 +20,7 @@ Item {
     property bool showing: false
     property bool loading: false
     property bool ok: true
+    property bool suppressNextTriggerToggle: false
     property string errorText: ""
     property string eventRequestDate: ""
     property var events: []
@@ -245,6 +246,29 @@ Item {
         Quickshell.execDetached(["xdg-open", url]);
     }
 
+    function dismissFromOutside() {
+        suppressNextTriggerToggle = true;
+        suppressTriggerReset.restart();
+        settingsOpen = false;
+        showing = false;
+    }
+
+    function closeFromTrigger() {
+        suppressNextTriggerToggle = false;
+        suppressTriggerReset.stop();
+        settingsOpen = false;
+        showing = false;
+    }
+
+    function toggleFromTrigger() {
+        if (suppressNextTriggerToggle && !showing) {
+            suppressNextTriggerToggle = false;
+            suppressTriggerReset.stop();
+            return ;
+        }
+        showing = !showing;
+    }
+
     implicitWidth: showTrigger ? iconRow.implicitWidth : 0
     implicitHeight: showTrigger ? 28 : 0
     Component.onCompleted: refresh()
@@ -266,6 +290,14 @@ Item {
         if (!quietMode && eventsEnabled)
             refresh();
 
+    }
+
+    Timer {
+        id: suppressTriggerReset
+
+        interval: 180
+        repeat: false
+        onTriggered: root.suppressNextTriggerToggle = false
     }
 
     Process {
@@ -404,7 +436,7 @@ Item {
         cursorShape: Qt.PointingHandCursor
         onEntered: root.hovered = true
         onExited: root.hovered = false
-        onClicked: root.showing = !root.showing
+        onClicked: root.toggleFromTrigger()
     }
 
     PanelWindow {
@@ -420,13 +452,15 @@ Item {
             bottom: true
         }
 
+        margins {
+            top: !root.barOnBottom ? root.overlayBarOffset : 0
+            bottom: root.barOnBottom ? root.overlayBarOffset : 0
+        }
+
         MouseArea {
             anchors.fill: parent
             acceptedButtons: Qt.AllButtons
-            onClicked: {
-                root.settingsOpen = false;
-                root.showing = false;
-            }
+            onClicked: root.dismissFromOutside()
         }
 
     }
@@ -458,10 +492,7 @@ Item {
         MouseArea {
             anchors.fill: parent
             acceptedButtons: Qt.AllButtons
-            onClicked: {
-                root.settingsOpen = false;
-                root.showing = false;
-            }
+            onClicked: root.dismissFromOutside()
         }
 
         Rectangle {

@@ -20,6 +20,10 @@ Item {
     property var memProcesses: []
     property var cpuProcessTree: []
     property var memProcessTree: []
+    property bool cpuProcessesLoaded: false
+    property bool memProcessesLoaded: false
+    property bool cpuProcessesFirstLoading: false
+    property bool memProcessesFirstLoading: false
     property real cpuVal: 0
     property real ramVal: 0
     readonly property color cBg: theme.bg || "#1e1e2e"
@@ -37,7 +41,7 @@ Item {
     readonly property color panelAccent: cAccent
     readonly property var panelProcesses: activeView === "cpu" ? cpuProcesses : memProcesses
     readonly property var panelProcessTree: activeView === "cpu" ? cpuProcessTree : memProcessTree
-    readonly property bool panelLoading: activeView === "cpu" ? cpuProc.running : memProc.running
+    readonly property bool panelLoading: activeView === "cpu" ? cpuProcessesFirstLoading : memProcessesFirstLoading
     readonly property string panelEmptyText: activeView === "cpu" ? "no CPU data" : "no memory data"
     readonly property string processTreeScript: (Quickshell.env("HOME") || "") + "/.config/quickshell/scripts/quickshell-process-tree"
 
@@ -52,11 +56,24 @@ Item {
         statsProc.running = true;
     }
 
-    function refreshProcesses() {
+    function startProcessRefresh() {
         cpuProc.running = false;
         memProc.running = false;
         cpuProc.running = true;
         memProc.running = true;
+    }
+
+    function refreshProcesses(forceLoading) {
+        const showLoading = forceLoading === true;
+        if (showLoading || !cpuProcessesLoaded) {
+            cpuProcessesFirstLoading = true;
+            cpuFirstLoadingGate.restart();
+        }
+        if (showLoading || !memProcessesLoaded) {
+            memProcessesFirstLoading = true;
+            memFirstLoadingGate.restart();
+        }
+        processRefreshDelay.restart();
     }
 
     function toggleView(view) {
@@ -65,9 +82,9 @@ Item {
             return ;
         }
         activeView = view;
-        showing = true;
         opened();
         refreshProcesses();
+        showing = true;
     }
 
     function parseProcessLine(line) {
@@ -327,6 +344,14 @@ Item {
         onTriggered: refreshProcesses()
     }
 
+    Timer {
+        id: processRefreshDelay
+
+        interval: 60
+        repeat: false
+        onTriggered: root.startProcessRefresh()
+    }
+
     Process {
         id: statsProc
 
@@ -372,6 +397,10 @@ Item {
         running: false
         onExited: {
             root.cpuProcessTree = root.parseProcessTree(stdout.buf);
+            root.cpuProcessesLoaded = true;
+            if (!cpuFirstLoadingGate.running)
+                root.cpuProcessesFirstLoading = false;
+
             stdout.buf = "";
         }
         onRunningChanged: {
@@ -398,6 +427,10 @@ Item {
         running: false
         onExited: {
             root.memProcessTree = root.parseProcessTree(stdout.buf);
+            root.memProcessesLoaded = true;
+            if (!memFirstLoadingGate.running)
+                root.memProcessesFirstLoading = false;
+
             stdout.buf = "";
         }
         onRunningChanged: {
@@ -434,6 +467,30 @@ Item {
         command: ["kill", "-TERM", targetPid]
     }
 
+    Timer {
+        id: cpuFirstLoadingGate
+
+        interval: 350
+        repeat: false
+        onTriggered: {
+            if (root.cpuProcessesLoaded)
+                root.cpuProcessesFirstLoading = false;
+
+        }
+    }
+
+    Timer {
+        id: memFirstLoadingGate
+
+        interval: 350
+        repeat: false
+        onTriggered: {
+            if (root.memProcessesLoaded)
+                root.memProcessesFirstLoading = false;
+
+        }
+    }
+
     ProcessOverlay {
         showing: root.showing
         barOnBottom: root.barOnBottom
@@ -453,7 +510,7 @@ Item {
         loading: root.panelLoading
         theme: root.theme
         onCloseRequested: root.showing = false
-        onRefreshRequested: root.refreshProcesses()
+        onRefreshRequested: root.refreshProcesses(true)
         onPidCopied: (proc) => {
             return root.copyPid(proc);
         }

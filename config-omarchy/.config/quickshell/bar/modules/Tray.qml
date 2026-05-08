@@ -264,9 +264,9 @@ Item {
                 IconImage {
                     id:               icon
                     anchors.centerIn: parent
-                    width:            13
-                    height:           13
-                    implicitSize:     13
+                    width:            Style.Typography.rightClusterIcon
+                    height:           Style.Typography.rightClusterIcon
+                    implicitSize:     Style.Typography.rightClusterIcon
                     source:           root._iconProviderSource(modelData.icon)
                     asynchronous:     true
                     mipmap:           true
@@ -281,9 +281,9 @@ Item {
 
                 IconImage {
                     anchors.centerIn: parent
-                    width: 13
-                    height: 13
-                    implicitSize: 13
+                    width: Style.Typography.rightClusterIcon
+                    height: Style.Typography.rightClusterIcon
+                    implicitSize: Style.Typography.rightClusterIcon
                     source: root._isDirectIconSource(modelData.icon) ? "" : (modelData.icon || "")
                     asynchronous: true
                     mipmap: true
@@ -302,7 +302,7 @@ Item {
                     visible: text !== ""
                     color: root._glyphColor(modelData, trayItem.hovered)
                     opacity: root._glyphOpacity(modelData, trayItem.hovered)
-                    font.pixelSize: Style.Typography.trayBody
+                    font.pixelSize: Style.Typography.rightClusterIcon
                     font.family: Style.Typography.mono
                     font.weight: Font.Medium
                     renderType: Text.NativeRendering

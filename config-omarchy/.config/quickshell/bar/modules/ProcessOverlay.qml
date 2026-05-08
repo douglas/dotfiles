@@ -569,7 +569,7 @@ Item {
                     }
 
                     Text {
-                        visible: !root.loading
+                        visible: !root.loading && root.displayRows.length === 0
                         anchors.centerIn: parent
                         text: root.emptyText
                         color: root.cMuted

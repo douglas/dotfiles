@@ -27,6 +27,7 @@ QtObject {
     readonly property int icon: px(16)
     readonly property int iconLarge: px(20)
     readonly property int barIcon: icon
+    readonly property int rightClusterIcon: trayBody
     readonly property int headerIcon: actionIcon
     readonly property int listIcon: icon
     readonly property int dockIcon: iconLarge
@@ -52,6 +53,13 @@ QtObject {
     readonly property int launcherItemBody: body
     readonly property int recentTitle: titleSmall
     readonly property int recentBody: body
+    readonly property int recentHeaderIcon: actionIcon
+    readonly property int recentActionIcon: actionIcon
+    readonly property int recentCloseIcon: closeIcon
+    readonly property int recentPreviewIcon: previewIcon
+    readonly property int recentLargePreviewIcon: largePreviewIcon
+    readonly property int recentMeta: body
+    readonly property int recentSettingsValue: settingsPreview
     readonly property int settingsTitle: display
     readonly property int settingsSectionTitle: heading
     readonly property int settingsPageTitle: title

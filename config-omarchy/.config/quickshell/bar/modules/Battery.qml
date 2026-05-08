@@ -18,6 +18,8 @@ Item {
     property string notice: ""
     property var processes: []
     property var processTree: []
+    property bool impactLoaded: false
+    property bool impactFirstLoading: false
     property bool showPids: false
     readonly property var device: UPower.displayDevice
     readonly property bool ready: device && device.ready
@@ -99,9 +101,18 @@ Item {
         return UPowerDeviceState.toString(device.state);
     }
 
-    function refreshImpact() {
+    function startImpactRefresh() {
         impactProc.running = false;
         impactProc.running = true;
+    }
+
+    function refreshImpact(forceLoading) {
+        const showLoading = forceLoading === true;
+        if (showLoading || !impactLoaded) {
+            impactFirstLoading = true;
+            impactFirstLoadingGate.restart();
+        }
+        impactRefreshDelay.restart();
     }
 
     function processCountLabel(count) {
@@ -291,6 +302,14 @@ Item {
         onTriggered: root.refreshImpact()
     }
 
+    Timer {
+        id: impactRefreshDelay
+
+        interval: 60
+        repeat: false
+        onTriggered: root.startImpactRefresh()
+    }
+
     Process {
         id: impactProc
 
@@ -298,6 +317,10 @@ Item {
         running: false
         onExited: {
             root.processTree = root.parseProcessTree(stdout.buf);
+            root.impactLoaded = true;
+            if (!impactFirstLoadingGate.running)
+                root.impactFirstLoading = false;
+
             stdout.buf = "";
         }
         onRunningChanged: {
@@ -332,6 +355,18 @@ Item {
         }
 
         command: ["kill", "-TERM", targetPid]
+    }
+
+    Timer {
+        id: impactFirstLoadingGate
+
+        interval: 350
+        repeat: false
+        onTriggered: {
+            if (root.impactLoaded)
+                root.impactFirstLoading = false;
+
+        }
     }
 
     StatPill {
@@ -370,10 +405,10 @@ Item {
         processes: root.processes
         treeGroups: root.processTree
         emptyText: "no process data"
-        loading: impactProc.running
+        loading: root.impactFirstLoading
         theme: root.theme
         onCloseRequested: root.showing = false
-        onRefreshRequested: root.refreshImpact()
+        onRefreshRequested: root.refreshImpact(true)
         onPidCopied: (proc) => {
             return root.copyPid(proc);
         }

@@ -84,7 +84,7 @@ Item {
         text: root.icon
         color: root.statusClass.indexOf("on") !== -1 ? (root.theme.accent || "#89b4fa") : (root.theme.fg || "#cdd6f4")
         opacity: root.statusClass.indexOf("on") !== -1 ? (root.hovered ? 1 : 0.95) : (root.hovered ? 0.75 : 0.4)
-        font.pixelSize: Style.Typography.barIcon
+        font.pixelSize: Style.Typography.rightClusterIcon
         font.family: Style.Typography.mono
 
         Behavior on color {
