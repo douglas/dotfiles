@@ -54,6 +54,7 @@ Item {
     property real elapsedSeconds: 0
     property real durationSeconds: 0
     property real progress: 0
+    readonly property bool canSeek: durationSeconds > 0
     property bool isPlaying: player?.playbackState === MprisPlaybackState.Playing ?? false
     property bool hasMedia: trackTitle !== ""
     property bool hasCava: false
@@ -67,7 +68,6 @@ Item {
     property bool quietMode: false
     property real overlayScale: 1.0
     property bool titleVisible: true
-    property real progressPhase: 0
     readonly property real popupScale: Math.max(1.0, overlayScale)
 
     implicitWidth: hasMedia ? (titleVisible ? 126 : 28) : 0
@@ -308,6 +308,43 @@ Item {
         })
     }
 
+    function seekToRatio(ratio) {
+        if (!root.canSeek)
+            return
+
+        const safeRatio = Math.max(0, Math.min(1, ratio))
+        const target = safeRatio * root.durationSeconds
+
+        root.elapsedSeconds = target
+        root.progress = safeRatio
+        root.elapsedLabel = root.formatSeconds(target)
+
+        if (root.player && root.player.canSeek && root.player.positionSupported) {
+            root.player.position = target
+            refreshDelay.restart()
+            return
+        }
+
+        runShell(`
+            players=$(playerctl -l 2>/dev/null)
+            active=""
+            for player in $players; do
+                status=$(playerctl -p "$player" status 2>/dev/null)
+                if [ "$status" = "Playing" ]; then
+                    active="$player"
+                    break
+                fi
+                if [ -z "$active" ]; then
+                    active="$player"
+                fi
+            done
+            [ -n "$active" ] || exit 0
+            playerctl -p "$active" position ` + target + ` 2>/dev/null
+        `, function() {
+            refreshDelay.restart()
+        })
+    }
+
     function applyCavaChunk(data) {
         if (!root.isPlaying || !root.hasMedia)
             return
@@ -435,17 +472,6 @@ Item {
         interval: 140
         repeat: false
         onTriggered: root.hoverOpen = false
-    }
-
-    Timer {
-        id: progressWaveTimer
-        interval: 33
-        repeat: true
-        running: root.hoverOpen && root.hasMedia && root.isPlaying
-        onTriggered: {
-            root.progressPhase += 0.11
-            progressStroke.requestPaint()
-        }
     }
 
     Timer {
@@ -852,47 +878,70 @@ Item {
                             height: parent.height
                             anchors.verticalCenter: parent.verticalCenter
 
-                            Canvas {
-                                id: progressStroke
-                                anchors.fill: parent
+                            Rectangle {
+                                id: progressTrack
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                anchors.verticalCenter: parent.verticalCenter
+                                height: 2
+                                radius: 1
+                                color: Qt.alpha(root.fg, 0.22)
+                                clip: true
 
-                                onPaint: {
-                                    const ctx = getContext("2d")
-                                    ctx.clearRect(0, 0, width, height)
+                                Rectangle {
+                                    width: parent.width * root.progress
+                                    height: parent.height
+                                    radius: parent.radius
+                                    color: root.paletteAccent
 
-                                    const trackY = height * 0.56
-                                    const activeWidth = Math.max(8, (width - 8) * root.progress)
-                                    const step = 5
-                                    const livePhase = root.progressPhase
-
-                                    ctx.beginPath()
-                                    ctx.moveTo(0, trackY)
-                                    ctx.lineTo(width, trackY)
-                                    ctx.lineWidth = 1
-                                    ctx.lineCap = "round"
-                                    ctx.lineJoin = "round"
-                                    ctx.strokeStyle = Qt.alpha(root.fg, 0.22)
-                                    ctx.stroke()
-
-                                    ctx.beginPath()
-                                    ctx.moveTo(0, trackY)
-                                    let prevX = 0
-                                    let prevY = trackY
-                                    for (let x = step; x <= activeWidth + step; x += step) {
-                                        const px = Math.min(activeWidth, x)
-                                        const py = trackY + Math.sin((px / 6.8) + livePhase) * (root.isPlaying ? 0.78 : 0.34)
-                                        const cx = (prevX + px) * 0.5
-                                        const cy = (prevY + py) * 0.5
-                                        ctx.quadraticCurveTo(prevX, prevY, cx, cy)
-                                        prevX = px
-                                        prevY = py
+                                    Behavior on width {
+                                        enabled: !progressMouse.pressed
+                                        NumberAnimation { duration: 100; easing.type: Easing.OutCubic }
                                     }
-                                    ctx.lineTo(activeWidth, prevY)
-                                    ctx.lineWidth = 1.8
-                                    ctx.lineCap = "round"
-                                    ctx.lineJoin = "round"
-                                    ctx.strokeStyle = root.paletteAccent
-                                    ctx.stroke()
+                                }
+                            }
+
+                            Rectangle {
+                                width: 7
+                                height: 7
+                                radius: width / 2
+                                anchors.verticalCenter: progressTrack.verticalCenter
+                                x: Math.max(
+                                    0,
+                                    Math.min(
+                                        parent.width - width,
+                                        (parent.width * root.progress) - width / 2
+                                    )
+                                )
+                                color: root.paletteAccent
+                                border.color: root.bg
+                                border.width: 1
+                                opacity: root.canSeek && (progressMouse.containsMouse || progressMouse.pressed) ? 1 : 0
+
+                                Behavior on opacity {
+                                    NumberAnimation { duration: 100; easing.type: Easing.OutCubic }
+                                }
+                            }
+
+                            MouseArea {
+                                id: progressMouse
+                                anchors.fill: parent
+                                enabled: root.canSeek
+                                hoverEnabled: true
+                                acceptedButtons: Qt.LeftButton
+                                cursorShape: Qt.PointingHandCursor
+
+                                function seekAt(xPos) {
+                                    if (progressWrap.width <= 0)
+                                        return
+
+                                    root.seekToRatio(xPos / progressWrap.width)
+                                }
+
+                                onPressed: mouse => seekAt(mouse.x)
+                                onPositionChanged: mouse => {
+                                    if (pressed)
+                                        seekAt(mouse.x)
                                 }
                             }
                         }
