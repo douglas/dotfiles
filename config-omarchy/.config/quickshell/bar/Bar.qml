@@ -167,10 +167,15 @@ PanelWindow {
                 Media {
                     id: mediaModule
                     anchors.verticalCenter: parent.verticalCenter
-                    accent: root.accent
-                    fg: root.fg
-                    green: root.green
-                    muted: root.muted
+                    theme: ({
+                        fg: root.fg,
+                        accent: root.accent,
+                        dim: root.dim,
+                        muted: root.muted,
+                        bg: root.bg,
+                        green: root.green,
+                        omarchyThemeLoaded: root.omarchyThemeLoaded
+                    })
                     overlayScale: root.scaleFactor
                     dockBottom: root.barOnBottom
                     quietMode: root.quietMode

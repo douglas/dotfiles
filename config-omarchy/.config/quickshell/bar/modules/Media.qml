@@ -8,26 +8,31 @@ import "../../style" as Style
 Item {
     id: root
 
-    property string accent: "#89b4fa"
-    property string fg: "#cdd6f4"
-    property string green: "#a6e3a1"
-    property string muted: "#585b70"
-    property string bg: "#1e1e2e"
-    property string albumHex: ""
-    readonly property color paletteAccent: root.albumHex !== "" ? ("#" + root.albumHex) : root.accent
-    readonly property color cardColor: root.albumHex !== ""
-        ? Qt.tint(root.bg, Qt.alpha(root.paletteAccent, 0.18))
-        : Qt.tint(root.bg, Qt.alpha(root.fg, 0.035))
-    readonly property color cardBorder: Qt.alpha(root.fg, 0.07)
-    readonly property color subtleSurface: root.albumHex !== ""
-        ? Qt.tint(root.bg, Qt.alpha(root.paletteAccent, 0.10))
-        : Qt.tint(root.bg, Qt.alpha(root.fg, 0.03))
-    readonly property color subtleBorder: Qt.alpha(root.fg, 0.05)
-    readonly property color strongText: Qt.alpha(root.fg, 0.92)
-    readonly property color mutedText: Qt.alpha(root.fg, 0.56)
-    readonly property color softText: Qt.alpha(root.fg, 0.42)
-    readonly property color playSurface: Qt.tint(root.bg, Qt.alpha(root.paletteAccent, 0.22))
-    readonly property color visualizerColor: Qt.lighter(root.accent, 1.18)
+    property var theme: ({})
+    property color accent: cAccent
+    property color fg: cTextPrimary
+    property color green: cIdle
+    property color muted: cTextSecondary
+    property color bg: cBg
+    readonly property bool useOmarchyTheme: theme.omarchyThemeLoaded === true
+    readonly property color cBg: useOmarchyTheme && theme.bg ? theme.bg : "#1A1B26"
+    readonly property bool cLightTheme: colorLuma(cBg) > 0.62
+    readonly property color cTextPrimary: useOmarchyTheme && theme.fg ? theme.fg : "#C0CAF5"
+    readonly property color cTextSecondary: useOmarchyTheme && theme.muted ? theme.muted : "#787C99"
+    readonly property color cTextMuted: cLightTheme ? Qt.alpha(cTextPrimary, 0.62) : Qt.alpha(cTextPrimary, 0.50)
+    readonly property color cTextDimmed: cLightTheme ? Qt.alpha(cTextPrimary, 0.42) : Qt.alpha(cTextPrimary, 0.35)
+    readonly property color cAccent: useOmarchyTheme && theme.accent ? theme.accent : "#89B4FA"
+    readonly property color cIdle: useOmarchyTheme && theme.green ? theme.green : "#9ECE6A"
+    readonly property color paletteAccent: cAccent
+    readonly property color cardColor: Qt.tint(cBg, Qt.alpha(cTextPrimary, cLightTheme ? 0.08 : 0.035))
+    readonly property color cardBorder: Qt.alpha(cTextPrimary, cLightTheme ? 0.16 : 0.10)
+    readonly property color subtleSurface: cLightTheme ? Qt.rgba(0, 0, 0, 0.045) : Qt.rgba(1, 1, 1, 0.045)
+    readonly property color subtleBorder: Qt.alpha(cTextPrimary, cLightTheme ? 0.12 : 0.07)
+    readonly property color strongText: Qt.alpha(cTextPrimary, cLightTheme ? 0.94 : 0.92)
+    readonly property color mutedText: cTextMuted
+    readonly property color softText: cTextDimmed
+    readonly property color playSurface: Qt.tint(cBg, Qt.alpha(cAccent, cLightTheme ? 0.18 : 0.22))
+    readonly property color visualizerColor: Qt.lighter(cAccent, cLightTheme ? 1.06 : 1.18)
 
     property var player: {
         const all = Mpris.players.values
@@ -78,6 +83,10 @@ Item {
         return minutes + ":" + (seconds < 10 ? "0" : "") + seconds
     }
 
+    function colorLuma(color) {
+        return (0.2126 * color.r) + (0.7152 * color.g) + (0.0722 * color.b)
+    }
+
     function overlayPx(value) { return Math.round(value * popupScale) }
 
     function openCard() {
@@ -94,32 +103,6 @@ Item {
     function toggleTitleVisible() {
         titleVisible = !titleVisible
         titleTxt.x = 0
-    }
-
-    function shellQuote(text) {
-        return "'" + String(text || "").replace(/'/g, "'\"'\"'") + "'"
-    }
-
-    function updateAlbumPalette() {
-        if (!root.artUrl) {
-            root.albumHex = ""
-            return
-        }
-
-        const localArt = root.artUrl.startsWith("file://")
-            ? root.artUrl.slice(7)
-            : root.artUrl
-
-        runShell(`
-            img=` + shellQuote(localArt) + `
-            if [ ! -e "$img" ] && [[ "$img" != http://* && "$img" != https://* ]]; then
-                exit 0
-            fi
-            magick "$img" -resize 1x1\\! -alpha off -format '%[hex:p{0,0}]' info:- 2>/dev/null | head -c 6
-        `, function(out) {
-            const hex = (out || "").trim().replace(/[^0-9a-fA-F]/g, "").slice(0, 6)
-            root.albumHex = hex.length === 6 ? hex : ""
-        })
     }
 
     function cavaCommand(inputMethod) {
@@ -172,7 +155,6 @@ Item {
             trackArtist = ""
             trackAlbum = ""
             artUrl = ""
-            albumHex = ""
             elapsedSeconds = 0
             durationSeconds = 0
             progress = 0
@@ -194,7 +176,6 @@ Item {
             trackArtist = ""
             trackAlbum = ""
             artUrl = ""
-            albumHex = ""
             elapsedSeconds = 0
             durationSeconds = 0
             progress = 0
@@ -290,11 +271,23 @@ Item {
             root.elapsedLabel = root.formatSeconds(elapsedSecs)
             root.durationLabel = root.formatSeconds(durationSecs)
             root.isPlaying = status === "Playing"
-            root.updateAlbumPalette()
         })
     }
 
     function playerControl(action) {
+        if (root.player && root.player.canControl) {
+            if (action === "next" && root.player.canGoNext) {
+                root.player.next()
+                refreshDelay.restart()
+                return
+            }
+            if (action === "previous" && root.player.canGoPrevious) {
+                root.player.previous()
+                refreshDelay.restart()
+                return
+            }
+        }
+
         runShell(`
             players=$(playerctl -l 2>/dev/null)
             active=""
@@ -624,13 +617,14 @@ Item {
                 NumberAnimation { duration: 180; easing.type: Easing.OutCubic }
             }
 
-            MouseArea {
+            HoverHandler {
                 id: cardHover
-                anchors.fill: parent
-                hoverEnabled: true
-                acceptedButtons: Qt.NoButton
-                onEntered: root.openCard()
-                onExited: root.closeCardSoon()
+                onHoveredChanged: {
+                    if (hovered)
+                        root.openCard()
+                    else
+                        root.closeCardSoon()
+                }
             }
 
             Canvas {
@@ -823,16 +817,30 @@ Item {
 
                     Row {
                         width: parent.width
-                        spacing: 7
+                        height: 18
+                        spacing: 6
 
-                        Text {
-                            text: "󰒮"
-                            color: root.mutedText
-                            font.pixelSize: Style.Typography.actionIcon
-                            font.family: Style.Typography.mono
+                        Rectangle {
+                            width: 20
+                            height: 18
+                            radius: 7
+                            color: prevMouse.containsMouse ? Qt.alpha(root.paletteAccent, 0.16) : "transparent"
+                            border.color: prevMouse.containsMouse ? Qt.alpha(root.paletteAccent, 0.16) : "transparent"
+                            border.width: 1
+
+                            Text {
+                                anchors.centerIn: parent
+                                anchors.verticalCenterOffset: -1
+                                text: "󰒮"
+                                color: root.mutedText
+                                font.pixelSize: Style.Typography.actionIcon
+                                font.family: Style.Typography.mono
+                            }
 
                             MouseArea {
+                                id: prevMouse
                                 anchors.fill: parent
+                                hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: root.playerControl("previous")
                             }
@@ -840,8 +848,8 @@ Item {
 
                         Item {
                             id: progressWrap
-                            width: parent.width - 32
-                            height: 14
+                            width: parent.width - 52
+                            height: parent.height
                             anchors.verticalCenter: parent.verticalCenter
 
                             Canvas {
@@ -889,14 +897,27 @@ Item {
                             }
                         }
 
-                        Text {
-                            text: "󰒭"
-                            color: root.mutedText
-                            font.pixelSize: Style.Typography.actionIcon
-                            font.family: Style.Typography.mono
+                        Rectangle {
+                            width: 20
+                            height: 18
+                            radius: 7
+                            color: nextMouse.containsMouse ? Qt.alpha(root.paletteAccent, 0.16) : "transparent"
+                            border.color: nextMouse.containsMouse ? Qt.alpha(root.paletteAccent, 0.16) : "transparent"
+                            border.width: 1
+
+                            Text {
+                                anchors.centerIn: parent
+                                anchors.verticalCenterOffset: -1
+                                text: "󰒭"
+                                color: root.mutedText
+                                font.pixelSize: Style.Typography.actionIcon
+                                font.family: Style.Typography.mono
+                            }
 
                             MouseArea {
+                                id: nextMouse
                                 anchors.fill: parent
+                                hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: root.playerControl("next")
                             }

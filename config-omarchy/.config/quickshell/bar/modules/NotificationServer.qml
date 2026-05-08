@@ -31,8 +31,11 @@ Item {
     }
 
     function dismiss(notif) {
+        if (!notif)
+            return
+
         notif.dismiss()
-        root.notifications = root.notifications.filter(n => n.id !== notif.id)
+        root.notifications = root.notifications.filter(n => n && n.id !== notif.id)
         root.hiddenToasts = root.hiddenToasts.filter(id => id !== notif.id)
     }
 
@@ -51,7 +54,7 @@ Item {
     }
 
     function clearAll() {
-        const copy = [...root.notifications]
+        const copy = root.notifications.filter(n => !!n)
         copy.forEach(n => n.dismiss())
         root.notifications = []
         root.hiddenToasts = []
@@ -172,6 +175,8 @@ Item {
         const seen = {}
         const out = []
         for (const notif of root.notifications) {
+            if (!notif) continue
+
             const name = appNameFor(notif)
             if (seen[name]) continue
             seen[name] = true
@@ -181,8 +186,9 @@ Item {
     }
 
     function notificationsForApp(appName) {
-        if (!appName) return [...root.notifications]
-        return root.notifications.filter(n => appNameFor(n) === appName)
+        const active = root.notifications.filter(n => !!n)
+        if (!appName) return active
+        return active.filter(n => appNameFor(n) === appName)
     }
 
     function isSlackNotification(notif) {
@@ -210,7 +216,7 @@ Item {
     }
 
     function hasSlackDirectOrMention() {
-        return root.notifications.some(n => isSlackDirectOrMention(n))
+        return root.notifications.some(n => n && isSlackDirectOrMention(n))
     }
 
     function groupedNotifications(appName) {
@@ -240,6 +246,6 @@ Item {
     }
 
     function isCritical(notif) {
-        return notif.urgency === QsNotifications.NotificationUrgency.Critical
+        return notif && notif.urgency === QsNotifications.NotificationUrgency.Critical
     }
 }

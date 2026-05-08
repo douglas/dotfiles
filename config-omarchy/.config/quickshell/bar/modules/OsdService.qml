@@ -14,6 +14,12 @@ Item {
     property string iconSource: ""
     property bool mediaMode: false
     property bool messageMode: false
+    property bool mediaCanGoNext: false
+    property bool mediaCanGoPrevious: false
+    property bool mediaCanSeek: false
+    property real mediaDurationSecs: 0
+    property real mediaPositionSecs: 0
+    property string mediaPlayerName: ""
     property var messageAction: null
     property var messageDismissAction: null
     property int value: 0
@@ -53,6 +59,12 @@ Item {
         iconSource = "";
         mediaMode = false;
         messageMode = false;
+        mediaCanGoNext = false;
+        mediaCanGoPrevious = false;
+        mediaCanSeek = false;
+        mediaDurationSecs = 0;
+        mediaPositionSecs = 0;
+        mediaPlayerName = "";
         messageAction = null;
         messageDismissAction = null;
         tone = toneName;
@@ -71,6 +83,12 @@ Item {
         iconSource = sourceIcon || "";
         mediaMode = false;
         messageMode = true;
+        mediaCanGoNext = false;
+        mediaCanGoPrevious = false;
+        mediaCanSeek = false;
+        mediaDurationSecs = 0;
+        mediaPositionSecs = 0;
+        mediaPlayerName = "";
         messageAction = activateAction || null;
         messageDismissAction = dismissAction || null;
         tone = toneName || "accent";
@@ -108,6 +126,7 @@ Item {
         const positionSecs = snapshot.positionSecs;
         const durationSecs = lengthMicros > 0 ? (lengthMicros / 1e+06) : 0;
         const progress = durationSecs > 0 ? _clamp((positionSecs / durationSecs) * 100, 0, 100) : 0;
+        const player = _mediaPlayer();
         icon = snapshot.icon;
         title = snapshot.title;
         subtitle = snapshot.subtitle;
@@ -117,6 +136,13 @@ Item {
         iconSource = "";
         mediaMode = true;
         messageMode = false;
+        mediaCanGoNext = !!(player && player.canControl && (player.canGoNext || hasPlayerctl));
+        mediaCanGoPrevious = !!(player && player.canControl && (player.canGoPrevious || hasPlayerctl));
+        mediaCanSeek = durationSecs > 0
+            && !!((player && player.canSeek && player.positionSupported) || hasPlayerctl);
+        mediaDurationSecs = durationSecs;
+        mediaPositionSecs = positionSecs;
+        mediaPlayerName = snapshot.playerName || "";
         messageAction = null;
         messageDismissAction = null;
         tone = snapshot.tone;
@@ -306,6 +332,7 @@ Item {
                 "title": title,
                 "subtitle": subtitle,
                 "artUrl": art,
+                "playerName": parts[0] || "",
                 "lengthMicros": isNaN(lengthMicros) ? 0 : lengthMicros,
                 "positionSecs": isNaN(positionSecs) ? 0 : positionSecs,
                 "icon": playing ? "󰏤" : (status === "Paused" ? "󰐊" : "󰝚"),
@@ -431,31 +458,72 @@ Item {
     }
 
     function mediaNext() {
-        if (!hasPlayerctl) {
-            _showUnavailable("Media unavailable");
-            return ;
-        }
         const player = _mediaPlayer();
-        if (!player || !player.canControl || !player.canGoNext) {
+        if (!player || !player.canControl) {
             _show("󰝚", "No Player", 0, "muted");
             return ;
         }
-        player.next();
-        mediaRefreshDelay.restart();
+        if (player.canGoNext) {
+            player.next();
+            mediaRefreshDelay.restart();
+        } else if (hasPlayerctl) {
+            _runPlayerctlMedia("next");
+        } else {
+            _show("󰝚", "Next unavailable", 0, "muted");
+        }
     }
 
     function mediaPrev() {
-        if (!hasPlayerctl) {
-            _showUnavailable("Media unavailable");
-            return ;
-        }
         const player = _mediaPlayer();
-        if (!player || !player.canControl || !player.canGoPrevious) {
+        if (!player || !player.canControl) {
             _show("󰝚", "No Player", 0, "muted");
             return ;
         }
-        player.previous();
+        if (player.canGoPrevious) {
+            player.previous();
+            mediaRefreshDelay.restart();
+        } else if (hasPlayerctl) {
+            _runPlayerctlMedia("previous");
+        } else {
+            _show("󰝚", "Previous unavailable", 0, "muted");
+        }
+    }
+
+    function _shellQuote(value) {
+        return "'" + String(value || "").replace(/'/g, "'\\''") + "'";
+    }
+
+    function _playerctlTargetArg() {
+        return mediaPlayerName !== "" ? ("-p " + _shellQuote(mediaPlayerName) + " ") : "";
+    }
+
+    function _runPlayerctlMedia(commandName) {
+        _runShell("playerctl " + _playerctlTargetArg() + commandName + " 2>/dev/null", function() {
+            mediaRefreshDelay.restart();
+        });
+    }
+
+    function mediaSeekToRatio(ratio) {
+        const player = _mediaPlayer();
+        if (mediaDurationSecs <= 0)
+            return ;
+
+        const target = _clamp(ratio, 0, 1) * mediaDurationSecs;
+        if (player && player.canSeek && player.positionSupported) {
+            player.position = target;
+        } else if (hasPlayerctl) {
+            _runShell(
+                "playerctl " + _playerctlTargetArg() + "position " + target + " 2>/dev/null",
+                function() {}
+            );
+        } else {
+            return ;
+        }
+        value = Math.round(_clamp(ratio, 0, 1) * 100);
+        mediaPositionSecs = target;
+        valueText = _formatSeconds(target) + " / " + _formatSeconds(mediaDurationSecs);
         mediaRefreshDelay.restart();
+        hideTimer.restart();
     }
 
     onShowingChanged: _syncCava()
