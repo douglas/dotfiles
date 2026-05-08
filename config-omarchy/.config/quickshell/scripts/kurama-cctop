@@ -379,15 +379,22 @@ window_for_stored_address() {
 
 focus_kitty() {
   local session_file="$1"
-  local socket window_id binary
+  local socket window_id binary pid
 
   socket="$(jq -r '.terminal.socket // empty' "$session_file" 2>/dev/null)"
   window_id="$(jq -r '.terminal.session_id // empty' "$session_file" 2>/dev/null)"
   binary="$(jq -r '.terminal.binary_paths.kitty // empty' "$session_file" 2>/dev/null)"
+  pid="$(jq -r '.pid // empty' "$session_file" 2>/dev/null)"
   [[ -n "$binary" ]] || binary="$(command -v kitty 2>/dev/null || true)"
-  [[ -n "$socket" && -n "$window_id" && -x "$binary" ]] || return 1
+  [[ -n "$window_id" ]] || return 1
 
-  "$binary" @ --to "$socket" focus-window --match "id:$window_id" >/dev/null 2>&1
+  if [[ -n "$socket" && -x "$binary" ]]; then
+    "$binary" @ --to "$socket" focus-tab --match "window_id:$window_id" >/dev/null 2>&1 || return 1
+    "$binary" @ --to "$socket" focus-window --match "id:$window_id" >/dev/null 2>&1
+    return $?
+  fi
+
+  focus_kitty_tab_key_for_pid "$pid" "$window_id"
 }
 
 focus_kitty_for_pid() {
@@ -397,9 +404,56 @@ focus_kitty_for_pid() {
   socket="$(env_value "$pid" KITTY_LISTEN_ON 2>/dev/null || true)"
   window_id="$(env_value "$pid" KITTY_WINDOW_ID 2>/dev/null || true)"
   binary="$(command -v kitty 2>/dev/null || true)"
-  [[ -n "$socket" && -n "$window_id" && -x "$binary" ]] || return 1
+  [[ -n "$window_id" ]] || return 1
 
-  "$binary" @ --to "$socket" focus-window --match "id:$window_id" >/dev/null 2>&1
+  if [[ -n "$socket" && -x "$binary" ]]; then
+    "$binary" @ --to "$socket" focus-tab --match "window_id:$window_id" >/dev/null 2>&1 || return 1
+    "$binary" @ --to "$socket" focus-window --match "id:$window_id" >/dev/null 2>&1
+    return $?
+  fi
+
+  focus_kitty_tab_key_for_pid "$pid" "$window_id"
+}
+
+kitty_os_window_for_pid() {
+  local pid="$1"
+  local kitty_pid clients address
+
+  [[ "$pid" =~ ^[0-9]+$ ]] || return 1
+  kitty_pid="$(env_value "$pid" KITTY_PID 2>/dev/null || true)"
+  [[ "$kitty_pid" =~ ^[0-9]+$ ]] || return 1
+
+  clients="$(hyprctl clients -j 2>/dev/null)" || return 1
+  address="$(printf '%s' "$clients" | jq -r --argjson pid "$kitty_pid" '
+    [
+      .[]
+      | select(.pid == $pid)
+      | select((((.class // "") + " " + (.initialClass // "")) | ascii_downcase | contains("kitty")))
+      | .address
+    ]
+    | unique
+    | if length == 1 then .[0] else empty end
+  ' 2>/dev/null)"
+
+  [[ -n "$address" && "$address" != "null" ]] || return 1
+  printf '%s\n' "$address"
+}
+
+focus_kitty_tab_key_for_pid() {
+  local pid="$1"
+  local tab_index="${2:-}"
+  local address
+
+  command -v wtype >/dev/null 2>&1 || return 1
+  [[ "$pid" =~ ^[0-9]+$ ]] || return 1
+  [[ "$tab_index" =~ ^[0-9]+$ ]] || tab_index="$(env_value "$pid" KITTY_WINDOW_ID 2>/dev/null || true)"
+  [[ "$tab_index" =~ ^[0-9]+$ ]] || return 1
+  [[ "$tab_index" -ge 1 && "$tab_index" -le 9 ]] || return 1
+
+  address="$(kitty_os_window_for_pid "$pid" 2>/dev/null)" || return 1
+  hyprctl dispatch focuswindow "address:$address" >/dev/null 2>&1 || return 1
+  sleep 0.08
+  wtype -M ctrl -M alt "$tab_index" -m alt -m ctrl >/dev/null 2>&1
 }
 
 focus_ghostty_surface_id() {
@@ -628,6 +682,14 @@ focus_session() {
 
   if [[ -n "$pid" && "$pid" =~ ^[0-9]+$ ]]; then
     session_file="$(session_file_for_pid "$pid" 2>/dev/null || true)"
+
+    focus_kitty_for_pid "$pid" && {
+      if [[ -n "${session_file:-}" ]]; then
+        focus_multiplexer "$session_file" || true
+      fi
+      return 0
+    }
+
     if [[ -n "$session_file" ]]; then
       focus_ghostty_tab_for_project "$project_path" && {
         focus_multiplexer "$session_file" || true
@@ -671,13 +733,6 @@ focus_session() {
         }
       fi
     fi
-
-    focus_kitty_for_pid "$pid" && {
-      if [[ -n "${session_file:-}" ]]; then
-        focus_multiplexer "$session_file" || true
-      fi
-      return 0
-    }
 
     focus_ghostty_tab_for_project "$project_path" && {
       if [[ -n "${session_file:-}" ]]; then
