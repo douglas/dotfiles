@@ -73,16 +73,15 @@ Item {
     }
 
     function _glyphColor(item, hovered) {
-        const text = _traySearchText(item)
-        if (_isZscalerItem(item, text))
-            return hovered
-                ? (root.theme.fg || "#cdd6f4")
-                : (root.theme.muted || "#585b70")
         if (_hasWaitingSlackMessages(item))
             return root.theme.yellow || "#f9e2af"
-        return hovered
-            ? (root.theme.accent || "#89b4fa")
-            : (root.theme.fg || "#cdd6f4")
+        return root.theme.fg || "#cdd6f4"
+    }
+
+    function _glyphOpacity(item, hovered) {
+        if (_hasWaitingSlackMessages(item))
+            return hovered ? 1.0 : 0.95
+        return hovered ? 0.75 : 0.4
     }
 
     function _customGlyph(item) {
@@ -153,20 +152,29 @@ Item {
                     id:      menuWin
                     visible: trayItem.menuShowing
 
-                    anchors { top: true; right: true }
-                    margins { top: root.overlayPx(38); right: root.overlayPx(40) }
+                    anchors { top: true; right: true; bottom: true; left: true }
 
-                    implicitWidth:  root.overlayPx(menuCol.implicitWidth + 16)
-                    implicitHeight: root.overlayPx(menuCol.implicitHeight + 16)
+                    implicitWidth:  root.trayWindow ? root.trayWindow.width : root.overlayPx(1920)
+                    implicitHeight: root.trayWindow ? root.trayWindow.height : root.overlayPx(1080)
 
                     color:         "transparent"
                     exclusiveZone: -1
                     WlrLayershell.layer:         WlrLayer.Overlay
                     WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: trayItem.menuShowing = false
+                    }
+
                     Rectangle {
+                        z: 1
                         width:  menuCol.implicitWidth + 16
-                        height: parent.height / root.popupScale
+                        height: menuCol.implicitHeight + 16
+                        anchors.top: parent.top
+                        anchors.right: parent.right
+                        anchors.topMargin: root.overlayPx(38) / root.popupScale
+                        anchors.rightMargin: root.overlayPx(40) / root.popupScale
                         transformOrigin: Item.TopRight
                         radius:       10
                         color:        root.theme.bg  || "#1e1e2e"
@@ -182,13 +190,6 @@ Item {
                         }
                         Behavior on scale {
                             NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
-                        }
-
-                        // click outside to close
-                        MouseArea {
-                            anchors.fill: parent
-                            z:            -1
-                            onClicked:    trayItem.menuShowing = false
                         }
 
                         Column {
@@ -299,7 +300,7 @@ Item {
                     text: root._customGlyph(modelData)
                     visible: text !== ""
                     color: root._glyphColor(modelData, trayItem.hovered)
-                    opacity: trayItem.hovered ? 1.0 : 0.68
+                    opacity: root._glyphOpacity(modelData, trayItem.hovered)
                     font.pixelSize: 12
                     font.family: "JetBrainsMono Nerd Font"
                     font.weight: Font.Medium
@@ -357,7 +358,10 @@ Item {
 
                     onClicked: mouse => {
                         if (mouse.button === Qt.LeftButton) {
-                            modelData.activate()
+                            if (root._isZscalerItem(modelData, root._traySearchText(modelData)) && modelData.hasMenu)
+                                trayItem.menuShowing = !trayItem.menuShowing
+                            else
+                                modelData.activate()
                         } else if (mouse.button === Qt.RightButton) {
                             if (modelData.hasMenu)
                                 trayItem.menuShowing = !trayItem.menuShowing
