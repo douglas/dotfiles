@@ -57,6 +57,10 @@ Item {
         return _hasAny(text, ["slack"]) || _looksLikeSlackFallback(item, text)
     }
 
+    function _isZscalerItem(item, text) {
+        return _hasAny(text, ["zscaler", "zstray", "zscaler client connector"])
+    }
+
     function _hasWaitingSlackMessages(item) {
         const text = _traySearchText(item)
         return _isSlackItem(item, text) &&
@@ -65,6 +69,11 @@ Item {
     }
 
     function _glyphColor(item, hovered) {
+        const text = _traySearchText(item)
+        if (_isZscalerItem(item, text))
+            return hovered
+                ? (root.theme.fg || "#cdd6f4")
+                : (root.theme.muted || "#585b70")
         if (_hasWaitingSlackMessages(item))
             return root.theme.yellow || "#f9e2af"
         return hovered
@@ -94,6 +103,7 @@ Item {
         if (_hasAny(text, ["syncthing"])) return "󱂵"
         if (_hasAny(text, ["nextcloud"])) return "󰅟"
         if (_hasAny(text, ["tailscale"])) return "󰛳"
+        if (_isZscalerItem(item, text)) return "󰦝"
         if (_hasAny(text, ["vpn", "proton"])) return "󰦝"
         if (_hasAny(text, ["docker"])) return "󰡨"
         if (_hasAny(text, ["qbittorrent", "torrent", "transmission"])) return "󰃘"
