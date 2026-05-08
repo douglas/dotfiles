@@ -34,15 +34,12 @@ Item {
     readonly property color cTextSecondary: useOmarchyTheme ? theme.muted : "#787C99"
     readonly property color cTextMuted: cLightTheme ? Qt.alpha(cTextPrimary, 0.62) : Qt.alpha(cTextPrimary, 0.50)
     readonly property color cTextDimmed: cLightTheme ? Qt.alpha(cTextPrimary, 0.42) : Qt.alpha(cTextPrimary, 0.35)
-    readonly property color cAccent: useOmarchyTheme ? theme.accent : "#F7768E"
+    readonly property color cAccent: useOmarchyTheme ? theme.accent : "#89B4FA"
     readonly property color cPermission: useOmarchyTheme ? theme.red : "#F7768E"
     readonly property color cAttention: useOmarchyTheme ? theme.yellow : "#FF9E64"
     readonly property color cWorking: useOmarchyTheme ? theme.green : "#9ECE6A"
     readonly property color cCompacting: useOmarchyTheme ? theme.highlight : "#BB9AF7"
     readonly property color cIdle: useOmarchyTheme ? theme.muted : "#565D78"
-    readonly property color cOpencode: useOmarchyTheme ? theme.blue : "#7AA2F7"
-    readonly property color cPi: useOmarchyTheme ? theme.cyan : "#5DBFB1"
-    readonly property color cCodex: useOmarchyTheme ? theme.yellow : "#E0AF68"
     readonly property var orderedSessions: sortedSessions()
     readonly property int permissionCount: countStatus("permission")
     readonly property int attentionCount: countStatus("attention")
@@ -51,6 +48,7 @@ Item {
     readonly property int totalCount: permissionCount + attentionCount + workingCount + idleCount
     readonly property int needsActionCount: permissionCount + attentionCount
     readonly property bool showTabs: recentProjects.length > 0
+    readonly property int overlayWidth: 340
 
     signal opened()
 
@@ -107,11 +105,11 @@ Item {
     }
 
     function rowHeight() {
-        return selectedTab === "recent" ? 48 : 56;
+        return selectedTab === "recent" ? 46 : 54;
     }
 
     function listContentHeight() {
-        return Math.min(290, currentRows().length * rowHeight());
+        return Math.min(292, currentRows().length * rowHeight());
     }
 
     function emptyStateHeight() {
@@ -119,12 +117,13 @@ Item {
     }
 
     function panelContentHeight() {
-        const header = 39;
+        const padding = 28;
+        const header = 42;
         const dividers = 2 + (showTabs ? 1 : 0);
-        const tabs = showTabs ? 31 : 0;
+        const tabs = showTabs ? 30 : 0;
         const body = currentRows().length > 0 ? listContentHeight() : emptyStateHeight();
-        const footer = 48;
-        return Math.min(454, header + dividers + tabs + body + footer);
+        const footer = 34;
+        return Math.min(476, padding + header + dividers + tabs + body + footer);
     }
 
     function emptyStateMessage() {
@@ -201,18 +200,47 @@ Item {
             return "Pi";
         if (source === "codex")
             return "Codex";
-        return "CC";
+        return "Claude";
     }
 
-    function sourceColor(session) {
-        const source = String(session.source || "");
-        if (source === "opencode")
-            return cOpencode;
-        if (source === "pi")
-            return cPi;
-        if (source === "codex")
-            return cCodex;
-        return cAttention;
+    function rawModelLabel(session) {
+        const candidates = [
+            session.model,
+            session.model_name,
+            session.modelName,
+            session.codex_model,
+            session.agent_model,
+            session.agentModel
+        ];
+
+        for (const value of candidates) {
+            const label = String(value || "").trim();
+            if (label !== "")
+                return label;
+        }
+
+        return "";
+    }
+
+    function sessionModelLabel(session) {
+        const model = rawModelLabel(session);
+        if (model !== "")
+            return model;
+
+        return sessionsHaveMultipleSources() ? sourceLabel(session) : "";
+    }
+
+    function sessionModelColor(session) {
+        return cAccent;
+    }
+
+    function showSessionModelColumn() {
+        for (const session of sessions) {
+            if (sessionModelLabel(session) !== "")
+                return true;
+        }
+
+        return false;
     }
 
     function subagentCount(session) {
@@ -299,16 +327,6 @@ Item {
             return Date.parse(String(b.last_activity || "")) - Date.parse(String(a.last_activity || ""));
         });
         return copy;
-    }
-
-    function highestStatusColor() {
-        if (permissionCount > 0)
-            return cPermission;
-        if (attentionCount > 0)
-            return cAttention;
-        if (workingCount > 0)
-            return cWorking;
-        return cIdle;
     }
 
     function statusSegments(barWidth) {
@@ -521,21 +539,21 @@ Item {
             spacing: 0
 
             Item {
-                width: 44
-                height: 18
+                width: Style.Typography.barIcon + 28
+                height: Style.Typography.barIcon + 2
 
                 CctopGridIcon {
-                    width: 16
-                    height: 16
+                    width: Style.Typography.barIcon
+                    height: Style.Typography.barIcon
                     x: 0
-                    y: 1
+                    anchors.verticalCenter: parent.verticalCenter
                     tint: root.needsActionCount > 0 ? root.cAccent : (barHover.containsMouse || root.showing ? root.cTextPrimary : root.cTextMuted)
                 }
 
                 CctopStatusBar {
                     visible: root.totalCount > 0
-                    x: 20
-                    y: 7
+                    x: Style.Typography.barIcon + 4
+                    anchors.verticalCenter: parent.verticalCenter
                     width: 22
                     height: 4
                 }
@@ -555,11 +573,33 @@ Item {
     }
 
     WlrLayershell {
+        visible: root.showing
+        color: "transparent"
+        layer: WlrLayer.Top
+        keyboardFocus: WlrKeyboardFocus.None
+        exclusionMode: ExclusionMode.Ignore
+        namespace: "cctop-panel-dismiss"
+
+        anchors {
+            left: true
+            right: true
+            top: true
+            bottom: true
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            acceptedButtons: Qt.LeftButton
+            onClicked: root.hidePanel()
+        }
+    }
+
+    WlrLayershell {
         id: cctopWindow
 
         visible: root.showing
         color: "transparent"
-        implicitWidth: root.overlayPx(320)
+        implicitWidth: root.overlayPx(root.overlayWidth)
         implicitHeight: cctopPanel.height
         layer: WlrLayer.Overlay
         keyboardFocus: WlrKeyboardFocus.OnDemand
@@ -581,9 +621,9 @@ Item {
         Rectangle {
             id: cctopPanel
 
-            width: root.overlayPx(320)
+            width: root.overlayPx(root.overlayWidth)
             height: root.overlayPx(root.panelContentHeight())
-            radius: root.overlayPx(10)
+            radius: root.overlayPx(12)
             color: root.cBg
             border.color: root.cPanelBorder
             border.width: 1
@@ -633,11 +673,12 @@ Item {
 
             Column {
                 anchors.fill: parent
+                anchors.margins: root.overlayPx(14)
                 spacing: 0
 
                 HeaderRow {
                     width: parent.width
-                    height: root.overlayPx(39)
+                    height: root.overlayPx(42)
                 }
 
                 Rectangle {
@@ -711,7 +752,7 @@ Item {
                         anchors.centerIn: parent
                         text: root.emptyStateMessage()
                         color: root.cTextMuted
-                        font.pixelSize: Style.Typography.scaledBody(root.overlayScale)
+                        font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
                         font.family: Style.Typography.monoPropo
                         horizontalAlignment: Text.AlignHCenter
                     }
@@ -725,7 +766,7 @@ Item {
 
                 FooterRow {
                     width: parent.width
-                    height: root.overlayPx(48)
+                    height: root.overlayPx(34)
                 }
             }
         }
@@ -734,48 +775,95 @@ Item {
     component HeaderRow: Item {
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: root.overlayPx(16)
-            anchors.rightMargin: root.overlayPx(16)
-            spacing: root.overlayPx(6)
-
-            Rectangle {
-                Layout.preferredWidth: root.overlayPx(3)
-                Layout.preferredHeight: root.overlayPx(14)
-                radius: root.overlayPx(1.5)
-                color: root.highestStatusColor()
-            }
-
-            Text {
-                text: "cctop"
-                color: root.cTextPrimary
-                font.pixelSize: Style.Typography.scaledBodyLarge(root.overlayScale)
-                font.family: Style.Typography.monoPropo
-                font.weight: Font.DemiBold
-                Layout.alignment: Qt.AlignVCenter
-            }
+            spacing: root.overlayPx(10)
 
             Item {
+                Layout.preferredWidth: root.overlayPx(30)
+                Layout.preferredHeight: root.overlayPx(30)
+                Layout.alignment: Qt.AlignVCenter
+
+                CctopGridIcon {
+                    width: root.overlayPx(20)
+                    height: root.overlayPx(20)
+                    anchors.centerIn: parent
+                    tint: root.cAccent
+                }
+
+                CctopStatusBar {
+                    visible: root.totalCount > 0
+                    width: root.overlayPx(18)
+                    height: root.overlayPx(4)
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.bottom: parent.bottom
+                }
+            }
+
+            ColumnLayout {
                 Layout.fillWidth: true
+                Layout.alignment: Qt.AlignVCenter
+                spacing: 0
+
+                Text {
+                    text: "cctop"
+                    color: root.cTextPrimary
+                    font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
+                    font.family: Style.Typography.monoPropo
+                    font.weight: Font.DemiBold
+                    elide: Text.ElideRight
+                    Layout.fillWidth: true
+                }
+
+                Text {
+                    text: root.totalCount + " active · " + root.needsActionCount + " need attention"
+                    color: root.cTextMuted
+                    font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
+                    font.family: Style.Typography.monoPropo
+                    elide: Text.ElideRight
+                    Layout.fillWidth: true
+                }
             }
 
-            HeaderChip {
-                count: root.permissionCount
-                chipColor: root.cPermission
-            }
+            RowLayout {
+                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                spacing: root.overlayPx(6)
 
-            HeaderChip {
-                count: root.attentionCount
-                chipColor: root.cAttention
-            }
+                HeaderChip {
+                    count: root.workingCount
+                    chipColor: root.cWorking
+                }
 
-            HeaderChip {
-                count: root.workingCount
-                chipColor: root.cWorking
-            }
+                HeaderActionButton {
+                    glyph: ""
+                    tooltip: "Refresh"
+                    onClicked: {
+                        root.reload();
+                        root.notice = "Refreshing sessions";
+                        noticeTimer.restart();
+                    }
+                }
 
-            HeaderChip {
-                count: root.idleCount
-                chipColor: root.cIdle
+                HeaderActionButton {
+                    glyph: "󰌌"
+                    tooltip: root.navigateMode ? "Exit Navigate" : "Navigate"
+                    active: root.navigateMode
+                    onClicked: root.navigateMode = !root.navigateMode
+                }
+
+                HeaderActionButton {
+                    glyph: "󰒓"
+                    tooltip: "Settings unavailable"
+                    onClicked: {
+                        root.notice = "Settings are not implemented in the Quickshell port yet";
+                        noticeTimer.restart();
+                    }
+                }
+
+                HeaderActionButton {
+                    glyph: "󰅖"
+                    tooltip: "Close"
+                    tone: root.cPermission
+                    onClicked: root.hidePanel()
+                }
             }
         }
     }
@@ -783,60 +871,22 @@ Item {
     component FooterRow: Item {
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: root.overlayPx(16)
-            anchors.rightMargin: root.overlayPx(16)
             spacing: root.overlayPx(8)
 
             Text {
-                text: root.notice !== "" ? root.notice : "Hide"
+                text: root.notice !== "" ? root.notice : "1-9 jump · ↑↓ select · Enter open · Esc close"
                 color: root.notice !== "" ? root.cAttention : root.cTextMuted
-                font.pixelSize: Style.Typography.scaledLabel(root.overlayScale)
+                font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
                 font.family: Style.Typography.monoPropo
                 elide: Text.ElideRight
-
-                MouseArea {
-                    anchors.fill: parent
-                    anchors.margins: -6
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: root.hidePanel()
-                }
-            }
-
-            Text {
-                text: "v0.15.1"
-                color: root.cTextMuted
-                font.pixelSize: Style.Typography.scaledLabel(root.overlayScale)
-                font.family: Style.Typography.monoPropo
-            }
-
-            Text {
-                text: "Ctrl+Super+C navigate"
-                color: root.cTextMuted
-                font.pixelSize: Style.Typography.scaledLabel(root.overlayScale)
-                font.family: Style.Typography.monoPropo
                 Layout.fillWidth: true
-                elide: Text.ElideRight
             }
 
             Text {
-                text: "\u2699"
-                color: refreshHover.containsMouse ? root.cTextPrimary : root.cTextMuted
-                font.pixelSize: Style.Typography.scaledHeading(root.overlayScale)
+                text: root.selectedTab === "active" ? "Active" : "Recent"
+                color: root.cTextMuted
+                font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
                 font.family: Style.Typography.monoPropo
-
-                MouseArea {
-                    id: refreshHover
-
-                    anchors.fill: parent
-                    anchors.margins: -6
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: {
-                        root.notice = "Settings are not implemented in the Quickshell port yet";
-                        noticeTimer.restart();
-                    }
-                }
             }
         }
     }
@@ -879,7 +929,7 @@ Item {
             anchors.centerIn: parent
             text: parent.label + " (" + parent.count + ")"
             color: parent.active ? root.cTextPrimary : root.cTextMuted
-            font.pixelSize: Style.Typography.scaledLabel(root.overlayScale)
+            font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
             font.family: Style.Typography.monoPropo
             font.weight: parent.active ? Font.Medium : Font.Normal
         }
@@ -897,6 +947,70 @@ Item {
         MouseArea {
             anchors.fill: parent
             cursorShape: Qt.PointingHandCursor
+            onClicked: parent.clicked()
+        }
+    }
+
+    component HeaderActionButton: Item {
+        property string glyph: ""
+        property string tooltip: ""
+        property color tone: root.cAccent
+        property bool active: false
+        signal clicked()
+
+        Layout.preferredWidth: root.overlayPx(26)
+        Layout.preferredHeight: root.overlayPx(26)
+        Layout.alignment: Qt.AlignVCenter
+        z: actionHover.containsMouse ? 20 : 1
+
+        Rectangle {
+            anchors.fill: parent
+            radius: root.overlayPx(6)
+            color: parent.active
+                ? Qt.alpha(parent.tone, root.cLightTheme ? 0.18 : 0.16)
+                : actionHover.containsMouse ? root.cCardHover : "transparent"
+            border.color: parent.active ? Qt.alpha(parent.tone, 0.42) : "transparent"
+            border.width: 1
+        }
+
+        Text {
+            anchors.centerIn: parent
+            text: parent.glyph
+            color: parent.active || actionHover.containsMouse ? parent.tone : root.cTextMuted
+            font.pixelSize: Style.Typography.scaledActionIcon(root.overlayScale)
+            font.family: Style.Typography.mono
+        }
+
+        Rectangle {
+            visible: actionHover.containsMouse && parent.tooltip !== ""
+            anchors.top: parent.bottom
+            anchors.right: parent.right
+            anchors.topMargin: root.overlayPx(6)
+            width: tooltipText.implicitWidth + root.overlayPx(12)
+            height: root.overlayPx(22)
+            radius: root.overlayPx(6)
+            color: Qt.darker(root.cBg, root.cLightTheme ? 1.02 : 1.18)
+            border.color: root.cPanelBorder
+            border.width: 1
+
+            Text {
+                id: tooltipText
+
+                anchors.centerIn: parent
+                text: parent.parent.tooltip
+                color: root.cTextPrimary
+                font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
+                font.family: Style.Typography.monoPropo
+            }
+        }
+
+        MouseArea {
+            id: actionHover
+
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            acceptedButtons: Qt.LeftButton
             onClicked: parent.clicked()
         }
     }
@@ -929,7 +1043,7 @@ Item {
 
                 text: String(count)
                 color: root.statusDisplayColor(chipColor)
-                font.pixelSize: Style.Typography.scaledLabel(root.overlayScale)
+                font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
                 font.family: Style.Typography.monoPropo
                 Layout.alignment: Qt.AlignVCenter
             }
@@ -999,7 +1113,7 @@ Item {
         property int rowIndex: 0
         property bool selected: false
 
-        height: root.overlayPx(56)
+        height: root.overlayPx(54)
         color: selected || rowHover.containsMouse ? root.cCardHover : "transparent"
 
         Rectangle {
@@ -1029,27 +1143,45 @@ Item {
             anchors.rightMargin: root.overlayPx(8)
             spacing: root.overlayPx(8)
 
-            Rectangle {
-                Layout.preferredWidth: root.overlayPx(root.navigateMode && rowIndex < 9 ? 16 : 3)
-                Layout.preferredHeight: root.overlayPx(root.navigateMode && rowIndex < 9 ? 16 : 38)
-                radius: root.overlayPx(root.navigateMode && rowIndex < 9 ? 2 : 1.5)
-                color: root.navigateMode && rowIndex < 9
-                    ? root.statusDisplayColor(root.statusColor(session))
-                    : Qt.alpha(root.statusDisplayColor(root.statusColor(session)), root.statusFillAlpha(root.statusGroup(session)))
+            Item {
+                Layout.preferredWidth: root.overlayPx(root.navigateMode && rowIndex < 9 ? 25 : 8)
+                Layout.preferredHeight: root.overlayPx(38)
 
-                Text {
+                Rectangle {
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    width: root.overlayPx(3)
+                    height: root.overlayPx(36)
+                    radius: root.overlayPx(1.5)
+                    color: Qt.alpha(
+                        root.statusDisplayColor(root.statusColor(session)),
+                        root.statusFillAlpha(root.statusGroup(session))
+                    )
+                }
+
+                Rectangle {
                     visible: root.navigateMode && rowIndex < 9
-                    anchors.centerIn: parent
-                    text: String(rowIndex + 1)
-                    color: "white"
-                    font.pixelSize: Style.Typography.scaledLabel(root.overlayScale)
-                    font.family: Style.Typography.monoPropo
-                    font.weight: Font.Bold
+                    anchors.left: parent.left
+                    anchors.verticalCenter: parent.verticalCenter
+                    width: root.overlayPx(16)
+                    height: root.overlayPx(16)
+                    radius: root.overlayPx(4)
+                    color: root.statusDisplayColor(root.statusColor(session))
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: String(rowIndex + 1)
+                        color: "white"
+                        font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
+                        font.family: Style.Typography.monoPropo
+                        font.weight: Font.Bold
+                    }
                 }
             }
 
             ColumnLayout {
                 Layout.fillWidth: true
+                Layout.minimumWidth: 0
                 spacing: root.overlayPx(2)
 
                 RowLayout {
@@ -1059,26 +1191,19 @@ Item {
                     Text {
                         text: root.displayName(session)
                         color: String(session.status || "") === "idle" ? root.cTextDimmed : root.cTextPrimary
-                        font.pixelSize: Style.Typography.scaledBodyLarge(root.overlayScale)
+                        font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
                         font.family: Style.Typography.monoPropo
                         font.weight: Font.Medium
                         elide: Text.ElideRight
                         Layout.fillWidth: true
+                        Layout.minimumWidth: 0
                     }
 
                     Text {
                         visible: root.subagentCount(session) > 0
                         text: root.subagentCount(session) + " agent" + (root.subagentCount(session) === 1 ? "" : "s")
                         color: root.cCompacting
-                        font.pixelSize: Style.Typography.scaledLabel(root.overlayScale)
-                        font.family: Style.Typography.monoPropo
-                    }
-
-                    Text {
-                        visible: root.sessionsHaveMultipleSources()
-                        text: root.sourceLabel(session)
-                        color: root.sourceColor(session)
-                        font.pixelSize: Style.Typography.scaledCaption(root.overlayScale)
+                        font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
                         font.family: Style.Typography.monoPropo
                     }
                 }
@@ -1090,7 +1215,7 @@ Item {
                     Text {
                         text: String(session.branch || "unknown")
                         color: root.cTextSecondary
-                        font.pixelSize: Style.Typography.scaledLabel(root.overlayScale)
+                        font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
                         font.family: Style.Typography.text
                         elide: Text.ElideRight
                         Layout.maximumWidth: root.overlayPx(92)
@@ -1100,7 +1225,7 @@ Item {
                         visible: root.contextLine(session) !== ""
                         text: "/"
                         color: Qt.alpha(root.cTextMuted, 0.6)
-                        font.pixelSize: Style.Typography.scaledLabel(root.overlayScale)
+                        font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
                         font.family: Style.Typography.monoPropo
                     }
 
@@ -1108,35 +1233,71 @@ Item {
                         visible: root.contextLine(session) !== ""
                         text: root.contextLine(session)
                         color: root.cTextSecondary
-                        font.pixelSize: Style.Typography.scaledBodySmall(root.overlayScale)
+                        font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
                         font.family: Style.Typography.monoPropo
                         elide: Text.ElideRight
                         Layout.fillWidth: true
+                        Layout.minimumWidth: 0
                     }
                 }
             }
 
-            ColumnLayout {
-                Layout.preferredWidth: root.overlayPx(68)
-                spacing: root.overlayPx(1)
+            RowLayout {
+                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                Layout.fillWidth: false
+                spacing: root.overlayPx(3)
 
-                Text {
-                    text: root.statusLabel(session)
-                    color: root.statusDisplayColor(root.statusColor(session))
-                    font.pixelSize: Style.Typography.scaledLabel(root.overlayScale)
-                    font.family: Style.Typography.monoPropo
-                    font.weight: Font.Medium
-                    horizontalAlignment: Text.AlignRight
-                    Layout.fillWidth: true
+                ColumnLayout {
+                    visible: root.showSessionModelColumn()
+                    Layout.minimumWidth: root.overlayPx(54)
+                    Layout.preferredWidth: root.overlayPx(54)
+                    Layout.maximumWidth: root.overlayPx(54)
+                    Layout.fillWidth: false
+                    spacing: root.overlayPx(1)
+
+                    Text {
+                        text: root.sessionModelLabel(session)
+                        color: root.sessionModelColor(session)
+                        font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
+                        font.family: Style.Typography.monoPropo
+                        horizontalAlignment: Text.AlignLeft
+                        elide: Text.ElideRight
+                        Layout.fillWidth: true
+                    }
+
+                    Text {
+                        text: ""
+                        font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
+                        font.family: Style.Typography.monoPropo
+                        Layout.fillWidth: true
+                    }
                 }
 
-                Text {
-                    text: root.relativeTime(session)
-                    color: root.cTextMuted
-                    font.pixelSize: Style.Typography.scaledLabel(root.overlayScale)
-                    font.family: Style.Typography.monoPropo
-                    horizontalAlignment: Text.AlignRight
-                    Layout.fillWidth: true
+                ColumnLayout {
+                    Layout.minimumWidth: root.overlayPx(68)
+                    Layout.preferredWidth: root.overlayPx(68)
+                    Layout.maximumWidth: root.overlayPx(68)
+                    Layout.fillWidth: false
+                    spacing: root.overlayPx(1)
+
+                    Text {
+                        text: root.statusLabel(session)
+                        color: root.statusDisplayColor(root.statusColor(session))
+                        font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
+                        font.family: Style.Typography.monoPropo
+                        font.weight: Font.Medium
+                        horizontalAlignment: Text.AlignRight
+                        Layout.fillWidth: true
+                    }
+
+                    Text {
+                        text: root.relativeTime(session)
+                        color: root.cTextMuted
+                        font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
+                        font.family: Style.Typography.monoPropo
+                        horizontalAlignment: Text.AlignRight
+                        Layout.fillWidth: true
+                    }
                 }
             }
         }
@@ -1147,7 +1308,7 @@ Item {
         property int rowIndex: 0
         property bool selected: false
 
-        height: root.overlayPx(48)
+        height: root.overlayPx(46)
         color: selected || rowHover.containsMouse ? root.cCardHover : "transparent"
 
         Rectangle {
@@ -1191,7 +1352,7 @@ Item {
                 Text {
                     text: String(project.project_name || "project")
                     color: root.cTextPrimary
-                    font.pixelSize: Style.Typography.scaledBody(root.overlayScale)
+                    font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
                     font.family: Style.Typography.monoPropo
                     elide: Text.ElideRight
                     Layout.fillWidth: true
@@ -1204,7 +1365,7 @@ Item {
                     Text {
                         text: String(project.last_branch || "unknown")
                         color: root.cTextMuted
-                        font.pixelSize: Style.Typography.scaledCaption(root.overlayScale)
+                        font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
                         font.family: Style.Typography.text
                         elide: Text.ElideRight
                         Layout.maximumWidth: root.overlayPx(112)
@@ -1213,14 +1374,14 @@ Item {
                     Text {
                         text: "·"
                         color: root.cTextMuted
-                        font.pixelSize: Style.Typography.scaledCaption(root.overlayScale)
+                        font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
                         font.family: Style.Typography.monoPropo
                     }
 
                     Text {
                         text: String(project.session_count || 0) + " session" + (Number(project.session_count || 0) === 1 ? "" : "s")
                         color: root.cTextMuted
-                        font.pixelSize: Style.Typography.scaledCaption(root.overlayScale)
+                        font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
                         font.family: Style.Typography.monoPropo
                         elide: Text.ElideRight
                         Layout.fillWidth: true
@@ -1231,7 +1392,7 @@ Item {
             Text {
                 text: root.recentRelativeTime(project)
                 color: root.cTextMuted
-                font.pixelSize: Style.Typography.scaledLabel(root.overlayScale)
+                font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
                 font.family: Style.Typography.monoPropo
                 horizontalAlignment: Text.AlignRight
                 Layout.preferredWidth: root.overlayPx(56)
