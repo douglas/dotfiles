@@ -14,6 +14,7 @@ FloatingWindow {
     })
     property var settings: null
     property real uiScale: 1
+    readonly property real overlayScale: Math.max(1, uiScale)
     property var files: []
     property var picturesFiles: []
     property var downloadsFiles: []
@@ -50,6 +51,10 @@ FloatingWindow {
     readonly property int fileLimit: settings ? Math.max(1, Math.min(50, Math.round(mode === "downloads" ? settings.downloadsFileLimit : settings.picturesImageLimit))) : 10
     readonly property var selectedFile: files.length > 0 ? files[Math.max(0, Math.min(selectedIdx, files.length - 1))] : ({
     })
+
+    function overlayPx(value) {
+        return Math.round(value * overlayScale);
+    }
 
     function shellQuote(s) {
         if (s === undefined || s === null)
@@ -322,13 +327,13 @@ FloatingWindow {
 
             ColumnLayout {
                 anchors.fill: parent
-                anchors.margins: 14
-                spacing: 12
+                anchors.margins: root.overlayPx(14)
+                spacing: root.overlayPx(10)
 
                 RowLayout {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 30
-                    spacing: 8
+                    Layout.preferredHeight: root.overlayPx(26)
+                    spacing: root.overlayPx(8)
 
                     Text {
                         text: root.activeProfile.icon
@@ -349,50 +354,61 @@ FloatingWindow {
                         Layout.fillWidth: true
                     }
 
-                    Rectangle {
-                        Layout.preferredWidth: 28
-                        Layout.preferredHeight: 28
-                        radius: 0
-                        color: root.settingsOpen ? Qt.alpha(theme.accent || "#89b4fa", 0.18) : "transparent"
-                        border.width: root.settingsOpen ? 1 : 0
-                        border.color: Qt.alpha(theme.accent || "#89b4fa", 0.45)
+                    Row {
+                        Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                        spacing: root.overlayPx(2)
 
-                        Text {
-                            anchors.centerIn: parent
-                            text: ""
-                            color: root.settingsOpen ? (theme.accent || "#89b4fa") : Qt.alpha(theme.muted || "#585b70", 0.75)
-                            font.pixelSize: Style.Typography.recentActionIcon
-                            font.family: Style.Typography.mono
+                        Rectangle {
+                            width: root.overlayPx(20)
+                            height: root.overlayPx(20)
+                            radius: 0
+                            color: root.settingsOpen ? Qt.alpha(theme.accent || "#89b4fa", 0.18) : "transparent"
+                            border.width: root.settingsOpen ? 1 : 0
+                            border.color: Qt.alpha(theme.accent || "#89b4fa", 0.45)
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: ""
+                                color: root.settingsOpen ? (theme.accent || "#89b4fa") : recentSettingsHover.containsMouse ? (theme.accent || "#89b4fa") : Qt.alpha(theme.muted || "#585b70", 0.75)
+                                font.pixelSize: Style.Typography.recentActionIcon
+                                font.family: Style.Typography.mono
+                            }
+
+                            MouseArea {
+                                id: recentSettingsHover
+
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: root.settingsOpen = !root.settingsOpen
+                            }
+
                         }
 
-                        MouseArea {
-                            anchors.fill: parent
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: root.settingsOpen = !root.settingsOpen
+                        Rectangle {
+                            width: root.overlayPx(20)
+                            height: root.overlayPx(20)
+                            radius: 0
+                            color: "transparent"
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "󰅖"
+                                color: recentCloseHover.containsMouse ? (theme.red || "#f38ba8") : Qt.alpha(theme.muted || "#585b70", 0.7)
+                                font.pixelSize: Style.Typography.recentCloseIcon
+                                font.family: Style.Typography.mono
+                            }
+
+                            MouseArea {
+                                id: recentCloseHover
+
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: root.showing = false
+                            }
+
                         }
-
-                    }
-
-                    Rectangle {
-                        Layout.preferredWidth: 28
-                        Layout.preferredHeight: 28
-                        radius: 0
-                        color: "transparent"
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: "󰅖"
-                            color: Qt.alpha(theme.muted || "#585b70", 0.7)
-                            font.pixelSize: Style.Typography.recentCloseIcon
-                            font.family: Style.Typography.mono
-                        }
-
-                        MouseArea {
-                            anchors.fill: parent
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: root.showing = false
-                        }
-
                     }
 
                 }
@@ -416,7 +432,7 @@ FloatingWindow {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     visible: root.files.length > 0
-                    spacing: 12
+                    spacing: root.overlayPx(10)
 
                     Rectangle {
                         id: previewPane
@@ -572,7 +588,7 @@ FloatingWindow {
                     Rectangle {
                         id: stripPane
 
-                        Layout.preferredWidth: 214
+                        Layout.preferredWidth: root.overlayPx(190)
                         Layout.fillHeight: true
                         radius: 0
                         color: Qt.alpha(theme.dim || "#45475a", 0.18)
@@ -584,9 +600,9 @@ FloatingWindow {
                             id: filmstrip
 
                             anchors.fill: parent
-                            anchors.margins: 8
+                            anchors.margins: root.overlayPx(6)
                             model: root.files
-                            spacing: 8
+                            spacing: root.overlayPx(6)
                             clip: true
 
                             ScrollBar.vertical: ScrollBar {
@@ -603,7 +619,7 @@ FloatingWindow {
                                 property bool hovered: false
 
                                 width: filmstrip.width
-                                height: 108
+                                height: root.overlayPx(82)
 
                                 Item {
                                     id: thumb
@@ -637,11 +653,11 @@ FloatingWindow {
 
                                         RowLayout {
                                             anchors.fill: parent
-                                            anchors.margins: 6
-                                            spacing: 8
+                                            anchors.margins: root.overlayPx(5)
+                                            spacing: root.overlayPx(6)
 
                                             Rectangle {
-                                                Layout.preferredWidth: 82
+                                                Layout.preferredWidth: root.overlayPx(72)
                                                 Layout.fillHeight: true
                                                 radius: 0
                                                 color: theme.bg || "#1e1e2e"
@@ -671,7 +687,7 @@ FloatingWindow {
                                             ColumnLayout {
                                                 Layout.fillWidth: true
                                                 Layout.fillHeight: true
-                                                spacing: 3
+                                                spacing: root.overlayPx(2)
 
                                                 Text {
                                                     Layout.fillWidth: true
@@ -750,12 +766,12 @@ FloatingWindow {
 
                 visible: root.settingsOpen
                 z: 20
-                width: 236
-                height: 86
+                width: root.overlayPx(236)
+                height: root.overlayPx(86)
                 anchors.top: parent.top
                 anchors.right: parent.right
-                anchors.topMargin: 42
-                anchors.rightMargin: 14
+                anchors.topMargin: root.overlayPx(42)
+                anchors.rightMargin: root.overlayPx(14)
                 radius: 0
                 color: theme.bg || "#1e1e2e"
                 border.width: 1
@@ -769,12 +785,12 @@ FloatingWindow {
 
                 ColumnLayout {
                     anchors.fill: parent
-                    anchors.margins: 12
-                    spacing: 10
+                    anchors.margins: root.overlayPx(12)
+                    spacing: root.overlayPx(10)
 
                     RowLayout {
                         Layout.fillWidth: true
-                        spacing: 8
+                        spacing: root.overlayPx(8)
 
                         Text {
                             Layout.fillWidth: true
@@ -797,7 +813,7 @@ FloatingWindow {
 
                     RowLayout {
                         Layout.fillWidth: true
-                        spacing: 8
+                        spacing: root.overlayPx(8)
 
                         Repeater {
                             model: [{
@@ -816,7 +832,7 @@ FloatingWindow {
 
                             Rectangle {
                                 Layout.fillWidth: true
-                                height: 32
+                                height: root.overlayPx(32)
                                 radius: 0
                                 color: Qt.alpha(theme.dim || "#45475a", 0.34)
                                 border.width: 1

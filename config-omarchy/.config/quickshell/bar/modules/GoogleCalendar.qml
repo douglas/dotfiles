@@ -47,13 +47,14 @@ Item {
     readonly property color cGreen: theme.green || "#a6e3a1"
     readonly property color cRed: theme.red || "#f38ba8"
     readonly property color cYellow: theme.yellow || "#f9e2af"
-    readonly property int popupW: overlayPx(320)
+    readonly property int popupW: overlayPx(264)
     readonly property int calendarRows: Math.ceil((firstDayOfMonth(viewYear, viewMonth) + daysInMonth(viewYear, viewMonth)) / 7)
-    readonly property int calendarGridBaseHeight: calendarRows * 28 + Math.max(0, calendarRows - 1) * 2
+    readonly property int calendarGridBaseWidth: 240
+    readonly property int calendarGridBaseHeight: calendarRows * 23 + Math.max(0, calendarRows - 1)
     readonly property int eventRows: Math.max(1, Math.min(4, displayEvents.length))
-    readonly property int eventListBaseHeight: loading || !ok || displayEvents.length === 0 ? 50 : eventRows * 42 + Math.max(0, eventRows - 1) * 6
-    readonly property int settingsPanelBaseHeight: 58
-    readonly property int popupH: overlayPx(settingsOpen ? 388 : eventsEnabled ? 342 + eventListBaseHeight : 306)
+    readonly property int eventListBaseHeight: loading || !ok || displayEvents.length === 0 ? 44 : eventRows * 34 + Math.max(0, eventRows - 1) * 4
+    readonly property int settingsPanelBaseHeight: 50
+    readonly property int popupH: overlayPx(settingsOpen ? 326 : eventsEnabled ? 262 + eventListBaseHeight : 248)
     readonly property int nextSeconds: nextEventSeconds()
     readonly property int nextMinutes: nextEventMinutes()
     readonly property bool urgentMeeting: selectedIsToday && nextSeconds > 0 && nextSeconds < 600
@@ -207,10 +208,10 @@ Item {
 
     function rowSubtext(event) {
         const parts = [event.timeLabel || "All day"];
-        if (event.location)
-            parts.push(event.location);
-        else if (event.conferenceUrl)
+        if (event.conferenceUrl)
             parts.push("Video meeting");
+        else if (event.location)
+            parts.push(event.location.indexOf("http") === 0 ? "Link" : event.location);
         return parts.join("  -  ");
     }
 
@@ -482,13 +483,13 @@ Item {
 
             ColumnLayout {
                 anchors.fill: parent
-                anchors.margins: root.overlayPx(14)
-                spacing: root.overlayPx(3)
+                anchors.margins: root.overlayPx(12)
+                spacing: root.overlayPx(2)
 
                 RowLayout {
                     Layout.fillWidth: true
                     Layout.preferredWidth: parent.width
-                    spacing: 10
+                    spacing: root.overlayPx(8)
 
                     Text {
                         text: "󰸗"
@@ -529,11 +530,11 @@ Item {
 
                     Row {
                         Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                        spacing: root.overlayPx(8)
+                        spacing: root.overlayPx(4)
 
                         Rectangle {
-                            width: root.overlayPx(22)
-                            height: root.overlayPx(22)
+                            width: root.overlayPx(20)
+                            height: root.overlayPx(20)
                             radius: 0
                             color: root.settingsOpen ? Qt.alpha(root.cAccent, 0.18) : "transparent"
                             border.width: root.settingsOpen ? 1 : 0
@@ -560,8 +561,8 @@ Item {
 
                         Rectangle {
                             visible: root.eventsEnabled
-                            width: root.overlayPx(22)
-                            height: root.overlayPx(22)
+                            width: root.overlayPx(20)
+                            height: root.overlayPx(20)
                             radius: 0
                             color: "transparent"
 
@@ -585,8 +586,8 @@ Item {
                         }
 
                         Rectangle {
-                            width: root.overlayPx(22)
-                            height: root.overlayPx(22)
+                            width: root.overlayPx(20)
+                            height: root.overlayPx(20)
                             radius: 0
                             color: "transparent"
 
@@ -594,7 +595,7 @@ Item {
                                 anchors.centerIn: parent
                                 text: "󰅖"
                                 color: closeHover.containsMouse ? root.cRed : root.cMuted
-                                font.pixelSize: Style.Typography.scaledCalendarIcon(root.overlayScale)
+                                font.pixelSize: Style.Typography.scaledCalendarIcon(root.overlayScale) + 2
                                 font.family: Style.Typography.mono
                             }
 
@@ -624,7 +625,7 @@ Item {
                     Layout.fillHeight: false
                     Layout.preferredHeight: implicitHeight
                     Layout.maximumHeight: implicitHeight
-                    spacing: root.overlayPx(6)
+                    spacing: root.overlayPx(2)
 
                     RowLayout {
                         Layout.fillWidth: true
@@ -634,7 +635,7 @@ Item {
                             color: prevMonthHover.containsMouse ? root.cAccent : root.cMuted
                             font.pixelSize: Style.Typography.scaledCalendarNavigationIcon(root.overlayScale)
                             font.family: Style.Typography.mono
-                            Layout.preferredWidth: root.overlayPx(24)
+                            Layout.preferredWidth: root.overlayPx(20)
                             horizontalAlignment: Text.AlignHCenter
 
                             MouseArea {
@@ -663,7 +664,7 @@ Item {
                             color: nextMonthHover.containsMouse ? root.cAccent : root.cMuted
                             font.pixelSize: Style.Typography.scaledCalendarNavigationIcon(root.overlayScale)
                             font.family: Style.Typography.mono
-                            Layout.preferredWidth: root.overlayPx(24)
+                            Layout.preferredWidth: root.overlayPx(20)
                             horizontalAlignment: Text.AlignHCenter
 
                             MouseArea {
@@ -680,7 +681,9 @@ Item {
                     }
 
                     RowLayout {
-                        Layout.fillWidth: true
+                        Layout.preferredWidth: root.overlayPx(root.calendarGridBaseWidth)
+                        Layout.maximumWidth: root.overlayPx(root.calendarGridBaseWidth)
+                        Layout.alignment: Qt.AlignHCenter
                         spacing: 0
 
                         Repeater {
@@ -700,13 +703,15 @@ Item {
                     }
 
                     GridLayout {
-                        Layout.fillWidth: true
+                        Layout.preferredWidth: root.overlayPx(root.calendarGridBaseWidth)
+                        Layout.maximumWidth: root.overlayPx(root.calendarGridBaseWidth)
+                        Layout.alignment: Qt.AlignHCenter
                         Layout.fillHeight: false
                         Layout.preferredHeight: root.overlayPx(root.calendarGridBaseHeight)
                         Layout.maximumHeight: root.overlayPx(root.calendarGridBaseHeight)
                         columns: 7
                         columnSpacing: 0
-                        rowSpacing: root.overlayPx(2)
+                        rowSpacing: root.overlayPx(1)
 
                         Repeater {
                             model: root.calendarRows * 7
@@ -719,13 +724,13 @@ Item {
                                 readonly property bool isToday: isValid && Qt.formatDate(cellDate, "yyyy-MM-dd") === root.todayKey
 
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: root.overlayPx(28)
+                                Layout.preferredHeight: root.overlayPx(23)
 
                                 Rectangle {
                                     anchors.centerIn: parent
-                                    width: root.overlayPx(26)
-                                    height: root.overlayPx(24)
-                                    radius: root.overlayPx(8)
+                                    width: root.overlayPx(21)
+                                    height: root.overlayPx(21)
+                                    radius: root.overlayPx(7)
                                     visible: isValid
                                     color: isSelected ? Qt.alpha(root.cAccent, 0.28) : isToday ? Qt.alpha(root.cAccent, 0.12) : dayHover.containsMouse ? Qt.alpha(root.cFg, 0.08) : "transparent"
                                     border.color: isSelected ? Qt.alpha(root.cAccent, 0.55) : "transparent"
@@ -850,19 +855,10 @@ Item {
                     color: Qt.alpha(root.cDim, 0.55)
                 }
 
-                RowLayout {
+                Item {
                     visible: root.eventsEnabled && !root.settingsOpen
                     Layout.fillWidth: true
-
-                    Text {
-                        text: "Events"
-                        color: root.cFg
-                        font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
-                        font.family: Style.Typography.monoPropo
-                        font.weight: Font.DemiBold
-                        Layout.fillWidth: true
-                    }
-
+                    Layout.preferredHeight: root.overlayPx(2)
                 }
 
                 ListView {
@@ -870,7 +866,7 @@ Item {
                     Layout.fillWidth: true
                     Layout.preferredHeight: root.overlayPx(root.eventListBaseHeight)
                     clip: true
-                    spacing: root.overlayPx(6)
+                    spacing: root.overlayPx(4)
                     model: root.displayEvents
 
                     delegate: Rectangle {
@@ -879,11 +875,10 @@ Item {
                         required property var modelData
 
                         width: ListView.view.width
-                        height: root.overlayPx(42)
-                        radius: 8
-                        color: rowHover.hovered ? Qt.rgba(1, 1, 1, 0.045) : Qt.rgba(1, 1, 1, 0.022)
-                        border.color: Qt.rgba(1, 1, 1, 0.045)
-                        border.width: 1
+                        height: root.overlayPx(34)
+                        radius: 0
+                        color: rowHover.hovered ? Qt.rgba(1, 1, 1, 0.035) : "transparent"
+                        border.width: 0
 
                         HoverHandler {
                             id: rowHover
@@ -898,36 +893,35 @@ Item {
 
                         RowLayout {
                             anchors.fill: parent
-                            anchors.leftMargin: root.overlayPx(10)
-                            anchors.rightMargin: root.overlayPx(8)
-                            spacing: root.overlayPx(8)
+                            anchors.leftMargin: root.overlayPx(2)
+                            anchors.rightMargin: root.overlayPx(2)
+                            spacing: root.overlayPx(5)
 
                             Rectangle {
-                                Layout.preferredWidth: 4
-                                Layout.fillHeight: true
-                                Layout.topMargin: root.overlayPx(9)
-                                Layout.bottomMargin: root.overlayPx(9)
-                                radius: 2
-                                color: root.eventAccentColor(row.modelData)
+                                Layout.preferredWidth: 3
+                                Layout.preferredHeight: root.overlayPx(26)
+                                Layout.alignment: Qt.AlignVCenter
+                                radius: 99
+                                color: Qt.alpha(root.eventAccentColor(row.modelData), 0.74)
                             }
 
                             ColumnLayout {
                                 Layout.fillWidth: true
-                                spacing: 3
+                                spacing: 1
 
                                 Text {
                                     text: row.modelData.title
                                     color: root.cFg
                                     font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
                                     font.family: Style.Typography.monoPropo
-                                    font.weight: Font.Medium
+                                    font.weight: Font.DemiBold
                                     elide: Text.ElideRight
                                     Layout.fillWidth: true
                                 }
 
                                 Text {
                                     text: root.rowSubtext(row.modelData)
-                                    color: root.cMuted
+                                    color: Qt.alpha(root.cMuted, 0.82)
                                     font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
                                     font.family: Style.Typography.monoPropo
                                     elide: Text.ElideRight
@@ -936,27 +930,24 @@ Item {
 
                             }
 
-                            Text {
-                                visible: row.modelData.conferenceUrl && row.modelData.conferenceUrl.length > 0
-                                text: "󰍫"
-                                color: root.cAccent
-                                font.pixelSize: Style.Typography.scaledCalendarIcon(root.overlayScale)
-                                font.family: Style.Typography.mono
+                            Item {
+                                Layout.preferredWidth: root.overlayPx(20)
+                                Layout.preferredHeight: root.overlayPx(22)
+                                Layout.alignment: Qt.AlignVCenter
 
-                                MouseArea {
-                                    anchors.fill: parent
-                                    anchors.margins: -7
-                                    cursorShape: Qt.PointingHandCursor
-                                    onClicked: root.openUrl(row.modelData.conferenceUrl)
+                                Text {
+                                    anchors.right: parent.right
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    width: root.overlayPx(20)
+                                    height: root.overlayPx(20)
+                                    text: "󰏌"
+                                    color: rowHover.hovered ? root.cMuted : Qt.alpha(root.cMuted, 0.42)
+                                    opacity: rowHover.hovered ? 1 : 0
+                                    font.pixelSize: Style.Typography.scaledCalendarIcon(root.overlayScale) - 2
+                                    font.family: Style.Typography.mono
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
                                 }
-
-                            }
-
-                            Text {
-                                text: "󰏌"
-                                color: root.cMuted
-                                font.pixelSize: Style.Typography.scaledCalendarIcon(root.overlayScale)
-                                font.family: Style.Typography.mono
                             }
 
                         }
@@ -1018,7 +1009,7 @@ Item {
 
                 Item {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: root.overlayPx(7)
+                    Layout.preferredHeight: root.overlayPx(2)
                 }
 
             }

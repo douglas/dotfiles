@@ -53,12 +53,12 @@ QtObject {
     readonly property int launcherItemBody: body
     readonly property int recentTitle: titleSmall
     readonly property int recentBody: body
-    readonly property int recentHeaderIcon: listIcon
-    readonly property int recentActionIcon: listIcon
-    readonly property int recentCloseIcon: listIcon
+    readonly property int recentHeaderIcon: titleSmall
+    readonly property int recentActionIcon: titleSmall
+    readonly property int recentCloseIcon: titleSmall + 2
     readonly property int recentPreviewIcon: previewIcon
     readonly property int recentLargePreviewIcon: largePreviewIcon
-    readonly property int recentMeta: body
+    readonly property int recentMeta: bodySmall
     readonly property int recentSettingsValue: settingsPreview
     readonly property int settingsTitle: display
     readonly property int settingsSectionTitle: heading
@@ -194,7 +194,7 @@ QtObject {
     }
 
     function scaledCalendarIcon(multiplier) {
-        return scaledListIcon(multiplier);
+        return scaledTitleSmall(multiplier);
     }
 
     function scaledCalendarHeaderIcon(multiplier) {
