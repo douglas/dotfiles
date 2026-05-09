@@ -6,6 +6,7 @@
 ## Environment
 ##
 export VISUAL=zed
+export EDITOR=zed
 export _ZO_DOCTOR=0
 export ENABLE_LSP_TOOL=1
 export CLAUDE_CODE_NO_FLICKER=1
@@ -88,10 +89,6 @@ if (( $+commands[entire] )); then source <(entire completion zsh 2>/dev/null); f
 # Added by LM Studio CLI (lms)
 export PATH="$PATH:$HOME/.lmstudio/bin"
 # End of LM Studio CLI section
-
-# mise (tool version manager)
-eval "$(mise activate zsh)"
-
 
 # Zoxide (must be initialized at the very end of .zshrc)
 eval "$(zoxide init --cmd cd zsh)"

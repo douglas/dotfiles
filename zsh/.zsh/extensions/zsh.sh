@@ -80,9 +80,6 @@ alias grsmn='git reset --hard origin/main'
 alias bi='bundle install'
 alias bic='bundle install --conservative'
 
-# Worktrees
-alias wr='wt-zig'
-
 function gci() {
 	if [[ $# -eq 0 ]]; then
 		echo "Usage: gci <commit message>"

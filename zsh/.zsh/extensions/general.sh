@@ -5,25 +5,23 @@
 ##
 ## Enable starship
 ##
-eval "$(starship init zsh)"
+if command -v starship &>/dev/null; then eval "$(starship init zsh)"; fi
 
 ##
 ## Mise
 ##
-eval "$(mise activate zsh)"
+if command -v mise &>/dev/null; then eval "$(mise activate zsh)"; fi
 
 ##
 ## FZF
 ##
-source <(fzf --zsh)
+if command -v fzf &>/dev/null; then source <(fzf --zsh); fi
 
 ##
 ## Ruby (YJIT)
 ##
 export RUBY_YJIT_ENABLE="1"
 export RUBY_CONFIGURE_OPTS=--enable-yjit
-
-export ENABLE_LSP_TOOL=1
 
 ##
 ## Golang
