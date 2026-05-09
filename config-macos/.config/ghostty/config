@@ -1,5 +1,5 @@
-# Catppuccin Frappé theme
-theme = catppuccin-frappe
+# Catppuccin Mocha theme
+theme = catppuccin-mocha
 
 # Search entire scrollback history in default text editor
 keybind = cmd+f=write_screen_file:open
@@ -24,9 +24,9 @@ font-size = 16
 keybind = cmd+right=next_tab
 keybind = cmd+left=previous_tab
 
-# Increase the x padding so the text
-# is further away from the window border
+# Padding
 window-padding-x = 6,6
+window-padding-y = 6,6
 
 # Default terminal height I normally use
 window-height = 34
