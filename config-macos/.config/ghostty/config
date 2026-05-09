@@ -1,5 +1,5 @@
-# Catppuccin Mocha theme
-theme = catppuccin-frappe
+# Catppuccin Macchiato — parity with Linux/Omarchy Macchiato
+theme = catppuccin-macchiato
 
 # Search entire scrollback history in default text editor
 keybind = cmd+f=write_screen_file:open
@@ -19,14 +19,15 @@ scrollback-limit = 10000000
 font-family = CommitMono Nerd Font
 font-style = Regular
 font-size = 17
+font-thicken = true
 
 # Move between tabs like iterm2
 keybind = cmd+right=next_tab
 keybind = cmd+left=previous_tab
 
-# Padding
-window-padding-x = 6,6
-window-padding-y = 6,6
+# Padding (matches Linux 14)
+window-padding-x = 14
+window-padding-y = 14
 
 # Default terminal height I normally use
 window-height = 34
@@ -38,8 +39,11 @@ window-save-state = always
 # Use a different titlebar configuration for macOS
 macos-titlebar-style = tabs
 
-macos-option-as-alt=left
-#keybind = cmd+right=text:\x05
-#keybind = cmd+left=text:\x01
+macos-option-as-alt = left
 keybind = alt+left=esc:b
 keybind = alt+right=esc:f
+
+# Cursor (matches Linux)
+cursor-style = block
+cursor-style-blink = false
+shell-integration-features = no-cursor,ssh-env
