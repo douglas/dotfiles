@@ -29,7 +29,7 @@ $time\
 [ ](fg:purple)\
 $line_break$character"""
 
-palette = 'catppuccin_mocha'
+palette = 'catppuccin_frappe'
 
 # Palette definitions
 [palettes.catppuccin_latte]
@@ -116,7 +116,7 @@ base = "#24273a"
 mantle = "#1e2030"
 crust = "#181926"
 
-[palettes.catppuccin_mocha]
+[palettes.catppuccin_frappe]
 rosewater = "#f5e0dc"
 flamingo = "#f2cdcd"
 pink = "#f5c2e7"
@@ -271,39 +271,3 @@ vimcmd_replace_one_symbol = '[ <](bold fg:purple)'
 vimcmd_replace_symbol = '[ <](bold fg:purple)'
 vimcmd_visual_symbol = '[ <](bold fg:lavender)'
 
-[custom.dox_sandbox]
-command = "dox-sandbox-info"
-when = true
-unsafe_no_escape = true
-format = "[$output](bold)"
-shell = ["bash", "--norc", "--noprofile"]
-
-[palettes.omarchy]
-rosewater = "#d3c6aa"
-flamingo = "#d3c6aa"
-pink = "#d699b6"
-mauve = "#d699b6"
-red = "#e67e80"
-maroon = "#e67e80"
-peach = "#dbbc7f"
-yellow = "#dbbc7f"
-green = "#a7c080"
-teal = "#83c092"
-sky = "#83c092"
-sapphire = "#7fbbb3"
-blue = "#7fbbb3"
-lavender = "#7fbbb3"
-text = "#d3c6aa"
-subtext1 = "#d3c6aa"
-subtext0 = "#d3c6aa"
-overlay2 = "#d3c6aa"
-overlay1 = "#475258"
-overlay0 = "#475258"
-surface2 = "#475258"
-surface1 = "#475258"
-surface0 = "#475258"
-base = "#2d353b"
-mantle = "#2d353b"
-crust = "#2d353b"
-purple = "#d699b6"
-accent = "#7fbbb3"
