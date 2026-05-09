@@ -18,7 +18,7 @@ scrollback-limit = 10000000
 # Font configurations
 font-family = CommitMono Nerd Font
 font-style = Regular
-font-size = 16
+font-size = 17
 
 # Move between tabs like iterm2
 keybind = cmd+right=next_tab
