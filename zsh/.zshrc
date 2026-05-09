@@ -92,7 +92,6 @@ export PATH="$PATH:$HOME/.lmstudio/bin"
 # mise (tool version manager)
 eval "$(mise activate zsh)"
 
-eval "$(wt shellenv)"
 
 export PATH="$HOME/work/dox-env/exe:$PATH"
 eval "$(dox-env shell-hook zsh)"
@@ -102,3 +101,5 @@ eval "$(zoxide init --cmd cd zsh)"
 
 # bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+
+if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
