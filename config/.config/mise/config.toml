@@ -1,10 +1,11 @@
 [tools]
 go = "latest"
 node = "25.6.1"
-ruby = "latest"
+ruby = "3.3.4"
 
 [settings]
 idiomatic_version_file_enable_tools = ["ruby"]
+activate_aggressive = true
 
 [settings.ruby]
 compile = false
