@@ -24,10 +24,20 @@ shell-integration-features = no-cursor,ssh-env
 # Keyboard bindings
 keybind = shift+insert=paste_from_clipboard
 keybind = control+insert=copy_to_clipboard
+keybind = shift+enter=text:\x1b\r
 keybind = ctrl+arrow_left=unbind
 keybind = ctrl+arrow_right=unbind
 keybind = ctrl+shift+arrow_left=previous_tab
 keybind = ctrl+shift+arrow_right=next_tab
+keybind = ctrl+alt+1=goto_tab:1
+keybind = ctrl+alt+2=goto_tab:2
+keybind = ctrl+alt+3=goto_tab:3
+keybind = ctrl+alt+4=goto_tab:4
+keybind = ctrl+alt+5=goto_tab:5
+keybind = ctrl+alt+6=goto_tab:6
+keybind = ctrl+alt+7=goto_tab:7
+keybind = ctrl+alt+8=goto_tab:8
+keybind = ctrl+alt+9=goto_tab:9
 
 #keybind = super+control+shift+alt+arrow_down=resize_split:down,100
 #keybind = super+control+shift+alt+arrow_up=resize_split:up,100
@@ -41,6 +51,16 @@ keybind = ctrl+k>shift+arrow_right=goto_split:right
 keybind = ctrl+k>shift+arrow_left=goto_split:left
 keybind = ctrl+k>shift+arrow_up=goto_split:up
 keybind = ctrl+k>shift+arrow_down=goto_split:down
+keybind = ctrl+k>l=goto_split:right
+keybind = ctrl+k>h=goto_split:left
+keybind = ctrl+k>k=goto_split:up
+keybind = ctrl+k>j=goto_split:down
+keybind = ctrl+shift+o=new_split:right
+keybind = ctrl+shift+e=new_split:down
+keybind = ctrl+alt+arrow_left=goto_split:left
+keybind = ctrl+alt+arrow_right=goto_split:right
+keybind = ctrl+alt+arrow_up=goto_split:up
+keybind = ctrl+alt+arrow_down=goto_split:down
 
 # Focus split on hover
 focus-follows-mouse = true
