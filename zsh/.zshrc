@@ -5,7 +5,6 @@
 ##
 ## Environment
 ##
-export TMPDIR="$HOME/tmp"
 export VISUAL=zed
 export _ZO_DOCTOR=0
 export ENABLE_LSP_TOOL=1
