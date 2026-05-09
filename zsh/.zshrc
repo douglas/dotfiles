@@ -94,7 +94,7 @@ eval "$(mise activate zsh)"
 
 
 export PATH="$HOME/work/dox-env/exe:$PATH"
-eval "$(dox-env shell-hook zsh)"
+if command -v dox-env >/dev/null 2>&1; then eval "$(dox-env shell-hook zsh)"; fi
 
 # Zoxide (must be initialized at the very end of .zshrc)
 eval "$(zoxide init --cmd cd zsh)"
