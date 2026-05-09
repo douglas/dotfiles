@@ -93,9 +93,6 @@ export PATH="$PATH:$HOME/.lmstudio/bin"
 eval "$(mise activate zsh)"
 
 
-export PATH="$HOME/work/dox-env/exe:$PATH"
-eval "$(dox-env shell-hook zsh)"
-
 # Zoxide (must be initialized at the very end of .zshrc)
 eval "$(zoxide init --cmd cd zsh)"
 
