@@ -29,10 +29,6 @@ fi
 # Restore repo versions after adopt (adopt moves target files into the package)
 git -C ~/.public_dotfiles checkout -- . ':!install.sh'
 
-# Install git-cob in /usr/local/bin so git can use it
-git_cob="/usr/local/bin/git-cob"
-[ ! -f "$git_cob" ] && sudo ln -s $HOME/.bin/git-cob "$git_cob"
-
 # Bootstrap private dotfiles if available
 if [[ -f ~/.private_dotfiles/install.sh ]]; then
   echo "=> Stowing private dotfiles..."

@@ -25,10 +25,12 @@ else
 fi
 
 ##
-## Bose QC35 II Bluetooth profile switching
+## Bose QC35 II Bluetooth profile switching (Linux/PulseAudio only)
 ##
-alias bose-mic='pactl set-card-profile bluez_card.4C_87_5D_CE_E0_96 headset-head-unit'
-alias bose-music='pactl set-card-profile bluez_card.4C_87_5D_CE_E0_96 a2dp-sink'
+if [[ $OSTYPE != darwin* ]]; then
+	alias bose-mic='pactl set-card-profile bluez_card.4C_87_5D_CE_E0_96 headset-head-unit'
+	alias bose-music='pactl set-card-profile bluez_card.4C_87_5D_CE_E0_96 a2dp-sink'
+fi
 
 ##
 ## Default aliases (transparent replacements)
@@ -85,7 +87,7 @@ fi
 if (( $+commands[entire] )); then source <(entire completion zsh 2>/dev/null); fi
 
 # Added by LM Studio CLI (lms)
-export PATH="$PATH:/home/douglas/.lmstudio/bin"
+export PATH="$PATH:$HOME/.lmstudio/bin"
 # End of LM Studio CLI section
 
 # mise (tool version manager)
@@ -100,4 +102,4 @@ eval "$(dox-env shell-hook zsh)"
 eval "$(zoxide init --cmd cd zsh)"
 
 # bun completions
-[ -s "/home/douglas/.bun/_bun" ] && source "/home/douglas/.bun/_bun"
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"

@@ -135,3 +135,5 @@
 	aiModelProvider = anthropic
 	aiAnthropicKeyOption = bringYourOwn
 	aiAnthropicModelName = claude-opus-4-0
+[include]
+	path = ~/.gitconfig_os
