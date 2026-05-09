@@ -11,7 +11,6 @@ export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gcr/ssh"
 ##
 ## General PATH changes
 ##
-export PATH="$HOME/.bun/bin:$PATH"
 
 alias spotify='spotify --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland'
 
