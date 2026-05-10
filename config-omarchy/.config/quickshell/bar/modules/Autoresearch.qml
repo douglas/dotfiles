@@ -1,0 +1,1 @@
+/home/douglas/src/autoresearch-agents/neo/quickshell/bar/modules/Autoresearch.qml
