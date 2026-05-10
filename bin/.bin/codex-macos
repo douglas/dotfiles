@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+set -eu
+
+home="${HOME:-/Users/douglas}"
+
+exec codex \
+  -s workspace-write \
+  -a on-request \
+  --add-dir "$home/.private_dotfiles" \
+  --add-dir "$home/work" \
+  --add-dir "$home/src" \
+  "$@"

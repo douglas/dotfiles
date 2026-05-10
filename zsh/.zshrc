@@ -42,6 +42,37 @@ alias ls="eza"
 alias ll="eza -la"
 alias lt="eza -laT -I .git ."
 
+codex() {
+	local arg
+	for arg in "$@"; do
+		case "$arg" in
+			-p|--profile|--profile=*|\
+			-a|--ask-for-approval|--ask-for-approval=*|\
+			-s|--sandbox|--sandbox=*|\
+			--dangerously-bypass-approvals-and-sandbox)
+				command codex "$@"
+				return
+				;;
+		esac
+	done
+
+	local current_dir="${PWD:A}"
+	local src_dir="${HOME:A}/src"
+	local work_dir="${HOME:A}/work"
+	local memories_dir="${HOME:A}/.codex/memories"
+
+	if [[ "$current_dir" == "$src_dir" || "$current_dir" == "$src_dir"/* || "$current_dir" == "$work_dir" || "$current_dir" == "$work_dir"/* ]]; then
+		command codex \
+			-a never \
+			-s workspace-write \
+			-c 'sandbox_workspace_write.network_access=true' \
+			-c "sandbox_workspace_write.writable_roots=[\"$src_dir\",\"$work_dir\",\"$memories_dir\",\"/tmp\"]" \
+			"$@"
+	else
+		command codex -a on-request -s read-only "$@"
+	fi
+}
+
 ##
 ## Load Extensions
 ##
