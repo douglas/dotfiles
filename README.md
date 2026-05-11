@@ -57,10 +57,10 @@ update-dotfiles
 | `bin` | Scripts in `~/.bin`: `git-cob`, `update-dotfiles`, `install-tools.sh`, and others |
 | `git` | `.gitconfig` and `.gitignore` — delta pager, difftastic, aliases, SSH signing |
 | `zsh` | `.zshrc` and `~/.zsh/` — extensions (git, fzf, networking, Rails), Catppuccin theme |
-| `config` | Shared `~/.config/` for bat, bottom, btop, delta, ghostty, yazi, zed, zellij, starship |
+| `config` | Shared `~/.config/` for bat, bottom, delta, ghostty, yazi, zed, zellij, starship |
 | `config-linux` | System files: xremap config/service, sleep hook, Keychron udev rule |
 | `config-macos` | Cursor editor settings and keybindings |
-| `config-omarchy` | Neovim, Hyprland base config, Quickshell, Waybar, Walker, Omarchy hooks and theming |
+| `config-omarchy` | Neovim, Hyprland base config, btop, Quickshell, Waybar, Walker, Omarchy hooks and theming |
 | `config-omarchy-desktop` | Ghostty machine config, Zed settings, Hyprland envs for desktop |
 | `config-omarchy-laptop` | Ghostty machine config, Zed settings, Hyprland envs/monitors for laptop |
 | `config-fedora-desktop` | Fedora/GNOME desktop config (future) |

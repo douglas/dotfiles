@@ -134,8 +134,27 @@ Item {
         return "Recent projects will appear here\nafter sessions end";
     }
 
-    function statusGroup(session) {
+    function effectiveStatus(session) {
         const status = String(session.status || "idle");
+        if ((status === "waiting_permission" || status === "waiting_input" || status === "needs_attention")
+                && isFreshBlockingStatus(session))
+            return status;
+        if (subagentCount(session) > 0)
+            return "working";
+        if (status === "working" || status === "compacting")
+            return status;
+        return "idle";
+    }
+
+    function isFreshBlockingStatus(session) {
+        const parsed = Date.parse(String(session.last_activity || ""));
+        if (Number.isNaN(parsed))
+            return false;
+        return (nowMs - parsed) <= 30 * 60 * 1000;
+    }
+
+    function statusGroup(session) {
+        const status = effectiveStatus(session);
         if (status === "waiting_permission" || status === "waiting_input" || status === "needs_attention")
             return "permission";
         if (status === "working" || status === "compacting")
@@ -144,7 +163,7 @@ Item {
     }
 
     function statusPriority(session) {
-        const status = String(session.status || "idle");
+        const status = effectiveStatus(session);
         if (status === "waiting_permission" || status === "waiting_input" || status === "needs_attention")
             return 0;
         if (status === "working")
@@ -183,7 +202,7 @@ Item {
     }
 
     function statusColor(session) {
-        const status = String(session.status || "idle");
+        const status = effectiveStatus(session);
         if (status === "waiting_permission" || status === "waiting_input" || status === "needs_attention")
             return cPermission;
         if (status === "working")
@@ -194,7 +213,7 @@ Item {
     }
 
     function statusLabel(session) {
-        const status = String(session.status || "idle");
+        const status = effectiveStatus(session);
         if (status === "waiting_permission")
             return "Permission";
         if (status === "waiting_input" || status === "needs_attention")
@@ -266,7 +285,7 @@ Item {
     }
 
     function contextLine(session) {
-        const status = String(session.status || "idle");
+        const status = effectiveStatus(session);
         if (status === "idle")
             return "";
         if (status === "compacting")
@@ -1077,7 +1096,7 @@ Item {
 
                     Text {
                         text: root.displayName(session)
-                        color: String(session.status || "") === "idle" ? root.cTextDimmed : root.cTextPrimary
+                        color: root.effectiveStatus(session) === "idle" ? root.cTextDimmed : root.cTextPrimary
                         font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
                         font.family: Style.Typography.monoPropo
                         font.weight: Font.Medium

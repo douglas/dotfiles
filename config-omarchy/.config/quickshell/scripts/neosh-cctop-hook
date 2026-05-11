@@ -109,25 +109,6 @@ safe_id_for() {
   printf "%s\n" "$safe"
 }
 
-text_payload() {
-  printf "%s" "$input" | jq -r '[.. | strings] | join("\n")' 2>/dev/null
-}
-
-payload_needs_user_answer() {
-  local text
-
-  text="$(text_payload | tr '[:upper:]' '[:lower:]')"
-  [[ -n "$text" ]] || return 1
-
-  case "$text" in
-    *"permission"*|*"approval"*|*"approve"*|*"allow this"*|*"do you want"*|*"would you like"*|*"should i"*|*"can i"*|*"please confirm"*|*"confirm"*|*"proceed"*|*"choose"*|*"select an option"*|*"waiting for your"*|*"requires your input"*)
-      return 0
-      ;;
-  esac
-
-  return 1
-}
-
 status_for_event() {
   local event="$1"
   local notification_type="$2"
@@ -163,11 +144,7 @@ status_for_event() {
       printf "idle"
       ;;
     Stop)
-      if payload_needs_user_answer; then
-        printf "waiting_input"
-      else
-        printf "idle"
-      fi
+      printf "idle"
       ;;
     SessionError)
       printf "needs_attention"

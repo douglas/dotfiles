@@ -127,6 +127,7 @@ ShellRoot {
                 Quickshell.execDetached(["bash", "-lc", "export PATH=\"$HOME/.local/share/omarchy/bin:$PATH\"; " + command]);
             close();
         }
+
     }
 
     Process {
@@ -139,6 +140,7 @@ ShellRoot {
                 parseToml(themeLoader.stdout.buf);
             else
                 omarchyThemeLoaded = false;
+
             themeLoader.stdout.buf = "";
         }
 
@@ -742,17 +744,35 @@ ShellRoot {
     }
 
     IpcHandler {
-        target: "openCctop"
         function handle() {
-            bar.toggleCctop()
+            bar.toggleCctop();
         }
+
+        target: "openCctop"
     }
 
     IpcHandler {
-        target: "refreshCctop"
         function handle() {
-            bar.refreshCctop()
+            bar.refreshCctop();
         }
+
+        target: "refreshCctop"
+    }
+
+    IpcHandler {
+        function handle() {
+            bar.toggleAutoresearch();
+        }
+
+        target: "openAutoresearch"
+    }
+
+    IpcHandler {
+        function handle() {
+            bar.refreshAutoresearch();
+        }
+
+        target: "refreshAutoresearch"
     }
 
     IpcHandler {

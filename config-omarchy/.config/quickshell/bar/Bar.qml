@@ -72,6 +72,14 @@ PanelWindow {
         cctopModule.reloadSessions()
     }
 
+    function toggleAutoresearch() {
+        autoresearchModule.openPanel()
+    }
+
+    function refreshAutoresearch() {
+        autoresearchModule.refresh()
+    }
+
     anchors {
         top: !barOnBottom
         bottom: barOnBottom
@@ -321,6 +329,7 @@ PanelWindow {
                     onOpened: {
                         statsModule.showing = false
                         cctopModule.showing = false
+                        autoresearchModule.showing = false
                     }
                 }
 
@@ -345,6 +354,7 @@ PanelWindow {
                     onOpened: {
                         batteryModule.showing = false
                         cctopModule.showing = false
+                        autoresearchModule.showing = false
                     }
                 }
 
@@ -392,6 +402,30 @@ PanelWindow {
                     onOpened: {
                         statsModule.showing = false
                         batteryModule.showing = false
+                        autoresearchModule.showing = false
+                    }
+                }
+
+                Autoresearch {
+                    id: autoresearchModule
+                    anchors.verticalCenter: parent.verticalCenter
+                    barOnBottom: root.barOnBottom
+                    overlayBarOffset: root.px(root.reservedSpace + 6)
+                    overlayScale: root.scaleFactor
+                    theme: ({
+                        fg: root.fg,
+                        accent: root.accent,
+                        dim: root.dim,
+                        muted: root.muted,
+                        bg: root.bg,
+                        red: root.red,
+                        green: root.green,
+                        yellow: root.yellow
+                    })
+                    onOpened: {
+                        statsModule.showing = false
+                        batteryModule.showing = false
+                        cctopModule.showing = false
                     }
                 }
             }

@@ -222,7 +222,34 @@ list_codex_sessions() {
 }
 
 list_sessions() {
-  jq -cs 'add | unique_by(.pid // .session_id)' \
+  local now_epoch
+
+  now_epoch="$(date -u +%s)"
+  jq -cs --argjson now "$now_epoch" '
+    def parsed_activity:
+      (.last_activity // "")
+      | sub("\\.[0-9]+Z$"; "Z")
+      | fromdateiso8601? // 0;
+
+    def fresh_blocking:
+      ((parsed_activity) as $activity | $activity > 0 and (($now - $activity) <= 1800));
+
+    def effective_status:
+      (.status // "idle") as $status
+      | if (($status == "waiting_permission" or $status == "waiting_input" or $status == "needs_attention") and fresh_blocking) then
+          $status
+        elif ((.active_subagents // []) | length) > 0 then
+          "working"
+        elif ($status == "working" or $status == "compacting") then
+          $status
+        else
+          "idle"
+        end;
+
+    add
+    | unique_by(.pid // .session_id)
+    | map(.status = effective_status)
+  ' \
     <(list_cctop_sessions) \
     <(list_codex_sessions) 2>/dev/null || printf '[]'
 }
