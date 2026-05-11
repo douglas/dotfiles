@@ -64,7 +64,10 @@ FloatingWindow {
     }
 
     function fileUrl(path) {
-        return path && path !== "" ? "file://" + encodeURI(path) : "";
+        if (!path || path === "")
+            return "";
+
+        return "file://" + String(path).split("/").map(part => encodeURIComponent(part)).join("/");
     }
 
     function extension(path) {
@@ -120,10 +123,10 @@ FloatingWindow {
 
     function dragMimeData(path) {
         const url = fileUrl(path);
-        return {
-            "text/plain": path || "",
-            "text/uri-list": url ? url + "\n" : ""
-        };
+        return url ? {
+            "text/uri-list": url
+        } : ({
+        });
     }
 
     function prepareDragImage(item, width, height) {
