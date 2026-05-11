@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if ! systemctl --user list-unit-files ZSTray.service --no-legend 2>/dev/null | rg -q '^ZSTray\.service'; then
+  exit 0
+fi
+
+for _attempt in {1..50}; do
+  if gdbus call --session \
+      --dest org.kde.StatusNotifierWatcher \
+      --object-path /StatusNotifierWatcher \
+      --method org.freedesktop.DBus.Properties.Get \
+      org.kde.StatusNotifierWatcher \
+      IsStatusNotifierHostRegistered 2>/dev/null | rg -q '<true>'; then
+    systemctl --user restart ZSTray.service >/dev/null 2>&1 || true
+    exit 0
+  fi
+
+  sleep 0.2
+done
+
+systemctl --user restart ZSTray.service >/dev/null 2>&1 || true
