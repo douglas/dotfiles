@@ -1,36 +1,21 @@
+#!/usr/bin/env bash
 ##
-## Install stow configurations
+## Install dotfiles through dotlayer.
 ##
 ## Usage:
-##   ./install.sh                    # Auto-detects OS and profile
-##   PROFILE=laptop ./install.sh     # Override profile on Linux
+##   ./install.sh
+##   DOTLAYER_PROFILE=laptop DOTLAYER_MACHINE=t14 ./install.sh --dry-run --verbose
 ##
 
-stow --adopt -d ~/.public_dotfiles -t ~ stow
-stow --adopt -d ~/.public_dotfiles -t ~ bin
-stow --adopt -d ~/.public_dotfiles -t ~ git
-stow --adopt -d ~/.public_dotfiles -t ~ zsh
-stow --adopt -d ~/.public_dotfiles -t ~ config
+set -euo pipefail
 
-if [[ $OSTYPE == darwin* ]]; then
-  stow --adopt -d ~/.public_dotfiles -t ~ config-macos
-else
-  PROFILE="${PROFILE:-$(hostnamectl chassis 2>/dev/null || echo desktop)}"
-  stow --adopt -d ~/.public_dotfiles -t ~ config-linux
-
-  if command -v omarchy-version &>/dev/null; then
-    stow --adopt -d ~/.public_dotfiles -t ~ config-omarchy
-    stow --adopt -d ~/.public_dotfiles -t ~ "config-omarchy-${PROFILE}"
-  elif [[ -f /etc/os-release ]] && source /etc/os-release && [[ "$ID" == "fedora" ]]; then
-    stow --adopt -d ~/.public_dotfiles -t ~ "config-fedora-${PROFILE}"
-  fi
+if command -v dotlayer >/dev/null 2>&1; then
+  exec dotlayer install "$@"
 fi
 
-# Restore repo versions after adopt (adopt moves target files into the package)
-git -C ~/.public_dotfiles checkout -- . ':!install.sh'
-
-# Bootstrap private dotfiles if available
-if [[ -f ~/.private_dotfiles/install.sh ]]; then
-  echo "=> Stowing private dotfiles..."
-  source ~/.private_dotfiles/install.sh
+if [[ -x "$HOME/src/dotlayer/exe/dotlayer" ]]; then
+  exec "$HOME/src/dotlayer/exe/dotlayer" install "$@"
 fi
+
+printf '%s\n' "dotlayer is required. Install it or clone it to \$HOME/src/dotlayer." >&2
+exit 1

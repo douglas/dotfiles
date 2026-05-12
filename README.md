@@ -1,53 +1,50 @@
 # dotfiles
 
-Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/), supporting macOS and Linux (desktop & laptop).
+Personal dotfiles managed with [dotlayer](https://github.com/douglas/dotlayer), supporting macOS and Omarchy desktop/laptop machines.
 
 ## How it works
 
-Each top-level directory is a **stow package** — running `stow <package>` symlinks its contents into `$HOME`. Configs are layered so shared settings live in one place while OS- and hardware-specific overrides stay separate:
+Each top-level directory is a dotlayer package. Dotlayer detects OS, profile, distro, and machine tags, then runs GNU Stow in the right order so shared settings live in one place while OS-, distro-, profile-, and model-specific overrides stay separate:
 
 ```
 config/                 # Shared app configs (bat, ghostty, zellij, yazi, etc.)
 config-linux/           # Linux-only system files (udev rules, systemd hooks)
 config-macos/           # macOS-only configs (Cursor editor)
-config-omarchy/         # Omarchy base (nvim, quickshell, waybar, walker, keybindings)
+config-omarchy/         # Shared Omarchy base (nvim, quickshell, waybar, walker, keybindings)
 config-omarchy-desktop/ # Desktop overrides (font size, window dimensions)
-config-omarchy-laptop/  # Laptop overrides (font size, window dimensions)
+config-omarchy-laptop/  # Shared laptop glue (monitor/profile entrypoints)
+config-omarchy-laptop-t1g/ # T1G laptop model overrides
+config-omarchy-laptop-t14/ # T14 laptop model overrides
 config-fedora-desktop/  # Fedora/GNOME desktop (future)
 config-fedora-laptop/   # Fedora/GNOME laptop (future)
 ```
 
-On Linux, profile detection uses `hostnamectl chassis` to determine whether to stow `config-omarchy-desktop` or `config-omarchy-laptop`.
+On Linux, profile detection uses `hostnamectl chassis` to determine whether to stow desktop or laptop profile packages. Machine tags such as `t1g` and `t14` come from `~/.config/dotlayer/dotlayer.yml`, where each tag has a DMI/model detection command. Use `DOTLAYER_MACHINE=t14` to force a tag for testing.
 
-**Ghostty** uses `config-file = machine` in the shared config to include per-machine overrides (font size, window dimensions) from a separate `machine` file — avoiding Stow conflicts.
+**Ghostty, Kitty, Alacritty, Waybar, and Hyprland** use app-level includes or source files named `machine`/`machine-*` for model-specific values. That keeps Stow packages additive and avoids conflicts between shared Omarchy config and machine overrides.
 
 ## Installation
 
 ```sh
-# Linux desktop (default)
+# Auto-detect current machine
 ./install.sh
 
-# Linux laptop
-PROFILE=laptop ./install.sh
+# Test a laptop model without changing links
+DOTLAYER_PROFILE=laptop DOTLAYER_MACHINE=t14 ./install.sh --dry-run --verbose
 
-# macOS
-./install.sh
+# macOS also uses dotlayer
+./install.sh --dry-run
 ```
 
-The install script stows all packages and symlinks `git-cob` into `/usr/local/bin`.
+The install script is a thin wrapper around `dotlayer install`. It does not contain package-selection logic.
 
 ## Updating (Linux)
-
-The `update-dotfiles` script handles day-to-day updates:
-
-1. Pulls latest changes from both public and private dotfiles repos
-2. Re-stows all packages (auto-detects desktop vs laptop)
-3. Installs system files (udev rules, systemd sleep hooks)
-4. Reloads udev rules and restarts the xremap service
 
 ```sh
 update-dotfiles
 ```
+
+`update-dotfiles` is a thin wrapper around `dotlayer update`, which pulls configured repos, restows matching packages, and runs configured system-file hooks.
 
 ## Stow packages
 
@@ -60,9 +57,11 @@ update-dotfiles
 | `config` | Shared `~/.config/` for bat, bottom, btop, delta, ghostty, yazi, zed, zellij, starship |
 | `config-linux` | System files: xremap config/service, sleep hook, Keychron udev rule |
 | `config-macos` | Cursor editor settings and keybindings |
-| `config-omarchy` | Neovim, Hyprland base config, Quickshell, Waybar, Walker, Omarchy hooks and theming |
+| `config-omarchy` | Shared Omarchy config: Neovim, Hyprland base config, Quickshell, Waybar, Walker, Omarchy hooks, audio policy, startup |
 | `config-omarchy-desktop` | Ghostty machine config, Zed settings, Hyprland envs for desktop |
-| `config-omarchy-laptop` | Ghostty machine config, Zed settings, Hyprland envs/monitors for laptop |
+| `config-omarchy-laptop` | Shared laptop monitor/profile entrypoints |
+| `config-omarchy-laptop-t1g` | T1G laptop terminal, Waybar, and Hyprland model overrides |
+| `config-omarchy-laptop-t14` | T14 laptop terminal, Waybar, and Hyprland model overrides |
 | `config-fedora-desktop` | Fedora/GNOME desktop config (future) |
 | `config-fedora-laptop` | Fedora/GNOME laptop config (future) |
 
