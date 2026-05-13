@@ -1,6 +1,14 @@
 #!/bin/sh
 
 case ":${PATH}:" in
+  *:"$HOME/.cache/.bun/bin":*)
+    ;;
+  *)
+    export PATH="$HOME/.cache/.bun/bin:$PATH"
+    ;;
+esac
+
+case ":${PATH}:" in
   *:"$HOME/.bin":*)
     ;;
   *)
