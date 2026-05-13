@@ -38,3 +38,6 @@ tsconfig.json
 
 # Mise (local Ruby version management)
 mise.toml
+
+# Council configuration
+.council*
