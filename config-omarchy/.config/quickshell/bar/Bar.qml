@@ -294,6 +294,17 @@ PanelWindow {
                     })
                 }
 
+                Indicators {
+                    anchors.verticalCenter: parent.verticalCenter
+                    notifServer: root.notifServer
+                    quietMode: root.quietMode
+                    accent: root.accent
+                    muted: root.muted
+                    red: root.red
+                    green: root.green
+                    fg: root.fg
+                }
+
                 Rectangle {
                     width: 1
                     height: 12
@@ -355,17 +366,6 @@ PanelWindow {
                     anchors.verticalCenter: parent.verticalCenter
 
                     Behavior on color { ColorAnimation { duration: 400 } }
-                }
-
-                Indicators {
-                    anchors.verticalCenter: parent.verticalCenter
-                    notifServer: root.notifServer
-                    quietMode: root.quietMode
-                    accent: root.accent
-                    muted: root.muted
-                    red: root.red
-                    green: root.green
-                    fg: root.fg
                 }
 
                 Cctop {

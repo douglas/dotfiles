@@ -9,7 +9,6 @@
   "modules-center": [
     "custom/calendar",
     "clock",
-    "custom/update",
     "custom/voxtype",
     "custom/screenrecording-indicator",
     "custom/idle-indicator",
@@ -20,6 +19,7 @@
     "bluetooth",
     "network",
     "pulseaudio",
+    "custom/update",
     "custom/kef",
     "custom/ddc_brightness",
     "custom/lcctop",

@@ -110,7 +110,7 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             text:                   ""
             color:                  root.green
-            font.pixelSize:         Style.Typography.barIcon
+            font.pixelSize:         Math.max(1, Style.Typography.rightClusterIcon - 1)
             font.family: Style.Typography.mono
 
             Behavior on opacity { NumberAnimation { duration: 150 } }
