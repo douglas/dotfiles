@@ -51,3 +51,4 @@ bin/wt-schema-refresh
 bin/wt-db-create
 .wt-schema.sql
 .wt-schema/
+.wt-db
