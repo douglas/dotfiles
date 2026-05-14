@@ -1,4 +1,15 @@
 {
+  "agent_servers": {
+    "pi-acp": {
+      "type": "registry"
+    },
+    "claude-acp": {
+      "type": "registry"
+    },
+    "codex-acp": {
+      "type": "registry"
+    }
+  },
   "cli_default_open_behavior": "existing_window",
   "outline_panel": {
     "dock": "left"

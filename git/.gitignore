@@ -41,3 +41,6 @@ mise.toml
 
 # Council configuration
 .council*
+
+# Ignore rubydex mcp file
+.mcp.json
