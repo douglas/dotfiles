@@ -42,10 +42,5 @@ mise.toml
 # Council configuration
 .council*
 
-# Worktrunk project hooks (testing locally before merging)
-.config/wt.toml
-bin/wt-schema-refresh
-bin/wt-db-create
-
 # Ignore rubydex mcp file
 .mcp.json
