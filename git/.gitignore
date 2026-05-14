@@ -44,3 +44,10 @@ mise.toml
 
 # Ignore rubydex mcp file
 .mcp.json
+
+# Worktrunk per-worktree hooks and schema cache (campaigns)
+.config/wt.toml
+bin/wt-schema-refresh
+bin/wt-db-create
+.wt-schema.sql
+.wt-schema/
