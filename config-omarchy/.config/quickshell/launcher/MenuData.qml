@@ -476,6 +476,10 @@ QtObject {
                 "icon": "󱚤",
                 "label": "AI",
                 "children": [{
+                    "icon": "󰚩",
+                    "label": "Text Actions",
+                    "cmd": "quickshell ipc call openTextActions handle"
+                }, {
                     "icon": "",
                     "label": "Dictation",
                     "terminal": "omarchy-voxtype-install"

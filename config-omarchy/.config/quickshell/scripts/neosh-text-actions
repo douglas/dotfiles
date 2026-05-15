@@ -1,0 +1,387 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+CONFIG_DIR="$CONFIG_HOME/quickshell/text-actions"
+STATE_DIR="$STATE_HOME/neosh/text-actions"
+CONFIG_PATH="$CONFIG_DIR/config.json"
+CAPTURE_PATH="$STATE_DIR/last_capture.json"
+RESULT_PATH="$STATE_DIR/last_result.json"
+
+mkdir -p "$CONFIG_DIR" "$STATE_DIR"
+
+make_temp_file() {
+  local prefix="$1"
+  local suffix="${2:-}"
+  local dir path
+
+  for dir in "${XDG_RUNTIME_DIR:-}" "$STATE_DIR" "${TMPDIR:-/tmp}"; do
+    [[ -n "$dir" && -d "$dir" && -w "$dir" ]] || continue
+    if path="$(mktemp "$dir/$prefix.XXXXXX$suffix" 2>/dev/null)"; then
+      printf '%s\n' "$path"
+      return 0
+    fi
+  done
+
+  printf 'Unable to create temporary file for %s\n' "$prefix" >&2
+  return 1
+}
+
+json_string() {
+  printf '%s' "${1:-}" | jq -Rs .
+}
+
+default_config() {
+  jq -n '{
+    runtime: "codex",
+    model: "gpt-5.5",
+    timeoutSeconds: 120,
+    cwd: "$HOME",
+    actions: [
+      {
+        id: "improve",
+        label: "Improve",
+        icon: "✨",
+        prompt: "Rewrite the selected text to be clearer, tighter, and more natural while preserving its meaning."
+      },
+      {
+        id: "defuse",
+        label: "Defuse",
+        icon: "🧯",
+        prompt: "Rewrite the selected text in a calmer, more constructive tone while preserving the point."
+      },
+      {
+        id: "summarize",
+        label: "Summarize",
+        icon: "󰛿",
+        prompt: "Summarize the selected text in a concise, useful form."
+      },
+      {
+        id: "translate",
+        label: "Translate",
+        icon: "󰗊",
+        requiresInstruction: true,
+        placeholder: "Target language",
+        prompt: "Translate the selected text. Use the user instruction as the target language when present."
+      },
+      {
+        id: "reply",
+        label: "Reply",
+        icon: "󰍩",
+        requiresInstruction: true,
+        placeholder: "What should the reply say?",
+        prompt: "Draft a concise reply to the selected text. Use the user instruction as the desired message or stance."
+      },
+      {
+        id: "post",
+        label: "Post",
+        icon: "󰷈",
+        prompt: "Turn the selected text into a short post in a direct, human voice."
+      },
+      {
+        id: "detect",
+        label: "AI Detect",
+        icon: "󰚩",
+        prompt: "Assess whether the selected text sounds AI-written. Give a short score and the strongest tells."
+      },
+      {
+        id: "perspectives",
+        label: "Perspectives",
+        icon: "󰴉",
+        prompt: "Stress-test the selected text or decision from 3 to 5 distinct perspectives, then synthesize the result."
+      },
+      {
+        id: "custom",
+        label: "Custom",
+        icon: "󰘦",
+        requiresInstruction: true,
+        placeholder: "Ask anything about the selection",
+        prompt: "Apply the user instruction to the selected text."
+      }
+    ]
+  }'
+}
+
+ensure_config() {
+  if [[ ! -s "$CONFIG_PATH" ]]; then
+    default_config > "$CONFIG_PATH"
+  fi
+}
+
+read_config() {
+  ensure_config
+  if jq empty "$CONFIG_PATH" >/dev/null 2>&1; then
+    cat "$CONFIG_PATH"
+  else
+    default_config
+  fi
+}
+
+config_value() {
+  local filter="$1"
+  read_config | jq -r "$filter"
+}
+
+expand_path() {
+  local value="${1:-$HOME}"
+  case "$value" in
+    "~") printf '%s\n' "$HOME" ;;
+    \~/*) printf '%s/%s\n' "$HOME" "${value#"~/"}" ;;
+    "\$HOME") printf '%s\n' "$HOME" ;;
+    "\$HOME/"*) printf '%s/%s\n' "$HOME" "${value#"\$HOME/"}" ;;
+    "") printf '%s\n' "$HOME" ;;
+    *) printf '%s\n' "$value" ;;
+  esac
+}
+
+active_window_json() {
+  hyprctl activewindow -j 2>/dev/null || printf '{}'
+}
+
+cursor_json() {
+  hyprctl cursorpos -j 2>/dev/null || printf '{}'
+}
+
+primary_selection() {
+  wl-paste --primary -n 2>/dev/null || true
+}
+
+clipboard_selection() {
+  local old_path new_text had_old=0
+  old_path="$(make_temp_file neosh-text-clip)"
+  if wl-paste -n > "$old_path" 2>/dev/null; then
+    had_old=1
+  fi
+
+  wtype -M ctrl c -m ctrl >/dev/null 2>&1 || true
+  sleep 0.08
+  new_text="$(wl-paste -n 2>/dev/null || true)"
+
+  if [[ "$had_old" -eq 1 ]]; then
+    wl-copy < "$old_path" >/dev/null 2>&1 || true
+  else
+    wl-copy --clear >/dev/null 2>&1 || true
+  fi
+  rm -f "$old_path"
+  printf '%s' "$new_text"
+}
+
+capture() {
+  local text source window cursor
+  text="$(primary_selection)"
+  source="primary"
+  if [[ -z "$text" ]]; then
+    text="$(clipboard_selection)"
+    source="clipboard"
+  fi
+
+  window="$(active_window_json)"
+  cursor="$(cursor_json)"
+  jq -n \
+    --arg text "$text" \
+    --arg source "$source" \
+    --argjson window "$window" \
+    --argjson cursor "$cursor" \
+    '{ok: true, text: $text, source: $source, window: $window, cursor: $cursor}' |
+    tee "$CAPTURE_PATH"
+}
+
+actions() {
+  read_config | jq '{ok: true, actions: (.actions // [])}'
+}
+
+action_json() {
+  local action_id="$1"
+  read_config | jq -c --arg id "$action_id" '
+    (.actions // [])[] | select(.id == $id)
+  ' | head -n 1
+}
+
+compose_prompt() {
+  local action="$1"
+  local instruction="$2"
+  local capture_json="$3"
+  jq -n -r \
+    --argjson action "$action" \
+    --arg instruction "$instruction" \
+    --argjson capture "$capture_json" \
+    '[
+      "You are Neo Text Actions, a concise desktop writing assistant.",
+      "",
+      "Action: " + ($action.label // $action.id // "Custom"),
+      "Action instruction: " + ($action.prompt // ""),
+      (if ($instruction | length) > 0 then "User instruction: " + $instruction else empty end),
+      "",
+      "Selected text:",
+      "\"\"\"",
+      ($capture.text // ""),
+      "\"\"\"",
+      "",
+      "Return only the transformed text or the requested analysis. Do not explain your process."
+    ] | join("\n")'
+}
+
+run_codex() {
+  local model="$1"
+  local cwd="$2"
+  local timeout_seconds="$3"
+  local prompt="$4"
+  local output_path stderr_path status content
+
+  output_path="$(make_temp_file neosh-codex-output)"
+  stderr_path="$(make_temp_file neosh-codex-stderr)"
+  status=0
+
+  set +e
+  printf '%s' "$prompt" | timeout "${timeout_seconds}s" codex --ask-for-approval never exec \
+    --model "$model" \
+    --cd "$cwd" \
+    --sandbox read-only \
+    --ephemeral \
+    --ignore-rules \
+    --output-last-message "$output_path" \
+    - > /dev/null 2> "$stderr_path"
+  status=$?
+  set -e
+
+  content="$(cat "$output_path" 2>/dev/null || true)"
+  if [[ "$status" -ne 0 ]]; then
+    jq -n \
+      --arg stderr "$(cat "$stderr_path" 2>/dev/null || true)" \
+      --argjson status "$status" \
+      '{ok: false, error: ($stderr | if length > 0 then . else "codex command failed" end), status: $status}'
+  else
+    jq -n --arg text "$content" '{ok: true, text: $text}'
+  fi
+
+  rm -f "$output_path" "$stderr_path"
+}
+
+run_claude() {
+  local model="$1"
+  local cwd="$2"
+  local timeout_seconds="$3"
+  local prompt="$4"
+  local system_path stderr_path output_path status
+
+  system_path="$(make_temp_file neosh-claude-system .md)"
+  output_path="$(make_temp_file neosh-claude-output)"
+  stderr_path="$(make_temp_file neosh-claude-stderr)"
+  printf '%s\n' "You are Neo Text Actions. Be concise and return only the requested text." > "$system_path"
+  status=0
+
+  set +e
+  printf '%s' "$prompt" | timeout "${timeout_seconds}s" claude -p \
+    --model "$model" \
+    --no-session-persistence \
+    --disable-slash-commands \
+    --permission-mode dontAsk \
+    --setting-sources "" \
+    --tools "" \
+    --input-format text \
+    --output-format text \
+    --system-prompt-file "$system_path" \
+    > "$output_path" 2> "$stderr_path"
+  status=$?
+  set -e
+
+  if [[ "$status" -ne 0 ]]; then
+    jq -n \
+      --arg stderr "$(cat "$stderr_path" 2>/dev/null || true)" \
+      --argjson status "$status" \
+      '{ok: false, error: ($stderr | if length > 0 then . else "claude command failed" end), status: $status}'
+  else
+    jq -n --arg text "$(cat "$output_path" 2>/dev/null || true)" '{ok: true, text: $text}'
+  fi
+
+  rm -f "$system_path" "$output_path" "$stderr_path"
+}
+
+run_action() {
+  local action_id="${1:-}"
+  local instruction="${2:-}"
+  local config runtime model timeout_seconds cwd action capture_json prompt result
+
+  if [[ -z "$action_id" ]]; then
+    jq -n '{ok: false, error: "missing action id"}'
+    return 2
+  fi
+  if [[ ! -s "$CAPTURE_PATH" ]]; then
+    jq -n '{ok: false, error: "no captured text"}'
+    return 2
+  fi
+
+  config="$(read_config)"
+  action="$(action_json "$action_id")"
+  if [[ -z "$action" ]]; then
+    jq -n --arg id "$action_id" '{ok: false, error: "unknown action: " + $id}'
+    return 2
+  fi
+
+  runtime="$(printf '%s' "$config" | jq -r --argjson action "$action" '$action.runtime // .runtime // "codex"')"
+  model="$(printf '%s' "$config" | jq -r --argjson action "$action" '$action.model // .model // "gpt-5.5"')"
+  timeout_seconds="$(printf '%s' "$config" | jq -r --argjson action "$action" '$action.timeoutSeconds // .timeoutSeconds // 120')"
+  cwd="$(expand_path "$(printf '%s' "$config" | jq -r --argjson action "$action" '$action.cwd // .cwd // "$HOME"')")"
+  [[ -d "$cwd" ]] || cwd="$HOME"
+
+  capture_json="$(cat "$CAPTURE_PATH")"
+  prompt="$(compose_prompt "$action" "$instruction" "$capture_json")"
+
+  case "$runtime" in
+    codex)
+      result="$(run_codex "$model" "$cwd" "$timeout_seconds" "$prompt")"
+      ;;
+    claude)
+      result="$(run_claude "$model" "$cwd" "$timeout_seconds" "$prompt")"
+      ;;
+    *)
+      result="$(jq -n --arg runtime "$runtime" '{ok: false, error: "unsupported runtime: " + $runtime}')"
+      ;;
+  esac
+
+  printf '%s\n' "$result" | tee "$RESULT_PATH"
+}
+
+copy_last() {
+  if [[ ! -s "$RESULT_PATH" ]]; then
+    jq -n '{ok: false, error: "no result to copy"}'
+    return 2
+  fi
+  jq -r '.text // ""' "$RESULT_PATH" | wl-copy
+  jq -n '{ok: true}'
+}
+
+paste_last() {
+  local address text
+  if [[ ! -s "$RESULT_PATH" ]]; then
+    jq -n '{ok: false, error: "no result to paste"}'
+    return 2
+  fi
+  text="$(jq -r '.text // ""' "$RESULT_PATH")"
+  if [[ -z "$text" ]]; then
+    jq -n '{ok: false, error: "result is empty"}'
+    return 2
+  fi
+  printf '%s' "$text" | wl-copy
+  address="$(jq -r '.window.address // empty' "$CAPTURE_PATH" 2>/dev/null || true)"
+  if [[ -n "$address" ]]; then
+    hyprctl dispatch focuswindow "address:$address" >/dev/null 2>&1 || true
+    sleep 0.05
+  fi
+  wtype -M ctrl v -m ctrl >/dev/null 2>&1 || true
+  jq -n '{ok: true}'
+}
+
+case "${1:-}" in
+  actions) actions ;;
+  capture) capture ;;
+  run-action) shift; run_action "$@" ;;
+  copy-last) copy_last ;;
+  paste-last) paste_last ;;
+  config-path) printf '%s\n' "$CONFIG_PATH" ;;
+  *)
+    printf 'usage: neosh-text-actions actions|capture|run-action <id> [instruction]|copy-last|paste-last|config-path\n' >&2
+    exit 2
+    ;;
+esac

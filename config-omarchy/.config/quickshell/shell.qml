@@ -297,6 +297,13 @@ ShellRoot {
         uiScale: shell.popupScale
     }
 
+    TextActionsOverlay {
+        id: textActionsOverlay
+
+        theme: shell.palette
+        uiScale: shell.popupScale
+    }
+
     TaskManager {
         id: taskManager
 
@@ -731,6 +738,14 @@ ShellRoot {
         }
 
         target: "openEmojiPicker"
+    }
+
+    IpcHandler {
+        function handle() {
+            textActionsOverlay.open();
+        }
+
+        target: "openTextActions"
     }
 
     IpcHandler {
