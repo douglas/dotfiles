@@ -229,6 +229,41 @@ PanelWindow {
         Quickshell.execDetached(args)
     }
 
+    function isGhosttyEntry(entry) {
+        const text = [
+            entry?.key || "",
+            entry?.name || "",
+            entry?.exec || "",
+            entry?.icon || ""
+        ].join(" ").toLowerCase()
+        if (text.includes("ghostty")) return true
+
+        const windows = entry && entry.windows ? entry.windows : []
+        for (const client of windows) {
+            if (String(client.class || "").toLowerCase().includes("ghostty"))
+                return true
+        }
+
+        return false
+    }
+
+    function activateEntry(entry) {
+        if (!entry) return
+        if (isGhosttyEntry(entry)) {
+            if (entry.exec)
+                root.launchExec(entry.exec)
+            else
+                Quickshell.execDetached(["ghostty"])
+
+            return
+        }
+
+        if (entry.windows.length > 0)
+            root.focusWindow(entry.windows[0].address)
+        else
+            root.launchExec(entry.exec)
+    }
+
     function desktopExecArgs(exec) {
         const cleaned = String(exec || "")
             .replace(/%%/g, "__QS_LITERAL_PERCENT__")
@@ -627,12 +662,7 @@ PanelWindow {
                     running: modelData.windows.length > 0
                     pinned: true
                     enableDrag: true
-                    onActivate: {
-                        if (entry.windows.length > 0)
-                            root.focusWindow(entry.windows[0].address)
-                        else
-                            root.launchExec(entry.exec)
-                    }
+                    onActivate: root.activateEntry(entry)
                     onTogglePin: root.togglePin(entry.key)
                 }
             }
@@ -646,7 +676,7 @@ PanelWindow {
                     entry: modelData
                     running: true
                     pinned: false
-                    onActivate: root.focusWindow(entry.windows[0]?.address)
+                    onActivate: root.activateEntry(entry)
                     onTogglePin: root.togglePin(entry.key)
                 }
             }

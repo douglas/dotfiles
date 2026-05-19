@@ -48,6 +48,7 @@ Item {
     readonly property int needsActionCount: permissionCount
     readonly property bool showTabs: recentProjects.length > 0
     readonly property int overlayWidth: 340
+    readonly property int contentLeft: 24
 
     signal opened()
 
@@ -94,6 +95,7 @@ Item {
 
     function openPanel(navigate) {
         showing = true;
+        selectedTab = "active";
         navigateMode = Boolean(navigate);
         opened();
         selectedIndex = Math.max(0, Math.min(selectedIndex, currentRows().length - 1));
@@ -114,29 +116,54 @@ Item {
     }
 
     function emptyStateHeight() {
-        return selectedTab === "active" ? 72 : 86;
+        return 72;
     }
 
     function panelContentHeight() {
         const padding = 28;
         const header = 42;
-        const dividers = 2 + (showTabs ? 1 : 0);
-        const tabs = showTabs ? 30 : 0;
+        const dividers = 2;
         const body = currentRows().length > 0 ? listContentHeight() : emptyStateHeight();
         const footer = 34;
-        return Math.min(476, padding + header + dividers + tabs + body + footer);
+        return Math.min(476, padding + header + dividers + body + footer);
     }
 
     function emptyStateMessage() {
-        if (selectedTab === "active")
-            return "No agent sessions running";
+        return "No agent sessions running";
+    }
 
-        return "Recent projects will appear here\nafter sessions end";
+    function effectiveStatus(session) {
+        const status = String(session.status || "idle");
+        if ((status === "waiting_permission" || status === "needs_attention")
+                && isFreshBlockingStatus(session))
+            return status;
+        if (subagentCount(session) > 0 && isFreshWorkingStatus(session))
+            return "working";
+        if ((status === "working" || status === "compacting") && isFreshWorkingStatus(session))
+            return status;
+        return "idle";
+    }
+
+    function isFreshBlockingStatus(session) {
+        const parsed = Date.parse(String(session.last_activity || ""));
+        if (Number.isNaN(parsed))
+            return false;
+        return (nowMs - parsed) <= 30 * 60 * 1000;
+    }
+
+    function isFreshWorkingStatus(session) {
+        if (session._neosh_active_process === true)
+            return true;
+
+        const parsed = Date.parse(String(session.last_activity || ""));
+        if (Number.isNaN(parsed))
+            return false;
+        return (nowMs - parsed) <= 3 * 60 * 1000;
     }
 
     function statusGroup(session) {
-        const status = String(session.status || "idle");
-        if (status === "waiting_permission" || status === "waiting_input" || status === "needs_attention")
+        const status = effectiveStatus(session);
+        if (status === "waiting_permission" || status === "needs_attention")
             return "permission";
         if (status === "working" || status === "compacting")
             return "working";
@@ -144,8 +171,8 @@ Item {
     }
 
     function statusPriority(session) {
-        const status = String(session.status || "idle");
-        if (status === "waiting_permission" || status === "waiting_input" || status === "needs_attention")
+        const status = effectiveStatus(session);
+        if (status === "waiting_permission" || status === "needs_attention")
             return 0;
         if (status === "working")
             return 2;
@@ -183,8 +210,8 @@ Item {
     }
 
     function statusColor(session) {
-        const status = String(session.status || "idle");
-        if (status === "waiting_permission" || status === "waiting_input" || status === "needs_attention")
+        const status = effectiveStatus(session);
+        if (status === "waiting_permission" || status === "needs_attention")
             return cPermission;
         if (status === "working")
             return cWorking;
@@ -194,10 +221,10 @@ Item {
     }
 
     function statusLabel(session) {
-        const status = String(session.status || "idle");
+        const status = effectiveStatus(session);
         if (status === "waiting_permission")
             return "Permission";
-        if (status === "waiting_input" || status === "needs_attention")
+        if (status === "needs_attention")
             return "Waiting";
         if (status === "working")
             return "Working";
@@ -266,14 +293,14 @@ Item {
     }
 
     function contextLine(session) {
-        const status = String(session.status || "idle");
+        const status = effectiveStatus(session);
         if (status === "idle")
             return "";
         if (status === "compacting")
             return "Compacting context...";
         if (status === "waiting_permission")
             return String(session.notification_message || "Permission needed");
-        if (status === "waiting_input" || status === "needs_attention")
+        if (status === "needs_attention")
             return promptSnippet(session);
         if (session.last_tool)
             return toolDisplay(session);
@@ -606,21 +633,13 @@ Item {
                 } else if (event.key === Qt.Key_Up || event.key === Qt.Key_K) {
                     root.selectedIndex = Math.max(0, root.selectedIndex - 1);
                     event.accepted = true;
-                } else if (event.key === Qt.Key_Tab || event.key === Qt.Key_Right) {
-                    root.switchTab(root.selectedTab === "active" ? "recent" : "active");
-                    event.accepted = true;
-                } else if (event.key === Qt.Key_Left) {
-                    root.switchTab("active");
+                } else if (event.key === Qt.Key_R) {
+                    root.reload();
+                    root.notice = "Refreshing sessions";
+                    noticeTimer.restart();
                     event.accepted = true;
                 } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
                     root.activateCurrent();
-                    event.accepted = true;
-                } else if (event.key >= Qt.Key_1 && event.key <= Qt.Key_9) {
-                    const idx = event.key - Qt.Key_1;
-                    if (idx < root.currentRows().length) {
-                        root.selectedIndex = idx;
-                        root.activateCurrent();
-                    }
                     event.accepted = true;
                 }
             }
@@ -649,21 +668,9 @@ Item {
                 }
 
                 Rectangle {
-                    width: parent.width
+                    x: root.overlayPx(root.contentLeft)
+                    width: parent.width - x
                     height: 1
-                    color: root.cPanelBorder
-                }
-
-                TabRow {
-                    visible: root.showTabs
-                    width: parent.width
-                    height: visible ? root.overlayPx(31) : 0
-                }
-
-                Rectangle {
-                    visible: root.showTabs
-                    width: parent.width
-                    height: visible ? 1 : 0
                     color: root.cPanelBorder
                 }
 
@@ -716,17 +723,21 @@ Item {
                     visible: root.currentRows().length === 0
 
                     Text {
-                        anchors.centerIn: parent
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: root.overlayPx(root.contentLeft)
+                        anchors.right: parent.right
                         text: root.emptyStateMessage()
                         color: root.cTextMuted
                         font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
                         font.family: Style.Typography.monoPropo
-                        horizontalAlignment: Text.AlignHCenter
+                        horizontalAlignment: Text.AlignLeft
                     }
                 }
 
                 Rectangle {
-                    width: parent.width
+                    x: root.overlayPx(root.contentLeft)
+                    width: parent.width - x
                     height: 1
                     color: root.cPanelBorder
                 }
@@ -822,19 +833,13 @@ Item {
             spacing: root.overlayPx(8)
 
             Text {
-                text: root.notice !== "" ? root.notice : "1-9 jump · ↑↓ select · Enter open · Esc close"
+                text: root.notice !== "" ? root.notice : "↑↓/j/k move · Enter select · r refresh"
                 color: root.notice !== "" ? root.cAttention : root.cTextMuted
                 font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
                 font.family: Style.Typography.monoPropo
                 elide: Text.ElideRight
+                Layout.leftMargin: root.overlayPx(root.contentLeft)
                 Layout.fillWidth: true
-            }
-
-            Text {
-                text: root.selectedTab === "active" ? "Active" : "Recent"
-                color: root.cTextMuted
-                font.pixelSize: Style.Typography.scaledComponentMeta(root.overlayScale)
-                font.family: Style.Typography.monoPropo
             }
         }
     }
@@ -1077,7 +1082,7 @@ Item {
 
                     Text {
                         text: root.displayName(session)
-                        color: String(session.status || "") === "idle" ? root.cTextDimmed : root.cTextPrimary
+                        color: root.effectiveStatus(session) === "idle" ? root.cTextDimmed : root.cTextPrimary
                         font.pixelSize: Style.Typography.scaledComponentBody(root.overlayScale)
                         font.family: Style.Typography.monoPropo
                         font.weight: Font.Medium

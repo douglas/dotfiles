@@ -47,6 +47,21 @@ session_alive() {
   fi
 }
 
+session_has_active_children() {
+  local pid="${1:-}"
+
+  [[ -n "$pid" ]] || return 1
+  [[ "$pid" =~ ^[0-9]+$ ]] || return 1
+
+  ps -eo ppid=,stat=,comm= 2>/dev/null | awk -v pid="$pid" '
+    $1 == pid && $2 !~ /Z/ {
+      found = 1
+      exit
+    }
+    END { exit(found ? 0 : 1) }
+  '
+}
+
 iso_from_epoch() {
   local epoch="${1:-}"
 
@@ -127,7 +142,7 @@ git_branch_for() {
 }
 
 list_cctop_sessions() {
-  local first=1 file json pid pid_start
+  local first=1 file json pid pid_start active_process
 
   printf '['
   [[ -d "$sessions_dir" ]] || {
@@ -142,6 +157,12 @@ list_cctop_sessions() {
     pid="$(jq -r '.pid // empty' "$file" 2>/dev/null)"
     pid_start="$(jq -r '.pid_start_time // empty' "$file" 2>/dev/null)"
     session_alive "$pid" "$pid_start" || continue
+    if session_has_active_children "$pid"; then
+      active_process=true
+    else
+      active_process=false
+    fi
+    json="$(printf '%s' "$json" | jq -c --argjson active_process "$active_process" '._neosh_active_process = $active_process')"
 
     if [[ "$first" -eq 0 ]]; then
       printf ','
@@ -222,7 +243,41 @@ list_codex_sessions() {
 }
 
 list_sessions() {
-  jq -cs 'add | unique_by(.pid // .session_id)' \
+  local now_epoch
+
+  now_epoch="$(date -u +%s)"
+  jq -cs --argjson now "$now_epoch" '
+    def parsed_activity:
+      (.last_activity // "")
+      | sub("\\.[0-9]+Z$"; "Z")
+      | fromdateiso8601? // 0;
+
+    def fresh_blocking:
+      ((parsed_activity) as $activity | $activity > 0 and (($now - $activity) <= 1800));
+
+    def fresh_working:
+      ((parsed_activity) as $activity | $activity > 0 and (($now - $activity) <= 180));
+
+    def active_process:
+      (._neosh_active_process // false) == true;
+
+    def effective_status:
+      (.status // "idle") as $status
+      | if (($status == "waiting_permission" or $status == "needs_attention") and fresh_blocking) then
+          $status
+        elif (((.active_subagents // []) | length) > 0 and (fresh_working or active_process)) then
+          "working"
+        elif (($status == "working" or $status == "compacting") and (fresh_working or active_process)) then
+          $status
+        else
+          "idle"
+        end;
+
+    add
+    | unique_by(.pid // .session_id)
+    | map(.status = effective_status)
+    | map(del(._neosh_active_process))
+  ' \
     <(list_cctop_sessions) \
     <(list_codex_sessions) 2>/dev/null || printf '[]'
 }
