@@ -2,12 +2,6 @@
   "agent_servers": {
     "pi-acp": {
       "type": "registry"
-    },
-    "claude-acp": {
-      "type": "registry"
-    },
-    "codex-acp": {
-      "type": "registry"
     }
   },
   "cli_default_open_behavior": "existing_window",
@@ -33,8 +27,10 @@
       "model": "claude-sonnet-4",
     },
     "default_model": {
-      "model": "claude-sonnet-4-5-latest",
-      "provider": "anthropic",
+      "effort": "medium",
+      "enable_thinking": true,
+      "model": "gpt-5.5-pro",
+      "provider": "zed.dev",
     },
   },
   "git_panel": {

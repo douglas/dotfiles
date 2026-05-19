@@ -7,7 +7,7 @@
 [includeIf "gitdir:~/work/"]
   path = ~/work/.gitconfig
 [core]
-  pager = delta
+  pager = hunk pager
 [interactive]
   diffFilter = delta --color-only --features=interactive
 [delta]

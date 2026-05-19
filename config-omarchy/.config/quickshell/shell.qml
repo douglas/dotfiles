@@ -304,6 +304,13 @@ ShellRoot {
         uiScale: shell.popupScale
     }
 
+    CampaignsAssistantOverlay {
+        id: campaignsAssistantOverlay
+
+        theme: shell.palette
+        uiScale: shell.popupScale
+    }
+
     TaskManager {
         id: taskManager
 
@@ -746,6 +753,14 @@ ShellRoot {
         }
 
         target: "openTextActions"
+    }
+
+    IpcHandler {
+        function handle() {
+            campaignsAssistantOverlay.open();
+        }
+
+        target: "openCampaignsAssistant"
     }
 
     IpcHandler {

@@ -480,6 +480,10 @@ QtObject {
                     "label": "Text Actions",
                     "cmd": "quickshell ipc call openTextActions handle"
                 }, {
+                    "icon": "󰛿",
+                    "label": "Campaigns Assistant",
+                    "cmd": "quickshell ipc call openCampaignsAssistant handle"
+                }, {
                     "icon": "",
                     "label": "Dictation",
                     "terminal": "omarchy-voxtype-install"
