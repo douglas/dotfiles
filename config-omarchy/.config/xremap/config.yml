@@ -20,6 +20,14 @@ modmap:
 
 keymap:
   # ============================================================
+  # Global media shortcuts
+  # ============================================================
+  - name: Media shortcuts (Cmd+Ctrl)
+    remap:
+      F18-Ctrl-LeftBrace: { launch: ["quickshell", "ipc", "call", "osdMediaPrev", "handle"] }
+      F18-Ctrl-RightBrace: { launch: ["quickshell", "ipc", "call", "osdMediaNext", "handle"] }
+
+  # ============================================================
   # Terminal (Ghostty/Alacritty/Kitty) — Cmd key (F18)
   # ============================================================
   - name: Terminal shortcuts (Cmd)
