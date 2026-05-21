@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+direction="${1:-next}"
+case "$direction" in
+  next | previous) ;;
+  *)
+    printf 'usage: %s [next|previous]\n' "${0##*/}" >&2
+    exit 2
+    ;;
+esac
+
+state_dir="${XDG_RUNTIME_DIR:-/tmp}/hypr-global-app-cycle"
+list_file="$state_dir/list"
+index_file="$state_dir/index"
+time_file="$state_dir/time"
+timeout_seconds=2
+
+mkdir -p "$state_dir"
+
+build_list() {
+  hyprctl clients -j | jq -r '
+    [
+      .[]
+      | select(.mapped == true)
+      | select(.hidden == false)
+      | select(.workspace.id >= 0)
+      | select(.class != "")
+    ]
+    | sort_by(.focusHistoryID)
+    | reduce .[] as $client ([];
+        if any(.[]; .class == $client.class) then
+          .
+        else
+          . + [$client]
+        end
+      )
+    | .[]
+    | [.address, .class, .stableId]
+    | @tsv
+  '
+}
+
+now=$(date +%s)
+use_existing=false
+
+if [[ -s "$list_file" && -s "$index_file" && -s "$time_file" ]]; then
+  last_time=$(<"$time_file")
+  if [[ "$last_time" =~ ^[0-9]+$ ]] && ((now - last_time <= timeout_seconds)); then
+    use_existing=true
+  fi
+fi
+
+if [[ "$use_existing" == true ]]; then
+  mapfile -t entries <"$list_file"
+  current_index=$(<"$index_file")
+else
+  mapfile -t entries < <(build_list)
+  active_class=$(hyprctl activewindow -j | jq -r '.class // ""')
+  current_index=0
+
+  for i in "${!entries[@]}"; do
+    IFS=$'\t' read -r _address class _stable_id <<<"${entries[$i]}"
+    if [[ "$class" == "$active_class" ]]; then
+      current_index="$i"
+      break
+    fi
+  done
+fi
+
+count=${#entries[@]}
+if ((count <= 1)); then
+  exit 0
+fi
+
+if ! [[ "$current_index" =~ ^[0-9]+$ ]] || ((current_index >= count)); then
+  current_index=0
+fi
+
+if [[ "$direction" == "previous" ]]; then
+  next_index=$(((current_index - 1 + count) % count))
+else
+  next_index=$(((current_index + 1) % count))
+fi
+
+IFS=$'\t' read -r target_address _target_class _target_stable_id <<<"${entries[$next_index]}"
+
+hyprctl dispatch focuswindow "address:$target_address" >/dev/null
+hyprctl dispatch bringactivetotop >/dev/null
+
+printf '%s\n' "${entries[@]}" >"$list_file"
+printf '%s\n' "$next_index" >"$index_file"
+printf '%s\n' "$now" >"$time_file"

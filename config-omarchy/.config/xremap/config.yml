@@ -110,8 +110,8 @@ keymap:
       F18-Shift-Down: Super-Shift-Down
 
       # Window navigation
-      F18-Tab: { launch: ["hyprctl", "dispatch", "focuscurrentorlast"] }
-      F18-Shift-Tab: { launch: ["hyprctl", "dispatch", "focuscurrentorlast"] }
+      F18-Tab: Super-Tab
+      F18-Shift-Tab: Super-Shift-Tab
 
       # Window management
       F18-s: Super-s
@@ -146,8 +146,8 @@ keymap:
       F18-7: Super-7
       F18-8: Super-8
       F18-9: Super-9
-      F18-Tab: { launch: ["hyprctl", "dispatch", "focuscurrentorlast"] }
-      F18-Shift-Tab: { launch: ["hyprctl", "dispatch", "focuscurrentorlast"] }
+      F18-Tab: Super-Tab
+      F18-Shift-Tab: Super-Shift-Tab
       F18-Space: Super-Space
       F18-Shift-Space: Super-Alt-Space
       F18-Shift-v: Super-Ctrl-v
@@ -278,8 +278,8 @@ keymap:
       F18-Shift-Down: Super-Shift-Down
 
       # Window navigation
-      F18-Tab: { launch: ["hyprctl", "dispatch", "focuscurrentorlast"] }
-      F18-Shift-Tab: { launch: ["hyprctl", "dispatch", "focuscurrentorlast"] }
+      F18-Tab: Super-Tab
+      F18-Shift-Tab: Super-Shift-Tab
 
       # Window management
       F18-j: Super-j
