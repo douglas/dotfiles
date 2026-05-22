@@ -1,5 +1,0 @@
-import "."
-import QtQuick
-
-ClipboardManager {
-}

@@ -35,8 +35,8 @@ keymap:
       only: [com.mitchellh.ghostty, Alacritty, kitty]
     remap:
       # App launcher
-      F18-Space: Super-Space
-      F18-Shift-Space: Super-Alt-Space
+      F18-Space: { launch: ["neosh-quickshell-ipc", "call", "openApps", "handle"] }
+      F18-Shift-Space: { launch: ["neosh-omarchy-menu"] }
 
       # Clipboard (Ctrl+Shift to avoid terminal control chars)
       F18-c: Ctrl-Shift-c
@@ -156,8 +156,8 @@ keymap:
       F18-9: Super-9
       F18-Tab: Super-Tab
       F18-Shift-Tab: Super-Shift-Tab
-      F18-Space: Super-Space
-      F18-Shift-Space: Super-Alt-Space
+      F18-Space: { launch: ["neosh-quickshell-ipc", "call", "openApps", "handle"] }
+      F18-Shift-Space: { launch: ["neosh-omarchy-menu"] }
       F18-Shift-v: Super-Ctrl-v
 
       # Text navigation (Cmd+arrows = Home/End like macOS)
@@ -178,8 +178,8 @@ keymap:
       not: [com.mitchellh.ghostty, Alacritty, kitty, spotify]
     remap:
       # App launcher
-      F18-Space: Super-Space
-      F18-Shift-Space: Super-Alt-Space
+      F18-Space: { launch: ["neosh-quickshell-ipc", "call", "openApps", "handle"] }
+      F18-Shift-Space: { launch: ["neosh-omarchy-menu"] }
 
       # Clipboard
       F18-c: Ctrl-c
