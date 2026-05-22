@@ -15,10 +15,10 @@ latest="$(
 )"
 
 if [[ -z "$latest" ]]; then
-  quickshell ipc -n call osdPictureMissing handle >/dev/null 2>&1 || true
+  neosh-quickshell-ipc call osdPictureMissing handle >/dev/null 2>&1 || true
   exit 1
 fi
 
-quickshell ipc -n call osdPictureCopied handle >/dev/null 2>&1 || true
+neosh-quickshell-ipc call osdPictureCopied handle >/dev/null 2>&1 || true
 
 wl-copy "$latest"

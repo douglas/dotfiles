@@ -24,8 +24,8 @@ keymap:
   # ============================================================
   - name: Media shortcuts (Cmd+Ctrl)
     remap:
-      F18-Ctrl-LeftBrace: { launch: ["quickshell", "ipc", "call", "osdMediaPrev", "handle"] }
-      F18-Ctrl-RightBrace: { launch: ["quickshell", "ipc", "call", "osdMediaNext", "handle"] }
+      F18-Ctrl-LeftBrace: { launch: ["neosh-quickshell-ipc", "call", "osdMediaPrev", "handle"] }
+      F18-Ctrl-RightBrace: { launch: ["neosh-quickshell-ipc", "call", "osdMediaNext", "handle"] }
 
   # ============================================================
   # Terminal (Ghostty/Alacritty/Kitty) — Cmd key (F18)

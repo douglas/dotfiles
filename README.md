@@ -57,7 +57,7 @@ update-dotfiles
 | `config` | Shared `~/.config/` for bat, bottom, btop, delta, ghostty, yazi, zed, zellij, starship |
 | `config-linux` | System files: xremap config/service, sleep hook, Keychron udev rule |
 | `config-macos` | Cursor editor settings and keybindings |
-| `config-omarchy` | Shared Omarchy config: Neovim, Hyprland base config, Quickshell, Waybar, Walker, Omarchy hooks, audio policy, startup |
+| `config-omarchy` | Shared Omarchy config: Neovim, Hyprland base config, Neosh integration, Waybar, Walker, Omarchy hooks, audio policy, startup |
 | `config-omarchy-desktop` | Ghostty machine config, Zed settings, Hyprland envs for desktop |
 | `config-omarchy-laptop` | Shared laptop monitor/profile entrypoints |
 | `config-omarchy-laptop-t1g` | T1G laptop terminal, Waybar, and Hyprland model overrides |
