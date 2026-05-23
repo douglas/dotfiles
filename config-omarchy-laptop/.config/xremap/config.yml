@@ -26,6 +26,8 @@ keymap:
     remap:
       F18-Ctrl-LeftBrace: { launch: ["neosh-quickshell-ipc", "call", "osdMediaPrev", "handle"] }
       F18-Ctrl-RightBrace: { launch: ["neosh-quickshell-ipc", "call", "osdMediaNext", "handle"] }
+      F18-Ctrl-n: Super-Enter
+      F18-Ctrl-j: Super-Ctrl-j
 
   # ============================================================
   # Terminal (Ghostty/Alacritty/Kitty) — Cmd key (F18)
@@ -37,6 +39,7 @@ keymap:
       # App launcher
       F18-Space: { launch: ["neosh-quickshell-ipc", "call", "openApps", "handle"] }
       F18-Shift-Space: { launch: ["neosh-omarchy-menu"] }
+      Super-Space: { launch: ["neosh-omarchy-menu"] }
 
       # Clipboard (Ctrl+Shift to avoid terminal control chars)
       F18-c: Ctrl-Shift-c
@@ -122,6 +125,8 @@ keymap:
       F18-Shift-Tab: Super-Shift-Tab
 
       # Window management
+      F18-Ctrl-n: Super-Enter
+      F18-Ctrl-j: Super-Ctrl-j
       F18-s: Super-s
       F18-o: Super-o
       F18-j: Super-j
@@ -143,6 +148,8 @@ keymap:
       F18-h: Super-h
       F18-m: Super-m
       F18-Grave: Super-Grave
+      F18-Ctrl-n: Super-Enter
+      F18-Ctrl-j: Super-Ctrl-j
 
       # WM shortcuts
       F18-1: Super-1
@@ -158,6 +165,7 @@ keymap:
       F18-Shift-Tab: Super-Shift-Tab
       F18-Space: { launch: ["neosh-quickshell-ipc", "call", "openApps", "handle"] }
       F18-Shift-Space: { launch: ["neosh-omarchy-menu"] }
+      Super-Space: { launch: ["neosh-omarchy-menu"] }
       F18-Shift-v: Super-Ctrl-v
 
       # Text navigation (Cmd+arrows = Home/End like macOS)
@@ -180,6 +188,7 @@ keymap:
       # App launcher
       F18-Space: { launch: ["neosh-quickshell-ipc", "call", "openApps", "handle"] }
       F18-Shift-Space: { launch: ["neosh-omarchy-menu"] }
+      Super-Space: { launch: ["neosh-omarchy-menu"] }
 
       # Clipboard
       F18-c: Ctrl-c
@@ -290,6 +299,8 @@ keymap:
       F18-Shift-Tab: Super-Shift-Tab
 
       # Window management
+      F18-Ctrl-n: Super-Enter
+      F18-Ctrl-j: Super-Ctrl-j
       F18-j: Super-j
 
       # macOS-like screenshots (Cmd+Shift+3/4/5)
