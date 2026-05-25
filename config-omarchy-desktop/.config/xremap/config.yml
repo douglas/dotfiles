@@ -24,6 +24,16 @@ keymap:
   # ============================================================
   - name: Media shortcuts (Cmd+Ctrl)
     remap:
+      KEY_VOLUMEUP: { launch: ["neosh-quickshell-ipc", "call", "osdVolumeUp", "handle"] }
+      KEY_VOLUMEDOWN: { launch: ["neosh-quickshell-ipc", "call", "osdVolumeDown", "handle"] }
+      KEY_MUTE: { launch: ["neosh-quickshell-ipc", "call", "osdVolumeMute", "handle"] }
+      KEY_MICMUTE: { launch: ["neosh-quickshell-ipc", "call", "osdMic", "handle"] }
+      KEY_BRIGHTNESSUP: { launch: ["neosh-quickshell-ipc", "call", "osdBrightnessUp", "handle"] }
+      KEY_BRIGHTNESSDOWN: { launch: ["neosh-quickshell-ipc", "call", "osdBrightnessDown", "handle"] }
+      KEY_PLAYPAUSE: { launch: ["neosh-quickshell-ipc", "call", "osdMediaPlayPause", "handle"] }
+      KEY_PLAY: { launch: ["neosh-quickshell-ipc", "call", "osdMediaPlayPause", "handle"] }
+      KEY_NEXTSONG: { launch: ["neosh-quickshell-ipc", "call", "osdMediaNext", "handle"] }
+      KEY_PREVIOUSSONG: { launch: ["neosh-quickshell-ipc", "call", "osdMediaPrev", "handle"] }
       F18-Ctrl-LeftBrace: { launch: ["neosh-quickshell-ipc", "call", "osdMediaPrev", "handle"] }
       F18-Ctrl-RightBrace: { launch: ["neosh-quickshell-ipc", "call", "osdMediaNext", "handle"] }
       F18-Ctrl-n: Super-Enter
