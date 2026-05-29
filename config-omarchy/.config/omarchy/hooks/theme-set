@@ -3,7 +3,7 @@
 # Omarchy theme-set hook
 #
 # Extends theme changes to apps not covered by Omarchy templates:
-# Zed, bat, delta, starship, zellij, yazi, bottom, Sublime Merge, Typora
+# Zed, bat, delta, starship, zellij, hunk, yazi, bottom, Sublime Merge, Typora
 #
 # Usage: this hook is called by omarchy-theme-set with the theme name as $1
 
@@ -206,6 +206,78 @@ update_zellij() {
   fi
 }
 
+update_hunk() {
+  [[ -f "$COLORS_TOML" ]] || return
+
+  local config="$HOME/.config/hunk/config.toml"
+  mkdir -p "$(dirname "$config")"
+
+  local accent cursor foreground background selection_foreground selection_background
+  local color0 color1 color2 color3 color4 color5 color6 color7
+  local color8 color9 color10 color11 color12 color13 color14 color15
+  local base="graphite"
+
+  eval "$(sed 's/ = /=/; s/"//g' "$COLORS_TOML")"
+  [[ -f "$THEME_DIR/light.mode" ]] && base="paper"
+
+  printf '%s\n' \
+    'theme = "custom"' \
+    'mode = "auto"' \
+    'vcs = "git"' \
+    'exclude_untracked = false' \
+    'line_numbers = true' \
+    'wrap_lines = false' \
+    'hunk_headers = true' \
+    'agent_notes = false' \
+    '' \
+    '[custom_theme]' \
+    "base = \"$base\"" \
+    'label = "Omarchy"' \
+    "background = \"$background\"" \
+    "panel = \"$background\"" \
+    "panelAlt = \"$color0\"" \
+    "border = \"$color8\"" \
+    "accent = \"$accent\"" \
+    "accentMuted = \"$color8\"" \
+    "text = \"$foreground\"" \
+    "muted = \"$color15\"" \
+    "addedBg = \"$background\"" \
+    "removedBg = \"$background\"" \
+    "contextBg = \"$background\"" \
+    "addedContentBg = \"$color0\"" \
+    "removedContentBg = \"$color0\"" \
+    "contextContentBg = \"$background\"" \
+    "addedSignColor = \"$color10\"" \
+    "removedSignColor = \"$color9\"" \
+    "lineNumberBg = \"$background\"" \
+    "lineNumberFg = \"$color8\"" \
+    "selectedHunk = \"$color8\"" \
+    "badgeAdded = \"$color10\"" \
+    "badgeRemoved = \"$color9\"" \
+    "badgeNeutral = \"$color12\"" \
+    "fileNew = \"$color10\"" \
+    "fileDeleted = \"$color9\"" \
+    "fileRenamed = \"$color11\"" \
+    "fileModified = \"$color13\"" \
+    "fileUntracked = \"$color14\"" \
+    "noteBorder = \"$color13\"" \
+    "noteBackground = \"$background\"" \
+    "noteTitleBackground = \"$color0\"" \
+    "noteTitleText = \"$foreground\"" \
+    '' \
+    '[custom_theme.syntax]' \
+    "default = \"$foreground\"" \
+    "keyword = \"$color5\"" \
+    "string = \"$color2\"" \
+    "comment = \"$color8\"" \
+    "number = \"$color3\"" \
+    "function = \"$color12\"" \
+    "property = \"$color14\"" \
+    "type = \"$color13\"" \
+    "punctuation = \"$color15\"" \
+    >"$config"
+}
+
 deploy_template_output() {
   # Copy a generated template file from omarchy/current/theme/ to its final location
   local src="$THEME_DIR/$1"
@@ -395,6 +467,7 @@ update_bat
 update_delta
 update_starship
 update_zellij
+update_hunk
 update_sublime_merge
 update_typora
 
