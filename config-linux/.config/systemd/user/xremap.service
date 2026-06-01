@@ -10,6 +10,8 @@ ExecStart=/usr/bin/xremap \
   --mouse \
   --watch=device \
   --allow-launch true \
+  --device "Keychron Keychron Ultra-Link 8K" \
+  --device "Keychron Keychron Ultra-Link 8K Keyboard" \
   --device "Keychron Keychron Q11" \
   --device "Keychron Keychron Q11 Keyboard" \
   --device "Keychron Keychron Q11 Consumer Control" \
