@@ -10,7 +10,6 @@ ExecStart=/usr/bin/xremap \
   --mouse \
   --watch=device \
   --allow-launch true \
-  --device "AT Translated Set 2 keyboard" \
   --device "Keychron Keychron Ultra-Link 8K" \
   --device "Keychron Keychron Ultra-Link 8K Keyboard" \
   --device "Keychron Keychron Q11" \
