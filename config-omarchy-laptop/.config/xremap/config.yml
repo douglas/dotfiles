@@ -24,18 +24,6 @@ keymap:
   # ============================================================
   - name: Media shortcuts (Cmd+Ctrl)
     remap:
-      KEY_VOLUMEUP: { launch: ["neosh-quickshell-ipc", "call", "osdVolumeUp", "handle"] }
-      KEY_VOLUMEDOWN: { launch: ["neosh-quickshell-ipc", "call", "osdVolumeDown", "handle"] }
-      KEY_MUTE: { launch: ["neosh-quickshell-ipc", "call", "osdVolumeMute", "handle"] }
-      KEY_MICMUTE: { launch: ["neosh-quickshell-ipc", "call", "osdMic", "handle"] }
-      KEY_BRIGHTNESSUP: { launch: ["neosh-quickshell-ipc", "call", "osdBrightnessUp", "handle"] }
-      KEY_BRIGHTNESSDOWN: { launch: ["neosh-quickshell-ipc", "call", "osdBrightnessDown", "handle"] }
-      KEY_PLAYPAUSE: { launch: ["neosh-quickshell-ipc", "call", "osdMediaPlayPause", "handle"] }
-      KEY_PLAY: { launch: ["neosh-quickshell-ipc", "call", "osdMediaPlayPause", "handle"] }
-      KEY_NEXTSONG: { launch: ["neosh-quickshell-ipc", "call", "osdMediaNext", "handle"] }
-      KEY_PREVIOUSSONG: { launch: ["neosh-quickshell-ipc", "call", "osdMediaPrev", "handle"] }
-      F18-Ctrl-LeftBrace: { launch: ["neosh-quickshell-ipc", "call", "osdMediaPrev", "handle"] }
-      F18-Ctrl-RightBrace: { launch: ["neosh-quickshell-ipc", "call", "osdMediaNext", "handle"] }
       F18-Ctrl-n: Super-Enter
       F18-Ctrl-j: Super-Ctrl-j
 
@@ -47,9 +35,8 @@ keymap:
       only: [com.mitchellh.ghostty, Alacritty, kitty]
     remap:
       # App launcher
-      F18-Space: { launch: ["neosh-quickshell-ipc", "call", "openApps", "handle"] }
-      F18-Shift-Space: { launch: ["neosh-omarchy-menu"] }
-      Super-Space: { launch: ["neosh-omarchy-menu"] }
+      F18-Space: Super-Space
+      F18-Shift-Space: Super-Alt-Space
 
       # Clipboard (Ctrl+Shift to avoid terminal control chars)
       F18-c: Ctrl-Shift-c
@@ -173,9 +160,8 @@ keymap:
       F18-9: Super-9
       F18-Tab: Super-Tab
       F18-Shift-Tab: Super-Shift-Tab
-      F18-Space: { launch: ["neosh-quickshell-ipc", "call", "openApps", "handle"] }
-      F18-Shift-Space: { launch: ["neosh-omarchy-menu"] }
-      Super-Space: { launch: ["neosh-omarchy-menu"] }
+      F18-Space: Super-Space
+      F18-Shift-Space: Super-Alt-Space
       F18-Shift-v: Super-Ctrl-v
 
       # Text navigation (Cmd+arrows = Home/End like macOS)
@@ -196,9 +182,8 @@ keymap:
       not: [com.mitchellh.ghostty, Alacritty, kitty, spotify]
     remap:
       # App launcher
-      F18-Space: { launch: ["neosh-quickshell-ipc", "call", "openApps", "handle"] }
-      F18-Shift-Space: { launch: ["neosh-omarchy-menu"] }
-      Super-Space: { launch: ["neosh-omarchy-menu"] }
+      F18-Space: Super-Space
+      F18-Shift-Space: Super-Alt-Space
 
       # Clipboard
       F18-c: Ctrl-c

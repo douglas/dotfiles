@@ -8,7 +8,7 @@
 # Usage: this hook is called by omarchy-theme-set with the theme name as $1
 
 THEME="$1"
-THEME_DIR="$HOME/.config/omarchy/current/theme"
+THEME_DIR="$HOME/.local/state/omarchy/current/theme"
 COLORS_TOML="$THEME_DIR/colors.toml"
 
 # ── Theme name mappings ──────────────────────────────────────────────────────
@@ -279,7 +279,7 @@ update_hunk() {
 }
 
 deploy_template_output() {
-  # Copy a generated template file from omarchy/current/theme/ to its final location
+  # Copy a generated template file from the current Omarchy theme to its final location
   local src="$THEME_DIR/$1"
   local dest="$2"
   [[ -f "$src" ]] || return

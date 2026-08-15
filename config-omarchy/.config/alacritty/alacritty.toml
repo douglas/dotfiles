@@ -1,5 +1,5 @@
 general.import = [
-  "~/.config/omarchy/current/theme/alacritty.toml",
+  "~/.local/state/omarchy/current/theme/alacritty.toml",
   "~/.config/alacritty/machine.toml",
 ]
 
