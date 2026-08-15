@@ -23,7 +23,7 @@
 -- F18+Q is remapped to SUPER+W. Close NeoSH overlays before falling back to
 -- Omarchy's normal close-window behavior.
 hl.unbind("SUPER + W")
-o.bind("SUPER + W", "Close window or NeoSH overlay", "$HOME/.local/bin/neosh-close-or-killactive")
+o.bind("SUPER + W", "Close window or NeoSH overlay", "$HOME/.bin/omarchy-close-or-killactive")
 
 -- Disable a default binding without replacing it.
 -- hl.unbind("SUPER + SHIFT + B")

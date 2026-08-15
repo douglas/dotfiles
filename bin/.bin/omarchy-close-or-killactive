@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+export OMARCHY_PATH="${OMARCHY_PATH:-/usr/share/omarchy}"
+
+control_center_state=""
+if control_center_state=$(omarchy-shell neosh-cc isOpen 2>/dev/null); then
+  case "$(printf '%s' "$control_center_state" | tr -d '[:space:]')" in
+    true | 1)
+      omarchy-shell -q neosh-cc close
+      exit 0
+      ;;
+  esac
+fi
+
+hyprctl dispatch 'hl.dsp.window.close()'
