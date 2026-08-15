@@ -46,7 +46,7 @@ keymap:
       F18-t: Ctrl-Shift-t
       F18-w: Ctrl-Shift-w
       F18-n: Ctrl-Shift-n
-      F18-q: { launch: ["hyprctl", "dispatch", "killactive"] }
+      F18-q: Super-w
 
       # Actions
       F18-a: Ctrl-Shift-a
@@ -206,7 +206,7 @@ keymap:
       F18-o: Ctrl-o
       F18-p: Ctrl-p
       F18-n: Ctrl-n
-      F18-q: { launch: ["hyprctl", "dispatch", "killactive"] }
+      F18-q: Super-w
       F18-w: Ctrl-w
       F18-t: Ctrl-t
       F18-Shift-t: Ctrl-Shift-t
