@@ -4,10 +4,10 @@ set -euo pipefail
 export OMARCHY_PATH="${OMARCHY_PATH:-/usr/share/omarchy}"
 
 control_center_state=""
-if control_center_state=$(omarchy-shell neosh-cc isOpen 2>/dev/null); then
+if control_center_state=$(omarchy-shell omarchy-cc isOpen 2>/dev/null); then
   case "$(printf '%s' "$control_center_state" | tr -d '[:space:]')" in
     true | 1)
-      omarchy-shell -q neosh-cc close
+      omarchy-shell -q omarchy-cc close
       exit 0
       ;;
   esac
