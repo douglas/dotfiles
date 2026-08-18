@@ -10,7 +10,7 @@ Each top-level directory is a dotlayer package. Dotlayer detects OS, profile, di
 config/                 # Shared app configs (bat, ghostty, zellij, yazi, etc.)
 config-linux/           # Linux-only system files (udev rules, systemd hooks)
 config-macos/           # macOS-only configs (Cursor editor)
-config-omarchy/         # Shared Omarchy base (nvim, waybar, walker, keybindings)
+config-omarchy/         # Shared Omarchy base (nvim, Hyprland Lua, keybindings)
 config-omarchy-desktop/ # Desktop overrides (font size, window dimensions)
 config-omarchy-laptop/  # Shared laptop glue (monitor/profile entrypoints)
 config-omarchy-laptop-t1g/ # T1G laptop model overrides
@@ -57,7 +57,7 @@ update-dotfiles
 | `config` | Shared `~/.config/` for bat, bottom, btop, delta, ghostty, yazi, zed, zellij, starship |
 | `config-linux` | System files: xremap config/service, sleep hook, Keychron udev rule |
 | `config-macos` | Cursor editor settings and keybindings |
-| `config-omarchy` | Shared Omarchy config: Neovim, Hyprland base config, Neosh integration, Waybar, Walker, Omarchy hooks, audio policy, startup |
+| `config-omarchy` | Shared Omarchy config: Neovim, Hyprland Lua, Neosh integration, Omarchy hooks, audio policy, startup. Legacy Waybar, Walker, and Hyprland `.conf` files remain excluded from Stow as migration reference. |
 | `config-omarchy-desktop` | Ghostty machine config, Zed settings, Hyprland envs for desktop |
 | `config-omarchy-laptop` | Shared laptop monitor/profile entrypoints |
 | `config-omarchy-laptop-t1g` | T1G laptop terminal, Waybar, and Hyprland model overrides |

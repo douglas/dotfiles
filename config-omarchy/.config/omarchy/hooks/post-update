@@ -2,12 +2,16 @@
 # Restore dotfile symlinks after Omarchy update.
 #
 # Omarchy migrations can replace stow symlinks with real files or modify
-# config files through symlinks via sed. This hook:
-# 1. Re-stows with --adopt to reclaim any replaced symlinks
-# 2. Logs what migrations changed (so you can selectively adopt)
-# 3. git checkout restores committed versions
+# config files through symlinks via sed. Re-stow only from a clean source
+# checkout, then retain any adopted migration changes for explicit review.
 
 cd ~/.public_dotfiles || exit 0
+
+if ! git diff --quiet || ! git diff --cached --quiet; then
+  echo "Omarchy migration restore skipped: ~/.public_dotfiles has uncommitted changes"
+  echo "Commit, stash, or discard them before running omarchy update again."
+  exit 0
+fi
 
 profile="$(hostnamectl chassis 2>/dev/null || echo desktop)"
 
@@ -15,16 +19,15 @@ for package in config-omarchy "config-omarchy-${profile}"; do
   [ -d "$package" ] && stow --adopt -R -t ~ "$package" 2>/dev/null
 done
 
-# Log migration changes before reverting
+# Keep migration changes in the source checkout for explicit review. Never
+# reset the dotfiles repository here: an update hook must not discard work.
 if ! git diff --quiet 2>/dev/null; then
   log="$HOME/.local/state/omarchy/migration-changes-$(date +%s).diff"
   mkdir -p "$(dirname "$log")"
   git diff > "$log"
   echo "Omarchy migration changes saved to $log"
-  echo "Review with: bat $log"
+  echo "Review with: bat $log, then commit or revert the source changes."
 fi
-
-git checkout -- .
 
 rebuild_hyprtasking_if_needed() {
   local repo="$HOME/src/hyprtasking"
@@ -86,7 +89,6 @@ rebuild_hyprtasking_if_needed() {
     fi
 
     hyprctl plugin load "$plugin" || true
-    hyprctl keyword source "$HOME/.config/hypr/personal-hyprtasking.conf" || true
   fi
 }
 

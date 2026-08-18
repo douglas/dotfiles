@@ -6,7 +6,7 @@ screensaver_in_focus() {
 
 exit_screensaver() {
   hyprctl keyword cursor:invisible false &>/dev/null || true
-  pkill -x tte 2>/dev/null
+  pkill -x ttfx 2>/dev/null
   pkill -f org.omarchy.screensaver 2>/dev/null
   exit 0
 }
@@ -30,7 +30,7 @@ hyprctl keyword cursor:invisible true &>/dev/null
 tty=$(tty 2>/dev/null)
 
 while true; do
-  tte -i ~/.config/omarchy/branding/screensaver.txt \
+  ttfx -i ~/.config/omarchy/branding/screensaver.txt \
     --frame-rate 120 --canvas-width 0 --canvas-height 0 --reuse-canvas --anchor-canvas c --anchor-text c \
     --terminal-background-color "$terminal_background" \
     --no-eol --no-restore-cursor \
@@ -48,7 +48,7 @@ while true; do
     --final-gradient-frames 3 \
     --final-gradient-direction vertical &
 
-  while pgrep -t "${tty#/dev/}" -x tte >/dev/null; do
+  while pgrep -t "${tty#/dev/}" -x ttfx >/dev/null; do
     if read -r -n1 -t 1 || ! screensaver_in_focus; then
       exit_screensaver
     fi
