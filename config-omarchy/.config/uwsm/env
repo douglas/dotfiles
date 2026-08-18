@@ -4,8 +4,13 @@
 export OMARCHY_PATH=$HOME/.local/share/omarchy
 export PATH=$OMARCHY_PATH/bin:$PATH
 
-# Set default terminal and editor
-source ~/.config/uwsm/default
+# Set default terminal and editor. Keep working if a package upgrade removes
+# the local override before dotlayer restores it.
+if [[ -r "$HOME/.config/uwsm/default" ]]; then
+  source "$HOME/.config/uwsm/default"
+elif [[ -r "$OMARCHY_PATH/default/uwsm/default" ]]; then
+  source "$OMARCHY_PATH/default/uwsm/default"
+fi
 
 # Activate mise if present on the system
 omarchy-cmd-present mise && eval "$(mise activate bash --shims)"
