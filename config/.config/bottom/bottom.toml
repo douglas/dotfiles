@@ -1,7 +1,7 @@
 [styles.tables]
-headers = {color = "#f5e0dc"}
+headers = {color = "#cdd6f4"}
 [styles.cpu]
-all_entry_color = "#f5e0dc"
+all_entry_color = "#cdd6f4"
 avg_entry_color = "#f38ba8"
 cpu_core_colors = ["#f38ba8","#f9e2af","#f9e2af","#a6e3a1","#94e2d5","#f5c2e7"]
 [styles.memory]
@@ -13,13 +13,13 @@ arc_color = "#94e2d5"
 rx_color = "#a6e3a1"
 tx_color = "#f38ba8"
 [styles.widgets]
-widget_title = {color = "#f5e0dc"}
+widget_title = {color = "#cdd6f4"}
 border_color = "#585b70"
 selected_border_color = "#f5c2e7"
 text = {color = "#cdd6f4"}
 selected_text = {color = "#1e1e2e", bg_color = "#f5c2e7"}
 [styles.graphs]
-graph_color = "#a6adc8"
+graph_color = "#cdd6f4"
 [styles.battery]
 high_battery_color = "#a6e3a1"
 medium_battery_color = "#f9e2af"
