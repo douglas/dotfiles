@@ -1,9 +1,5 @@
 # Changes require a restart to take effect.
 
-# Ensure Omarchy bins are in the path
-export OMARCHY_PATH=$HOME/.local/share/omarchy
-export PATH=$OMARCHY_PATH/bin:$PATH
-
 # Set default terminal and editor. Keep working if a package upgrade removes
 # the local override before dotlayer restores it.
 if [[ -r "$HOME/.config/uwsm/default" ]]; then
