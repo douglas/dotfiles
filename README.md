@@ -46,6 +46,12 @@ update-dotfiles
 
 `update-dotfiles` is a thin wrapper around `dotlayer update`, which pulls configured repos, restows matching packages, and runs configured system-file hooks.
 
+On Omarchy, upgrading the `hyprland` package also rebuilds the local
+Hyprtasking checkout against the new headers. It hot-reloads only when the
+running compositor matches; otherwise the freshly built plugin is loaded at
+the next Hyprland start. Failures are logged in
+`~/.local/state/hyprtasking/rebuild-after-hyprland-upgrade.log`.
+
 ## Stow packages
 
 | Package | Contents |

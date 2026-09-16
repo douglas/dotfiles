@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+# Rebuild the locally maintained Hyprtasking plugin after a Hyprland package
+# upgrade. Pacman invokes this as root, while Meson and hyprctl must run as the
+# owner of the active Hyprland session.
+set -euo pipefail
+
+rebuild_for_user() {
+  local home=$1
+  local runtime_dir=$2
+  local source_dir="$home/src/hyprtasking"
+  local plugin_path="$source_dir/build/libhyprtasking.so"
+  local state_dir="$home/.local/state/hyprtasking"
+  local log_file="$state_dir/rebuild-after-hyprland-upgrade.log"
+
+  [[ -d $source_dir ]] || exit 0
+
+  mkdir -p "$state_dir"
+  exec >>"$log_file" 2>&1
+
+  printf '\n%s rebuilding for installed Hyprland headers\n' "$(date --iso-8601=seconds)"
+  cd "$source_dir" || exit 1
+
+  meson setup build --reconfigure --buildtype=release
+  meson compile -C build
+
+  if ! bash scripts/check-version-contract.sh; then
+    printf '%s package and running compositor differ; plugin will load on the next Hyprland start\n' \
+      "$(date --iso-8601=seconds)"
+    exit 0
+  fi
+
+  local instance_dir signature
+  for instance_dir in "$runtime_dir"/hypr/*; do
+    [[ -S "$instance_dir/.socket.sock" ]] || continue
+    signature=${instance_dir##*/}
+    HYPRLAND_INSTANCE_SIGNATURE="$signature" hyprctl plugin unload "$plugin_path" || true
+    HYPRLAND_INSTANCE_SIGNATURE="$signature" hyprctl plugin load "$plugin_path"
+  done
+}
+
+run_for_active_users() {
+  local runtime_dir uid account home _
+  for runtime_dir in /run/user/[0-9]*; do
+    [[ -d "$runtime_dir/hypr" ]] || continue
+    uid=${runtime_dir##*/}
+    IFS=: read -r account _ _ _ _ home _ < <(getent passwd "$uid") || continue
+    [[ -n $account && -n $home ]] || continue
+    /usr/bin/runuser -u "$account" -- "$0" --rebuild "$home" "$runtime_dir"
+  done
+}
+
+case "${1:-}" in
+  --rebuild)
+    rebuild_for_user "$2" "$3"
+    ;;
+  '')
+    run_for_active_users
+    ;;
+  *)
+    printf 'Usage: %s [--rebuild HOME XDG_RUNTIME_DIR]\n' "$0" >&2
+    exit 2
+    ;;
+esac

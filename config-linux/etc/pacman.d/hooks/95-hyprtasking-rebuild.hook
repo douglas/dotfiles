@@ -1,0 +1,11 @@
+[Trigger]
+Operation = Upgrade
+Type = Package
+Target = hyprland
+
+[Action]
+Description = Rebuilding Hyprtasking for the updated Hyprland headers...
+When = PostTransaction
+Depends = hyprland
+Depends = meson
+Exec = /usr/local/lib/omarchy-rebuild-hyprtasking
