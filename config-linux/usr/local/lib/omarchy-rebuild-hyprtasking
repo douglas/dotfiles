@@ -21,7 +21,10 @@ rebuild_for_user() {
   printf '\n%s rebuilding for installed Hyprland headers\n' "$(date --iso-8601=seconds)"
   cd "$source_dir" || exit 1
 
-  meson setup build --reconfigure --buildtype=release
+  # Package upgrades can leave Meson's dependency cache intact even though the
+  # Hyprland ABI headers changed. Recreate the build directory to force every
+  # header-dependent object to compile against the installed package.
+  meson setup build --wipe --buildtype=release
   meson compile -C build
 
   if ! bash scripts/check-version-contract.sh; then
