@@ -1,0 +1,47 @@
+[Unit]
+Description=xremap privileged input daemon
+After=systemd-user-sessions.service
+
+[Service]
+Type=simple
+User=xremap
+Group=xremap
+SupplementaryGroups=input @SOCKET_GROUP@
+RuntimeDirectory=xremap
+RuntimeDirectoryMode=0755
+RuntimeDirectoryPreserve=yes
+ExecStartPre=+/usr/bin/install --directory --mode=2770 --owner=xremap --group=@SOCKET_GROUP@ /run/xremap/@TARGET_UID@
+ExecStart=/usr/bin/xremap-full \
+  --desktop=socket \
+  --mouse \
+  --watch=device \
+  --device "AT Translated Set 2 keyboard" \
+  --device "Keychron Keychron Ultra-Link 8K" \
+  --device "Keychron Keychron Ultra-Link 8K Keyboard" \
+  --device "Keychron Keychron Q11" \
+  --device "Keychron Keychron Q11 Keyboard" \
+  --device "Keychron Keychron Q11 Consumer Control" \
+  --device "Keychron Keychron Q11 Mouse" \
+  --device "Logitech MX Vertical Advanced Ergonomic Mouse" \
+  /etc/xremap/config.yml
+Restart=always
+RestartSec=3
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+RestrictAddressFamilies=AF_UNIX
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

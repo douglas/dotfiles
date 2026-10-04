@@ -1,0 +1,23 @@
+# Maintainer: Douglas (local package)
+pkgname=xremap-full-bin
+pkgver=0.15.13
+pkgrel=1
+pkgdesc='Dynamic key remapper with all desktop and socket backends'
+arch=('x86_64')
+url='https://github.com/xremap/xremap'
+license=('MIT')
+options=('!debug' '!strip')
+source=(
+  "${pkgname}-${pkgver}.zip::https://github.com/xremap/xremap/releases/download/v${pkgver}/xremap-linux-${CARCH}-full.zip"
+  "${pkgname}-${pkgver}-LICENSE::https://raw.githubusercontent.com/xremap/xremap/v${pkgver}/LICENSE"
+)
+sha256sums=(
+  '4b82bdc279f9c4d96292a4ecc31107905eacfd190398946f96360c1ef157c13e'
+  '60365594c733128ba50f05de00c4a6f07fed0a6e8bbd93817f39ded3980f7343'
+)
+
+package() {
+  install -Dm755 xremap "${pkgdir}/usr/bin/xremap-full"
+  install -Dm644 "${pkgname}-${pkgver}-LICENSE" \
+    "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

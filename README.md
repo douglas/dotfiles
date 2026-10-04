@@ -61,7 +61,7 @@ the next Hyprland start. Failures are logged in
 | `git` | `.gitconfig` and `.gitignore` — delta pager, difftastic, aliases, SSH signing |
 | `zsh` | `.zshrc` and `~/.zsh/` — extensions (git, fzf, networking, Rails), Catppuccin theme |
 | `config` | Shared `~/.config/` for bat, bottom, btop, delta, ghostty, yazi, zed, zellij, starship |
-| `config-linux` | System files: xremap config/service, sleep hook, Keychron udev rule |
+| `config-linux` | System files: split xremap services, hardening installer, sleep hook, Keychron udev rule |
 | `config-macos` | Cursor editor settings and keybindings |
 | `config-omarchy` | Shared Omarchy config: Neovim, Hyprland Lua, Neosh integration, Omarchy hooks, audio policy, startup. Legacy Waybar, Walker, and Hyprland `.conf` files remain excluded from Stow as migration reference. |
 | `config-omarchy-desktop` | Ghostty machine config, Zed settings, Hyprland envs for desktop |
@@ -96,9 +96,20 @@ the next Hyprland start. Failures are logged in
 - [lazydocker](https://github.com/jesseduffield/lazydocker) — Docker TUI
 
 **System (Linux)**
-- [xremap](https://github.com/xremap/xremap) — macOS-style keybindings on Linux (Super as Cmd), with separate mappings for terminal and GUI apps
+- [xremap](https://github.com/xremap/xremap) — macOS-style keybindings on Linux, with a privileged input daemon and an unprivileged Hyprland bridge
 - udev rules for Keychron keyboard HID access
 - systemd sleep hook to restart xremap after suspend/resume
+
+The xremap security migration is deliberately staged so the working remapper is
+not stopped before the replacement is ready:
+
+```sh
+sudo ~/.public_dotfiles/config-linux/usr/local/sbin/harden-xremap install
+# Reboot and test all remaps.
+sudo ~/.public_dotfiles/config-linux/usr/local/sbin/harden-xremap status
+sudo ~/.public_dotfiles/config-linux/usr/local/sbin/harden-xremap finalize
+# Reboot again to discard the old login session's input-group credentials.
+```
 
 ## Theme
 

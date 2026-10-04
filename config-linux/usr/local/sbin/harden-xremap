@@ -1,0 +1,279 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+readonly PROGRAM_NAME=${0##*/}
+readonly FULL_PACKAGE=xremap-full-bin
+readonly LEGACY_PACKAGE=xremap-hypr-bin
+readonly SYSTEM_SERVICE=xremap-system.service
+readonly USER_SERVICE=xremap-bridge.service
+readonly LEGACY_USER_SERVICE=xremap.service
+
+TEMP_PATHS=()
+
+cleanup() {
+  local path
+  for path in "${TEMP_PATHS[@]}"; do
+    case $path in
+      /tmp/xremap-*) rm -rf -- "$path" ;;
+    esac
+  done
+}
+trap cleanup EXIT
+
+die() {
+  printf 'Error: %s\n' "$*" >&2
+  exit 1
+}
+
+note() {
+  printf '%s\n' "$*"
+}
+
+require_root() {
+  [[ $EUID -eq 0 ]] || die "Run this command with sudo."
+  [[ -n ${SUDO_USER:-} && $SUDO_USER != root ]] || \
+    die "Run with sudo from the desktop user account, not from a root shell."
+}
+
+initialize_paths() {
+  TARGET_USER=$SUDO_USER
+  TARGET_UID=$(id -u "$TARGET_USER")
+  TARGET_GID=$(id -g "$TARGET_USER")
+  TARGET_HOME=$(getent passwd "$TARGET_USER" | cut -d: -f6)
+  SOCKET_GROUP="xremap-${TARGET_USER}"
+
+  local script_dir repository_root
+  PROGRAM_PATH=$(readlink -f "${BASH_SOURCE[0]}")
+  script_dir=$(dirname "$PROGRAM_PATH")
+  repository_root=$(readlink -f "$script_dir/../../../..")
+
+  if [[ -d $repository_root/config-linux/usr/local/share/xremap-hardening ]]; then
+    ASSET_DIR=$repository_root/config-linux/usr/local/share/xremap-hardening
+    CONFIG_SOURCE=$repository_root/config-omarchy-desktop/.config/xremap/config.yml
+    BRIDGE_UNIT_SOURCE=$repository_root/config-linux/.config/systemd/user/xremap-bridge.service
+  else
+    ASSET_DIR=/usr/local/share/xremap-hardening
+    CONFIG_SOURCE=$TARGET_HOME/.config/xremap/config.yml
+    BRIDGE_UNIT_SOURCE=$TARGET_HOME/.config/systemd/user/xremap-bridge.service
+  fi
+
+  USER_UNIT=$TARGET_HOME/.config/systemd/user/xremap-bridge.service
+  USER_RUNTIME=/run/user/$TARGET_UID
+}
+
+require_commands() {
+  local command_name
+  for command_name in chown getent gpasswd groupadd id install ln pacman readlink rg \
+    runuser sed systemctl systemd-analyze tr useradd usermod; do
+    command -v "$command_name" >/dev/null || die "Required command is missing: $command_name"
+  done
+}
+
+user_systemctl() {
+  runuser -u "$TARGET_USER" -- env \
+    XDG_RUNTIME_DIR="$USER_RUNTIME" \
+    DBUS_SESSION_BUS_ADDRESS="unix:path=$USER_RUNTIME/bus" \
+    systemctl --user "$@"
+}
+
+install_full_package() {
+  if pacman -Q "$FULL_PACKAGE" >/dev/null 2>&1 && [[ -x /usr/bin/xremap-full ]]; then
+    note "The full xremap package is already installed."
+    return
+  fi
+
+  [[ $(uname -m) == x86_64 ]] || die "The pinned xremap package is only for x86_64."
+  [[ -f $ASSET_DIR/PKGBUILD ]] || die "Missing package recipe: $ASSET_DIR/PKGBUILD"
+  command -v fakeroot >/dev/null || die "fakeroot is required; install the base-devel group."
+  command -v makepkg >/dev/null || die "makepkg is required; install the base-devel group."
+
+  local build_dir package_path
+  build_dir=$(mktemp -d --tmpdir xremap-full-bin.XXXXXX)
+  TEMP_PATHS+=("$build_dir")
+  chown "$TARGET_UID:$TARGET_GID" "$build_dir"
+  install -o "$TARGET_UID" -g "$TARGET_GID" -m 0644 \
+    "$ASSET_DIR/PKGBUILD" "$build_dir/PKGBUILD"
+
+  note "Building the checksum-pinned xremap full package as $TARGET_USER..."
+  (
+    cd "$build_dir"
+    runuser -u "$TARGET_USER" -- env HOME="$TARGET_HOME" makepkg --clean --noconfirm
+  )
+  package_path=$(
+    cd "$build_dir"
+    runuser -u "$TARGET_USER" -- makepkg --packagelist
+  )
+  [[ -f $package_path ]] || die "makepkg did not produce the expected package."
+  pacman -U --noconfirm "$package_path"
+  /usr/bin/xremap-full --version
+}
+
+ensure_accounts() {
+  getent group "$SOCKET_GROUP" >/dev/null || groupadd --system "$SOCKET_GROUP"
+
+  if id xremap >/dev/null 2>&1; then
+    usermod --append --groups "input,$SOCKET_GROUP" xremap
+  else
+    useradd --system --user-group --no-create-home --home-dir /nonexistent \
+      --shell /usr/bin/nologin --groups "input,$SOCKET_GROUP" xremap
+  fi
+
+  usermod --append --groups "$SOCKET_GROUP" "$TARGET_USER"
+}
+
+install_configuration() {
+  [[ -f $CONFIG_SOURCE ]] || die "Missing xremap configuration: $CONFIG_SOURCE"
+  [[ -f $ASSET_DIR/xremap-system.service.in ]] || \
+    die "Missing system service template."
+  [[ -f $BRIDGE_UNIT_SOURCE ]] || \
+    die "Missing source-managed bridge service: $BRIDGE_UNIT_SOURCE"
+  rg --quiet --fixed-strings -- '--bridge' "$BRIDGE_UNIT_SOURCE" || \
+    die "The user xremap bridge service is invalid."
+
+  install -d -o "$TARGET_UID" -g "$TARGET_GID" -m 0755 \
+    "$TARGET_HOME/.config/systemd/user"
+  if [[ ! -e $USER_UNIT && ! -L $USER_UNIT ]]; then
+    ln --symbolic "$BRIDGE_UNIT_SOURCE" "$USER_UNIT"
+    chown --no-dereference "$TARGET_UID:$TARGET_GID" "$USER_UNIT"
+  elif [[ $(readlink -f "$USER_UNIT") != $(readlink -f "$BRIDGE_UNIT_SOURCE") ]]; then
+    die "$USER_UNIT exists but does not point to $BRIDGE_UNIT_SOURCE"
+  fi
+
+  install -d -o root -g xremap -m 0750 /etc/xremap
+  install -o root -g xremap -m 0640 "$CONFIG_SOURCE" /etc/xremap/config.yml
+
+  local rendered_service
+  rendered_service=$(mktemp --tmpdir --suffix=.service xremap-system.XXXXXX)
+  TEMP_PATHS+=("$rendered_service")
+  sed \
+    -e "s/@TARGET_UID@/$TARGET_UID/g" \
+    -e "s/@SOCKET_GROUP@/$SOCKET_GROUP/g" \
+    "$ASSET_DIR/xremap-system.service.in" >"$rendered_service"
+
+  systemd-analyze verify "$rendered_service"
+  runuser -u "$TARGET_USER" -- env HOME="$TARGET_HOME" \
+    systemd-analyze --user verify "$USER_UNIT"
+  install -o root -g root -m 0644 "$rendered_service" \
+    "/etc/systemd/system/$SYSTEM_SERVICE"
+
+  local sleep_hook
+  sleep_hook=$(readlink -f \
+    "$(dirname "${BASH_SOURCE[0]}")/../../../etc/systemd/system-sleep/xremap-restart.sh")
+  [[ -f $sleep_hook ]] || die "Missing suspend/resume hook: $sleep_hook"
+  install -o root -g root -m 0755 "$sleep_hook" \
+    /etc/systemd/system-sleep/xremap-restart.sh
+}
+
+reload_services_without_cutover() {
+  systemctl daemon-reload
+  user_systemctl daemon-reload
+  user_systemctl disable "$LEGACY_USER_SERVICE"
+  if ! user_systemctl enable "$USER_SERVICE"; then
+    user_systemctl enable "$LEGACY_USER_SERVICE"
+    die "Could not enable the bridge; restored the legacy user service."
+  fi
+  if ! systemctl enable "$SYSTEM_SERVICE"; then
+    user_systemctl disable "$USER_SERVICE"
+    user_systemctl enable "$LEGACY_USER_SERVICE"
+    die "Could not enable the system daemon; restored the legacy user service."
+  fi
+}
+
+install_migration() {
+  [[ -S $USER_RUNTIME/bus ]] || \
+    die "The $TARGET_USER user bus is unavailable; run this from the active desktop session."
+  install_full_package
+  ensure_accounts
+  install_configuration
+  reload_services_without_cutover
+
+  note
+  note "Prepared the secure xremap split without stopping the current remapper."
+  note "Reboot now. Then test Caps, F18 shortcuts, application-specific mappings,"
+  note "screenshots, device reconnect, and suspend/resume."
+  note
+  note "After testing, run: sudo $PROGRAM_PATH status"
+  note "If everything works, run: sudo $PROGRAM_PATH finalize"
+}
+
+service_executable() {
+  local scope=$1 service=$2 pid
+  if [[ $scope == system ]]; then
+    pid=$(systemctl show --property=MainPID --value "$service")
+  else
+    pid=$(user_systemctl show --property=MainPID --value "$service")
+  fi
+  [[ $pid =~ ^[1-9][0-9]*$ ]] || return 1
+  readlink -f "/proc/$pid/exe"
+}
+
+show_status() {
+  note "Account groups:"
+  id "$TARGET_USER"
+  id xremap 2>/dev/null || true
+  note
+  note "Packages:"
+  pacman -Q "$FULL_PACKAGE" 2>/dev/null || true
+  pacman -Q "$LEGACY_PACKAGE" 2>/dev/null || true
+  note
+  note "System daemon:"
+  systemctl --no-pager --full status "$SYSTEM_SERVICE" || true
+  note
+  note "User bridge:"
+  if [[ -S $USER_RUNTIME/bus ]]; then
+    user_systemctl --no-pager --full status "$USER_SERVICE" || true
+  else
+    note "No active user bus for $TARGET_USER."
+  fi
+  note
+  if [[ -S /run/xremap/$TARGET_UID/xremap.sock ]]; then
+    note "Bridge socket: present at /run/xremap/$TARGET_UID/xremap.sock"
+  else
+    note "Bridge socket: missing"
+  fi
+}
+
+finalize_migration() {
+  systemctl is-active --quiet "$SYSTEM_SERVICE" || \
+    die "$SYSTEM_SERVICE is not active. Reboot and diagnose before finalizing."
+  [[ $(service_executable system "$SYSTEM_SERVICE") == /usr/bin/xremap-full ]] || \
+    die "The system daemon is not running xremap-full."
+  [[ -S $USER_RUNTIME/bus ]] || die "The $TARGET_USER user session is not active."
+  user_systemctl is-active --quiet "$USER_SERVICE" || \
+    die "$USER_SERVICE is not active in the user session."
+  [[ $(service_executable user "$USER_SERVICE") == /usr/bin/xremap-full ]] || \
+    die "The user service is not running xremap-full."
+  [[ -S /run/xremap/$TARGET_UID/xremap.sock ]] || \
+    die "The xremap bridge socket is missing."
+
+  if id -nG "$TARGET_USER" | tr ' ' '\n' | rg --quiet --fixed-strings --line-regexp input; then
+    gpasswd --delete "$TARGET_USER" input
+  else
+    note "$TARGET_USER is already absent from the input group."
+  fi
+
+  if pacman -Q "$LEGACY_PACKAGE" >/dev/null 2>&1; then
+    pacman -Rns --noconfirm "$LEGACY_PACKAGE"
+  fi
+
+  note
+  note "Finalized the account and package changes. Reboot once more to discard the"
+  note "current login session's old input-group credentials."
+}
+
+usage() {
+  printf 'Usage: sudo %s {install|status|finalize}\n' "$PROGRAM_NAME" >&2
+  exit 2
+}
+
+require_root
+initialize_paths
+require_commands
+
+case ${1:-} in
+  install) install_migration ;;
+  status) show_status ;;
+  finalize) finalize_migration ;;
+  *) usage ;;
+esac
