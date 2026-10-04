@@ -52,3 +52,5 @@ bin/wt-db-create
 .wt-schema.sql
 .wt-schema/
 .wt-db
+
+**/.claude/settings.local.json

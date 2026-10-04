@@ -6,8 +6,8 @@
   path = ~/.config/delta/catppuccin.gitconfig
 [includeIf "gitdir:~/work/"]
   path = ~/work/.gitconfig
-[core]
-  pager = hunk pager
+#[core]
+#  pager = hunk pager
 [interactive]
   diffFilter = delta --color-only --features=interactive
 [delta]
