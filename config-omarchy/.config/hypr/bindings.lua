@@ -81,11 +81,11 @@ hl.unbind("SUPER + SHIFT + TAB")
 o.bind("SUPER + TAB", "Next global app", function() cycle_global_app(true) end)
 o.bind("SUPER + SHIFT + TAB", "Previous global app", function() cycle_global_app(false) end)
 
-pcall(require, "hypr.hyprtasking")
+require("default.hypr.require_optional").module("hypr.hyprtasking")
 
 -- Private machine preferences are an optional later layer. Keep the Omarchy
 -- module loadable when that layer is absent.
-pcall(require, "hypr.personal")
+require("default.hypr.require_optional").module("hypr.personal")
 
 -- Logitech MX Keys examples:
 -- o.bind("SUPER + SHIFT + S", nil, "omarchy-capture-screenshot")

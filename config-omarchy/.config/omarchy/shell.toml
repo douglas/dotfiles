@@ -1,0 +1,12 @@
+# Keep the current readable shell size across themes and upgrades.
+[font]
+base-size = 12
+
+[spacing]
+scale = 1.0
+scale-with-font = true
+
+[bar]
+size-horizontal = 26
+size-vertical = 28
+scale-with-font = true

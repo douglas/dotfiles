@@ -5,29 +5,49 @@
 # config files through symlinks via sed. Re-stow only from a clean source
 # checkout, then retain any adopted migration changes for explicit review.
 
-cd ~/.public_dotfiles || exit 0
+restore_omarchy_dotlayers() (
+  cd "$HOME/.public_dotfiles" || return 0
 
-if ! git diff --quiet || ! git diff --cached --quiet; then
-  echo "Omarchy migration restore skipped: ~/.public_dotfiles has uncommitted changes"
-  echo "Commit, stash, or discard them before running omarchy update again."
-  exit 0
-fi
+  if [[ -n "$(git status --porcelain --untracked-files=normal)" ]]; then
+    echo "Omarchy migration restore skipped: ~/.public_dotfiles has uncommitted changes"
+    echo "Review them before restoring dotlayers; Hyprtasking rebuild will still run."
+    return 0
+  fi
 
-profile="$(hostnamectl chassis 2>/dev/null || echo desktop)"
+  # Use the same detector/resolver as dotlayer, including chassis overrides
+  # and machine layers. Do not pull repositories or install system files here.
+  local packages
+  if ! packages=$(ruby -I "$HOME/src/dotlayer/lib" -rdotlayer -e '
+    config = Dotlayer::Config.new
+    detection = Dotlayer::Detector.new(config: config).detect
+    Dotlayer::Resolver.new(config: config, detection: detection).resolve.each do |repo, package|
+      next unless repo == File.expand_path("~/.public_dotfiles")
+      puts package if package.match?(/\Aconfig-omarchy(?:-|\z)/)
+    end
+  '); then
+    echo "Omarchy migration restore failed: could not resolve dotlayers"
+    return 1
+  fi
 
-for package in config-omarchy "config-omarchy-${profile}"; do
-  [ -d "$package" ] && stow --adopt -R -t ~ "$package" 2>/dev/null
-done
+  local package failed=0
+  while IFS= read -r package; do
+    [[ -n "$package" ]] || continue
+    stow --adopt -R --no-folding -t "$HOME" "$package" || failed=1
+  done <<< "$packages"
 
-# Keep migration changes in the source checkout for explicit review. Never
-# reset the dotfiles repository here: an update hook must not discard work.
-if ! git diff --quiet 2>/dev/null; then
-  log="$HOME/.local/state/omarchy/migration-changes-$(date +%s).diff"
-  mkdir -p "$(dirname "$log")"
-  git diff > "$log"
-  echo "Omarchy migration changes saved to $log"
-  echo "Review with: bat $log, then commit or revert the source changes."
-fi
+  # Keep adopted migration changes for review; never reset the checkout.
+  if ! git diff --quiet; then
+    local log
+    log="$HOME/.local/state/omarchy/migration-changes-$(date +%s).diff"
+    mkdir -p "$(dirname "$log")"
+    git diff > "$log"
+    echo "Omarchy migration changes saved to $log"
+    echo "Review with: bat $log, then commit or revert the source changes."
+  fi
+  return "$failed"
+)
+
+restore_omarchy_dotlayers || echo "Omarchy migration restore failed; review Stow errors above."
 
 rebuild_hyprtasking_if_needed() {
   local repo="$HOME/src/hyprtasking"
@@ -72,13 +92,13 @@ rebuild_hyprtasking_if_needed() {
   echo "Hyprtasking: rebuilding for current Hyprland stack"
 
   if [ -f "$build/build.ninja" ]; then
-    meson setup "$build" "$repo" --reconfigure
+    meson setup "$build" "$repo" --reconfigure || return 1
   else
-    meson setup "$build" "$repo"
+    meson setup "$build" "$repo" || return 1
   fi
 
-  meson compile -C "$build"
-  meson test -C "$build"
+  meson compile -C "$build" || return 1
+  meson test -C "$build" || return 1
 
   printf '%s\n' "$stamp" > "$stamp_file"
 

@@ -1,6 +1,12 @@
 -- Hyprtasking's plugin actions are registered at runtime under hl.plugin.
 -- Keep the bindings in the Omarchy Lua layer; the plugin enters and exits the
 -- submap itself as the overview becomes interactive.
+-- Plugin loading triggers a config reload; apply profile values once its
+-- namespace and registered config keys are available.
+if hl.plugin.hyprtasking then
+  require("default.hypr.require_optional").module("hypr.hyprtasking_profile")
+end
+
 local function hyprtasking_action(name, argument)
   return function()
     local plugin = hl.plugin.hyprtasking
