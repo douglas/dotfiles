@@ -25,6 +25,10 @@
 hl.unbind("SUPER + W")
 o.bind("SUPER + W", "Close window or control center", "$HOME/.bin/omarchy-close-or-killactive")
 
+-- xremap routes F18+Ctrl+J to the settings menu.
+hl.unbind("SUPER + CTRL + J")
+o.bind("SUPER + CTRL + J", "Settings menu", "omarchy-menu toggle settings")
+
 -- Disable a default binding without replacing it.
 -- hl.unbind("SUPER + SHIFT + B")
 

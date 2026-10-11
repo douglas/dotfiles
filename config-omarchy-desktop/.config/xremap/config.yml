@@ -104,12 +104,12 @@ keymap:
       F18-8: Super-8
       F18-9: Super-9
 
-      # Move window to workspace
+      # Move window to workspace (Ctrl avoids screenshot shortcuts on 3/4/5)
       F18-Shift-1: Super-Shift-1
       F18-Shift-2: Super-Shift-2
-      F18-Shift-3: Super-Shift-3
-      F18-Shift-4: Super-Shift-4
-      F18-Shift-5: Super-Shift-5
+      F18-Ctrl-Shift-3: Super-Shift-3
+      F18-Ctrl-Shift-4: Super-Shift-4
+      F18-Ctrl-Shift-5: Super-Shift-5
       F18-Shift-6: Super-Shift-6
       F18-Shift-7: Super-Shift-7
       F18-Shift-8: Super-Shift-8
@@ -135,7 +135,7 @@ keymap:
       # macOS-like screenshots (Cmd+Shift+3/4/5)
       F18-Shift-3: { launch: ["omarchy-capture-screenshot", "fullscreen"] }
       F18-Shift-4: { launch: ["omarchy-capture-screenshot", "region"] }
-      F18-Shift-5: { launch: ["omarchy-menu", "capture"] }
+      F18-Shift-5: { launch: ["omarchy-menu", "toggle", "capture"] }
 
   # ============================================================
   # Spotify
@@ -282,12 +282,12 @@ keymap:
       F18-8: Super-8
       F18-9: Super-9
 
-      # Move window to workspace
+      # Move window to workspace (Ctrl avoids screenshot shortcuts on 3/4/5)
       F18-Shift-1: Super-Shift-1
       F18-Shift-2: Super-Shift-2
-      F18-Shift-3: Super-Shift-3
-      F18-Shift-4: Super-Shift-4
-      F18-Shift-5: Super-Shift-5
+      F18-Ctrl-Shift-3: Super-Shift-3
+      F18-Ctrl-Shift-4: Super-Shift-4
+      F18-Ctrl-Shift-5: Super-Shift-5
       F18-Shift-6: Super-Shift-6
       F18-Shift-7: Super-Shift-7
       F18-Shift-8: Super-Shift-8
@@ -311,4 +311,4 @@ keymap:
       # macOS-like screenshots (Cmd+Shift+3/4/5)
       F18-Shift-3: { launch: ["omarchy-capture-screenshot", "fullscreen"] }
       F18-Shift-4: { launch: ["omarchy-capture-screenshot", "region"] }
-      F18-Shift-5: { launch: ["omarchy-menu", "capture"] }
+      F18-Shift-5: { launch: ["omarchy-menu", "toggle", "capture"] }
