@@ -52,6 +52,18 @@ running compositor matches; otherwise the freshly built plugin is loaded at
 the next Hyprland start. Failures are logged in
 `~/.local/state/hyprtasking/rebuild-after-hyprland-upgrade.log`.
 
+The Omarchy post-update hook restores all detected `config-omarchy` layers,
+including the laptop model, using dotlayer's resolver. It preserves migration
+changes for review and skips adoption when the checkout has uncommitted work.
+Hyprtasking rebuild checks still run when adoption is skipped.
+
+Shell layout and idle preferences live in `config-omarchy/.config/omarchy/shell.json`;
+supported font, spacing, and bar sizing overrides live in `shell.toml`.
+Hyprtasking gestures are loaded from each profile's `hyprtasking_profile.lua`.
+The T1G layer also stores its monitor defaults and the saved laptop-only
+hyprmoncfg profile. Generated `hyprmoncfg-monitors.lua` remains machine-local
+and loads last, so layouts chosen through hyprmoncfg take precedence.
+
 ## Stow packages
 
 | Package | Contents |

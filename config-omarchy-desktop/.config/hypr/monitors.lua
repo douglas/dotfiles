@@ -4,8 +4,6 @@
 local omarchy_gdk_scale = 2
 
 hl.env("GDK_SCALE", tostring(omarchy_gdk_scale))
-hl.env("QS_UI_SCALE_MULTIPLIER", "0.5")
-hl.env("QS_BAR_SCALE_MULTIPLIER", "0.5")
 
 hl.monitor({
   output = "desc:Lenovo Group Limited P40WD-40",
