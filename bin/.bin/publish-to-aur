@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  echo "Usage: publish-to-aur [path-to-aur-package]"
+  echo ""
+  echo "Validates and pushes an AUR package directory to aur.archlinux.org."
+  echo "If no path is given, uses the current directory."
+  exit 1
+}
+
+dir="${1:-.}"
+dir="$(cd "$dir" && pwd)"
+
+if [[ ! -f "$dir/PKGBUILD" ]]; then
+  echo "error: no PKGBUILD found in $dir" >&2
+  exit 1
+fi
+
+cd "$dir"
+
+# Ensure it's a git repo with an AUR remote
+if ! git rev-parse --git-dir &>/dev/null; then
+  echo "error: $dir is not a git repository" >&2
+  exit 1
+fi
+
+remote_url="$(git remote get-url origin 2>/dev/null || true)"
+if [[ "$remote_url" != *aur.archlinux.org* ]]; then
+  echo "error: origin remote does not point to aur.archlinux.org" >&2
+  echo "  got: $remote_url" >&2
+  exit 1
+fi
+
+# Regenerate .SRCINFO from current PKGBUILD
+echo "==> Regenerating .SRCINFO..."
+makepkg --printsrcinfo > .SRCINFO
+
+# Test build
+echo "==> Test building package..."
+makepkg -sf
+echo "==> Build succeeded."
+
+# Stage and show what will be pushed
+git add PKGBUILD .SRCINFO .gitignore
+if git diff --cached --quiet; then
+  echo "==> No changes to publish."
+  exit 0
+fi
+
+echo ""
+echo "==> Changes to publish:"
+git diff --cached --stat
+echo ""
+
+read -rp "Push to AUR? [y/N] " confirm
+if [[ "$confirm" != [yY] ]]; then
+  echo "Aborted."
+  exit 1
+fi
+
+pkgver="$(bash -c 'source PKGBUILD && echo $pkgver')"
+git commit -m "Update to $pkgver"
+git push origin master
+echo "==> Published to AUR."

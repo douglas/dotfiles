@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Fixes screen sharing on Google Meet (and other apps) by restarting
+# xdg-desktop-portal services. Run this when screen share stops working.
+
+set -euo pipefail
+
+echo "Restarting xdg-desktop-portal services..."
+systemctl --user restart xdg-desktop-portal-hyprland
+systemctl --user restart xdg-desktop-portal
+echo "Done. Try sharing your screen again."
