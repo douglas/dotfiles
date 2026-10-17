@@ -1,0 +1,19 @@
+[keys]
+# Single-character bindings only.
+# Change a value and restart nettui to apply.
+
+quit = "q"
+refresh = "r"
+up = "k"
+down = "j"
+prev_tab = "h"
+next_tab = "l"
+
+wifi_scan = "s"
+wifi_show_all = "a"
+wifi_forget = "d"
+wifi_autoconnect = "t"
+wifi_hidden = "n"
+wifi_details = "i"
+
+ethernet_renew = "n"
