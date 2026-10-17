@@ -2,6 +2,11 @@
 Operation = Upgrade
 Type = Package
 Target = hyprland
+Target = aquamarine
+Target = hyprutils
+Target = hyprgraphics
+Target = hyprcursor
+Target = hyprlang
 
 [Action]
 Description = Rebuilding Hyprtasking for the updated Hyprland headers...
