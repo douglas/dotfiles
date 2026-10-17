@@ -1,0 +1,9 @@
+[tools]
+claude = "latest"
+codex = "latest"
+gh = "latest"
+node = "latest"
+ruby = "4.0.7"
+
+[settings.upgrade]
+auto_prune = false
