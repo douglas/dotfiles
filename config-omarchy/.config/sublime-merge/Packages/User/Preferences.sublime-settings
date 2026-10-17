@@ -1,0 +1,9 @@
+{
+  "hardware_acceleration": "opengl",
+  "theme": "Omarchy.sublime-theme",
+  "color_scheme": "Packages/Theme - Omarchy/Omarchy.sublime-color-scheme",
+  "light_color_scheme": "Packages/Theme - Omarchy/Omarchy.sublime-color-scheme",
+  "dark_color_scheme": "Packages/Theme - Omarchy/Omarchy.sublime-color-scheme",
+  "light_theme": "Omarchy.sublime-theme",
+  "dark_theme": "Omarchy.sublime-theme"
+}

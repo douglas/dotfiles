@@ -1,0 +1,68 @@
+{
+  "runtime": "codex",
+  "model": "gpt-5.5",
+  "timeoutSeconds": 120,
+  "cwd": "$HOME",
+  "actions": [
+    {
+      "id": "improve",
+      "label": "Improve",
+      "icon": "✨",
+      "prompt": "Rewrite the selected text to be clearer, tighter, and more natural while preserving its meaning."
+    },
+    {
+      "id": "defuse",
+      "label": "Defuse",
+      "icon": "🧯",
+      "prompt": "Rewrite the selected text in a calmer, more constructive tone while preserving the point."
+    },
+    {
+      "id": "summarize",
+      "label": "Summarize",
+      "icon": "󰛿",
+      "prompt": "Summarize the selected text in a concise, useful form."
+    },
+    {
+      "id": "translate",
+      "label": "Translate",
+      "icon": "󰗊",
+      "requiresInstruction": true,
+      "placeholder": "Target language",
+      "prompt": "Translate the selected text. Use the user instruction as the target language when present."
+    },
+    {
+      "id": "reply",
+      "label": "Reply",
+      "icon": "󰍩",
+      "requiresInstruction": true,
+      "placeholder": "What should the reply say?",
+      "prompt": "Draft a concise reply to the selected text. Use the user instruction as the desired message or stance."
+    },
+    {
+      "id": "post",
+      "label": "Post",
+      "icon": "󰷈",
+      "prompt": "Turn the selected text into a short post in a direct, human voice."
+    },
+    {
+      "id": "detect",
+      "label": "AI Detect",
+      "icon": "󰚩",
+      "prompt": "Assess whether the selected text sounds AI-written. Give a short score and the strongest tells."
+    },
+    {
+      "id": "perspectives",
+      "label": "Perspectives",
+      "icon": "󰴉",
+      "prompt": "Stress-test the selected text or decision from 3 to 5 distinct perspectives, then synthesize the result."
+    },
+    {
+      "id": "custom",
+      "label": "Custom",
+      "icon": "󰘦",
+      "requiresInstruction": true,
+      "placeholder": "Ask anything about the selection",
+      "prompt": "Apply the user instruction to the selected text."
+    }
+  ]
+}

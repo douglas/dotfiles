@@ -1,0 +1,303 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+codexbar_bin="${CODEXBAR_BIN:-}"
+timeout_seconds="${NEOSH_CODEXBAR_TIMEOUT_SECONDS:-75}"
+include_status="${NEOSH_CODEXBAR_STATUS:-1}"
+source_mode="${NEOSH_CODEXBAR_SOURCE:-}"
+include_cost="${NEOSH_CODEXBAR_COST:-1}"
+
+usage() {
+  printf 'Usage: neosh-codexbar [state|usage|refresh]\n' >&2
+}
+
+now_iso() {
+  date -u +"%Y-%m-%dT%H:%M:%SZ"
+}
+
+missing_payload() {
+  jq -cn --arg updated_at "$(now_iso)" '{
+    available: false,
+    updatedAt: $updated_at,
+    providers: [],
+    summary: {
+      total: 0,
+      errors: 1,
+      highestUsedPercent: 0
+    },
+    error: {
+      message: "CodexBarCLI is not installed. Install the Linux CodexBar CLI release tarball and put CodexBarCLI or codexbar on PATH."
+    }
+  }'
+}
+
+resolve_codexbar_bin() {
+  if [[ -n "$codexbar_bin" ]]; then
+    command -v "$codexbar_bin" 2>/dev/null
+    return
+  fi
+
+  command -v codexbar 2>/dev/null || command -v CodexBarCLI 2>/dev/null
+}
+
+failure_payload() {
+  local status="$1"
+  local stderr_file="$2"
+  local message
+
+  message="$(tr '\n' ' ' <"$stderr_file" | sed -E 's/[[:space:]]+/ /g; s/^ //; s/ $//' || true)"
+  [[ -n "$message" ]] || message="codexbar exited with status $status"
+
+  jq -cn --arg updated_at "$(now_iso)" --arg message "$message" --argjson status "$status" '{
+    available: false,
+    updatedAt: $updated_at,
+    providers: [],
+    summary: {
+      total: 0,
+      errors: 1,
+      highestUsedPercent: 0
+    },
+    error: {
+      code: $status,
+      message: $message
+    }
+  }'
+}
+
+empty_usage_payload() {
+  printf '[]'
+}
+
+valid_json_output() {
+  [[ -n "$1" ]] && printf '%s' "$1" | jq -e 'type == "array" or type == "object"' >/dev/null 2>&1
+}
+
+normalize_payload() {
+  local cost_file="$1"
+  local cost_status="$2"
+  local cost_stderr_file="$3"
+  local cost_message
+
+  cost_message="$(tr '\n' ' ' <"$cost_stderr_file" | sed -E 's/[[:space:]]+/ /g; s/^ //; s/ $//' || true)"
+
+  jq -c \
+    --arg updated_at "$(now_iso)" \
+    --slurpfile cost "$cost_file" \
+    --argjson cost_status "$cost_status" \
+    --arg cost_message "$cost_message" '
+    def provider_label($id):
+      {
+        codex: "Codex",
+        openai: "OpenAI",
+        claude: "Claude",
+        cursor: "Cursor",
+        opencode: "OpenCode",
+        opencodego: "OpenCode Go",
+        alibaba: "Alibaba Coding Plan",
+        factory: "Factory",
+        gemini: "Gemini",
+        antigravity: "Antigravity",
+        copilot: "Copilot",
+        zai: "z.ai",
+        minimax: "MiniMax",
+        manus: "Manus",
+        kimi: "Kimi",
+        kilo: "Kilo",
+        kiro: "Kiro",
+        vertexai: "Vertex AI",
+        augment: "Augment",
+        jetbrains: "JetBrains AI",
+        kimik2: "Kimi K2",
+        moonshot: "Moonshot",
+        amp: "Amp",
+        ollama: "Ollama",
+        synthetic: "Synthetic",
+        warp: "Warp",
+        openrouter: "OpenRouter",
+        elevenlabs: "ElevenLabs",
+        windsurf: "Windsurf",
+        perplexity: "Perplexity",
+        mimo: "MiMo",
+        doubao: "Doubao",
+        abacus: "Abacus AI",
+        mistral: "Mistral",
+        deepseek: "DeepSeek",
+        codebuff: "Codebuff",
+        crof: "Crof",
+        venice: "Venice",
+        commandcode: "Command Code",
+        stepfun: "StepFun",
+        bedrock: "Bedrock",
+        grok: "Grok"
+      }[$id] // ($id | tostring);
+
+    def cost_items:
+      (($cost[0] // []) | if type == "array" then . else [.] end | map(select(type == "object")));
+
+    def cost_for($id):
+      first(cost_items[]? | select((.provider // "unknown") == $id)) // null;
+
+    def window($label; $window):
+      if $window == null then
+        empty
+      else
+        ($window.usedPercent // 0 | tonumber? // 0) as $used |
+        {
+          label: $label,
+          usedPercent: $used,
+          remainingPercent: ([0, 100 - $used] | max),
+          windowMinutes: $window.windowMinutes,
+          resetsAt: $window.resetsAt,
+          resetDescription: $window.resetDescription,
+          nextRegenPercent: $window.nextRegenPercent
+        }
+      end;
+
+    def windows($usage):
+      [
+        window("Session"; $usage.primary),
+        window("Weekly"; $usage.secondary),
+        window("Tertiary"; $usage.tertiary),
+        (($usage.extraRateWindows // [])[] | window(.title; .window))
+      ];
+
+    def highest($providers):
+      (($providers | map(.highestUsedPercent // 0) | max) // 0);
+
+    (if type == "array" then . else [.] end) as $raw |
+    ($raw | map(
+      (.provider // "unknown") as $id |
+      {
+      id: $id,
+      label: provider_label($id),
+      account: .account,
+      version: .version,
+      source: (.source // "unknown"),
+      status: .status,
+      error: .error,
+      usage: .usage,
+      credits: .credits,
+      identity: .usage.identity,
+      windows: windows(.usage // {}),
+      cost: cost_for($id),
+      updatedAt: (.usage.updatedAt // .credits.updatedAt // $updated_at)
+    } | .highestUsedPercent = ((.windows | map(.usedPercent) | max) // 0))) as $usage_providers |
+    ($usage_providers | map(.id)) as $usage_ids |
+    (cost_items | map(
+      (.provider // "unknown") as $id |
+      select(($usage_ids | index($id)) == null) |
+      {
+        id: $id,
+        label: provider_label($id),
+        account: null,
+        version: null,
+        source: (.source // "local logs"),
+        status: null,
+        error: null,
+        usage: null,
+        credits: null,
+        identity: null,
+        windows: [],
+        cost: .,
+        updatedAt: (.updatedAt // $updated_at),
+        highestUsedPercent: 0
+      }
+    )) as $cost_only_providers |
+    ($usage_providers + $cost_only_providers) as $providers |
+    {
+      available: true,
+      updatedAt: $updated_at,
+      providers: $providers,
+      summary: {
+        total: ($providers | length),
+        errors: ($providers | map(select(.error != null)) | length),
+        highestUsedPercent: highest($providers),
+        sessionTokens: (($providers | map(.cost.sessionTokens // 0) | add) // 0),
+        sessionCostUSD: (($providers | map(.cost.sessionCostUSD // 0) | add) // 0),
+        last30DaysTokens: (($providers | map(.cost.last30DaysTokens // 0) | add) // 0),
+        last30DaysCostUSD: (($providers | map(.cost.last30DaysCostUSD // 0) | add) // 0)
+      },
+      error: null,
+      costError: (if $cost_status == 0 then null else { code: $cost_status, message: ($cost_message // "codexbar cost failed") } end)
+    }
+  '
+}
+
+command="${1:-state}"
+case "$command" in
+  state|usage|refresh)
+    ;;
+  --help|-h)
+    usage
+    exit 0
+    ;;
+  *)
+    usage
+    exit 2
+    ;;
+esac
+
+if ! codexbar_bin="$(resolve_codexbar_bin)"; then
+  missing_payload
+  exit 0
+fi
+
+tmp_dir="$(mktemp -d)"
+trap 'rm -rf "$tmp_dir"' EXIT
+usage_stderr_file="$tmp_dir/usage.stderr"
+cost_stderr_file="$tmp_dir/cost.stderr"
+cost_file="$tmp_dir/cost.json"
+printf '[]' >"$cost_file"
+
+args=(usage --format json --json-only)
+if [[ "$include_status" == "1" || "$include_status" == "true" ]]; then
+  args+=(--status)
+fi
+if [[ -n "$source_mode" ]]; then
+  args+=(--source "$source_mode")
+fi
+
+set +e
+output="$(timeout "$timeout_seconds" "$codexbar_bin" "${args[@]}" 2>"$usage_stderr_file")"
+status="$?"
+set -e
+
+if [[ "$status" -ne 0 && -z "$source_mode" ]]; then
+  retry_stderr_file="$tmp_dir/usage-cli.stderr"
+  set +e
+  retry_output="$(timeout "$timeout_seconds" "$codexbar_bin" "${args[@]}" --source cli 2>"$retry_stderr_file")"
+  retry_status="$?"
+  set -e
+
+  if [[ "$retry_status" -eq 0 ]] || valid_json_output "$retry_output"; then
+    output="$retry_output"
+    status="$retry_status"
+    usage_stderr_file="$retry_stderr_file"
+  fi
+fi
+
+cost_status=0
+if [[ "$include_cost" == "1" || "$include_cost" == "true" ]]; then
+  set +e
+  cost_output="$(timeout "$timeout_seconds" "$codexbar_bin" cost --provider both --format json --json-only 2>"$cost_stderr_file")"
+  cost_status="$?"
+  set -e
+
+  if [[ -n "$cost_output" ]] && printf '%s' "$cost_output" | jq -e 'type == "array" or type == "object"' >/dev/null 2>&1; then
+    printf '%s' "$cost_output" >"$cost_file"
+  else
+    printf '[]' >"$cost_file"
+  fi
+else
+  printf '' >"$cost_stderr_file"
+fi
+
+if valid_json_output "$output"; then
+  printf '%s' "$output" | normalize_payload "$cost_file" "$cost_status" "$cost_stderr_file"
+elif [[ "$status" -eq 0 ]]; then
+  printf '%s' "$output" | normalize_payload "$cost_file" "$cost_status" "$cost_stderr_file"
+elif [[ "$include_cost" == "1" || "$include_cost" == "true" ]] && [[ "$cost_status" -eq 0 ]] && jq -e 'if type == "array" then length > 0 else type == "object" end' "$cost_file" >/dev/null 2>&1; then
+  empty_usage_payload | normalize_payload "$cost_file" "$cost_status" "$cost_stderr_file"
+else
+  failure_payload "$status" "$usage_stderr_file"
+fi
