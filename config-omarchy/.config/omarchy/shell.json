@@ -1,19 +1,20 @@
 {
   "bar": {
     "centerAnchor": "omarchy.clock",
+    "id": "omarchy.bar",
     "layout": {
       "center": [
         {
           "id": "omarchy.indicators"
         },
         {
-          "id": "omarchy.clock",
-          "format": "HH:mm",
-          "formatAlt": "d MMMM 'W'ww yyyy",
-          "verticalFormat": "HH\n—\nmm"
+          "id": "omarchy.keyboard-layout"
         },
         {
-          "id": "omarchy.keyboard-layout"
+          "format": "dddd HH:mm",
+          "formatAlt": "d MMMM 'W'ww yyyy",
+          "id": "omarchy.clock",
+          "verticalFormat": "HH\n—\nmm"
         },
         {
           "id": "omarchy.weather"
@@ -28,6 +29,10 @@
         },
         {
           "id": "omarchy.workspaces"
+        },
+        {
+          "id": "io.github.gardnmi.window-shelf",
+          "showWindowChips": false
         }
       ],
       "right": [
@@ -35,7 +40,29 @@
           "id": "omarchy.tray"
         },
         {
+          "id": "crmne.omastats",
+          "cpuStyle": "text",
+          "modules": "cpu,memory,network,gpu,sensors",
+          "gpuStyle": "text",
+          "networkStyle": "text",
+          "memoryStyle": "text",
+          "barSensors": "cpu",
+          "barLabels": "text",
+          "showProcesses": true,
+          "gpuTabVersion": 1,
+          "tabs": "cpu,gpu,memory,disks,network,sensors,battery"
+        },
+        {
+          "id": "io.github.douglas.omarchy-kefctl"
+        },
+        {
+          "id": "crmne.hyprmoncfg"
+        },
+        {
           "id": "omarchy.agents"
+        },
+        {
+          "id": "io.github.douglas.omarchy-cc"
         },
         {
           "id": "omarchy.bluetooth"
@@ -54,6 +81,7 @@
         }
       ]
     },
+    "neoshIconFontSize": 11,
     "position": "top",
     "transparent": true
   },
@@ -61,6 +89,16 @@
     "lock": 300,
     "screensaver": 150
   },
-  "plugins": [],
+  "plugins": [
+    {
+      "id": "mirador"
+    },
+    {
+      "controlCenterHeight": 803,
+      "controlCenterWidth": 665,
+      "fontSize": 11,
+      "id": "io.github.douglas.omarchy-cc"
+    }
+  ],
   "version": 1
 }
