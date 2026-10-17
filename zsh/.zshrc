@@ -84,15 +84,15 @@ source ~/.zsh/extensions/git.sh
 ##
 ## Load Theme (Omarchy-generated, with static fallback)
 ##
-if [[ -f ~/.config/omarchy/current/theme/fzf.sh ]]; then
-	source ~/.config/omarchy/current/theme/fzf.sh
+if [[ -f ~/.local/state/omarchy/current/theme/fzf.sh ]]; then
+	source ~/.local/state/omarchy/current/theme/fzf.sh
 else
 	source ~/.zsh/themes/catppuccin-mocha.sh
 fi
 
 # Gum theme (Omarchy-generated)
-if [[ -f ~/.config/omarchy/current/theme/gum.sh ]]; then
-	source ~/.config/omarchy/current/theme/gum.sh
+if [[ -f ~/.local/state/omarchy/current/theme/gum.sh ]]; then
+	source ~/.local/state/omarchy/current/theme/gum.sh
 fi
 ##
 ## Work related configurations
@@ -102,8 +102,8 @@ fi
 ## ─── Everything below must stay at the end of .zshrc ───
 
 # ZSH Syntax Highlighting theme (must be loaded before the plugin)
-if [[ -f ~/.config/omarchy/current/theme/zsh-syntax-highlighting.zsh ]]; then
-	source ~/.config/omarchy/current/theme/zsh-syntax-highlighting.zsh
+if [[ -f ~/.local/state/omarchy/current/theme/zsh-syntax-highlighting.zsh ]]; then
+	source ~/.local/state/omarchy/current/theme/zsh-syntax-highlighting.zsh
 elif [[ -f ~/.zsh/themes/catppuccin_mocha-zsh-syntax-highlighting.zsh ]]; then
 	source ~/.zsh/themes/catppuccin_mocha-zsh-syntax-highlighting.zsh
 fi
