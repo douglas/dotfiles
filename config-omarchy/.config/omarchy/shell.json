@@ -62,9 +62,6 @@
           "id": "omarchy.agents"
         },
         {
-          "id": "io.github.douglas.omarchy-cc"
-        },
-        {
           "id": "omarchy.bluetooth"
         },
         {
@@ -89,16 +86,5 @@
     "lock": 300,
     "screensaver": 150
   },
-  "plugins": [
-    {
-      "id": "mirador"
-    },
-    {
-      "controlCenterHeight": 803,
-      "controlCenterWidth": 665,
-      "fontSize": 11,
-      "id": "io.github.douglas.omarchy-cc"
-    }
-  ],
   "version": 1
 }
