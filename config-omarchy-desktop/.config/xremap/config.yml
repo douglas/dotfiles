@@ -30,6 +30,9 @@ keymap:
   # ============================================================
   # Terminal (Ghostty/Alacritty/Kitty) — Cmd key (F18)
   # ============================================================
+  # Keep any Kitty-only section minimal (e.g. F18-Shift-arrows split nav).
+  # xremap applies every matching keymap: duplicating the Ctrl-Left/Right tab
+  # remaps there broke Ghostty's ctrl+k leader splits.
   - name: Terminal shortcuts (Cmd)
     application:
       only: [com.mitchellh.ghostty, Alacritty, kitty]
