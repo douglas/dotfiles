@@ -2,7 +2,6 @@
 hl.config({
   plugin = {
     hyprtasking = {
-      debug = { trace = 0 },
       gestures = {
         enabled = 1,
         open_fingers = 3,
