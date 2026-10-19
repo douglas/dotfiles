@@ -5,10 +5,10 @@
     "layout": {
       "center": [
         {
-          "id": "omarchy.indicators"
+          "id": "omarchy.keyboard-layout"
         },
         {
-          "id": "omarchy.keyboard-layout"
+          "id": "omarchy.indicators"
         },
         {
           "format": "dddd HH:mm",
