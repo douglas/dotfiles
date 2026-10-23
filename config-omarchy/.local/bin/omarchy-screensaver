@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# Use the Matrix-only renderer for Omarchy's current screensaver entrypoint.
+exec "$HOME/.bin/omarchy-cmd-screensaver" "$@"
