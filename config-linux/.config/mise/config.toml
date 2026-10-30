@@ -1,13 +1,21 @@
 [tools]
 "aqua:atlassian.com/acli" = "latest"
 "aqua:CircleCI-Public/circleci-cli" = "latest"
+"aqua:EmbarkStudios/cargo-deny" = "latest"
 "aqua:max-sixty/worktrunk" = "latest"
+"aqua:mitsuhiko/insta" = "latest"
+"aqua:tauri-apps/tauri/cargo-tauri" = "latest"
 claude = "latest"
 codex = "latest"
 gemini = { version = "latest", allow_builds = ["@github/keytar", "node-pty"] }
 gh = "latest"
+"github:amir20/dtop" = "latest"
+"github:googleworkspace/cli" = { version = "latest", bin = "gws" }
 "github:jorgerojas26/lazysql" = "latest"
+# rustsec/rustsec is a monorepo; cargo-audit releases are tagged cargo-audit/vX.Y.Z.
+"github:rustsec/rustsec" = { version = "latest", version_prefix = "cargo-audit/v", bin = "cargo-audit" }
 "github:skibidiandulka/nettui" = "latest"
+"github:stephenleo/cship" = "latest"
 node = "latest"
 "npm:playwright" = "latest"
 ruby = "4.0.9"
