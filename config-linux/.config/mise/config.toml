@@ -17,11 +17,22 @@ gh = "latest"
 "github:skibidiandulka/nettui" = "latest"
 "github:stephenleo/cship" = "latest"
 node = "latest"
+"npm:@earendil-works/pi-coding-agent" = "latest"
+"npm:@herb-tools/language-server" = "latest"
+"npm:@tobilu/qmd" = "latest"
+"npm:agent-browser" = "latest"
+"npm:hunkdiff" = "latest"
+# Its postinstall only copies the prebuilt binary for this platform.
+"npm:opencode-ai" = { version = "latest", allow_builds = ["opencode-ai"] }
 "npm:playwright" = "latest"
+"npm:portless" = "latest"
 ruby = "4.0.9"
 
 [settings]
 lockfile = true
+# Only install releases that have been public for a week, so a hijacked
+# package is usually caught and pulled before it reaches this machine.
+minimum_release_age = "7d"
 
 [settings.upgrade]
 auto_prune = false

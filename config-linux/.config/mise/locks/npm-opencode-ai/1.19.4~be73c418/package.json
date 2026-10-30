@@ -1,0 +1,12 @@
+{
+  "name": "mise-npm-install",
+  "private": true,
+  "aube": {
+    "allowBuilds": {
+      "opencode-ai": true
+    }
+  },
+  "dependencies": {
+    "opencode-ai": "1.19.4"
+  }
+}

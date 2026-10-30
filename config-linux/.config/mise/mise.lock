@@ -683,10 +683,55 @@ url = "https://nodejs.org/dist/v26.13.0/node-v26.13.0-darwin-x64.tar.gz"
 checksum = "sha256:dcc60d59a0746999f99064a01c020445d54d84228c691cdbf25b49ac3b59150a"
 url = "https://nodejs.org/dist/v26.13.0/node-v26.13.0-win-x64.zip"
 
+[[tools."npm:@earendil-works/pi-coding-agent"]]
+version = "1.4.0"
+aube = { path = "locks/npm-earendil-works-pi-coding-agent/1.4.0", digest = "sha256:b3ef5f153f9658d7390c0e915a53b03c0cf5dbd278f8b08de3b942ddb4796423" }
+backend = "npm:@earendil-works/pi-coding-agent"
+specifiers = ["latest"]
+
+[[tools."npm:@herb-tools/language-server"]]
+version = "0.11.1"
+aube = { path = "locks/npm-herb-tools-language-server/0.11.1", digest = "sha256:04954eda07d1b24621e82154df06832bc8f3a7484574ec080c1c3c9fcfe4d71f" }
+backend = "npm:@herb-tools/language-server"
+specifiers = ["latest"]
+
+[[tools."npm:@tobilu/qmd"]]
+version = "2.8.3"
+aube = { path = "locks/npm-tobilu-qmd/2.8.3", digest = "sha256:0c90159385c5bc4a53fbcbdd88eb8684a535b1f4e26bb9f0b46346831afb8c48" }
+backend = "npm:@tobilu/qmd"
+specifiers = ["latest"]
+
+[[tools."npm:agent-browser"]]
+version = "0.39.2"
+aube = { path = "locks/npm-agent-browser/0.39.2", digest = "sha256:0ef8b31babacd40398fd9e96bcc5444c4053bd1e046a9fa5a82e0c5b9fc91f29" }
+backend = "npm:agent-browser"
+specifiers = ["latest"]
+
+[[tools."npm:hunkdiff"]]
+version = "0.24.0"
+aube = { path = "locks/npm-hunkdiff/0.24.0", digest = "sha256:1f35d40467b764a1ecb7201819b73a555df9e90e867b5e7f85e9410417124e07" }
+backend = "npm:hunkdiff"
+specifiers = ["latest"]
+
+[[tools."npm:opencode-ai"]]
+version = "1.19.4"
+aube = { path = "locks/npm-opencode-ai/1.19.4~be73c418", digest = "sha256:603660a9cc6e67fbe3a02d1935135f87f67bbd6699fb8ce96c9dca4dcee5bc08" }
+backend = "npm:opencode-ai"
+specifiers = ["latest"]
+
+[tools."npm:opencode-ai".options]
+allow_builds = '["opencode-ai"]'
+
 [[tools."npm:playwright"]]
 version = "1.64.1"
 aube = { path = "locks/npm-playwright/1.64.1", digest = "sha256:b8bb6c2f562b2387bdbb9eab0dc940745237adb2e6d7a8b6ff6cd54508cac123" }
 backend = "npm:playwright"
+specifiers = ["latest"]
+
+[[tools."npm:portless"]]
+version = "0.15.10"
+aube = { path = "locks/npm-portless/0.15.10", digest = "sha256:f1ddf0acba4238967ef4fef03a21bc79169d68dd3bd0242493ef14d92d7379dd" }
+backend = "npm:portless"
 specifiers = ["latest"]
 
 [[tools.ruby]]

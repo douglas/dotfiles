@@ -1,0 +1,25 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      portless:
+        specifier: 0.15.10
+        version: 0.15.10
+
+packages:
+
+  portless@0.15.10:
+    resolution: {integrity: sha512-/ZAteqCLNP9EFl2bICRge4jttcm9C4/6p70CkdKrfrbNlI3j7bgatBLL370lyJi6LCtMTx6TnanCIqyObFa8Gw==}
+    engines: {node: '>=24'}
+    os: [darwin, linux, win32]
+    hasBin: true
+
+snapshots:
+
+  portless@0.15.10: {}
