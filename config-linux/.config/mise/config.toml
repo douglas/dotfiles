@@ -1,10 +1,19 @@
 [tools]
+"aqua:atlassian.com/acli" = "latest"
+"aqua:CircleCI-Public/circleci-cli" = "latest"
+"aqua:max-sixty/worktrunk" = "latest"
 claude = "latest"
 codex = "latest"
 gemini = { version = "latest", allow_builds = ["@github/keytar", "node-pty"] }
 gh = "latest"
+"github:jorgerojas26/lazysql" = "latest"
+"github:skibidiandulka/nettui" = "latest"
 node = "latest"
-ruby = "4.0.7"
+"npm:playwright" = "latest"
+ruby = "4.0.9"
+
+[settings]
+lockfile = true
 
 [settings.upgrade]
 auto_prune = false
