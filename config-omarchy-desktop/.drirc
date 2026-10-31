@@ -1,7 +1,0 @@
-<driconf>
-  <device driver="radv">
-    <application name="Default">
-      <option name="radv_enable_unified_heap_on_apu" value="true" />
-    </application>
-  </device>
-</driconf>
