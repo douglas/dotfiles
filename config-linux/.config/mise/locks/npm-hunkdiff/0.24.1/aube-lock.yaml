@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       hunkdiff:
-        specifier: 0.24.0
-        version: 0.24.0(@opentui/core@0.5.17(typescript@5.9.3)(web-tree-sitter@0.25.10))(@opentui/react@0.5.17(react-devtools-core@7.0.1)(react@19.3.1)(typescript@5.9.3)(web-tree-sitter@0.25.10)(ws@8.22.0))(react@19.3.1)
+        specifier: 0.24.1
+        version: 0.24.1(@opentui/core@0.5.17(typescript@5.9.3)(web-tree-sitter@0.25.10))(@opentui/react@0.5.17(react-devtools-core@7.0.1)(react@19.3.1)(typescript@5.9.3)(web-tree-sitter@0.25.10)(ws@8.22.0))(react@19.3.1)
 
 packages:
 
@@ -74,8 +74,8 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  ansi-regex@6.4.0:
-    resolution: {integrity: sha512-KzTVk2tCWAHtYrvvvaP8bJKJq2pVinhLcGEQdtLIYPbmNGNyYe8QwNaTUYQp2J7/vIsUKt5QCqAfUkYyG9DkOw==}
+  ansi-regex@6.5.0:
+    resolution: {integrity: sha512-zhvbbbdt1kbw7EJ9OQoxmQcuaNR9P5kTj7e/YdmOSU10aHWbycofJxA6jKfoEy3vlLdctOF9ZHaxLtmSm998wQ==}
     engines: {node: '>=12'}
 
   bun-ffi-structs@0.3.1:
@@ -125,38 +125,38 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
-  hunkdiff-darwin-arm64@0.24.0:
-    resolution: {integrity: sha512-8196CLjurj73/W3GwstgOOHYPKavtd+BnhKZ72YVkF3d2ONn3uJIyR9LiA3PYkqjFBcfKAlGFWpuO4dikHH/Hw==}
+  hunkdiff-darwin-arm64@0.24.1:
+    resolution: {integrity: sha512-v3yAJCGQSfa0m2hR7ga5B6Bdr5lw6xrOJN1tjHv0fLfY+6DzFRQSD1D7nXm53ehYGiM++cKWyKlTOATMkiCF7Q==}
     cpu: [arm64]
     os: [darwin]
     hasBin: true
 
-  hunkdiff-darwin-x64@0.24.0:
-    resolution: {integrity: sha512-JpvyZ5cbq3aYl4t68lZ5jfQlJ7O0e6eAF5LeDoeJOWU5bKeYHD3pRBUOC1kzTfNgKHIHiN6aqO3Q6KiexiRASQ==}
+  hunkdiff-darwin-x64@0.24.1:
+    resolution: {integrity: sha512-ArN56031SnjkHybLq3AZhN6ad+whMjiN+Kw4nORCvqRm5Nj2oT0TrvKzhYXA6nleBWFgOyaGnLCQ2eauXqHytQ==}
     cpu: [x64]
     os: [darwin]
     hasBin: true
 
-  hunkdiff-linux-arm64@0.24.0:
-    resolution: {integrity: sha512-hxc+/GIReRdk8JvRGDtF3Op4X+WGcR8e0UJ8PBPPZq6EpmNLaajxTeerfuerz27cYEsQLXkCQ5uGLOXCkw7BPQ==}
+  hunkdiff-linux-arm64@0.24.1:
+    resolution: {integrity: sha512-TXRdU7QE/8Vj7894N+IZIb7kzjNACwaafuZCSydt4yRvV/OtR6dC67Uo5H31BBB+MkOcC3sThFdW1jl2fBbXFw==}
     cpu: [arm64]
     os: [linux]
     hasBin: true
 
-  hunkdiff-linux-x64@0.24.0:
-    resolution: {integrity: sha512-eneTJs987rPDduKYnOEd8BakRZhhAmPYEz9nFPBB7SYyPoxTVt+eBpBhdagwfi40Q4qD/Tz3Gnt6zrj8ro00+A==}
+  hunkdiff-linux-x64@0.24.1:
+    resolution: {integrity: sha512-9pvDW5MDCZdysiPtcTPuvgTGsnX6982syLpaVjzmfHKfSJJZvnPcC6I0J4hBn6W3rQOPztkTzcWEe7VvEr7ETA==}
     cpu: [x64]
     os: [linux]
     hasBin: true
 
-  hunkdiff-windows-x64@0.24.0:
-    resolution: {integrity: sha512-8hQqBkSr/w8+q6Sr6gNLNNTQMHeaLPsSU5DnubBI+MnwccxPQVb4mzTYtCE5GhXPRRUH912oPCbFKAsEPsePzg==}
+  hunkdiff-windows-x64@0.24.1:
+    resolution: {integrity: sha512-YT0ztuqpV5/C7lWJszG3lA2QMkoLyGXwV4J+ieSExgIO01RccUILTO0bumryb4cDPPU4j3+yGnrF5HZCAABo+w==}
     cpu: [x64]
     os: [win32]
     hasBin: true
 
-  hunkdiff@0.24.0:
-    resolution: {integrity: sha512-ip7l/Iv8L+1WPO1moKmES3zWTHsXu+x912tYykDk/WowN5s23r0KGjI7iog9y9HTPilwPnLm0vqqrIS8rp6ieA==}
+  hunkdiff@0.24.1:
+    resolution: {integrity: sha512-nZf0mH4NX/8gJ9lKzFvE7bmT0oI6PClfmN0zeVhAEMOr9vCUYyptPbh8pOkfz+qcA3z8v1J/iGkq9G7zv122Sw==}
     engines: {node: '>=22'}
     hasBin: true
     peerDependencies:
@@ -316,7 +316,7 @@ snapshots:
 
   acorn@8.19.0: {}
 
-  ansi-regex@6.4.0: {}
+  ansi-regex@6.5.0: {}
 
   bun-ffi-structs@0.3.1(typescript@5.9.3):
     dependencies:
@@ -354,22 +354,22 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
-  hunkdiff-darwin-arm64@0.24.0:
+  hunkdiff-darwin-arm64@0.24.1:
     optional: true
 
-  hunkdiff-darwin-x64@0.24.0:
+  hunkdiff-darwin-x64@0.24.1:
     optional: true
 
-  hunkdiff-linux-arm64@0.24.0:
+  hunkdiff-linux-arm64@0.24.1:
     optional: true
 
-  hunkdiff-linux-x64@0.24.0:
+  hunkdiff-linux-x64@0.24.1:
     optional: true
 
-  hunkdiff-windows-x64@0.24.0:
+  hunkdiff-windows-x64@0.24.1:
     optional: true
 
-  hunkdiff@0.24.0(@opentui/core@0.5.17(typescript@5.9.3)(web-tree-sitter@0.25.10))(@opentui/react@0.5.17(react-devtools-core@7.0.1)(react@19.3.1)(typescript@5.9.3)(web-tree-sitter@0.25.10)(ws@8.22.0))(react@19.3.1):
+  hunkdiff@0.24.1(@opentui/core@0.5.17(typescript@5.9.3)(web-tree-sitter@0.25.10))(@opentui/react@0.5.17(react-devtools-core@7.0.1)(react@19.3.1)(typescript@5.9.3)(web-tree-sitter@0.25.10)(ws@8.22.0))(react@19.3.1):
     dependencies:
       '@opentui/core': 0.5.17(typescript@5.9.3)(web-tree-sitter@0.25.10)
       '@opentui/react': 0.5.17(react-devtools-core@7.0.1)(react@19.3.1)(typescript@5.9.3)(web-tree-sitter@0.25.10)(ws@8.22.0)
@@ -385,11 +385,11 @@ snapshots:
       string-width: 8.3.0
       zod: 4.4.3
     optionalDependencies:
-      hunkdiff-darwin-arm64: 0.24.0
-      hunkdiff-darwin-x64: 0.24.0
-      hunkdiff-linux-arm64: 0.24.0
-      hunkdiff-linux-x64: 0.24.0
-      hunkdiff-windows-x64: 0.24.0
+      hunkdiff-darwin-arm64: 0.24.1
+      hunkdiff-darwin-x64: 0.24.1
+      hunkdiff-linux-arm64: 0.24.1
+      hunkdiff-linux-x64: 0.24.1
+      hunkdiff-windows-x64: 0.24.1
 
   marked@17.0.1: {}
 
@@ -427,11 +427,11 @@ snapshots:
 
   strip-ansi@7.1.2:
     dependencies:
-      ansi-regex: 6.4.0
+      ansi-regex: 6.5.0
 
   strip-ansi@7.2.0:
     dependencies:
-      ansi-regex: 6.4.0
+      ansi-regex: 6.5.0
 
   tapable@2.3.3: {}
 

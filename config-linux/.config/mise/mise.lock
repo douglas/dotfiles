@@ -95,37 +95,37 @@ url = "https://github.com/EmbarkStudios/cargo-deny/releases/download/0.20.2/carg
 url_api = "https://api.github.com/repos/EmbarkStudios/cargo-deny/releases/assets/471599057"
 
 [[tools."aqua:atlassian.com/acli"]]
-version = "1.3.39-stable"
+version = "1.3.40-stable"
 backend = "aqua:atlassian.com/acli"
 specifiers = ["latest"]
 
 [tools."aqua:atlassian.com/acli"."platforms.linux-arm64"]
-checksum = "sha256:afb3865b4ddf27e4a8e89eae59849632e4bec1754344b10d74eef4332456fa5a"
-url = "https://acli.atlassian.com/linux/1.3.39-stable/acli_1.3.39-stable_linux_arm64.tar.gz"
+checksum = "sha256:b1880f66f299ab2b56528c90bbff50ca8263e7331868a31d0b6ca7b67f7469e5"
+url = "https://acli.atlassian.com/linux/1.3.40-stable/acli_1.3.40-stable_linux_arm64.tar.gz"
 
 [tools."aqua:atlassian.com/acli"."platforms.linux-arm64-musl"]
-checksum = "sha256:afb3865b4ddf27e4a8e89eae59849632e4bec1754344b10d74eef4332456fa5a"
-url = "https://acli.atlassian.com/linux/1.3.39-stable/acli_1.3.39-stable_linux_arm64.tar.gz"
+checksum = "sha256:b1880f66f299ab2b56528c90bbff50ca8263e7331868a31d0b6ca7b67f7469e5"
+url = "https://acli.atlassian.com/linux/1.3.40-stable/acli_1.3.40-stable_linux_arm64.tar.gz"
 
 [tools."aqua:atlassian.com/acli"."platforms.linux-x64"]
-checksum = "sha256:7e0fb4dbedb1bb9100f8dc854d31d43c4b7c2c740e4cfd83b750760f4957b5a5"
-url = "https://acli.atlassian.com/linux/1.3.39-stable/acli_1.3.39-stable_linux_amd64.tar.gz"
+checksum = "blake3:c45959e1b2a6d08a0be2378a014c94d3dd6aff68290f8a0d7bae587975516ec3"
+url = "https://acli.atlassian.com/linux/1.3.40-stable/acli_1.3.40-stable_linux_amd64.tar.gz"
 
 [tools."aqua:atlassian.com/acli"."platforms.linux-x64-musl"]
-checksum = "sha256:7e0fb4dbedb1bb9100f8dc854d31d43c4b7c2c740e4cfd83b750760f4957b5a5"
-url = "https://acli.atlassian.com/linux/1.3.39-stable/acli_1.3.39-stable_linux_amd64.tar.gz"
+checksum = "sha256:19c113789e8a66bf11a80dc18cf75e7e7ba239112005f4e9cd69db05f11ac526"
+url = "https://acli.atlassian.com/linux/1.3.40-stable/acli_1.3.40-stable_linux_amd64.tar.gz"
 
 [tools."aqua:atlassian.com/acli"."platforms.macos-arm64"]
-checksum = "sha256:29126bdb8072b126709f2d3ccaac581cd7f91b62afaa9046ae9c1d43b2e5b939"
-url = "https://acli.atlassian.com/darwin/1.3.39-stable/acli_1.3.39-stable_darwin_arm64.tar.gz"
+checksum = "sha256:70566186d2e1d01160ef0dc35aefc1ffb46d1dd4a60ff41a45248adf8b897b97"
+url = "https://acli.atlassian.com/darwin/1.3.40-stable/acli_1.3.40-stable_darwin_arm64.tar.gz"
 
 [tools."aqua:atlassian.com/acli"."platforms.macos-x64"]
-checksum = "sha256:6cc2f9484aeae7fff277657ec8b4f88286d5696b737e03092243b2fbc1db6ac2"
-url = "https://acli.atlassian.com/darwin/1.3.39-stable/acli_1.3.39-stable_darwin_amd64.tar.gz"
+checksum = "sha256:92fae879de243f3c12fc805d4f154f9a331091e974536c4035bae696f96730ff"
+url = "https://acli.atlassian.com/darwin/1.3.40-stable/acli_1.3.40-stable_darwin_amd64.tar.gz"
 
 [tools."aqua:atlassian.com/acli"."platforms.windows-x64"]
-checksum = "sha256:c43c6f9ceae7458efafb62b1cb0cff0287774d2d0780672fc0f718e161e4edfd"
-url = "https://acli.atlassian.com/windows/1.3.39-stable/acli_1.3.39-stable_windows_amd64.zip"
+checksum = "sha256:f2075f6e5f6c025cfefa9d00cca8b073ad995a1b48a293eea8b6e7cabcbc1035"
+url = "https://acli.atlassian.com/windows/1.3.40-stable/acli_1.3.40-stable_windows_amd64.zip"
 
 [[tools."aqua:max-sixty/worktrunk"]]
 version = "0.81.0"
@@ -243,51 +243,50 @@ url = "https://github.com/tauri-apps/tauri/releases/download/tauri-cli-v2.12.4/c
 url_api = "https://api.github.com/repos/tauri-apps/tauri/releases/assets/662381763"
 
 [[tools.claude]]
-version = "2.1.314"
+version = "2.1.316"
 backend = "aqua:anthropics/claude-code"
 specifiers = ["latest"]
 
 [tools.claude."platforms.linux-arm64"]
-checksum = "sha256:6acfc0d2f965bf910f12e89da32cc2bc826974e555d50c4a4b0936e042ec749b"
+checksum = "sha256:5f82c7fd9f289c9aad37792ffa5ca1bcd40d6dd3298b3a36ce01179e12ab2b14"
 checksum_source = "mise-versions"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.314/claude-linux-arm64.tar.gz"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/690337506"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.316/claude-linux-arm64.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/693882163"
 
 [tools.claude."platforms.linux-arm64-musl"]
-checksum = "sha256:92d8ca6238f961914e320dfb95863193281afe6aa6aa5851598e63b4fb02bd1a"
+checksum = "sha256:7241f7935485bd49421ce5ebb2e0ba9d1d9ab6a696742dfc3e6d9a7bb18b63e9"
 checksum_source = "mise-versions"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.314/claude-linux-arm64-musl.tar.gz"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/690337505"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.316/claude-linux-arm64-musl.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/693882158"
 
 [tools.claude."platforms.linux-x64"]
-checksum = "sha256:348a302629f3734a2a7318a97eb6a05d4c30e772f9c8366cb78a55977eca46da"
-checksum_source = "mise-versions"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.314/claude-linux-x64.tar.gz"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/690337852"
+checksum = "sha256:9ca14cd81a7b0d9654d392fc1253773e70f31f470aa98334732744956cd1006b"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.316/claude-linux-x64.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/693882314"
 
 [tools.claude."platforms.linux-x64-musl"]
-checksum = "sha256:79fbabad07a6f3a950feee37df83b58514da7a1199428025fe9835d49e531cfc"
+checksum = "sha256:7f8277957c7d06aeef103da8cf4b54fbcecfb9a4cc6675d6037cda55eba6eae5"
 checksum_source = "mise-versions"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.314/claude-linux-x64-musl.tar.gz"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/690337507"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.316/claude-linux-x64-musl.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/693882157"
 
 [tools.claude."platforms.macos-arm64"]
-checksum = "sha256:c819253fa84c46ee77e14afb1aab0c38d7fdb240d914d168e9ad2e21ce3ba1b4"
+checksum = "sha256:e8956064b1c5055c1c79945aa7714faef98b29060a065c6930e8956953d0bace"
 checksum_source = "mise-versions"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.314/claude-darwin-arm64.tar.gz"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/690337508"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.316/claude-darwin-arm64.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/693882159"
 
 [tools.claude."platforms.macos-x64"]
-checksum = "sha256:b323d782325f71825b14189ccb6663ca772ca90fab95bc79b2e365b29f82234b"
+checksum = "sha256:7265a50837056d5b4f90985610228ea3fba6fa0a457dd499d22ff6ff905b34c6"
 checksum_source = "mise-versions"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.314/claude-darwin-x64.tar.gz"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/690337504"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.316/claude-darwin-x64.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/693882160"
 
 [tools.claude."platforms.windows-x64"]
-checksum = "sha256:0722d17136ef06c5675dbf97ad75148642213111f2192dda14c9ed5411b66746"
+checksum = "sha256:c77cb13c50365de63ad3a0e09c915294a9d1657627b82a6fc3c1bdf327e6a346"
 checksum_source = "mise-versions"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.314/claude-win32-x64.zip"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/690337904"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.316/claude-win32-x64.zip"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/693882322"
 
 [[tools.codex]]
 version = "0.166.0"
@@ -393,44 +392,44 @@ url_api = "https://api.github.com/repos/cli/cli/releases/assets/679195750"
 provenance = "github-attestations"
 
 [[tools."github:amir20/dtop"]]
-version = "0.10.4"
+version = "0.10.5"
 backend = "github:amir20/dtop"
 specifiers = ["latest"]
 
 [tools."github:amir20/dtop"."platforms.linux-arm64"]
-checksum = "sha256:93da70ef3c80c3160f67787c93c1e572942e32335206c72dc480b0a3fa4506e6"
+checksum = "sha256:b866d8ac75dfc3fdd2421734cdd9db6054a6062c1b1389b4452e6f77f396c275"
 checksum_source = "mise-versions"
-url = "https://github.com/amir20/dtop/releases/download/v0.10.4/dtop-aarch64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/amir20/dtop/releases/assets/650512871"
+url = "https://github.com/amir20/dtop/releases/download/v0.10.5/dtop-aarch64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/amir20/dtop/releases/assets/695415358"
 
 [tools."github:amir20/dtop"."platforms.linux-arm64-musl"]
-checksum = "sha256:93da70ef3c80c3160f67787c93c1e572942e32335206c72dc480b0a3fa4506e6"
+checksum = "sha256:b866d8ac75dfc3fdd2421734cdd9db6054a6062c1b1389b4452e6f77f396c275"
 checksum_source = "mise-versions"
-url = "https://github.com/amir20/dtop/releases/download/v0.10.4/dtop-aarch64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/amir20/dtop/releases/assets/650512871"
+url = "https://github.com/amir20/dtop/releases/download/v0.10.5/dtop-aarch64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/amir20/dtop/releases/assets/695415358"
 
 [tools."github:amir20/dtop"."platforms.linux-x64"]
-checksum = "sha256:b4c562b0d12a0d40b87856ac1926411eb50b49c2dde9b56364917e151849afb7"
-url = "https://github.com/amir20/dtop/releases/download/v0.10.4/dtop-x86_64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/amir20/dtop/releases/assets/650512909"
+checksum = "sha256:421dcc7f2db9cf4f7225db3b28b99a25abb1af895886c8c13ce3794a39de01a3"
+url = "https://github.com/amir20/dtop/releases/download/v0.10.5/dtop-x86_64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/amir20/dtop/releases/assets/695415401"
 
 [tools."github:amir20/dtop"."platforms.linux-x64-musl"]
-checksum = "sha256:b4c562b0d12a0d40b87856ac1926411eb50b49c2dde9b56364917e151849afb7"
+checksum = "sha256:421dcc7f2db9cf4f7225db3b28b99a25abb1af895886c8c13ce3794a39de01a3"
 checksum_source = "mise-versions"
-url = "https://github.com/amir20/dtop/releases/download/v0.10.4/dtop-x86_64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/amir20/dtop/releases/assets/650512909"
+url = "https://github.com/amir20/dtop/releases/download/v0.10.5/dtop-x86_64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/amir20/dtop/releases/assets/695415401"
 
 [tools."github:amir20/dtop"."platforms.macos-arm64"]
-checksum = "sha256:42f7428e74f08f1b0033d2784e69d4807e4c76c9ac241734b3c63e18c9d4a946"
+checksum = "sha256:535a9627a9a805911b8f75986316fad5e6ecdd122fc558473d35ba169850c7f3"
 checksum_source = "mise-versions"
-url = "https://github.com/amir20/dtop/releases/download/v0.10.4/dtop-aarch64-apple-darwin.tar.gz"
-url_api = "https://api.github.com/repos/amir20/dtop/releases/assets/650512872"
+url = "https://github.com/amir20/dtop/releases/download/v0.10.5/dtop-aarch64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/amir20/dtop/releases/assets/695415364"
 
 [tools."github:amir20/dtop"."platforms.macos-x64"]
-checksum = "sha256:de585584395633f73ad7fd9f2083e48cfa8de5adcf8cda44aeeaebb5a07a0d15"
+checksum = "sha256:56c08631f1061e3af791653ffb2e32ae7cafc41a497cd1ded8241acbfff98696"
 checksum_source = "mise-versions"
-url = "https://github.com/amir20/dtop/releases/download/v0.10.4/dtop-x86_64-apple-darwin.tar.gz"
-url_api = "https://api.github.com/repos/amir20/dtop/releases/assets/650512895"
+url = "https://github.com/amir20/dtop/releases/download/v0.10.5/dtop-x86_64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/amir20/dtop/releases/assets/695415383"
 
 [[tools."github:googleworkspace/cli"]]
 version = "0.22.5"
@@ -684,8 +683,8 @@ checksum = "sha256:dcc60d59a0746999f99064a01c020445d54d84228c691cdbf25b49ac3b591
 url = "https://nodejs.org/dist/v26.13.0/node-v26.13.0-win-x64.zip"
 
 [[tools."npm:@earendil-works/pi-coding-agent"]]
-version = "1.4.0"
-aube = { path = "locks/npm-earendil-works-pi-coding-agent/1.4.0", digest = "sha256:b3ef5f153f9658d7390c0e915a53b03c0cf5dbd278f8b08de3b942ddb4796423" }
+version = "1.5.0"
+aube = { path = "locks/npm-earendil-works-pi-coding-agent/1.5.0", digest = "sha256:905e9068e3225e7c3051a744f0ff0a1f37d2ffb63d2ec98c645f8de6e6f68113" }
 backend = "npm:@earendil-works/pi-coding-agent"
 specifiers = ["latest"]
 
@@ -702,20 +701,20 @@ backend = "npm:@tobilu/qmd"
 specifiers = ["latest"]
 
 [[tools."npm:agent-browser"]]
-version = "0.39.2"
-aube = { path = "locks/npm-agent-browser/0.39.2", digest = "sha256:0ef8b31babacd40398fd9e96bcc5444c4053bd1e046a9fa5a82e0c5b9fc91f29" }
+version = "0.41.1"
+aube = { path = "locks/npm-agent-browser/0.41.1", digest = "sha256:18952d290cc581b3c96e02300ad420ffa4282cd47484c13df616bdddfa987ff0" }
 backend = "npm:agent-browser"
 specifiers = ["latest"]
 
 [[tools."npm:hunkdiff"]]
-version = "0.24.0"
-aube = { path = "locks/npm-hunkdiff/0.24.0", digest = "sha256:1f35d40467b764a1ecb7201819b73a555df9e90e867b5e7f85e9410417124e07" }
+version = "0.24.1"
+aube = { path = "locks/npm-hunkdiff/0.24.1", digest = "sha256:39851e0ee8258dea7d2f6533337e5ff5848f6feae802c65679dad78cf54548bc" }
 backend = "npm:hunkdiff"
 specifiers = ["latest"]
 
 [[tools."npm:opencode-ai"]]
-version = "1.19.4"
-aube = { path = "locks/npm-opencode-ai/1.19.4~be73c418", digest = "sha256:603660a9cc6e67fbe3a02d1935135f87f67bbd6699fb8ce96c9dca4dcee5bc08" }
+version = "1.19.5"
+aube = { path = "locks/npm-opencode-ai/1.19.5~be73c418", digest = "sha256:d5227cc32ec9e2b1449e9a5a5e2d9c9ee9f8ed37d12e4d7c5a328644ed09d22d" }
 backend = "npm:opencode-ai"
 specifiers = ["latest"]
 
@@ -729,8 +728,8 @@ backend = "npm:playwright"
 specifiers = ["latest"]
 
 [[tools."npm:portless"]]
-version = "0.15.10"
-aube = { path = "locks/npm-portless/0.15.10", digest = "sha256:f1ddf0acba4238967ef4fef03a21bc79169d68dd3bd0242493ef14d92d7379dd" }
+version = "0.15.13"
+aube = { path = "locks/npm-portless/0.15.13", digest = "sha256:7c2faca1db9d1d726970acb9bdd5a49b85f293497c89cf560ab23481e2088ccc" }
 backend = "npm:portless"
 specifiers = ["latest"]
 

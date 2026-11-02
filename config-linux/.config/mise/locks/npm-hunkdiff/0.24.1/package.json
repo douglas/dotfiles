@@ -2,6 +2,6 @@
   "name": "mise-npm-install",
   "private": true,
   "dependencies": {
-    "portless": "0.15.10"
+    "hunkdiff": "0.24.1"
   }
 }
