@@ -51,6 +51,7 @@ x-scheme-handler/slack=slack.desktop
 x-scheme-handler/jetbrains=jetbrainsd.desktop
 x-scheme-handler/codex=chatgpt.desktop
 x-scheme-handler/aether=li.oever.aether.url-handler.desktop
+x-scheme-handler/zsa=ZSTray.desktop
 
 [Added Associations]
 application/json=dev.zed.Zed.desktop;
