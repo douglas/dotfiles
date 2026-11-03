@@ -87,5 +87,9 @@
     "screensaver": 150
   },
   "version": 1,
-  "plugins": []
+  "plugins": [
+    {
+      "id": "typecraft.omacast"
+    }
+  ]
 }

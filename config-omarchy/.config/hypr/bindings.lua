@@ -20,9 +20,10 @@
 -- hl.unbind("SUPER + SPACE")
 -- o.bind("SUPER + SPACE", "Omarchy menu", "omarchy-menu toggle root")
 
--- Open omacast directly instead of the Omarchy apps launcher.
-hl.unbind("SUPER + SPACE")
-o.bind("SUPER + SPACE", "omacast launcher", hl.dsp.global("omacast:toggle"))
+-- xremap translates F18+Space to SUPER+ALT+SPACE.
+-- Keep SUPER+SPACE on the default Omarchy launcher.
+hl.unbind("SUPER + ALT + SPACE")
+o.bind("SUPER + ALT + SPACE", "omacast launcher", hl.dsp.global("omacast:toggle"))
 
 -- F18+Q is remapped to SUPER+W. Close the Omarchy control center before
 -- falling back to Omarchy's normal close-window behavior.
