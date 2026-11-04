@@ -38,7 +38,7 @@ keymap:
       only: [com.mitchellh.ghostty, Alacritty, kitty]
     remap:
       # App launcher
-      F18-Space: Super-Alt-Space
+      F18-Space: { launch: ["omacast", "toggle"] }
       F18-Shift-Space: Super-Space
 
       # Clipboard (Ctrl+Shift to avoid terminal control chars)
@@ -167,7 +167,7 @@ keymap:
       F18-9: Super-9
       F18-Tab: Super-Tab
       F18-Shift-Tab: Super-Shift-Tab
-      F18-Space: Super-Alt-Space
+      F18-Space: { launch: ["omacast", "toggle"] }
       F18-Shift-Space: Super-Space
       F18-Shift-v: Super-Ctrl-v
 
@@ -191,7 +191,7 @@ keymap:
       not: [com.mitchellh.ghostty, Alacritty, kitty, spotify]
     remap:
       # App launcher
-      F18-Space: Super-Alt-Space
+      F18-Space: { launch: ["omacast", "toggle"] }
       F18-Shift-Space: Super-Space
 
       # Clipboard
