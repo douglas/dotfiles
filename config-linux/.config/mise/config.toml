@@ -6,13 +6,13 @@
 "aqua:mitsuhiko/insta" = "latest"
 claude = "latest"
 codex = "latest"
+"github:steveyegge/beads" = { version = "latest", bin = "bd" }
 # rustsec/rustsec is a monorepo; cargo-audit releases are tagged cargo-audit/vX.Y.Z.
 "github:rustsec/rustsec" = { version = "latest", version_prefix = "cargo-audit/v", bin = "cargo-audit" }
 node = "latest"
 "npm:@earendil-works/pi-coding-agent" = "latest"
 "npm:@herb-tools/language-server" = "latest"
 "npm:@tobilu/qmd" = "latest"
-"npm:agent-browser" = "latest"
 # Its postinstall only copies the prebuilt binary for this platform.
 "npm:opencode-ai" = { version = "latest", allow_builds = ["opencode-ai"] }
 "npm:playwright" = "latest"
@@ -25,4 +25,4 @@ lockfile = true
 minimum_release_age = "7d"
 
 [settings.upgrade]
-auto_prune = false
+auto_prune = true
