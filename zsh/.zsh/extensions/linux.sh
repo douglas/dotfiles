@@ -15,6 +15,8 @@ export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gcr/ssh"
 [[ -f "$HOME/.local/share/google-cloud-sdk/path.zsh.inc" ]] && source "$HOME/.local/share/google-cloud-sdk/path.zsh.inc"
 
 alias spotify='spotify --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland'
+# Arch's zed package installs the binary as zeditor.
+(( $+commands[zeditor] )) && alias zed=zeditor
 
 # Hyprland control helper: always target the most recent live instance socket.
 function hctl() {
