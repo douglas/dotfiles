@@ -3,50 +3,50 @@
 lockfile_version = 3
 
 [[tools."aqua:CircleCI-Public/circleci-cli"]]
-version = "1.13.0"
+version = "1.14.0"
 backend = "aqua:CircleCI-Public/circleci-cli"
 specifiers = ["latest"]
 
 [tools."aqua:CircleCI-Public/circleci-cli"."platforms.linux-arm64"]
-checksum = "sha256:e7e684056641124a399dad1349cba7c0fa24c591d7e6413be9ae509e7185f9de"
+checksum = "sha256:d1cfb57078bcd0d3ff4c20f2765574e1f1022a3ba41cf164acd36a521a7a35f0"
 checksum_source = "mise-versions"
-url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.13.0/circleci-cli_1.13.0_linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/692231559"
+url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.14.0/circleci-cli_1.14.0_linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/710985566"
 
 [tools."aqua:CircleCI-Public/circleci-cli"."platforms.linux-arm64-musl"]
-checksum = "sha256:e7e684056641124a399dad1349cba7c0fa24c591d7e6413be9ae509e7185f9de"
+checksum = "sha256:d1cfb57078bcd0d3ff4c20f2765574e1f1022a3ba41cf164acd36a521a7a35f0"
 checksum_source = "mise-versions"
-url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.13.0/circleci-cli_1.13.0_linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/692231559"
+url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.14.0/circleci-cli_1.14.0_linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/710985566"
 
 [tools."aqua:CircleCI-Public/circleci-cli"."platforms.linux-x64"]
-checksum = "sha256:2ba9bb1f69c3b0f1dcccffdd1ba9f4bd79b24814978ccb9dbc45a7e9de30ecc9"
-url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.13.0/circleci-cli_1.13.0_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/692231558"
+checksum = "sha256:5d0227b38ad65b2fb23ef1fbebfe98851c77102f76a72df2273eacca941665c4"
+url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.14.0/circleci-cli_1.14.0_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/710985669"
 
 [tools."aqua:CircleCI-Public/circleci-cli"."platforms.linux-x64-musl"]
-checksum = "sha256:2ba9bb1f69c3b0f1dcccffdd1ba9f4bd79b24814978ccb9dbc45a7e9de30ecc9"
+checksum = "sha256:5d0227b38ad65b2fb23ef1fbebfe98851c77102f76a72df2273eacca941665c4"
 checksum_source = "mise-versions"
-url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.13.0/circleci-cli_1.13.0_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/692231558"
+url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.14.0/circleci-cli_1.14.0_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/710985669"
 
 [tools."aqua:CircleCI-Public/circleci-cli"."platforms.macos-arm64"]
-checksum = "sha256:8a0568367d14d21d6006a7cded497ab7b5d9a8e12efa38f16895200c9466c809"
+checksum = "sha256:ae3a9d0399bafc9169a6fca7bced2e0a35a51e1e870d6efc56955cb99b29941b"
 checksum_source = "mise-versions"
-url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.13.0/circleci-cli_1.13.0_darwin_arm64.tar.gz"
-url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/692231662"
+url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.14.0/circleci-cli_1.14.0_darwin_arm64.tar.gz"
+url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/710985569"
 
 [tools."aqua:CircleCI-Public/circleci-cli"."platforms.macos-x64"]
-checksum = "sha256:e713bff2c259f3e542212833288fd04bff1a7dbb17e5b1b773fab6cc93890a4a"
+checksum = "sha256:a295caffc6ce879179f394c21df7775cbe286ad5bfe0fc003903d84065989145"
 checksum_source = "mise-versions"
-url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.13.0/circleci-cli_1.13.0_darwin_amd64.tar.gz"
-url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/692231585"
+url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.14.0/circleci-cli_1.14.0_darwin_amd64.tar.gz"
+url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/710985568"
 
 [tools."aqua:CircleCI-Public/circleci-cli"."platforms.windows-x64"]
-checksum = "sha256:2e48e22d9e746a64ccc8a424981e1d405d6a71747a67100510fc0f5b846f09ac"
+checksum = "sha256:14f0beca9946d53582b694b1922c896f6f10c5dd7de1f37e22fe96d8008346fb"
 checksum_source = "mise-versions"
-url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.13.0/circleci-cli_1.13.0_windows_amd64.zip"
-url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/692231557"
+url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.14.0/circleci-cli_1.14.0_windows_amd64.zip"
+url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/710985567"
 
 [[tools."aqua:EmbarkStudios/cargo-deny"]]
 version = "0.20.2"
@@ -208,85 +208,51 @@ checksum_source = "mise-versions"
 url = "https://github.com/mitsuhiko/insta/releases/download/1.49.0/cargo-insta-x86_64-pc-windows-msvc.zip"
 url_api = "https://api.github.com/repos/mitsuhiko/insta/releases/assets/606859993"
 
-[[tools."aqua:tauri-apps/tauri/cargo-tauri"]]
-version = "2.12.4"
-backend = "aqua:tauri-apps/tauri/cargo-tauri"
-specifiers = ["latest"]
-
-[tools."aqua:tauri-apps/tauri/cargo-tauri"."platforms.linux-x64"]
-checksum = "sha256:820ae3c7580ca637cad15f65638960ee2a96e5a491e224691c86d6f25e6c9e8a"
-url = "https://github.com/tauri-apps/tauri/releases/download/tauri-cli-v2.12.4/cargo-tauri-x86_64-unknown-linux-gnu.tgz"
-url_api = "https://api.github.com/repos/tauri-apps/tauri/releases/assets/662381754"
-
-[tools."aqua:tauri-apps/tauri/cargo-tauri"."platforms.linux-x64-musl"]
-checksum = "sha256:820ae3c7580ca637cad15f65638960ee2a96e5a491e224691c86d6f25e6c9e8a"
-checksum_source = "mise-versions"
-url = "https://github.com/tauri-apps/tauri/releases/download/tauri-cli-v2.12.4/cargo-tauri-x86_64-unknown-linux-gnu.tgz"
-url_api = "https://api.github.com/repos/tauri-apps/tauri/releases/assets/662381754"
-
-[tools."aqua:tauri-apps/tauri/cargo-tauri"."platforms.macos-arm64"]
-checksum = "sha256:f71a34ada728ca2d1a51c28d6d21639e1e080898ec69ec8d49c5da3b7e8bc1be"
-checksum_source = "mise-versions"
-url = "https://github.com/tauri-apps/tauri/releases/download/tauri-cli-v2.12.4/cargo-tauri-aarch64-apple-darwin.zip"
-url_api = "https://api.github.com/repos/tauri-apps/tauri/releases/assets/662381757"
-
-[tools."aqua:tauri-apps/tauri/cargo-tauri"."platforms.macos-x64"]
-checksum = "sha256:164d184c0e50800dcae7bb31f0815066ebd27efc3e3bb73117974bcd2e982192"
-checksum_source = "mise-versions"
-url = "https://github.com/tauri-apps/tauri/releases/download/tauri-cli-v2.12.4/cargo-tauri-x86_64-apple-darwin.zip"
-url_api = "https://api.github.com/repos/tauri-apps/tauri/releases/assets/662381755"
-
-[tools."aqua:tauri-apps/tauri/cargo-tauri"."platforms.windows-x64"]
-checksum = "sha256:3e8687fb184bd7f10ebd8642f7715f79f4a605c0694c142a21507e8a24dc0f8b"
-checksum_source = "mise-versions"
-url = "https://github.com/tauri-apps/tauri/releases/download/tauri-cli-v2.12.4/cargo-tauri-x86_64-pc-windows-msvc.zip"
-url_api = "https://api.github.com/repos/tauri-apps/tauri/releases/assets/662381763"
-
 [[tools.claude]]
-version = "2.1.317"
+version = "2.1.318"
 backend = "aqua:anthropics/claude-code"
 specifiers = ["latest"]
 
 [tools.claude."platforms.linux-arm64"]
-checksum = "sha256:b7ab2311a8d5f4041045e63685af49ebaffcbb121fe572afdb9080a3b4f42711"
+checksum = "sha256:0f4fb66a2af3bf02d114099727e4a7745f117b1e63d2f77c8aff165590197421"
 checksum_source = "mise-versions"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.317/claude-linux-arm64.tar.gz"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/703596566"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.318/claude-linux-arm64.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/707216465"
 
 [tools.claude."platforms.linux-arm64-musl"]
-checksum = "sha256:9dc6957d86b06a3a843c0839d343c6d6173dd264e3a2e8f94566fa23889a0e79"
+checksum = "sha256:198e232519752b4f64a39252507cd693b16eb2107a36ecc4a2b78971d1ad36ef"
 checksum_source = "mise-versions"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.317/claude-linux-arm64-musl.tar.gz"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/703596561"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.318/claude-linux-arm64-musl.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/707216467"
 
 [tools.claude."platforms.linux-x64"]
-checksum = "sha256:153511cf79cd27c55c9f9c919cc532eb90647f7893cb3f4e78dac776991714e0"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.317/claude-linux-x64.tar.gz"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/703596770"
+checksum = "sha256:e6d426ca0c123f61fad58a361da0329f2a93cd206bc87040ed8d9576dd9eb583"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.318/claude-linux-x64.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/707216832"
 
 [tools.claude."platforms.linux-x64-musl"]
-checksum = "sha256:fe1dd0d6db638520acc492df5ac8cf5a941370716bf6a69c8944eee15d6934d7"
+checksum = "sha256:6f6d85b6faf3f5ed2655e9aefd52289ca30647ed4503647c2bfd342e1a5431f9"
 checksum_source = "mise-versions"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.317/claude-linux-x64-musl.tar.gz"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/703596563"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.318/claude-linux-x64-musl.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/707216466"
 
 [tools.claude."platforms.macos-arm64"]
-checksum = "sha256:d550cb26bfbbdb79052435544f7edc090c2b02f5fd9b30431bfb98d07a4bb318"
+checksum = "sha256:cd7fa988d60e7aef7ed453847650255138440b229d081496b8ed0ab75836603b"
 checksum_source = "mise-versions"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.317/claude-darwin-arm64.tar.gz"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/703596562"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.318/claude-darwin-arm64.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/707216476"
 
 [tools.claude."platforms.macos-x64"]
-checksum = "sha256:88cd97306115aa7efde383002f4ebb385cc119828b870012be0670dd88f12e90"
+checksum = "sha256:ea3e05371b9e8760e5d366529db9c6a96d968f5d1a41ba42ad61687c9a3f8173"
 checksum_source = "mise-versions"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.317/claude-darwin-x64.tar.gz"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/703596564"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.318/claude-darwin-x64.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/707216471"
 
 [tools.claude."platforms.windows-x64"]
-checksum = "sha256:52a8c682a76008559b9f4a86ef0e860a30661b8fc7290837d66bb1555508d14d"
+checksum = "sha256:09291c31ac37b9a905e0f0e76d4867b741589bb6b3ae9daa06943042ec72c619"
 checksum_source = "mise-versions"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.317/claude-win32-x64.zip"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/703596818"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.318/claude-win32-x64.zip"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/707216895"
 
 [[tools.codex]]
 version = "0.166.0"
@@ -334,196 +300,6 @@ checksum = "sha256:d559bb88e74d471265857b93b7f19bc250dae527673b9191b33534478093f
 checksum_source = "mise-versions"
 url = "https://github.com/openai/codex/releases/download/rust-v0.166.0/codex-package-x86_64-pc-windows-msvc.tar.gz"
 url_api = "https://api.github.com/repos/openai/codex/releases/assets/689710836"
-
-[[tools.gemini]]
-version = "0.66.0"
-aube = { path = "locks/gemini/0.66.0~2b855d49", digest = "sha256:f6778ee9641e770891aa33d259ec7ae096ab1605d2aa9f41db5c9ae485c3288b" }
-backend = "npm:@google/gemini-cli"
-specifiers = ["latest"]
-
-[tools.gemini.options]
-allow_builds = '["@github/keytar", "node-pty"]'
-
-[[tools.gh]]
-version = "2.103.3"
-backend = "aqua:cli/cli"
-specifiers = ["latest"]
-
-[tools.gh."platforms.linux-arm64"]
-checksum = "sha256:ee32df2323c8847f5fac6cb6b4b69ca75828e9329a8f22f677021f7b3306ce63"
-url = "https://github.com/cli/cli/releases/download/v2.103.3/gh_2.103.3_linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/cli/cli/releases/assets/679195636"
-provenance = "github-attestations"
-
-[tools.gh."platforms.linux-arm64-musl"]
-checksum = "sha256:ee32df2323c8847f5fac6cb6b4b69ca75828e9329a8f22f677021f7b3306ce63"
-url = "https://github.com/cli/cli/releases/download/v2.103.3/gh_2.103.3_linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/cli/cli/releases/assets/679195636"
-provenance = "github-attestations"
-
-[tools.gh."platforms.linux-x64"]
-checksum = "sha256:4c806978ffce1cec70853302a56d70ac6da4f19bae7adca4e1a8ab00633dd91d"
-url = "https://github.com/cli/cli/releases/download/v2.103.3/gh_2.103.3_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/cli/cli/releases/assets/679195621"
-provenance = "github-attestations"
-
-[tools.gh."platforms.linux-x64-musl"]
-checksum = "sha256:4c806978ffce1cec70853302a56d70ac6da4f19bae7adca4e1a8ab00633dd91d"
-url = "https://github.com/cli/cli/releases/download/v2.103.3/gh_2.103.3_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/cli/cli/releases/assets/679195621"
-provenance = "github-attestations"
-
-[tools.gh."platforms.macos-arm64"]
-checksum = "sha256:d700207eae9ae98fe2b89535c2c087c07823d4628c56364695a5a07ef311c062"
-url = "https://github.com/cli/cli/releases/download/v2.103.3/gh_2.103.3_macOS_arm64.zip"
-url_api = "https://api.github.com/repos/cli/cli/releases/assets/679195704"
-provenance = "github-attestations"
-
-[tools.gh."platforms.macos-x64"]
-checksum = "sha256:a2f86418f4350ae6e9ec60d5000bdf7665728436946a97fc27fe50e6ae752682"
-url = "https://github.com/cli/cli/releases/download/v2.103.3/gh_2.103.3_macOS_amd64.zip"
-url_api = "https://api.github.com/repos/cli/cli/releases/assets/679195693"
-provenance = "github-attestations"
-
-[tools.gh."platforms.windows-x64"]
-checksum = "sha256:98d0cfa794721665d7973dd728c78aff7bd836d58f10f6d7a03568eccb0a22e0"
-url = "https://github.com/cli/cli/releases/download/v2.103.3/gh_2.103.3_windows_amd64.zip"
-url_api = "https://api.github.com/repos/cli/cli/releases/assets/679195750"
-provenance = "github-attestations"
-
-[[tools."github:amir20/dtop"]]
-version = "0.10.5"
-backend = "github:amir20/dtop"
-specifiers = ["latest"]
-
-[tools."github:amir20/dtop"."platforms.linux-arm64"]
-checksum = "sha256:b866d8ac75dfc3fdd2421734cdd9db6054a6062c1b1389b4452e6f77f396c275"
-checksum_source = "mise-versions"
-url = "https://github.com/amir20/dtop/releases/download/v0.10.5/dtop-aarch64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/amir20/dtop/releases/assets/695415358"
-
-[tools."github:amir20/dtop"."platforms.linux-arm64-musl"]
-checksum = "sha256:b866d8ac75dfc3fdd2421734cdd9db6054a6062c1b1389b4452e6f77f396c275"
-checksum_source = "mise-versions"
-url = "https://github.com/amir20/dtop/releases/download/v0.10.5/dtop-aarch64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/amir20/dtop/releases/assets/695415358"
-
-[tools."github:amir20/dtop"."platforms.linux-x64"]
-checksum = "sha256:421dcc7f2db9cf4f7225db3b28b99a25abb1af895886c8c13ce3794a39de01a3"
-url = "https://github.com/amir20/dtop/releases/download/v0.10.5/dtop-x86_64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/amir20/dtop/releases/assets/695415401"
-
-[tools."github:amir20/dtop"."platforms.linux-x64-musl"]
-checksum = "sha256:421dcc7f2db9cf4f7225db3b28b99a25abb1af895886c8c13ce3794a39de01a3"
-checksum_source = "mise-versions"
-url = "https://github.com/amir20/dtop/releases/download/v0.10.5/dtop-x86_64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/amir20/dtop/releases/assets/695415401"
-
-[tools."github:amir20/dtop"."platforms.macos-arm64"]
-checksum = "sha256:535a9627a9a805911b8f75986316fad5e6ecdd122fc558473d35ba169850c7f3"
-checksum_source = "mise-versions"
-url = "https://github.com/amir20/dtop/releases/download/v0.10.5/dtop-aarch64-apple-darwin.tar.gz"
-url_api = "https://api.github.com/repos/amir20/dtop/releases/assets/695415364"
-
-[tools."github:amir20/dtop"."platforms.macos-x64"]
-checksum = "sha256:56c08631f1061e3af791653ffb2e32ae7cafc41a497cd1ded8241acbfff98696"
-checksum_source = "mise-versions"
-url = "https://github.com/amir20/dtop/releases/download/v0.10.5/dtop-x86_64-apple-darwin.tar.gz"
-url_api = "https://api.github.com/repos/amir20/dtop/releases/assets/695415383"
-
-[[tools."github:googleworkspace/cli"]]
-version = "0.22.5"
-backend = "github:googleworkspace/cli"
-specifiers = ["latest"]
-
-[tools."github:googleworkspace/cli"."platforms.linux-arm64"]
-checksum = "sha256:94490295d9580e1e88574e715a0a162991747d12d62f8c7b8dcc8268b6c1cea0"
-url = "https://github.com/googleworkspace/cli/releases/download/v0.22.5/google-workspace-cli-aarch64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/googleworkspace/cli/releases/assets/385726970"
-provenance = "github-attestations"
-
-[tools."github:googleworkspace/cli"."platforms.linux-arm64-musl"]
-checksum = "sha256:e700fe63524932b10ec2130b47ece90aa850e66005fe52ccfc4cf8767bf9919a"
-url = "https://github.com/googleworkspace/cli/releases/download/v0.22.5/google-workspace-cli-aarch64-unknown-linux-musl.tar.gz"
-url_api = "https://api.github.com/repos/googleworkspace/cli/releases/assets/385726968"
-provenance = "github-attestations"
-
-[tools."github:googleworkspace/cli"."platforms.linux-x64"]
-checksum = "sha256:de78ecdbd2f1a84cca0063a7ecbc440240fc14b6ebccbb17f4646b792a8c5c1f"
-url = "https://github.com/googleworkspace/cli/releases/download/v0.22.5/google-workspace-cli-x86_64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/googleworkspace/cli/releases/assets/385726985"
-provenance = "github-attestations"
-
-[tools."github:googleworkspace/cli"."platforms.linux-x64-musl"]
-checksum = "sha256:4db473dde4b1ab872e4ff35d769b0d4af1f1a6441a605e79d5cf8ada9c87e920"
-url = "https://github.com/googleworkspace/cli/releases/download/v0.22.5/google-workspace-cli-x86_64-unknown-linux-musl.tar.gz"
-url_api = "https://api.github.com/repos/googleworkspace/cli/releases/assets/385726987"
-provenance = "github-attestations"
-
-[tools."github:googleworkspace/cli"."platforms.macos-arm64"]
-checksum = "sha256:1d2a9ffd5bc9b2c2c4b48630daf082fad13d9e57d741988a2c248eed562f7dac"
-url = "https://github.com/googleworkspace/cli/releases/download/v0.22.5/google-workspace-cli-aarch64-apple-darwin.tar.gz"
-url_api = "https://api.github.com/repos/googleworkspace/cli/releases/assets/385726972"
-provenance = "github-attestations"
-
-[tools."github:googleworkspace/cli"."platforms.macos-x64"]
-checksum = "sha256:51f9bd731404d4bba26c36e2e30dd68c56dccd1f834c01252cb0b14d6a6544b2"
-url = "https://github.com/googleworkspace/cli/releases/download/v0.22.5/google-workspace-cli-x86_64-apple-darwin.tar.gz"
-url_api = "https://api.github.com/repos/googleworkspace/cli/releases/assets/385726978"
-provenance = "github-attestations"
-
-[tools."github:googleworkspace/cli"."platforms.windows-x64"]
-checksum = "sha256:407705d695dc83d48b1c5f50d71b5aa64095bf6f17d5b439b2e9a373bbe67ec2"
-url = "https://github.com/googleworkspace/cli/releases/download/v0.22.5/google-workspace-cli-x86_64-pc-windows-msvc.zip"
-url_api = "https://api.github.com/repos/googleworkspace/cli/releases/assets/385726984"
-provenance = "github-attestations"
-
-[[tools."github:jorgerojas26/lazysql"]]
-version = "0.7.0"
-backend = "github:jorgerojas26/lazysql"
-specifiers = ["latest"]
-
-[tools."github:jorgerojas26/lazysql"."platforms.linux-arm64"]
-checksum = "sha256:2157e58f107bd9c250ad4d106e31d3f3484cfd93280b1c59f25a2dd0965e9128"
-checksum_source = "mise-versions"
-url = "https://github.com/jorgerojas26/lazysql/releases/download/v0.7.0/lazysql_Linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/jorgerojas26/lazysql/releases/assets/634196714"
-
-[tools."github:jorgerojas26/lazysql"."platforms.linux-arm64-musl"]
-checksum = "sha256:2157e58f107bd9c250ad4d106e31d3f3484cfd93280b1c59f25a2dd0965e9128"
-checksum_source = "mise-versions"
-url = "https://github.com/jorgerojas26/lazysql/releases/download/v0.7.0/lazysql_Linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/jorgerojas26/lazysql/releases/assets/634196714"
-
-[tools."github:jorgerojas26/lazysql"."platforms.linux-x64"]
-checksum = "sha256:ebc3edeb848c7e557f88177cf6b2ca7e492ef158e2aa1dce18eb137d1d0726fc"
-checksum_source = "mise-versions"
-url = "https://github.com/jorgerojas26/lazysql/releases/download/v0.7.0/lazysql_Linux_x86_64.tar.gz"
-url_api = "https://api.github.com/repos/jorgerojas26/lazysql/releases/assets/634196730"
-
-[tools."github:jorgerojas26/lazysql"."platforms.linux-x64-musl"]
-checksum = "sha256:ebc3edeb848c7e557f88177cf6b2ca7e492ef158e2aa1dce18eb137d1d0726fc"
-checksum_source = "mise-versions"
-url = "https://github.com/jorgerojas26/lazysql/releases/download/v0.7.0/lazysql_Linux_x86_64.tar.gz"
-url_api = "https://api.github.com/repos/jorgerojas26/lazysql/releases/assets/634196730"
-
-[tools."github:jorgerojas26/lazysql"."platforms.macos-arm64"]
-checksum = "sha256:b6e6ac70d67f737cb8cf8e88a076e697f0b171518adc31d9c88f4e06856c81a1"
-checksum_source = "mise-versions"
-url = "https://github.com/jorgerojas26/lazysql/releases/download/v0.7.0/lazysql_Darwin_arm64.tar.gz"
-url_api = "https://api.github.com/repos/jorgerojas26/lazysql/releases/assets/634196712"
-
-[tools."github:jorgerojas26/lazysql"."platforms.macos-x64"]
-checksum = "sha256:9a070da390bc024ee9da14435ef3801ef7fd25c6387458fea9a3d0f549ad46b4"
-checksum_source = "mise-versions"
-url = "https://github.com/jorgerojas26/lazysql/releases/download/v0.7.0/lazysql_Darwin_x86_64.tar.gz"
-url_api = "https://api.github.com/repos/jorgerojas26/lazysql/releases/assets/634196715"
-
-[tools."github:jorgerojas26/lazysql"."platforms.windows-x64"]
-checksum = "sha256:f005142f0f9b4a6ee8f8752df7ef349bd5541f991d162934b242a56a487bf363"
-checksum_source = "mise-versions"
-url = "https://github.com/jorgerojas26/lazysql/releases/download/v0.7.0/lazysql_Windows_x86_64.zip"
-url_api = "https://api.github.com/repos/jorgerojas26/lazysql/releases/assets/634196799"
 
 [[tools."github:rustsec/rustsec"]]
 version = "0.22.2"
@@ -573,81 +349,6 @@ checksum = "sha256:0a7316540862c13d954f648917ceacca593747baed6eec180fafa590be271
 checksum_source = "mise-versions"
 url = "https://github.com/rustsec/rustsec/releases/download/cargo-audit/v0.22.2/cargo-audit-x86_64-pc-windows-msvc-v0.22.2.zip"
 url_api = "https://api.github.com/repos/rustsec/rustsec/releases/assets/439294720"
-
-[[tools."github:skibidiandulka/nettui"]]
-version = "0.4.3"
-backend = "github:skibidiandulka/nettui"
-specifiers = ["latest"]
-
-[tools."github:skibidiandulka/nettui"."platforms.linux-x64"]
-checksum = "sha256:104269dea57ace629eb87f3e5023eb06774a24d50f7b8cd0dbb133378204db37"
-checksum_source = "mise-versions"
-url = "https://github.com/skibidiandulka/nettui/releases/download/v0.4.3/nettui-v0.4.3-x86_64.tar.gz"
-url_api = "https://api.github.com/repos/skibidiandulka/nettui/releases/assets/489442097"
-
-[tools."github:skibidiandulka/nettui"."platforms.linux-x64-musl"]
-checksum = "sha256:104269dea57ace629eb87f3e5023eb06774a24d50f7b8cd0dbb133378204db37"
-checksum_source = "mise-versions"
-url = "https://github.com/skibidiandulka/nettui/releases/download/v0.4.3/nettui-v0.4.3-x86_64.tar.gz"
-url_api = "https://api.github.com/repos/skibidiandulka/nettui/releases/assets/489442097"
-
-[tools."github:skibidiandulka/nettui"."platforms.macos-x64"]
-checksum = "sha256:104269dea57ace629eb87f3e5023eb06774a24d50f7b8cd0dbb133378204db37"
-checksum_source = "mise-versions"
-url = "https://github.com/skibidiandulka/nettui/releases/download/v0.4.3/nettui-v0.4.3-x86_64.tar.gz"
-url_api = "https://api.github.com/repos/skibidiandulka/nettui/releases/assets/489442097"
-
-[tools."github:skibidiandulka/nettui"."platforms.windows-x64"]
-checksum = "sha256:104269dea57ace629eb87f3e5023eb06774a24d50f7b8cd0dbb133378204db37"
-checksum_source = "mise-versions"
-url = "https://github.com/skibidiandulka/nettui/releases/download/v0.4.3/nettui-v0.4.3-x86_64.tar.gz"
-url_api = "https://api.github.com/repos/skibidiandulka/nettui/releases/assets/489442097"
-
-[[tools."github:stephenleo/cship"]]
-version = "1.8.3"
-backend = "github:stephenleo/cship"
-specifiers = ["latest"]
-
-[tools."github:stephenleo/cship"."platforms.linux-arm64"]
-checksum = "sha256:cbb6fcbef73db29f1954a347b8a654e140d13c1661c5f9a5da05d5a7f2f2e3a3"
-checksum_source = "mise-versions"
-url = "https://github.com/stephenleo/cship/releases/download/v1.8.3/cship-aarch64-unknown-linux-musl"
-url_api = "https://api.github.com/repos/stephenleo/cship/releases/assets/547050136"
-
-[tools."github:stephenleo/cship"."platforms.linux-arm64-musl"]
-checksum = "sha256:cbb6fcbef73db29f1954a347b8a654e140d13c1661c5f9a5da05d5a7f2f2e3a3"
-checksum_source = "mise-versions"
-url = "https://github.com/stephenleo/cship/releases/download/v1.8.3/cship-aarch64-unknown-linux-musl"
-url_api = "https://api.github.com/repos/stephenleo/cship/releases/assets/547050136"
-
-[tools."github:stephenleo/cship"."platforms.linux-x64"]
-checksum = "sha256:8e34c99a2828b1df182e2478191cdd06d821127e1705b7f736dcb2b41878bd54"
-url = "https://github.com/stephenleo/cship/releases/download/v1.8.3/cship-x86_64-unknown-linux-musl"
-url_api = "https://api.github.com/repos/stephenleo/cship/releases/assets/547050139"
-
-[tools."github:stephenleo/cship"."platforms.linux-x64-musl"]
-checksum = "sha256:8e34c99a2828b1df182e2478191cdd06d821127e1705b7f736dcb2b41878bd54"
-checksum_source = "mise-versions"
-url = "https://github.com/stephenleo/cship/releases/download/v1.8.3/cship-x86_64-unknown-linux-musl"
-url_api = "https://api.github.com/repos/stephenleo/cship/releases/assets/547050139"
-
-[tools."github:stephenleo/cship"."platforms.macos-arm64"]
-checksum = "sha256:57e83c870255f9190d3046d7741d3d4fa496ffaf6388abf5a17e5c64ff0854a9"
-checksum_source = "mise-versions"
-url = "https://github.com/stephenleo/cship/releases/download/v1.8.3/cship-aarch64-apple-darwin"
-url_api = "https://api.github.com/repos/stephenleo/cship/releases/assets/547050138"
-
-[tools."github:stephenleo/cship"."platforms.macos-x64"]
-checksum = "sha256:0db5221e9c509018b92415292540e87e8d76374197b45f8925ebdf989a945528"
-checksum_source = "mise-versions"
-url = "https://github.com/stephenleo/cship/releases/download/v1.8.3/cship-x86_64-apple-darwin"
-url_api = "https://api.github.com/repos/stephenleo/cship/releases/assets/547050135"
-
-[tools."github:stephenleo/cship"."platforms.windows-x64"]
-checksum = "sha256:e987dd436bee6032a21de2bb65a81d9909457bf4ed4fabaf105de260527b781f"
-checksum_source = "mise-versions"
-url = "https://github.com/stephenleo/cship/releases/download/v1.8.3/cship-x86_64-pc-windows-msvc.exe"
-url_api = "https://api.github.com/repos/stephenleo/cship/releases/assets/547050140"
 
 [[tools.node]]
 version = "26.13.0"
@@ -701,15 +402,9 @@ backend = "npm:@tobilu/qmd"
 specifiers = ["latest"]
 
 [[tools."npm:agent-browser"]]
-version = "0.41.1"
-aube = { path = "locks/npm-agent-browser/0.41.1", digest = "sha256:18952d290cc581b3c96e02300ad420ffa4282cd47484c13df616bdddfa987ff0" }
+version = "0.41.2"
+aube = { path = "locks/npm-agent-browser/0.41.2", digest = "sha256:f0fa958e381004270c63bdac4d42e64c5c2e54eb75e9f287a3d64974ae12371a" }
 backend = "npm:agent-browser"
-specifiers = ["latest"]
-
-[[tools."npm:hunkdiff"]]
-version = "0.24.1"
-aube = { path = "locks/npm-hunkdiff/0.24.1", digest = "sha256:39851e0ee8258dea7d2f6533337e5ff5848f6feae802c65679dad78cf54548bc" }
-backend = "npm:hunkdiff"
 specifiers = ["latest"]
 
 [[tools."npm:opencode-ai"]]
@@ -725,12 +420,6 @@ allow_builds = '["opencode-ai"]'
 version = "1.64.1"
 aube = { path = "locks/npm-playwright/1.64.1", digest = "sha256:b8bb6c2f562b2387bdbb9eab0dc940745237adb2e6d7a8b6ff6cd54508cac123" }
 backend = "npm:playwright"
-specifiers = ["latest"]
-
-[[tools."npm:portless"]]
-version = "0.15.13"
-aube = { path = "locks/npm-portless/0.15.13", digest = "sha256:7c2faca1db9d1d726970acb9bdd5a49b85f293497c89cf560ab23481e2088ccc" }
-backend = "npm:portless"
 specifiers = ["latest"]
 
 [[tools.ruby]]
