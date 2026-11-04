@@ -1,0 +1,5 @@
+# Only install releases that have been public for a week, so a hijacked
+# package is usually caught and pulled before it reaches this machine
+# (matches mise's minimum_release_age). Override once with
+# `UV_EXCLUDE_NEWER= uv ...` when a fresh release is needed.
+exclude-newer = "7 days"
