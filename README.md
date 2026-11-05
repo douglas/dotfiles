@@ -15,8 +15,6 @@ config-omarchy-desktop/ # Desktop overrides (font size, window dimensions)
 config-omarchy-laptop/  # Shared laptop glue (monitor/profile entrypoints)
 config-omarchy-laptop-t1g/ # T1G laptop model overrides
 config-omarchy-laptop-t14/ # T14 laptop model overrides
-config-fedora-desktop/  # Fedora/GNOME desktop (future)
-config-fedora-laptop/   # Fedora/GNOME laptop (future)
 ```
 
 On Linux, profile detection uses `hostnamectl chassis` to determine whether to stow desktop or laptop profile packages. Machine tags such as `t1g` and `t14` come from `~/.config/dotlayer/dotlayer.yml`, where each tag has a DMI/model detection command. Use `DOTLAYER_MACHINE=t14` to force a tag for testing.
@@ -80,8 +78,6 @@ and loads last, so layouts chosen through hyprmoncfg take precedence.
 | `config-omarchy-laptop` | Shared laptop monitor/profile entrypoints |
 | `config-omarchy-laptop-t1g` | T1G laptop terminal, Waybar, and Hyprland model overrides |
 | `config-omarchy-laptop-t14` | T14 laptop terminal, Waybar, and Hyprland model overrides |
-| `config-fedora-desktop` | Fedora/GNOME desktop config (future) |
-| `config-fedora-laptop` | Fedora/GNOME laptop config (future) |
 
 ## Applications
 
