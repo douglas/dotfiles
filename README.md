@@ -19,7 +19,7 @@ config-omarchy-laptop-t14/ # T14 laptop model overrides
 
 On Linux, profile detection uses `hostnamectl chassis` to determine whether to stow desktop or laptop profile packages. Machine tags such as `t1g` and `t14` come from `~/.config/dotlayer/dotlayer.yml`, where each tag has a DMI/model detection command. Use `DOTLAYER_MACHINE=t14` to force a tag for testing.
 
-**Ghostty, Kitty, Alacritty, Waybar, and Hyprland** use app-level includes or source files named `machine`/`machine-*` for model-specific values. That keeps Stow packages additive and avoids conflicts between shared Omarchy config and machine overrides.
+**Ghostty, Kitty, Alacritty, and Hyprland** use app-level includes or source files named `machine`/`machine-*` for model-specific values. That keeps Stow packages additive and avoids conflicts between shared Omarchy config and machine overrides.
 
 ## Installation
 
@@ -73,11 +73,11 @@ and loads last, so layouts chosen through hyprmoncfg take precedence.
 | `config` | Shared `~/.config/` for ai-usagebar, bat, bottom, btop, bun, delta, fsh, gh, ghostty, herdr, lazydocker, lazygit, pnpm, qalculate, tmux, uv, Warp, wt, yazi, zed |
 | `config-linux` | Linux `~/.config/` (autostart, fcitx5, mise, systemd user units, user-dirs, zed) plus system files: split xremap services, hardening installer, sleep hook, Keychron udev rule |
 | `config-macos` | Cursor editor settings and keybindings |
-| `config-omarchy` | Shared Omarchy config: Neovim, Hyprland Lua, Neosh integration, Omarchy hooks, audio policy, startup, plus alacritty, cmux, foot, hunk, kitty, starship, sublime-merge, and zellij. Legacy Waybar, Walker, and Hyprland `.conf` files remain excluded from Stow as migration reference. |
+| `config-omarchy` | Shared Omarchy config: Neovim, Hyprland Lua, Neosh integration, Omarchy hooks, audio policy, startup, plus alacritty, cmux, foot, hunk, kitty, starship, sublime-merge, and zellij. Legacy Hyprland `.conf` files remain excluded from Stow as migration reference. |
 | `config-omarchy-desktop` | Ghostty machine config, Zed settings, Hyprland envs for desktop |
 | `config-omarchy-laptop` | Shared laptop monitor/profile entrypoints |
-| `config-omarchy-laptop-t1g` | T1G laptop terminal, Waybar, and Hyprland model overrides |
-| `config-omarchy-laptop-t14` | T14 laptop terminal, Waybar, and Hyprland model overrides |
+| `config-omarchy-laptop-t1g` | T1G laptop terminal and Hyprland model overrides |
+| `config-omarchy-laptop-t14` | T14 laptop terminal and Hyprland model overrides |
 
 ## Applications
 

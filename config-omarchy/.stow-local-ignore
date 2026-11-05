@@ -1,5 +1,3 @@
 ^\.config/hypr/hyprland\.conf$
 ^\.config/hypr/personal-hyprtasking\.conf$
 ^\.config/hypr/personal-profile\.conf$
-^\.config/waybar/
-^\.config/walker/
