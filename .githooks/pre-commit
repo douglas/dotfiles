@@ -39,6 +39,24 @@ if [ "${#env_violations[@]}" -gt 0 ]; then
   exit 1
 fi
 
+# Key material, package binaries, and work packages never belong in this
+# public repo.
+blocked_path_regex='(\.(key|pem|p12|pfx|rpm|deb)$|(^|/)id_(rsa|ecdsa|ed25519)$|(^|/)(doximity|dox-env)(/|$))'
+
+declare -a path_violations=()
+for path in "${staged_files[@]}"; do
+  lower_path="${path,,}"
+  if [[ "$lower_path" =~ $blocked_path_regex ]]; then
+    path_violations+=("$path")
+  fi
+done
+
+if [ "${#path_violations[@]}" -gt 0 ]; then
+  echo "pre-commit: blocked key, package, or work file(s):"
+  printf '  - %s\n' "${path_violations[@]}"
+  exit 1
+fi
+
 is_allowlisted_line() {
   local text="$1"
   local pattern
