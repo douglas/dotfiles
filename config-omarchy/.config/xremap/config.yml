@@ -2,7 +2,7 @@ keypress_delay_ms: 5
 
 # macOS Cmd key via F18 (xremap virtual_modifiers)
 #
-# Setup (laptop):
+# Setup:
 #   1. Left Alt is remapped to F18 via modmap below
 #   2. xremap virtual_modifiers: treats F18 as a custom modifier
 #   3. xremap keymap: translates Cmd combos to Ctrl (apps) or Super (WM)
@@ -30,13 +30,16 @@ keymap:
   # ============================================================
   # Terminal (Ghostty/Alacritty/Kitty) — Cmd key (F18)
   # ============================================================
+  # Keep any Kitty-only section minimal (e.g. F18-Shift-arrows split nav).
+  # xremap applies every matching keymap: duplicating the Ctrl-Left/Right tab
+  # remaps there broke Ghostty's ctrl+k leader splits.
   - name: Terminal shortcuts (Cmd)
     application:
       only: [com.mitchellh.ghostty, Alacritty, kitty]
     remap:
       # App launcher
-      F18-Space: Super-Space
-      F18-Shift-Space: Super-Alt-Space
+      F18-Space: { launch: ["omacast", "toggle"] }
+      F18-Shift-Space: Super-Space
 
       # Clipboard (Ctrl+Shift to avoid terminal control chars)
       F18-c: Ctrl-Shift-c
@@ -65,9 +68,11 @@ keymap:
       # Settings
       F18-Comma: Ctrl-Comma
 
-      # Text navigation (Cmd+arrows = Home/End like macOS)
-      F18-Left: Home
-      F18-Right: End
+      # Window focus (routed to Super for Hyprland)
+      F18-Left: Super-Left
+      F18-Right: Super-Right
+      F18-Up: Super-Up
+      F18-Down: Super-Down
 
       # Workspace navigation (Cmd+Win+arrows or Cmd+Ctrl+arrows)
       F18-Super-Left: Super-Shift-Tab
@@ -114,10 +119,12 @@ keymap:
       F18-Shift-9: Super-Shift-9
 
       # Window swap
+      F18-Shift-Left: Super-Shift-Left
+      F18-Shift-Right: Super-Shift-Right
       F18-Shift-Up: Super-Shift-Up
       F18-Shift-Down: Super-Shift-Down
 
-      # Window navigation
+      # Workspace navigation
       F18-Tab: Super-Tab
       F18-Shift-Tab: Super-Shift-Tab
 
@@ -160,13 +167,15 @@ keymap:
       F18-9: Super-9
       F18-Tab: Super-Tab
       F18-Shift-Tab: Super-Shift-Tab
-      F18-Space: Super-Space
-      F18-Shift-Space: Super-Alt-Space
+      F18-Space: { launch: ["omacast", "toggle"] }
+      F18-Shift-Space: Super-Space
       F18-Shift-v: Super-Ctrl-v
 
-      # Text navigation (Cmd+arrows = Home/End like macOS)
-      F18-Left: Home
-      F18-Right: End
+      # Window focus
+      F18-Left: Super-Left
+      F18-Right: Super-Right
+      F18-Up: Super-Up
+      F18-Down: Super-Down
 
       # Workspace navigation (Cmd+Win+arrows or Cmd+Ctrl+arrows)
       F18-Super-Left: Super-Shift-Tab
@@ -182,8 +191,8 @@ keymap:
       not: [com.mitchellh.ghostty, Alacritty, kitty, spotify]
     remap:
       # App launcher
-      F18-Space: Super-Space
-      F18-Shift-Space: Super-Alt-Space
+      F18-Space: { launch: ["omacast", "toggle"] }
+      F18-Shift-Space: Super-Space
 
       # Clipboard
       F18-c: Ctrl-c
@@ -238,9 +247,11 @@ keymap:
       F18-Shift-RightBrace: Ctrl-PageDown
       F18-Shift-LeftBrace: Ctrl-PageUp
 
-      # Text navigation (Cmd+arrows = Home/End like macOS)
-      F18-Left: Home
-      F18-Right: End
+      # Window focus (routed to Super for Hyprland)
+      F18-Left: Super-Left
+      F18-Right: Super-Right
+      F18-Up: Super-Up
+      F18-Down: Super-Down
       F18-Backspace: [Shift-Home, Delete]
 
       # Workspace navigation (Cmd+Win+arrows or Cmd+Ctrl+arrows)
@@ -286,10 +297,12 @@ keymap:
       F18-Shift-9: Super-Shift-9
 
       # Window swap
+      F18-Shift-Left: Super-Shift-Left
+      F18-Shift-Right: Super-Shift-Right
       F18-Shift-Up: Super-Shift-Up
       F18-Shift-Down: Super-Shift-Down
 
-      # Window navigation
+      # Workspace navigation
       F18-Tab: Super-Tab
       F18-Shift-Tab: Super-Shift-Tab
 

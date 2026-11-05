@@ -1,4 +1,9 @@
 {
+  "agent_servers": {
+    "pi-acp": {
+      "type": "registry"
+    }
+  },
   "cli_default_open_behavior": "existing_window",
   "outline_panel": {
     "dock": "left"
@@ -22,8 +27,10 @@
       "model": "claude-sonnet-4",
     },
     "default_model": {
-      "model": "claude-sonnet-4-5-latest",
-      "provider": "anthropic",
+      "effort": "medium",
+      "enable_thinking": true,
+      "model": "gpt-5.5-pro",
+      "provider": "zed.dev",
     },
   },
   "git_panel": {
@@ -60,7 +67,7 @@
   "ui_font_family": "CommitMono Nerd Font",
   "ui_font_size": 16.0,
   "ui_font_weight": 200,
-  "buffer_font_family": "Operator Mono SSm",
+  "buffer_font_family": "Operator Mono",
   "buffer_font_weight": 320,
   "buffer_font_size": 13.0,
   "soft_wrap": "editor_width",
