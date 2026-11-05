@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cd ~/.bin/wubular_src
+cd ~/.bin/wubular_src || exit 1
 ruby -run -e httpd . -p 9999
