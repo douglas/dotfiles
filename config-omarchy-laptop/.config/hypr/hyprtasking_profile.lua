@@ -1,4 +1,4 @@
--- ThinkPad T1G: four fingers open overview, three fingers move workspaces.
+-- Laptops: four fingers open overview, three fingers move workspaces.
 hl.config({
   plugin = {
     hyprtasking = {
