@@ -13,7 +13,6 @@ export CLAUDE_CODE_NO_FLICKER=1
 unset NO_COLOR
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.cache/.bun/bin:$PATH"
-export PATH="$HOME/.bun/bin:$PATH"
 export PATH="$HOME/.bin:$PATH"
 
 ##
@@ -125,7 +124,5 @@ export PATH="$PATH:$HOME/.lmstudio/bin"
 # Zoxide (must be initialized at the very end of .zshrc)
 eval "$(zoxide init --cmd cd zsh)"
 
-# bun completions
-[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
