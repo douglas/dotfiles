@@ -1,0 +1,4 @@
+# Only install releases that have been public for a week, matching mise and
+# uv. Value is in seconds (7 days).
+[install]
+minimumReleaseAge = 604800
