@@ -15,9 +15,9 @@ ARCH="$(uname -m)"
 
 # Normalize architecture names
 case "$ARCH" in
-  x86_64)  ARCH_GO="amd64"; ARCH_RUST="x86_64" ;;
-  aarch64) ARCH_GO="arm64"; ARCH_RUST="aarch64" ;;
-  arm64)   ARCH_GO="arm64"; ARCH_RUST="aarch64" ;;
+  x86_64)  ARCH_GO="amd64" ;;
+  aarch64) ARCH_GO="arm64" ;;
+  arm64)   ARCH_GO="arm64" ;;
   *)       echo "Unsupported architecture: $ARCH"; exit 1 ;;
 esac
 
