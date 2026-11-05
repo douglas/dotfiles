@@ -133,4 +133,15 @@ if [ "${#secret_violations[@]}" -gt 0 ]; then
   exit 1
 fi
 
+# gitleaks knows hundreds of token formats the patterns above miss.
+if ! command -v gitleaks >/dev/null 2>&1; then
+  echo "pre-commit: gitleaks is required for secret scanning (run mise install)."
+  exit 1
+fi
+
+if ! gitleaks git --pre-commit --staged --redact --no-banner --verbose .; then
+  echo "pre-commit: gitleaks found a potential secret in staged changes."
+  exit 1
+fi
+
 exit 0
