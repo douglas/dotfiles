@@ -1,9 +1,6 @@
 {
   "entries": {
     "tap": {
-      "elastic/tap": {
-        "revision": "e5c8f72e1c72053d2f9390883c87b9cbfa449bc3"
-      },
       "homebrew/bundle": {
         "revision": "8b06f66c41d874ccd7f6c5b2f04ab22749cccc5d"
       },
@@ -15,12 +12,6 @@
       },
       "ngrok/ngrok": {
         "revision": "21807920c748cfa11732dd0f984c8702455ced15"
-      },
-      "shopify/shopify": {
-        "revision": "f9c814f3428a7337318d2bba4a1b18af9d6df3b8"
-      },
-      "snowflakedb/snowflake-cli": {
-        "revision": "86f736735b86b0d14e0a1704c491233b63745c6d"
       }
     },
     "brew": {
@@ -3143,29 +3134,6 @@
             }
           }
         }
-      },
-      "shopify/shopify/secret-sender": {
-        "version": "2.0.1",
-        "bottle": {
-          "rebuild": 0,
-          "root_url": "https://github.com/Shopify/homebrew-shopify/releases/download/bag-of-holding",
-          "files": {
-            "arm64_monterey": {
-              "cellar": ":any_skip_relocation",
-              "url": "https://github.com/Shopify/homebrew-shopify/releases/download/bag-of-holding/secret-sender-2.0.1.arm64_monterey.bottle.tar.gz",
-              "sha256": "b1342e171060b9bd5cb8b32f423ae631c23dde0045140791aa5d0d46fe87a580"
-            },
-            "monterey": {
-              "cellar": ":any_skip_relocation",
-              "url": "https://github.com/Shopify/homebrew-shopify/releases/download/bag-of-holding/secret-sender-2.0.1.monterey.bottle.tar.gz",
-              "sha256": "463966f8acaaeb21f9d73e04cb3f8c2ee6f6c7ddc8e6fb047062f069e0eead5a"
-            }
-          }
-        }
-      },
-      "snowflakedb/snowflake-cli/snowflake-cli": {
-        "version": "3.0.1",
-        "bottle": false
       }
     },
     "cask": {
@@ -3323,12 +3291,6 @@
         "version": "4.41.97",
         "options": {
           "full_name": "slack"
-        }
-      },
-      "snowflake-snowsql": {
-        "version": "1.3.2",
-        "options": {
-          "full_name": "snowflake-snowsql"
         }
       },
       "spotify": {
