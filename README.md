@@ -7,7 +7,7 @@ Personal dotfiles managed with [dotlayer](https://github.com/douglas/dotlayer), 
 Each top-level directory is a dotlayer package. Dotlayer detects OS, profile, distro, and machine tags, then runs GNU Stow in the right order so shared settings live in one place while OS-, distro-, profile-, and model-specific overrides stay separate:
 
 ```
-config/                 # Shared app configs (bat, ghostty, zellij, yazi, etc.)
+config/                 # Shared app configs (bat, ghostty, gh, lazygit, uv, yazi, etc.)
 config-linux/           # Linux-only system files (udev rules, systemd hooks)
 config-macos/           # macOS-only configs (Cursor editor)
 config-omarchy/         # Shared Omarchy base (nvim, Hyprland Lua, keybindings)
@@ -70,10 +70,10 @@ and loads last, so layouts chosen through hyprmoncfg take precedence.
 | `bin` | Scripts in `~/.bin`: `git-cob`, `update-dotfiles`, `install-tools.sh`, and others |
 | `git` | `.gitconfig` and `.gitignore` — delta pager, difftastic, aliases, SSH signing |
 | `zsh` | `.zshrc` and `~/.zsh/` — extensions (git, fzf, networking, Rails), Catppuccin theme |
-| `config` | Shared `~/.config/` for bat, bottom, btop, delta, ghostty, yazi, zed, zellij, starship |
-| `config-linux` | System files: split xremap services, hardening installer, sleep hook, Keychron udev rule |
+| `config` | Shared `~/.config/` for ai-usagebar, bat, bottom, btop, bun, delta, fsh, gh, ghostty, herdr, lazydocker, lazygit, pnpm, qalculate, tmux, uv, Warp, wt, yazi, zed |
+| `config-linux` | Linux `~/.config/` (autostart, fcitx5, mise, systemd user units, user-dirs, zed) plus system files: split xremap services, hardening installer, sleep hook, Keychron udev rule |
 | `config-macos` | Cursor editor settings and keybindings |
-| `config-omarchy` | Shared Omarchy config: Neovim, Hyprland Lua, Neosh integration, Omarchy hooks, audio policy, startup. Legacy Waybar, Walker, and Hyprland `.conf` files remain excluded from Stow as migration reference. |
+| `config-omarchy` | Shared Omarchy config: Neovim, Hyprland Lua, Neosh integration, Omarchy hooks, audio policy, startup, plus alacritty, cmux, foot, hunk, kitty, starship, sublime-merge, and zellij. Legacy Waybar, Walker, and Hyprland `.conf` files remain excluded from Stow as migration reference. |
 | `config-omarchy-desktop` | Ghostty machine config, Zed settings, Hyprland envs for desktop |
 | `config-omarchy-laptop` | Shared laptop monitor/profile entrypoints |
 | `config-omarchy-laptop-t1g` | T1G laptop terminal, Waybar, and Hyprland model overrides |
