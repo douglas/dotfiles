@@ -1,15 +1,6 @@
 {
   "entries": {
     "tap": {
-      "homebrew/bundle": {
-        "revision": "8b06f66c41d874ccd7f6c5b2f04ab22749cccc5d"
-      },
-      "homebrew/core": {
-        "revision": "5017ce112fc49f7a9bb6e7230cb3ccaabecf9858"
-      },
-      "homebrew/services": {
-        "revision": "598a837d2c37efb9b338e43f17b8098a5a30e1c3"
-      },
       "ngrok/ngrok": {
         "revision": "21807920c748cfa11732dd0f984c8702455ced15"
       }
