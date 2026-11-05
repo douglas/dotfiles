@@ -6,6 +6,7 @@ format = """
 [](surface0)\
 $os\
 $username\
+${custom.ssh_ip}\
 [](bg:peach fg:surface0)\
 $directory\
 [](fg:peach bg:green)\
@@ -175,6 +176,15 @@ show_always = true
 style_user = "bg:surface0 fg:text"
 style_root = "bg:surface0 fg:text"
 format = '[ $user ]($style)'
+
+# Over SSH, show this machine's IP after the username. $SSH_CONNECTION is
+# "client_ip client_port server_ip server_port"; the server IP is field 3.
+[custom.ssh_ip]
+when = '[ -n "$SSH_CONNECTION" ]'
+command = 'set -- $SSH_CONNECTION; printf "%s" "$3"'
+shell = ["sh"]
+style = "bg:surface0 fg:red"
+format = "[$output ]($style)"
 
 [directory]
 style = "fg:mantle bg:peach"
