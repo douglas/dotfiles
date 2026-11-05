@@ -16,10 +16,6 @@
         },
         {
           "id": "omarchy.workspaces"
-        },
-        {
-          "id": "io.github.gardnmi.window-shelf",
-          "showWindowChips": false
         }
       ],
       "right": [
@@ -95,7 +91,8 @@
         {
           "id": "omarchy.system-update"
         }
-      ]
+      ],
+      "tray": []
     },
     "neoshIconFontSize": 11,
     "position": "top",
