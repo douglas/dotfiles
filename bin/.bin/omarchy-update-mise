@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# omarchy update runs omarchy-update-mise, which upgrades with
+# MISE_MINIMUM_RELEASE_AGE=0. Keep the 7-day release delay from mise's config
+# instead, so `omarchy update` doesn't move the shared mise.lock to releases
+# younger than a week on one machine.
+if command -v mise >/dev/null 2>&1; then
+  echo -e "\e[32m\nUpdate mise tools (7-day release delay)\e[0m"
+  mise up
+fi
