@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Open SSH to the local network for a while, then close it again.
+# `on` starts sshd without enabling it, so a reboot also turns SSH off.
+
+comment="ssh-mode"
+hardening="/etc/ssh/sshd_config.d/10-ssh-mode.conf"
+
+usage() {
+  cat <<'EOF'
+Usage: ssh-mode <on|off|status> [subnet]
+
+  on [subnet]  Allow SSH from the local subnet (default: the default route's
+               network, e.g. 192.168.50.0/24), key logins only, start sshd
+  off          Remove the ssh-mode firewall rules, stop and disable sshd
+  status       Show sshd state, ssh-mode firewall rules and listening ports
+EOF
+}
+
+# Network of the interface that holds the default route, skipping VPN tunnels
+# (Zscaler's zcctun0), so the rule never opens SSH to a tunnel.
+local_subnet() {
+  local dev
+  dev=$(ip -4 route show default | awk '$5 !~ /^(zcctun|tun|wg)/ {print $5; exit}')
+  [[ -n $dev ]] || { echo "No default route found; pass a subnet, e.g. ssh-mode on 192.168.50.0/24" >&2; exit 1; }
+  ip -4 -o route show dev "$dev" scope link proto kernel | awk '{print $1; exit}'
+}
+
+# ufw lists rules as "[ 3] 22/tcp ALLOW IN 192.168.50.0/24 # ssh-mode".
+ssh_mode_rule_numbers() {
+  sudo ufw status numbered | awk -v tag="# $comment" 'index($0, tag) { n = $0; sub(/^\[ */, "", n); sub(/\].*/, "", n); print n }'
+}
+
+show_status() {
+  echo "sshd: $(systemctl is-active sshd.service || true), at boot: $(systemctl is-enabled sshd.service 2>/dev/null || true)"
+  echo "ssh-mode firewall rules:"
+  sudo ufw status | awk -v tag="# $comment" 'index($0, tag) { print "  " $0; found = 1 } END { if (!found) print "  none" }'
+  echo "Listening on port 22:"
+  ss -Htln 'sport = :22' | awk '{print "  " $4} END { if (NR == 0) print "  nothing" }'
+}
+
+case "${1:-}" in
+  on)
+    subnet="${2:-$(local_subnet)}"
+    if [[ ! -s ~/.ssh/authorized_keys ]]; then
+      echo "Warning: ~/.ssh/authorized_keys is empty or missing; key logins will fail." >&2
+    fi
+    printf '%s\n' '# Written by ssh-mode: key logins only.' \
+      'PasswordAuthentication no' 'KbdInteractiveAuthentication no' 'PermitRootLogin no' |
+      sudo tee "$hardening" >/dev/null
+    sudo sshd -t
+    sudo ufw allow from "$subnet" to any port 22 proto tcp comment "$comment" >/dev/null
+    if ! sudo ufw status | awk 'NR == 1 && $2 == "active" { ok = 1 } END { exit !ok }'; then
+      echo "Warning: ufw is inactive, so sshd is reachable from every network, not just $subnet." >&2
+    fi
+    sudo systemctl start sshd.service
+    echo "SSH is on for $subnet (keys only) until 'ssh-mode off' or a reboot."
+    show_status
+    ;;
+  off)
+    mapfile -t numbers < <(ssh_mode_rule_numbers | sort -rn)
+    for number in "${numbers[@]}"; do
+      sudo ufw --force delete "$number" >/dev/null
+    done
+    sudo systemctl disable --now sshd.service 2>/dev/null
+    echo "SSH is off."
+    show_status
+    ;;
+  status)
+    show_status
+    ;;
+  *)
+    usage
+    exit 1
+    ;;
+esac
