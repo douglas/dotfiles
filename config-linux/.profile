@@ -18,3 +18,9 @@ for profile_dir in "$HOME/.lmstudio/bin" "$HOME/.local/share/JetBrains/Toolbox/s
 done
 unset profile_dir
 export PATH
+
+# LM Studio adds this exact block on first launch unless it finds it, so keep
+# it verbatim (it cannot fail: it only appends a PATH entry).
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/home/douglas/.lmstudio/bin"
+# End of LM Studio CLI section

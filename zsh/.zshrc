@@ -118,7 +118,7 @@ fi
 if (( $+commands[entire] )); then source <(entire completion zsh 2>/dev/null); fi
 
 # Added by LM Studio CLI (lms)
-export PATH="$PATH:$HOME/.lmstudio/bin"
+export PATH="$PATH:/home/douglas/.lmstudio/bin"
 # End of LM Studio CLI section
 
 # Zoxide (must be initialized at the very end of .zshrc)
