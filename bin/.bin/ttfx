@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Omarchy's screensaver runs `ttfx --random-effect`. Limit that pick to the
+# Matrix effect, so Omarchy's own screensaver always shows Matrix.
+# exec keeps the process named ttfx, which the screensaver's pgrep/pkill need.
+for arg in "$@"; do
+  if [[ $arg == --random-effect || $arg == -R ]]; then
+    exec /usr/bin/ttfx "$@" --include-effects matrix
+  fi
+done
+exec /usr/bin/ttfx "$@"
