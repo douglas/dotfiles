@@ -12,6 +12,7 @@ ExecStart=/usr/bin/xremap \
   --allow-launch true \
   --device "AT Translated Set 2 keyboard" \
   --device "Apple SPI Keyboard" \
+  --device "Apple MTP keyboard" \
   --device "Keychron Keychron Ultra-Link 8K" \
   --device "Keychron Keychron Ultra-Link 8K Keyboard" \
   --device "Keychron Keychron Q11" \
