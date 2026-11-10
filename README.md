@@ -10,7 +10,7 @@ Each top-level directory is a dotlayer package. Dotlayer detects OS, profile, di
 config/                 # Shared app configs (bat, ghostty, gh, lazygit, uv, yazi, etc.)
 config-linux/           # Linux-only system files (udev rules, systemd hooks)
 config-macos/           # macOS-only configs (Cursor editor)
-config-omarchy/         # Shared Omarchy base (nvim, Hyprland Lua, keybindings)
+config-omarchy/         # Shared Omarchy base (Hyprland Lua, keybindings)
 config-omarchy-desktop/ # Desktop overrides (font size, window dimensions)
 config-omarchy-laptop/  # Shared laptop glue (monitor/profile entrypoints)
 config-omarchy-laptop-t1g/ # T1G laptop model overrides
@@ -121,7 +121,7 @@ sudo ~/.public_dotfiles/config-linux/usr/local/sbin/harden-xremap finalize
 
 ## Theme
 
-[Catppuccin Mocha](https://catppuccin.com/) is used consistently across all apps: Ghostty, bat, delta, nvim, zsh syntax highlighting, and fsh.
+[Catppuccin Mocha](https://catppuccin.com/) is used consistently across all apps: Ghostty, bat, delta, zsh syntax highlighting, and fsh.
 
 ## macOS extras
 
