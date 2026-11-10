@@ -14,6 +14,8 @@ rebuild_for_user() {
   local log_file="$state_dir/rebuild-after-hyprland-upgrade.log"
 
   [[ -d $source_dir ]] || exit 0
+  # Hyprtasking's Hyprland function hooks only work on x86_64.
+  [[ $(uname -m) == x86_64 ]] || exit 0
 
   mkdir -p "$state_dir"
   exec >>"$log_file" 2>&1

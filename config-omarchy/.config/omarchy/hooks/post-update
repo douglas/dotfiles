@@ -58,6 +58,9 @@ rebuild_hyprtasking_if_needed() {
 
   [ -d "$repo" ] || return 0
 
+  # Hyprtasking's Hyprland function hooks only work on x86_64.
+  [ "$(uname -m)" = x86_64 ] || return 0
+
   if ! command -v meson >/dev/null 2>&1; then
     echo "Hyprtasking: meson not found; skipping rebuild"
     return 0
