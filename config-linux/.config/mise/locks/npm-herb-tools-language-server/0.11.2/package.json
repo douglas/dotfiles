@@ -2,6 +2,6 @@
   "name": "mise-npm-install",
   "private": true,
   "dependencies": {
-    "@herb-tools/language-server": "0.11.1"
+    "@herb-tools/language-server": "0.11.2"
   }
 }

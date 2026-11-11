@@ -3,50 +3,50 @@
 lockfile_version = 3
 
 [[tools."aqua:CircleCI-Public/circleci-cli"]]
-version = "1.14.0"
+version = "1.15.0"
 backend = "aqua:CircleCI-Public/circleci-cli"
 specifiers = ["latest"]
 
 [tools."aqua:CircleCI-Public/circleci-cli"."platforms.linux-arm64"]
-checksum = "sha256:d1cfb57078bcd0d3ff4c20f2765574e1f1022a3ba41cf164acd36a521a7a35f0"
+checksum = "sha256:8d5ed374b4f6bd5bb6eec1b600f4a5ee7dcda3b4b00fcd26b64e60b1f8619226"
 checksum_source = "mise-versions"
-url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.14.0/circleci-cli_1.14.0_linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/710985566"
+url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.15.0/circleci-cli_1.15.0_linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/733264956"
 
 [tools."aqua:CircleCI-Public/circleci-cli"."platforms.linux-arm64-musl"]
-checksum = "sha256:d1cfb57078bcd0d3ff4c20f2765574e1f1022a3ba41cf164acd36a521a7a35f0"
+checksum = "sha256:8d5ed374b4f6bd5bb6eec1b600f4a5ee7dcda3b4b00fcd26b64e60b1f8619226"
 checksum_source = "mise-versions"
-url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.14.0/circleci-cli_1.14.0_linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/710985566"
+url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.15.0/circleci-cli_1.15.0_linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/733264956"
 
 [tools."aqua:CircleCI-Public/circleci-cli"."platforms.linux-x64"]
-checksum = "sha256:5d0227b38ad65b2fb23ef1fbebfe98851c77102f76a72df2273eacca941665c4"
-url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.14.0/circleci-cli_1.14.0_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/710985669"
+checksum = "sha256:a87a7c8c337f6633daf8f175a58a9847cb7ca3a4c12dcf3334d3a8ab31a34487"
+url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.15.0/circleci-cli_1.15.0_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/733264922"
 
 [tools."aqua:CircleCI-Public/circleci-cli"."platforms.linux-x64-musl"]
-checksum = "sha256:5d0227b38ad65b2fb23ef1fbebfe98851c77102f76a72df2273eacca941665c4"
+checksum = "sha256:a87a7c8c337f6633daf8f175a58a9847cb7ca3a4c12dcf3334d3a8ab31a34487"
 checksum_source = "mise-versions"
-url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.14.0/circleci-cli_1.14.0_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/710985669"
+url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.15.0/circleci-cli_1.15.0_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/733264922"
 
 [tools."aqua:CircleCI-Public/circleci-cli"."platforms.macos-arm64"]
-checksum = "sha256:ae3a9d0399bafc9169a6fca7bced2e0a35a51e1e870d6efc56955cb99b29941b"
+checksum = "sha256:aca96a5ee7f3b495a7beb0eab7b18a967a23ed321274456fe6c451e34e0d8066"
 checksum_source = "mise-versions"
-url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.14.0/circleci-cli_1.14.0_darwin_arm64.tar.gz"
-url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/710985569"
+url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.15.0/circleci-cli_1.15.0_darwin_arm64.tar.gz"
+url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/733264917"
 
 [tools."aqua:CircleCI-Public/circleci-cli"."platforms.macos-x64"]
-checksum = "sha256:a295caffc6ce879179f394c21df7775cbe286ad5bfe0fc003903d84065989145"
+checksum = "sha256:ee899fc98e32ca3142f669b573ba0b3f76faa503e38e34f010780a6880ed9d69"
 checksum_source = "mise-versions"
-url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.14.0/circleci-cli_1.14.0_darwin_amd64.tar.gz"
-url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/710985568"
+url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.15.0/circleci-cli_1.15.0_darwin_amd64.tar.gz"
+url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/733264958"
 
 [tools."aqua:CircleCI-Public/circleci-cli"."platforms.windows-x64"]
-checksum = "sha256:14f0beca9946d53582b694b1922c896f6f10c5dd7de1f37e22fe96d8008346fb"
+checksum = "sha256:0008b5d86c10916f622a320ed1971e3003cd7183f3e99cdf7800e8cc743031f5"
 checksum_source = "mise-versions"
-url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.14.0/circleci-cli_1.14.0_windows_amd64.zip"
-url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/710985567"
+url = "https://github.com/CircleCI-Public/circleci-cli/releases/download/v1.15.0/circleci-cli_1.15.0_windows_amd64.zip"
+url_api = "https://api.github.com/repos/CircleCI-Public/circleci-cli/releases/assets/733264920"
 
 [[tools."aqua:EmbarkStudios/cargo-deny"]]
 version = "0.20.2"
@@ -221,7 +221,7 @@ url_api = "https://api.github.com/repos/max-sixty/worktrunk/releases/assets/6605
 provenance = "cosign"
 
 [[tools."github:rustsec/rustsec"]]
-version = "0.22.2"
+version = "0.23.0"
 backend = "github:rustsec/rustsec"
 specifiers = ["latest"]
 
@@ -229,49 +229,49 @@ specifiers = ["latest"]
 version_prefix = "cargo-audit/v"
 
 [tools."github:rustsec/rustsec"."platforms.linux-arm64"]
-checksum = "sha256:c6603814ddaa45e51263dafd31c0ac98808f688d26f7395804f9670b0fd599dd"
+checksum = "sha256:00eff3158429b9629abe8748e971f29f99ee53d4cff54a25072cbb15167bdda8"
 checksum_source = "mise-versions"
-url = "https://github.com/rustsec/rustsec/releases/download/cargo-audit/v0.22.2/cargo-audit-aarch64-unknown-linux-gnu-v0.22.2.tgz"
-url_api = "https://api.github.com/repos/rustsec/rustsec/releases/assets/439292355"
+url = "https://github.com/rustsec/rustsec/releases/download/cargo-audit/v0.23.0/cargo-audit-aarch64-unknown-linux-gnu-v0.23.0.tgz"
+url_api = "https://api.github.com/repos/rustsec/rustsec/releases/assets/731640864"
 
 [tools."github:rustsec/rustsec"."platforms.linux-arm64-musl"]
-checksum = "sha256:c6603814ddaa45e51263dafd31c0ac98808f688d26f7395804f9670b0fd599dd"
+checksum = "sha256:00eff3158429b9629abe8748e971f29f99ee53d4cff54a25072cbb15167bdda8"
 checksum_source = "mise-versions"
-url = "https://github.com/rustsec/rustsec/releases/download/cargo-audit/v0.22.2/cargo-audit-aarch64-unknown-linux-gnu-v0.22.2.tgz"
-url_api = "https://api.github.com/repos/rustsec/rustsec/releases/assets/439292355"
+url = "https://github.com/rustsec/rustsec/releases/download/cargo-audit/v0.23.0/cargo-audit-aarch64-unknown-linux-gnu-v0.23.0.tgz"
+url_api = "https://api.github.com/repos/rustsec/rustsec/releases/assets/731640864"
 
 [tools."github:rustsec/rustsec"."platforms.linux-x64"]
-checksum = "sha256:ab28a1bdb54db4d5d8ad5981cf1f959410370b3d28250dbd35f6a44248620e39"
-url = "https://github.com/rustsec/rustsec/releases/download/cargo-audit/v0.22.2/cargo-audit-x86_64-unknown-linux-gnu-v0.22.2.tgz"
-url_api = "https://api.github.com/repos/rustsec/rustsec/releases/assets/439291614"
+checksum = "sha256:b77993532b253fcbf550996d7716465ec3d734d4e74e7f87bfb65a19add0fb59"
+url = "https://github.com/rustsec/rustsec/releases/download/cargo-audit/v0.23.0/cargo-audit-x86_64-unknown-linux-gnu-v0.23.0.tgz"
+url_api = "https://api.github.com/repos/rustsec/rustsec/releases/assets/731640338"
 
 [tools."github:rustsec/rustsec"."platforms.linux-x64-musl"]
-checksum = "sha256:7fb9497f8594b389e5fce5ef9b92db08432996895b2e0c5a0167a69ed445c428"
+checksum = "sha256:4f01c74ed84b2dffd0b1d37012a62cdf2a92c96e25bdf8eec7fcc0d4d3eb7811"
 checksum_source = "mise-versions"
-url = "https://github.com/rustsec/rustsec/releases/download/cargo-audit/v0.22.2/cargo-audit-x86_64-unknown-linux-musl-v0.22.2.tgz"
-url_api = "https://api.github.com/repos/rustsec/rustsec/releases/assets/439292222"
+url = "https://github.com/rustsec/rustsec/releases/download/cargo-audit/v0.23.0/cargo-audit-x86_64-unknown-linux-musl-v0.23.0.tgz"
+url_api = "https://api.github.com/repos/rustsec/rustsec/releases/assets/731642913"
 
 [tools."github:rustsec/rustsec"."platforms.macos-arm64"]
-checksum = "sha256:ec7ca4263769593df4d909be85b94a6b79efa2897be5d2bb8ebd516e823175af"
+checksum = "sha256:84101204e5b8013c9a8d7251766aebdef3e7fa1a3ef040cde44d65b48b8c4056"
 checksum_source = "mise-versions"
-url = "https://github.com/rustsec/rustsec/releases/download/cargo-audit/v0.22.2/cargo-audit-aarch64-apple-darwin-v0.22.2.tgz"
-url_api = "https://api.github.com/repos/rustsec/rustsec/releases/assets/439291477"
+url = "https://github.com/rustsec/rustsec/releases/download/cargo-audit/v0.23.0/cargo-audit-aarch64-apple-darwin-v0.23.0.tgz"
+url_api = "https://api.github.com/repos/rustsec/rustsec/releases/assets/731649369"
 
 [tools."github:rustsec/rustsec"."platforms.macos-x64"]
-checksum = "sha256:847831323de932155b226ab60ee4a180e13e5d007a019f0d4b7b4d89a6de2ab2"
+checksum = "sha256:845ec02452dd233c292be887700ac99a38a697299423081ee0d8ea1a0c961464"
 checksum_source = "mise-versions"
-url = "https://github.com/rustsec/rustsec/releases/download/cargo-audit/v0.22.2/cargo-audit-x86_64-apple-darwin-v0.22.2.tgz"
-url_api = "https://api.github.com/repos/rustsec/rustsec/releases/assets/439292734"
+url = "https://github.com/rustsec/rustsec/releases/download/cargo-audit/v0.23.0/cargo-audit-x86_64-apple-darwin-v0.23.0.tgz"
+url_api = "https://api.github.com/repos/rustsec/rustsec/releases/assets/731639243"
 
 [tools."github:rustsec/rustsec"."platforms.windows-x64"]
-checksum = "sha256:0a7316540862c13d954f648917ceacca593747baed6eec180fafa590be2710ab"
+checksum = "sha256:aafeb61206730029601a72e669a12231f8674427e6248d02f6cb382cb36d56b4"
 checksum_source = "mise-versions"
-url = "https://github.com/rustsec/rustsec/releases/download/cargo-audit/v0.22.2/cargo-audit-x86_64-pc-windows-msvc-v0.22.2.zip"
-url_api = "https://api.github.com/repos/rustsec/rustsec/releases/assets/439294720"
+url = "https://github.com/rustsec/rustsec/releases/download/cargo-audit/v0.23.0/cargo-audit-x86_64-pc-windows-msvc-v0.23.0.zip"
+url_api = "https://api.github.com/repos/rustsec/rustsec/releases/assets/731651972"
 
 [[tools."npm:@herb-tools/language-server"]]
-version = "0.11.1"
-aube = { path = "locks/npm-herb-tools-language-server/0.11.1", digest = "sha256:04954eda07d1b24621e82154df06832bc8f3a7484574ec080c1c3c9fcfe4d71f" }
+version = "0.11.2"
+aube = { path = "locks/npm-herb-tools-language-server/0.11.2", digest = "sha256:fac134f779600cb221220513eb6bce903103ce8730a315d76057b9e0456bde61" }
 backend = "npm:@herb-tools/language-server"
 specifiers = ["latest"]
 
