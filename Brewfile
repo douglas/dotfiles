@@ -31,6 +31,7 @@ brew "git-workspace"
 brew "gitui"
 brew "glances"
 brew "gnupg"
+brew "git-remote-gcrypt" # biblo sync (encrypted git remote)
 brew "grpc"
 brew "grype"
 brew "handbrake"
