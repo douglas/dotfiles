@@ -336,7 +336,9 @@ update_sublime_merge() {
     return
   fi
 
-  mv "$tmp" "$preferences"
+  # Write through the Stow symlink; mv would replace the link with a file.
+  cat "$tmp" >"$preferences"
+  rm -f "$tmp"
 }
 
 update_typora() {
