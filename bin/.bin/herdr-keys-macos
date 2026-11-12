@@ -1,0 +1,32 @@
+#!/bin/bash
+# Regenerate the Mac's herdr keys.json from the Linux one, so the same keys do
+# the same things on both: Herdr's Mac defaults (Cmd+C, Cmd+T, Cmd+1...),
+# then every Linux key on top (Linux wins where both bind a key). Run it after
+# changing config-omarchy/.config/herdr-app/keys.json, then commit both.
+#
+#   herdr-keys-macos [herdr release tag]   default: v0.1.15
+set -euo pipefail
+
+tag=${1:-v0.1.15}
+repo=$HOME/.public_dotfiles
+linux=$repo/config-omarchy/.config/herdr-app/keys.json
+mac=$repo/config-macos/.config/herdr-app/keys.json
+
+git -C "$HOME/src/herdr-app" show "$tag:defaults/keys.macos.json" |
+  python3 -I -c '
+import json, sys
+mac = json.load(sys.stdin)
+linux = json.load(open(sys.argv[1]))
+for section, keys in linux.items():
+    mac.setdefault(section, {}).update(keys)
+# Option+Left/Right move by word in a Mac terminal, which would hide the
+# Linux pane moves on Alt+Left/Right; Ctrl+Left/Right move by word, as on Linux.
+for key in ("alt-left", "alt-right"):
+    mac["terminal"].pop(key, None)
+# Cmd+K opens the picker on Linux (xremap turns Cmd+K into Ctrl+Shift+K).
+mac["global"]["cmd-k"] = "mod.open:picker"
+with open(sys.argv[2], "w") as out:
+    json.dump(mac, out, indent=2, ensure_ascii=True)
+    out.write("\n")
+' "$linux" "$mac"
+git -C "$repo" diff --stat -- "$mac"
