@@ -7,14 +7,15 @@
 colors="$HOME/.local/state/omarchy/current/theme/colors.toml"
 accent="$(sed -nE 's/^accent[[:space:]]*=[[:space:]]*"#([0-9a-fA-F]{6})".*/\1/p' "$colors" 2>/dev/null)"
 
-# Window corners from Appearance > Window Corners (omarchy4mac's
-# omarchy-appearance): sharp is square, theme and rounded are round.
-style=round
-[[ "$(cat "$HOME/.config/omarchy/window-corners" 2>/dev/null)" == sharp ]] && style=square
+# Square, like Omarchy's windows (rounding = 0). Appearance > Window Corners
+# (omarchy4mac's omarchy-appearance) set to rounded makes them round, like
+# Omarchy's rounded-corners toggle.
+style=square
+[[ "$(cat "$HOME/.config/omarchy/window-corners" 2>/dev/null)" == rounded ]] && style=round
 
 options=(
   style="$style"
-  width=5.0
+  width=2.0 # Omarchy's border_size
   hidpi=on
   active_color="0xff${accent:-89b4fa}"
   inactive_color=0xaa595959
