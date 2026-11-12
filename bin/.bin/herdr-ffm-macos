@@ -20,6 +20,7 @@ zig_key=$(sed -n 's/^_zigkey=//p' "$pkg/PKGBUILD")
 zig_dir=$HOME/.cache/herdr-ffm/zig-aarch64-macos-$zig_ver
 if [[ ! -x $zig_dir/zig ]]; then
   tarball=$zig_dir.tar.xz
+  mkdir -p "$(dirname "$zig_dir")"
   curl -fsSLo "$tarball" "https://ziglang.org/download/$zig_ver/zig-aarch64-macos-$zig_ver.tar.xz"
   echo "$zig_sha  $tarball" | shasum -a 256 -c -
   if command -v minisign >/dev/null; then
