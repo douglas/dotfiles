@@ -474,6 +474,7 @@ update_typora
 # Deploy generated template outputs to app config dirs
 deploy_template_output "bottom.toml" "$HOME/.config/bottom/bottom.toml"
 deploy_template_output "yazi-theme.toml" "$HOME/.config/yazi/theme.toml"
+deploy_template_output "herdr-app.json" "$HOME/.config/herdr-app/themes/omarchy.json"
 
 # Apply generated hyprtasking label colors/effects to the active Hyprland session.
 if command -v hyprctl >/dev/null 2>&1 && [[ -f "$THEME_DIR/hyprtasking-labels.conf" ]]; then
