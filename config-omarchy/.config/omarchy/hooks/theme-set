@@ -476,6 +476,11 @@ deploy_template_output "bottom.toml" "$HOME/.config/bottom/bottom.toml"
 deploy_template_output "yazi-theme.toml" "$HOME/.config/yazi/theme.toml"
 deploy_template_output "herdr-app.json" "$HOME/.config/herdr-app/themes/omarchy.json"
 
+# Re-select the theme so a running Herdr GUI loads the new colors.
+if command -v herdr-app >/dev/null 2>&1 && herdr-app status >/dev/null 2>&1; then
+  herdr-app "do" app.theme --name omarchy >/dev/null 2>&1 || true
+fi
+
 # Apply generated hyprtasking label colors/effects to the active Hyprland session.
 if command -v hyprctl >/dev/null 2>&1 && [[ -f "$THEME_DIR/hyprtasking-labels.conf" ]]; then
   sig=$(ls -1t /run/user/$UID/hypr/*/.socket.sock 2>/dev/null | head -n1 | xargs dirname | xargs basename)
