@@ -29,9 +29,14 @@ keybind = cmd+left=previous_tab
 window-padding-x = 14
 window-padding-y = 14
 
-# Open maximized: AeroSpace-edge tiles the first window full-screen anyway,
-# so a smaller default size only made it jump.
-maximize = true
+# Open screen-sized: AeroSpace-edge tiles the first window full-screen anyway,
+# so a smaller default only made it jump. Oversized values are clamped to the
+# screen. Not `maximize = true`: Ghostty applies that after AeroSpace has
+# tiled the window, so a second window stayed maximized instead of tiling.
+window-width = 1000
+window-height = 1000
+window-position-x = 0
+window-position-y = 0
 
 # Save ghostty window state
 window-save-state = always
