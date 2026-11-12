@@ -25,6 +25,9 @@ for key in ("alt-left", "alt-right"):
     mac["terminal"].pop(key, None)
 # Cmd+K opens the picker on Linux (xremap turns Cmd+K into Ctrl+Shift+K).
 mac["global"]["cmd-k"] = "mod.open:picker"
+# Cmd+Ctrl+Up/Down switch spaces (on Linux, xremap sends Ctrl+Shift+PageUp/Down).
+mac["global"]["ctrl-cmd-up"] = "space.prev"
+mac["global"]["ctrl-cmd-down"] = "space.next"
 with open(sys.argv[2], "w") as out:
     json.dump(mac, out, indent=2, ensure_ascii=True)
     out.write("\n")
