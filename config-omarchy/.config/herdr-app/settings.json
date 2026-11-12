@@ -9,5 +9,6 @@
   "telemetry": false,
   "theme": "omarchy",
   "font_size": 13,
-  "focus_follows_mouse": true
+  "focus_follows_mouse": true,
+  "focus_follows_mouse_delay_ms": 50
 }
