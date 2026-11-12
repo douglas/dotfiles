@@ -130,6 +130,9 @@
   "plugins": [
     {
       "id": "typecraft.omacast"
+    },
+    {
+      "id": "io.voxtype.settings"
     }
   ]
 }
