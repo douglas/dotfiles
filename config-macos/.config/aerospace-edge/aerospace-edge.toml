@@ -1,10 +1,14 @@
-# AeroSpace: Omarchy-style auto-tiling for macOS (⌥ Option = Super; ⌘ stays macOS).
-# Reload with: aerospace reload-config
+# AeroSpace-edge: Omarchy-style auto-tiling for macOS (⌥ Option = Super; ⌘ stays macOS).
+# Reload with: aerospace-edge reload-config
 #
-# Only the window manager: no bar, no helper scripts. Like every macOS tiler,
-# AeroSpace moves a new window after macOS draws it, so it jumps once.
+# Only the window manager: no bar, no helper scripts. Built from source
+# (~/src/AeroSpace-edge, a reviewed tag); never use its in-app updater, which
+# installs whatever GitHub serves without checking a signature.
 
 start-at-login = true
+# Edge-only: move a new tiling window off-screen until its tile is ready, so
+# it doesn't flash at its default spot first.
+new-window-prevent-flicker = true
 config-version = 2
 persistent-workspaces = ['1', '2', '3', '4', '5']
 
