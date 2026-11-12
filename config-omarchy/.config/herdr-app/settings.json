@@ -8,5 +8,6 @@
   "font": "CommitMono Nerd Font",
   "telemetry": false,
   "theme": "omarchy",
-  "font_size": 13
+  "font_size": 13,
+  "focus_follows_mouse": true
 }
