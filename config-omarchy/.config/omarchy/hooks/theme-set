@@ -74,8 +74,8 @@ sed_inplace() {
 }
 
 update_zed() {
-  local theme="${ZED_THEMES[$THEME]}"
-  [[ -z "$theme" ]] && return
+  # Unmapped themes use Omarchy, generated from the theme by zed-theme.json.tpl.
+  local theme="${ZED_THEMES[$THEME]:-Omarchy}"
 
   local settings="$HOME/.config/zed/settings.json"
   [[ -f "$settings" ]] || return
@@ -321,6 +321,9 @@ deploy_template_output() {
   local dest="$2"
   [[ -f "$src" ]] || return
   mkdir -p "$(dirname "$dest")"
+  # Generated files are machine-local, never a Stow link: cp through a link
+  # would write the theme into the dotfiles (once tracked, now dangling).
+  [[ -L "$dest" ]] && rm -f "$dest"
   cp "$src" "$dest"
 }
 
@@ -514,6 +517,7 @@ update_typora
 deploy_template_output "bottom.toml" "$HOME/.config/bottom/bottom.toml"
 deploy_template_output "yazi-theme.toml" "$HOME/.config/yazi/theme.toml"
 deploy_template_output "herdr-app.json" "$HOME/.config/herdr-app/themes/omarchy.json"
+deploy_template_output "zed-theme.json" "$HOME/.config/zed/themes/omarchy.json"
 
 # Re-select the theme so a running Herdr GUI loads the new colors.
 if command -v herdr-app >/dev/null 2>&1 && herdr-app status >/dev/null 2>&1; then
