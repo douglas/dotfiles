@@ -73,7 +73,7 @@ and loads last, so layouts chosen through hyprmoncfg take precedence.
 | `config` | Shared `~/.config/` for ai-usagebar, bat, bottom, btop, bun, delta, fsh, gh, ghostty, herdr, lazydocker, lazygit, pnpm, qalculate, tmux, uv, Warp, wt, yazi, zed |
 | `config-linux` | Linux `~/.config/` (autostart, fcitx5, mise, systemd user units, user-dirs, zed) plus system files: split xremap services, hardening installer, sleep hook, Keychron udev rule |
 | `config-macos` | Cursor editor settings and keybindings |
-| `config-omarchy` | Shared Omarchy config: Neovim, Hyprland Lua, Neosh integration, Omarchy hooks, audio policy, startup, plus alacritty, cmux, foot, hunk, kitty, starship, sublime-merge, and zellij. Legacy Hyprland `.conf` files remain excluded from Stow as migration reference. |
+| `config-omarchy` | Shared Omarchy config: Hyprland Lua, Neosh integration, Omarchy hooks, audio policy, startup, plus alacritty, cmux, foot, herdr-app, hunk, kitty, starship, sublime-merge, and zellij. Neovim uses Omarchy's stock LazyVim. Legacy Hyprland `.conf` files remain excluded from Stow as migration reference. On a machine that already ran the Herdr GUI, delete `~/.config/herdr-app/keys.json` and `settings.json` before restowing, or adoption replaces the tracked ones. |
 | `config-omarchy-desktop` | Ghostty machine config, Zed settings, Hyprland envs for desktop |
 | `config-omarchy-laptop` | Shared laptop monitor/profile entrypoints |
 | `config-omarchy-laptop-t1g` | T1G laptop terminal and Hyprland model overrides |

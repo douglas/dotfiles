@@ -1,0 +1,12 @@
+{
+  "zoom": 1,
+  "sounds": {
+    "enabled": true
+  },
+  "font_ligatures": false,
+  "minimum_contrast": 1,
+  "font": "CommitMono Nerd Font",
+  "telemetry": false,
+  "theme": "omarchy",
+  "font_size": 13
+}
