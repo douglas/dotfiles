@@ -6,13 +6,16 @@
 # installs whatever GitHub serves without checking a signature.
 
 start-at-login = true
-# Edge-only: move a new tiling window off-screen until its tile is ready, so
-# it doesn't flash at its default spot first.
+# Off: parking new windows off-screen didn't help with the re-tile flash.
 new-window-prevent-flicker = false
-# Local build (branch window-redraw-nudge-option): skip the 1px resize after each
-# re-tile. It only helps GTK3 apps, and makes the rest redraw twice and jitter.
+# The keys below need the local build from branch retile-batch-updates in
+# ~/src/AeroSpace-edge; a stock build rejects them.
+# Skip the 1px resize after each re-tile: it only helps GTK3 apps.
 window-redraw-nudge = false
+# Freeze drawing while windows move, so a re-tile shows up all at once.
 retile-pause-screen-updates = true
+# Glide windows to their new tiles, like Hyprland (needs Screen Recording).
+retile-animation = "move"
 config-version = 2
 persistent-workspaces = ['1', '2', '3', '4', '5']
 
