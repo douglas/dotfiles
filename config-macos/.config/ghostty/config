@@ -47,3 +47,6 @@ keybind = alt+right=esc:f
 cursor-style = block
 cursor-style-blink = false
 shell-integration-features = no-cursor,ssh-env
+
+# No "cols x rows" box while the tiler resizes a new window.
+resize-overlay = never

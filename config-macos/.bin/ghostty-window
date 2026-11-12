@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Open a Ghostty window, optionally running a command:
+#
+#   ghostty-window [command...]
+#
+# A running Ghostty opens it through AppleScript, so the window belongs to the
+# process AeroSpace already tracks and tiles at once. `open -na Ghostty`
+# starts a new process instead, which AeroSpace only picks up seconds later.
+# The command is typed into the new shell with `exec`, so it gets the shell's
+# PATH and the window closes when it exits.
+set -euo pipefail
+
+if ! pgrep -xq ghostty; then
+  if (($#)); then exec open -na Ghostty --args -e "$@"; fi
+  exec open -a Ghostty
+fi
+
+input=""
+if (($#)); then input="exec $*"$'\n'; fi
+exec osascript \
+  -e 'on run argv' \
+  -e 'tell application "Ghostty"' \
+  -e 'if item 1 of argv is "" then' \
+  -e 'new window' \
+  -e 'else' \
+  -e 'new window with configuration {initial input:item 1 of argv}' \
+  -e 'end if' \
+  -e 'activate' \
+  -e 'end tell' \
+  -e 'end run' \
+  "$input"

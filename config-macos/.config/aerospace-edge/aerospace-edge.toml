@@ -77,11 +77,11 @@ alt-shift-8 = 'move-node-to-workspace --focus-follows-window 8'
 alt-shift-9 = 'move-node-to-workspace --focus-follows-window 9'
 
 # ---------- Launch (Omarchy's Super+Return, Super+Shift+B, F, N, T) ----------
-alt-enter = 'exec-and-forget open -na Ghostty'
+alt-enter = 'exec-and-forget $HOME/.bin/ghostty-window'
 alt-shift-b = 'exec-and-forget open -a Firefox --args --new-window'
 alt-shift-f = 'exec-and-forget open -a Finder'
-alt-shift-n = 'exec-and-forget open -na Ghostty --args -e nvim'
-alt-shift-t = 'exec-and-forget open -na Ghostty --args -e btop'
+alt-shift-n = 'exec-and-forget $HOME/.bin/ghostty-window nvim'
+alt-shift-t = 'exec-and-forget $HOME/.bin/ghostty-window btop'
 
 # ---------- Service mode (⌥⇧;) ----------
 alt-shift-semicolon = 'mode service'
