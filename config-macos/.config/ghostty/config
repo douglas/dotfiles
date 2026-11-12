@@ -29,10 +29,10 @@ keybind = cmd+left=previous_tab
 window-padding-x = 14
 window-padding-y = 14
 
-# Open screen-sized: AeroSpace-edge tiles the first window full-screen anyway,
-# so a smaller default only made it jump. Oversized values are clamped to the
-# screen. Not `maximize = true`: Ghostty applies that after AeroSpace has
-# tiled the window, so a second window stayed maximized instead of tiling.
+# Open screen-sized: the tiler (OmniWM) tiles the first window full-screen
+# anyway, so a smaller default only made it jump. Oversized values are clamped
+# to the screen. Not `maximize = true`: Ghostty applies that after the tiler
+# has placed the window, so a second window stayed maximized instead of tiling.
 window-width = 1000
 window-height = 1000
 window-position-x = 0

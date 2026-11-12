@@ -4,8 +4,8 @@
 #   ghostty-window [command...]
 #
 # A running Ghostty opens it through AppleScript, so the window belongs to the
-# process AeroSpace already tracks and tiles at once. `open -na Ghostty`
-# starts a new process instead, which AeroSpace only picks up seconds later.
+# process the tiler (OmniWM) already tracks and tiles at once. `open -na
+# Ghostty` starts a new process instead, which a tiler picks up later.
 # The command is typed into the new shell with `exec`, so it gets the shell's
 # PATH and the window closes when it exits.
 set -euo pipefail
