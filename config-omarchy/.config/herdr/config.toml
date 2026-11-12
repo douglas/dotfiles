@@ -1,4 +1,0 @@
-# Herdr's config. Herdr 1 is not installed; Sheprd reads this [keys] table
-# for its prefix chords (herdr-app used ctrl-k as its chord key).
-[keys]
-prefix = "ctrl+k"
