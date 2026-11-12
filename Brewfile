@@ -103,10 +103,9 @@ cask "sublime-merge"
 cask "sublime-text"
 cask "wezterm"
 
-# The Omarchy-style desktop (Install/macOS/install.sh desktop adds SketchyBar
-# and borders from their own tap, trusted one package at a time).
+# The Omarchy-style desktop (Install/macOS/install.sh desktop adds OmniWM, and
+# borders from its author's tap, trusted for that one package).
 brew "btop"
 brew "fastfetch"
 brew "media-control"
 cask "font-hack-nerd-font"
-cask "font-sketchybar-app-font"

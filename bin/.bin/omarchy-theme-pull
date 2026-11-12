@@ -8,7 +8,7 @@
 # copies that folder from the Linux machine to the same place here. The Mac's
 # Ghostty and Neovim configs read it the way they do on Linux; this script
 # then does what Hyprland and Omarchy's bar do there: the btop theme link,
-# SketchyBar's palette, the window borders, the wallpaper and dark mode.
+# OmniWM's bar palette, the window borders, the wallpaper and dark mode.
 # Rerun it after switching themes on Linux.
 set -euo pipefail
 
@@ -29,23 +29,6 @@ color() { sed -nE "s/^$1[[:space:]]*=[[:space:]]*\"#([0-9a-fA-F]{6})\".*/\1/p" "
 # btop: the shared btop.conf picks the "current" theme, as Omarchy links it.
 mkdir -p "$HOME/.config/btop/themes"
 ln -sfn "$theme/btop.theme" "$HOME/.config/btop/themes/current.theme"
-
-# SketchyBar (omarchy4mac) reads its palette from colors.sh, which its
-# checkout ignores.
-bar="$HOME/.config/sketchybar/colors.sh"
-if [[ -d $(dirname "$bar") ]]; then
-  {
-    echo "#!/usr/bin/env bash"
-    echo "# Written by omarchy-theme-pull from Omarchy's colors.toml."
-    printf 'export %s="0x%s%s"\n' \
-      BG ff "$(color background)" BG_TRANS c0 "$(color background)" FG ff "$(color foreground)" \
-      SURFACE ff "$(color selection)" OVERLAY ff "$(color muted)" COMMENT ff "$(color muted)" \
-      ACCENT ff "$(color accent)" RED ff "$(color red)" GREEN ff "$(color green)" \
-      YELLOW ff "$(color yellow)" BLUE ff "$(color blue)" MAGENTA ff "$(color magenta)" \
-      CYAN ff "$(color cyan)" ORANGE ff "$(color orange)"
-  } >"$bar"
-  sketchybar --reload >/dev/null 2>&1 || true
-fi
 
 # OmniWM's bar (OmniShell) reads palettes from its shell folder's themes/.
 # Omarchy has one palette per theme, so light and dark get the same roles.
