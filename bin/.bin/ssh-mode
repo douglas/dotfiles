@@ -63,8 +63,14 @@ case "${1:-}" in
     for number in "${numbers[@]}"; do
       sudo ufw --force delete "$number" >/dev/null
     done
-    sudo systemctl disable --now sshd.service 2>/dev/null
-    echo "SSH is off."
+    # On a machine set up as an always-on SSH hub (10-ssh-hub.conf), sshd
+    # stays on; only ssh-mode's own firewall rules go.
+    if [[ -f /etc/ssh/sshd_config.d/10-ssh-hub.conf ]]; then
+      echo "SSH hub: sshd stays on for its hub rules."
+    else
+      sudo systemctl disable --now sshd.service 2>/dev/null
+      echo "SSH is off."
+    fi
     show_status
     ;;
   status)
