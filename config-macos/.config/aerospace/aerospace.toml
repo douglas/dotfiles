@@ -41,14 +41,13 @@ exec-on-workspace-change = ['/bin/bash', '-c',
 
 # omarchy4mac pins workspaces to its author's VA2446 monitors; that block is
 # left out, so workspaces follow whichever monitor they were opened on.
-# Omarchy's gaps: gaps_in = 5 on each window (10 between two), gaps_out = 10.
 [gaps]
-inner.horizontal = 10
-inner.vertical = 10
-outer.left = 10
-outer.bottom = 10
-outer.top = 42   # 32 (SketchyBar height) + 10
-outer.right = 10
+inner.horizontal = 8
+inner.vertical = 8
+outer.left = 8
+outer.bottom = 8
+outer.top = 40   # 32 (SketchyBar height) + 8 (visual gap)
+outer.right = 8
 
 [mode.main.binding]
 # ⌘ stays exactly as macOS has it (text navigation, tabs, quitting apps), and
@@ -253,15 +252,10 @@ run = 'layout floating'
 # screensaver rule, so its Ghostty window floats where it is.
 
 # 2: terminals
-#
-# Not Ghostty: macOS reports each of its native tabs as a window, so moving
-# "new windows" to 2 also moves new tabs, and the tab group shrinks. Ghostty
-# stays tiled where it opens instead, as Ghostty's docs recommend
-# (https://ghostty.org/docs/help/macos-tiling-wms).
 
 [[on-window-detected]]
 if.app-id = 'com.mitchellh.ghostty'
-run = 'layout tiling'
+run = 'move-node-to-workspace 2'
 
 [[on-window-detected]]
 if.app-id = 'com.termius-dmg.mac'

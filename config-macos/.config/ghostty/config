@@ -21,38 +21,9 @@ font-style = Regular
 font-size = 17
 font-thicken = true
 
-# Tabs are tmux windows here, not macOS tabs. macOS reports each native tab as
-# a window, so AeroSpace tiled every new tab beside the old one and halved the
-# terminal. Each Ghostty window runs its own tmux session (it ends when the
-# window closes), and the tab keys drive tmux through its prefix (Ctrl+S, \x13,
-# from ~/.config/tmux/tmux.conf): cmd+t new, cmd+w close, cmd+left/right and
-# ctrl+shift+left/right (as on Linux) move, cmd+1..9 and ctrl+alt+1..9 jump.
-# `ghostty -e cmd` (the AeroSpace launchers) runs cmd directly, without tmux.
-command = /opt/homebrew/bin/tmux new-session \; set-option destroy-unattached on
-keybind = cmd+t=text:\x13c
-keybind = cmd+w=text:\x13:kill-window\r
-keybind = cmd+right=text:\x13n
-keybind = cmd+left=text:\x13p
-keybind = ctrl+shift+arrow_right=text:\x13n
-keybind = ctrl+shift+arrow_left=text:\x13p
-keybind = cmd+1=text:\x131
-keybind = cmd+2=text:\x132
-keybind = cmd+3=text:\x133
-keybind = cmd+4=text:\x134
-keybind = cmd+5=text:\x135
-keybind = cmd+6=text:\x136
-keybind = cmd+7=text:\x137
-keybind = cmd+8=text:\x138
-keybind = cmd+9=text:\x139
-keybind = ctrl+alt+1=text:\x131
-keybind = ctrl+alt+2=text:\x132
-keybind = ctrl+alt+3=text:\x133
-keybind = ctrl+alt+4=text:\x134
-keybind = ctrl+alt+5=text:\x135
-keybind = ctrl+alt+6=text:\x136
-keybind = ctrl+alt+7=text:\x137
-keybind = ctrl+alt+8=text:\x138
-keybind = ctrl+alt+9=text:\x139
+# Move between tabs like iterm2
+keybind = cmd+right=next_tab
+keybind = cmd+left=previous_tab
 
 # Padding (matches Linux 14)
 window-padding-x = 14
@@ -65,9 +36,8 @@ window-width = 127
 # Save ghostty window state
 window-save-state = always
 
-# No title bar, like Omarchy's windows: macOS only rounds the corners of
-# windows that have one, so these are square. Tabs are tmux's (above).
-window-decoration = none
+# Use a different titlebar configuration for macOS
+macos-titlebar-style = tabs
 
 macos-option-as-alt = left
 keybind = alt+left=esc:b
