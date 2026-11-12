@@ -1,0 +1,10 @@
+[Unit]
+Description=Put the dotfiles link back when the Omarchy shell replaces shell.json
+
+[Path]
+# The folder, not the file: through the link, systemd would watch the dotfiles
+# copy and miss the link being replaced.
+PathChanged=%h/.config/omarchy
+
+[Install]
+WantedBy=default.target

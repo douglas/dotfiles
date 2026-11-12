@@ -1,0 +1,16 @@
+#!/bin/bash
+# Omarchy's shell saves shell.json by writing a new file and renaming it over
+# the old one, which replaces the dotfiles link with a plain file. Then the
+# machine drifts and the next update-dotfiles stops on a stow conflict. Copy
+# what the shell saved into the dotfiles copy and put the link back, so the
+# change shows up in git and reaches the other machines.
+set -euo pipefail
+
+live=$HOME/.config/omarchy/shell.json
+tracked=$HOME/.public_dotfiles/config-omarchy/.config/omarchy/shell.json
+
+[[ -f $live && ! -L $live && -f $tracked ]] || exit 0
+# A half-written or broken file stays as it is for a person to look at.
+jq empty "$live" 2>/dev/null || exit 0
+cat "$live" >"$tracked"
+ln -sfn ../../.public_dotfiles/config-omarchy/.config/omarchy/shell.json "$live"

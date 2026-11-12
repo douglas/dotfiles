@@ -1,0 +1,6 @@
+[Unit]
+Description=Put the dotfiles link back when the Omarchy shell replaces shell.json
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/omarchy-shell-json-relink
