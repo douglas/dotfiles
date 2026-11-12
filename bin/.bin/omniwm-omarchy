@@ -91,6 +91,9 @@ hotkey("resizeContainerPrimarySpan.shrink", "Unassigned")
 hotkey("resizeContainerPrimarySpan.grow", "Unassigned")
 hotkey("resizeFocusedWindow.shrink", "Option+Minus")  # SUPER+MINUS
 hotkey("resizeFocusedWindow.grow", "Option+Equal")  # SUPER+EQUAL
+# Super+Space is Omarchy's launcher: OmniWM's command palette in launcher
+# mode (apps, saved commands, CLI tools), in place of Spotlight's shortcut.
+hotkey("openCommandPalette.applications", "Command+Space")
 
 with open(path, "w") as f:
     f.write(s)
