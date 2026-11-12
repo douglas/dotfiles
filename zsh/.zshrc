@@ -126,3 +126,6 @@ eval "$(zoxide init --cmd cd zsh)"
 
 
 if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
+# [Certiv Scout CA merge v2]
+[ -r "/Library/Application Support/ai.certiv.scout/ca-merge.sh" ] && . "/Library/Application Support/ai.certiv.scout/ca-merge.sh"
+# [/Certiv Scout CA merge v2]
