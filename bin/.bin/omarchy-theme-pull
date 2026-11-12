@@ -47,6 +47,29 @@ if [[ -d $(dirname "$bar") ]]; then
   sketchybar --reload >/dev/null 2>&1 || true
 fi
 
+# OmniWM's bar (OmniShell) reads palettes from its shell folder's themes/.
+# Omarchy has one palette per theme, so light and dark get the same roles.
+omnishell="$HOME/.config/omniwm/shell"
+if [[ -d $omnishell ]]; then
+  mkdir -p "$omnishell/themes"
+  roles="$(
+    printf '%s = "#%s"\n' \
+      background "$(color darker_background)" surface "$(color dark_background)" \
+      elevatedSurface "$(color background)" foreground "$(color foreground)" \
+      secondaryForeground "$(color light_foreground)" mutedForeground "$(color dark_foreground)" \
+      border "$(color muted)" accent "$(color accent)" accentForeground "$(color darker_background)" \
+      success "$(color green)" warning "$(color yellow)" error "$(color red)" focus "$(color accent)" \
+      shadow "$(color darker_background)" badge "$(color red)" red "$(color red)" \
+      orange "$(color orange)" yellow "$(color yellow)" green "$(color green)" mint "$(color cyan)" \
+      teal "$(color cyan)" cyan "$(color cyan)" blue "$(color blue)" indigo "$(color blue)" \
+      purple "$(color magenta)" pink "$(color magenta)" brown "$(color brown)" gray "$(color muted)"
+  )"
+  {
+    echo "# Written by omarchy-theme-pull from Omarchy's colors.toml ($(<"$state/theme.name"))."
+    printf '\n[light]\n%s\n\n[dark]\n%s\n' "$roles" "$roles"
+  } >"$omnishell/themes/omarchy.toml"
+fi
+
 # Borders read the accent from colors.toml when they start.
 brew services restart borders >/dev/null 2>&1 || true
 

@@ -49,28 +49,34 @@ def hotkey(action, binding):
         sys.exit(f"missing hotkey {action}")
 
 
-# Hyprland's layout, Omarchy's gaps (gaps_in 5 per side, gaps_out 10) below
-# SketchyBar (32 px), focus follows the mouse (follow_mouse = 1).
+# Hyprland's layout, Omarchy's gaps (gaps_in 5 per side, gaps_out 10), focus
+# follows the mouse (follow_mouse = 1).
 setting("general", "defaultLayoutType", '"dwindle"')
-setting("general", "ipcEnabled", "true")  # omniwmctl, for SketchyBar
 setting("gaps", "size", "10.0")
 # A lone window fills the outer-gap frame only with fullscreenUsesOuterGaps
-# (otherwise it covers the whole screen). The top gap counts from the screen
-# top: 42 = SketchyBar's 32 + 10. With two or more windows OmniWM 0.8 adds the
-# inner gap at the edges as well (reported upstream), so those get 20.
+# (otherwise it covers the whole screen). The bar reserves its own height, and
+# the top gap counts from the screen top, the menu bar (27.5) included. With
+# two or more windows OmniWM 0.8 adds the inner gap at the edges as well
+# (reported upstream), so those get 20.
 setting("gaps", "fullscreenUsesOuterGaps", "true")
-setting("gaps.outer", "top", "42.0")
+setting("gaps.outer", "top", "37.5")
 setting("gaps.outer", "left", "10.0")
 setting("gaps.outer", "right", "10.0")
 setting("gaps.outer", "bottom", "10.0")
 setting("focus", "followsMouse", "true")
-# SketchyBar is the bar, and JankyBorders draws the themed borders.
-setting("workspaceBar", "enabled", "false")
+# OmniWM's bar (OmniShell, laid out below) replaces the menu bar; JankyBorders
+# draws the themed borders.
+setting("workspaceBar", "enabled", "true")
 setting("borders", "enabled", "false")
-# The menu bar is hidden by macOS itself (install.sh) and SketchyBar sits on
-# top. OmniWM's own hidden bar reveals the native menu bar on clicks near the
-# top, which showed through SketchyBar.
+# OmniWM's hidden bar conceals menu bar icons, which needs Full Disk Access.
 setting("hiddenBar", "enabled", "false")
+
+# Hardening for a managed Mac (see the OmniWM review): Homebrew updates it,
+# nothing drives it over IPC, and no widget sends the playing song to
+# lrclib.net. Weather (Open-Meteo, the city below) stays for the bar.
+setting("general", "updateChecksEnabled", "false")
+setting("general", "ipcEnabled", "false")
+setting("shellPermissions.services", "lyrics", "false")
 
 # Omarchy's tiling keys (default/hypr/bindings/tiling.lua), Super -> Option.
 hotkey("closeFocusedWindow", "Option+W")  # SUPER+W
@@ -89,3 +95,39 @@ hotkey("resizeFocusedWindow.grow", "Option+Equal")  # SUPER+EQUAL
 with open(path, "w") as f:
     f.write(s)
 print(f"omniwm-omarchy: updated {path}")
+
+# The bar, laid out like Omarchy's (~/.config/omarchy/shell.json on Linux):
+# menu and workspaces left; indicators, clock, other cities and weather in the
+# middle; keyboard, stats, bluetooth, network, audio, battery and power right.
+# The palette is the one omarchy-theme-pull writes from the desktop's theme.
+SHELL_TOML = """\
+# Written by omniwm-omarchy: OmniShell laid out like the Omarchy bar.
+profile = "default"
+
+[weather]
+city = "Montreal"
+units = "celsius"
+refresh = 15
+
+[profiles.default]
+theme = "omarchy"
+leading = ["apple-menu", "workspaces"]
+center = ["privacy", "clock", "world-clock", "weather"]
+trailing = ["input-source", "system-stats", "bluetooth", "wifi", "volume", "battery", "control-center"]
+
+[profiles.default.workspaceBar]
+height = 32
+barFill = "elevatedSurface"
+
+[profiles.default.widgets.workspaces]
+indicator = "numbers"
+
+[profiles.default.widgets.world-clock]
+zones = [{ label = "San Francisco", zone = "America/Los_Angeles" }]
+bar = 1
+"""
+shell = os.path.join(os.path.dirname(path), "shell", "shell.toml")
+os.makedirs(os.path.dirname(shell), exist_ok=True)
+with open(shell, "w") as f:
+    f.write(SHELL_TOML)
+print(f"omniwm-omarchy: wrote {shell}")
