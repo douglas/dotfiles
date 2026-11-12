@@ -1,1 +1,14 @@
-../../../config-omarchy/.config/herdr-app/settings.json
+{
+  "zoom": 1.2,
+  "sounds": {
+    "enabled": true
+  },
+  "font": "CommitMono Nerd Font",
+  "font_size": 13.0,
+  "font_ligatures": false,
+  "telemetry": false,
+  "focus_follows_mouse": true,
+  "focus_follows_mouse_delay_ms": 50,
+  "minimum_contrast": 1.0,
+  "theme": "omarchy"
+}
