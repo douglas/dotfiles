@@ -102,3 +102,17 @@ function grs() {
 	local commit_count="${1:-1}"
 	git reset "HEAD~${commit_count}"
 }
+
+# Terminal title: over SSH, name the pane after the machine (short hostname),
+# so herdr and Ghostty show where you are. Locally in herdr, clear it so the
+# pane shows its own label again after you leave an SSH session (Ghostty sets
+# its own title, so leave that alone).
+autoload -Uz add-zsh-hook
+function _set_terminal_title() {
+	if [[ -n $SSH_CONNECTION ]]; then
+		print -Pn '\e]2;%m\a'
+	elif [[ $TERM_PROGRAM == herdr ]]; then
+		print -n '\e]2;\a'
+	fi
+}
+add-zsh-hook precmd _set_terminal_title
