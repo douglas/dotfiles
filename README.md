@@ -9,7 +9,7 @@ Each top-level directory is a dotlayer package. Dotlayer detects OS, profile, di
 ```
 config/                 # Shared app configs (bat, ghostty, gh, lazygit, uv, yazi, etc.)
 config-linux/           # Linux-only system files (udev rules, systemd hooks)
-config-macos/           # macOS-only configs (Cursor editor)
+config-macos/           # macOS-only configs (Cursor editor, herdr-app)
 config-omarchy/         # Shared Omarchy base (Hyprland Lua, keybindings)
 config-omarchy-desktop/ # Desktop overrides (font size, window dimensions)
 config-omarchy-laptop/  # Shared laptop glue (monitor/profile entrypoints)
@@ -72,7 +72,7 @@ and loads last, so layouts chosen through hyprmoncfg take precedence.
 | `zsh` | `.zshrc` and `~/.zsh/` — extensions (git, fzf, networking, Rails), Catppuccin theme |
 | `config` | Shared `~/.config/` for ai-usagebar, bat, bottom, btop, bun, delta, fsh, gh, ghostty, herdr, lazydocker, lazygit, pnpm, qalculate, tmux, uv, Warp, wt, yazi, zed |
 | `config-linux` | Linux `~/.config/` (autostart, fcitx5, mise, systemd user units, user-dirs, zed) plus system files: split xremap services, hardening installer, sleep hook, Keychron udev rule |
-| `config-macos` | Cursor editor settings and keybindings |
+| `config-macos` | Cursor editor settings and keybindings, and herdr-app: Herdr's Mac keys plus the same custom keys as Linux, the Linux mods (linked, not copied), a fixed copy of the Omarchy theme, and the Linux settings without focus follows mouse (the Homebrew build lacks it, and would drop the keys when it saves) |
 | `config-omarchy` | Shared Omarchy config: Hyprland Lua, Neosh integration, Omarchy hooks, audio policy, startup, plus alacritty, cmux, foot, herdr-app, hunk, kitty, starship, sublime-merge, and zellij. Neovim uses Omarchy's stock LazyVim. Legacy Hyprland `.conf` files remain excluded from Stow as migration reference. On a machine that already ran the Herdr GUI, delete `~/.config/herdr-app/keys.json` and `settings.json` before restowing, or adoption replaces the tracked ones. |
 | `config-omarchy-desktop` | Ghostty machine config, Zed settings, Hyprland envs for desktop |
 | `config-omarchy-laptop` | Shared laptop monitor/profile entrypoints |
