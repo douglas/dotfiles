@@ -29,9 +29,9 @@ keybind = cmd+left=previous_tab
 window-padding-x = 14
 window-padding-y = 14
 
-# Default terminal height I normally use
-window-height = 34
-window-width = 127
+# Open maximized: AeroSpace-edge tiles the first window full-screen anyway,
+# so a smaller default size only made it jump.
+maximize = true
 
 # Save ghostty window state
 window-save-state = always
