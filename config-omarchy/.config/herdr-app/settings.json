@@ -1,14 +1,14 @@
 {
-  "zoom": 1,
+  "zoom": 1.0,
   "sounds": {
     "enabled": true
   },
-  "font_ligatures": false,
-  "minimum_contrast": 1,
   "font": "CommitMono Nerd Font",
+  "font_size": 13.0,
+  "font_ligatures": false,
   "telemetry": false,
-  "theme": "omarchy",
-  "font_size": 13,
   "focus_follows_mouse": true,
-  "focus_follows_mouse_delay_ms": 50
+  "focus_follows_mouse_delay_ms": 50,
+  "minimum_contrast": 1.0,
+  "theme": "omarchy"
 }
