@@ -95,6 +95,10 @@ hotkey("resizeContainerPrimarySpan.shrink", "Unassigned")
 hotkey("resizeContainerPrimarySpan.grow", "Unassigned")
 hotkey("resizeFocusedWindow.shrink", "Option+Minus")  # SUPER+MINUS
 hotkey("resizeFocusedWindow.grow", "Option+Equal")  # SUPER+EQUAL
+# Free Omarchy's app keys for macOS Shortcuts: SUPER+SHIFT+B browser and
+# SUPER+SHIFT+F file manager.
+hotkey("balanceSizes", "Unassigned")
+hotkey("toggleContainerFullPrimarySpan", "Unassigned")
 # Super+Space is Omarchy's launcher: OmniWM's command palette in launcher
 # mode (apps, saved commands, CLI tools), in place of Spotlight's shortcut.
 hotkey("openCommandPalette.applications", "Command+Space")
