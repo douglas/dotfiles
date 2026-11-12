@@ -201,6 +201,9 @@ keymap:
       F18-f: Ctrl-Shift-f
       F18-k: Ctrl-Shift-k
       F18-Backspace: Ctrl-u
+      # Cmd+Ctrl+Up/Down switch spaces (Herdr's space.prev/next keys)
+      F18-Ctrl-Up: Ctrl-Shift-PageUp
+      F18-Ctrl-Down: Ctrl-Shift-PageDown
 
   # ============================================================
   # All other apps — Cmd key (F18)
