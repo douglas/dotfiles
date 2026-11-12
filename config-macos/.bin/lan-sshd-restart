@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Restart the user-level sshd LaunchAgent (dev.douglas.lan-sshd) that serves
+# SSH on port 2222:
+#
+#   lan-sshd-restart
+#
+# Loads the agent if launchd doesn't know it yet, otherwise restarts it with
+# `kickstart -k`. Prints the port 2222 listener so you can see it came back.
+set -euo pipefail
+
+label=dev.douglas.lan-sshd
+service="gui/$(id -u)/$label"
+plist="$HOME/Library/LaunchAgents/$label.plist"
+
+if launchctl print "$service" >/dev/null 2>&1; then
+  launchctl kickstart -k "$service"
+else
+  launchctl bootstrap "gui/$(id -u)" "$plist"
+fi
+
+sleep 1
+lsof -nP -iTCP:2222 -sTCP:LISTEN ||
+  { echo "Nothing on 2222; see ~/Library/Logs/lan-sshd.log" >&2; exit 1; }
