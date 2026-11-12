@@ -1,0 +1,127 @@
+# AeroSpace: Omarchy-style auto-tiling for macOS (⌥ Option = Super; ⌘ stays macOS).
+# Reload with: aerospace reload-config
+#
+# Only the window manager: no bar, no helper scripts. Like every macOS tiler,
+# AeroSpace moves a new window after macOS draws it, so it jumps once.
+
+start-at-login = true
+config-version = 2
+persistent-workspaces = ['1', '2', '3', '4', '5']
+
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+
+# Tiles, like Omarchy's default (dwindle): new windows open side by side.
+default-root-container-layout = 'tiles'
+default-root-container-orientation = 'auto'
+
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+
+# Omarchy's gaps. The macOS menu bar stays shown and AeroSpace tiles below it.
+[gaps]
+inner.horizontal = 8
+inner.vertical = 8
+outer.left = 8
+outer.bottom = 8
+outer.top = 8
+outer.right = 8
+
+[mode.main.binding]
+# The window manager lives on ⌥ Option, where Super sits on the desktop's
+# keyboard. Accent keys stay free for typing (⌥C ç, ⌥E ´, ⌥U ¨, ⌥I ˆ, ⌥N ˜, ⌥`).
+
+# ---------- Windows ----------
+alt-w = 'close'                              # Super+W
+alt-f = 'fullscreen'                         # Super+F
+alt-t = 'layout floating tiling'             # Super+T: float / tile
+alt-j = 'layout tiles horizontal vertical'   # Super+J: toggle split
+alt-a = 'layout accordion tiles'
+alt-equal = 'resize smart +50'
+alt-minus = 'resize smart -50'
+
+# ---------- Focus and move (⌃⌥ + arrows; plain ⌥←/→ stays word navigation) ----------
+ctrl-alt-left = 'focus --boundaries all-monitors-outer-frame left'
+ctrl-alt-right = 'focus --boundaries all-monitors-outer-frame right'
+ctrl-alt-up = 'focus --boundaries all-monitors-outer-frame up'
+ctrl-alt-down = 'focus --boundaries all-monitors-outer-frame down'
+ctrl-alt-shift-left = 'move left'
+ctrl-alt-shift-right = 'move right'
+ctrl-alt-shift-up = 'move up'
+ctrl-alt-shift-down = 'move down'
+alt-tab = 'workspace --wrap-around next'
+alt-shift-tab = 'workspace --wrap-around prev'
+ctrl-alt-tab = 'focus-monitor --wrap-around next'
+
+# ---------- Workspaces (Super+1..9, Super+Shift+1..9 moves the window along) ----------
+alt-1 = 'workspace 1'
+alt-2 = 'workspace 2'
+alt-3 = 'workspace 3'
+alt-4 = 'workspace 4'
+alt-5 = 'workspace 5'
+alt-6 = 'workspace 6'
+alt-7 = 'workspace 7'
+alt-8 = 'workspace 8'
+alt-9 = 'workspace 9'
+alt-shift-1 = 'move-node-to-workspace --focus-follows-window 1'
+alt-shift-2 = 'move-node-to-workspace --focus-follows-window 2'
+alt-shift-3 = 'move-node-to-workspace --focus-follows-window 3'
+alt-shift-4 = 'move-node-to-workspace --focus-follows-window 4'
+alt-shift-5 = 'move-node-to-workspace --focus-follows-window 5'
+alt-shift-6 = 'move-node-to-workspace --focus-follows-window 6'
+alt-shift-7 = 'move-node-to-workspace --focus-follows-window 7'
+alt-shift-8 = 'move-node-to-workspace --focus-follows-window 8'
+alt-shift-9 = 'move-node-to-workspace --focus-follows-window 9'
+
+# ---------- Launch (Omarchy's Super+Return, Super+Shift+B, F, N, T) ----------
+alt-enter = 'exec-and-forget open -na Ghostty'
+alt-shift-b = 'exec-and-forget open -a Firefox --args --new-window'
+alt-shift-f = 'exec-and-forget open -a Finder'
+alt-shift-n = 'exec-and-forget open -na Ghostty --args -e nvim'
+alt-shift-t = 'exec-and-forget open -na Ghostty --args -e btop'
+
+# ---------- Service mode (⌥⇧;) ----------
+alt-shift-semicolon = 'mode service'
+
+[mode.service.binding]
+esc = ['reload-config', 'mode main']
+r = ['flatten-workspace-tree', 'mode main']
+f = ['layout floating tiling', 'mode main']
+backspace = ['close-all-windows-but-current', 'mode main']
+
+# ---------- Floats (Omarchy floats system tools, viewers and pickers) ----------
+
+[[on-window-detected]]
+if.app-id = 'com.apple.systempreferences'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.finder'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.1password.1password'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.bitwarden.desktop'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.ActivityMonitor'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.calculator'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.Preview'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.stonerl.Thaw'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.window-title-regex-substring = 'Picture.in.Picture'
+run = 'layout floating'
