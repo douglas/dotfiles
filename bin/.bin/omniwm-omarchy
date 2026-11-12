@@ -1,0 +1,87 @@
+#!/usr/bin/env python3
+"""Give OmniWM Omarchy's look and keys (Option stands in for Super).
+
+  omniwm-omarchy [settings.toml]   default: ~/.config/omniwm/settings.toml
+
+Quit OmniWM first: it rewrites settings.toml itself. Edits the text in place,
+so the keys this leaves alone stay as OmniWM wrote them, and fails loudly if a
+key it expects is missing. Install/macOS/install.sh desktop runs it.
+"""
+
+import os
+import re
+import sys
+
+path = (
+    sys.argv[1]
+    if len(sys.argv) > 1
+    else os.path.expanduser("~/.config/omniwm/settings.toml")
+)
+with open(path) as f:
+    s = f.read()
+
+
+def setting(section, key, value):
+    """Set key = value inside [section] (up to the next header)."""
+    global s
+    m = re.search(
+        rf"^\[{re.escape(section)}\]\n(.*?)(?=^\[)", s, re.DOTALL | re.MULTILINE
+    )
+    if not m:
+        sys.exit(f"missing section [{section}]")
+    body, n = re.subn(
+        rf"^{re.escape(key)} = .*$", f"{key} = {value}", m.group(1), flags=re.MULTILINE
+    )
+    if n != 1:
+        sys.exit(f"missing {section}.{key}")
+    s = s[: m.start(1)] + body + s[m.end(1) :]
+
+
+def hotkey(action, binding):
+    global s
+    s, n = re.subn(
+        rf'^binding = "[^"]*"\nid = "{re.escape(action)}"$',
+        f'binding = "{binding}"\nid = "{action}"',
+        s,
+        flags=re.MULTILINE,
+    )
+    if n != 1:
+        sys.exit(f"missing hotkey {action}")
+
+
+# Hyprland's layout, Omarchy's gaps (gaps_in 5 per side, gaps_out 10) below
+# SketchyBar (32 px), focus follows the mouse (follow_mouse = 1).
+setting("general", "defaultLayoutType", '"dwindle"')
+setting("general", "ipcEnabled", "true")  # omniwmctl, for SketchyBar
+setting("gaps", "size", "10.0")
+# A lone window fills the outer-gap frame only with fullscreenUsesOuterGaps
+# (otherwise it covers the whole screen). The top gap counts from the screen
+# top: 42 = SketchyBar's 32 + 10. With two or more windows OmniWM 0.8 adds the
+# inner gap at the edges as well (reported upstream), so those get 20.
+setting("gaps", "fullscreenUsesOuterGaps", "true")
+setting("gaps.outer", "top", "42.0")
+setting("gaps.outer", "left", "10.0")
+setting("gaps.outer", "right", "10.0")
+setting("gaps.outer", "bottom", "10.0")
+setting("focus", "followsMouse", "true")
+# SketchyBar is the bar, and JankyBorders draws the themed borders.
+setting("workspaceBar", "enabled", "false")
+setting("borders", "enabled", "false")
+
+# Omarchy's tiling keys (default/hypr/bindings/tiling.lua), Super -> Option.
+hotkey("closeFocusedWindow", "Option+W")  # SUPER+W
+hotkey("toggleSplit", "Option+J")  # SUPER+J
+hotkey("toggleColumnTabbed", "Unassigned")  # frees Option+T
+hotkey("toggleFocusedWindowFloating", "Option+T")  # SUPER+T
+hotkey("toggleFullscreen", "Option+F")  # SUPER+F
+hotkey("focusPrevious", "Unassigned")  # frees Option+Tab
+hotkey("switchWorkspace.next", "Option+Tab")  # SUPER+TAB
+hotkey("switchWorkspace.previous", "Option+Shift+Tab")  # SUPER+SHIFT+TAB
+hotkey("resizeContainerPrimarySpan.shrink", "Unassigned")
+hotkey("resizeContainerPrimarySpan.grow", "Unassigned")
+hotkey("resizeFocusedWindow.shrink", "Option+Minus")  # SUPER+MINUS
+hotkey("resizeFocusedWindow.grow", "Option+Equal")  # SUPER+EQUAL
+
+with open(path, "w") as f:
+    f.write(s)
+print(f"omniwm-omarchy: updated {path}")
