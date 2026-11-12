@@ -2,7 +2,7 @@
 	"$schema": "https://vicinae.com/schemas/config.json",
 
 	// Omarchy's launcher on the Mac: Catppuccin Mocha, solid (no glass), on
-	// Command+Space (Raycast's old key). settings.json imports this file; the
+	// Command+Space (Spotlight's key). settings.json imports this file; the
 	// settings GUI writes there, and its values win over these.
 
 	// Hardening (see the Vicinae review): no daily system-info ping, no favicon

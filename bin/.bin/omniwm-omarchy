@@ -99,7 +99,7 @@ hotkey("resizeFocusedWindow.grow", "Option+Equal")  # SUPER+EQUAL
 # SUPER+SHIFT+F file manager.
 hotkey("balanceSizes", "Unassigned")
 hotkey("toggleContainerFullPrimarySpan", "Unassigned")
-# Super+Space is Omarchy's launcher: Raycast keeps Command+Space (OmniWM's
+# Super+Space is Omarchy's launcher: Vicinae has Command+Space (OmniWM's
 # palette can't be themed); Control+Option+Space still opens the palette.
 hotkey("openCommandPalette.applications", "Unassigned")
 
