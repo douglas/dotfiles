@@ -16,6 +16,9 @@
   # side-by-side = true
   line-numbers = true
   features = line-numbers decorations catppuccin-mocha
+[delta "omarchy"]
+  # Omarchy themes without a delta theme: syntax in the terminal's colors.
+  syntax-theme = ansi
 [delta "decorations"]
   commit-decoration-style = bold yellow box ul
   file-style = bold yellow ul

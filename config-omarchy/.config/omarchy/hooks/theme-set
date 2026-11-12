@@ -102,8 +102,8 @@ update_zed() {
 }
 
 update_bat() {
-  local theme="${BAT_THEMES[$THEME]}"
-  [[ -z "$theme" ]] && return
+  # Unmapped themes use bat's ansi theme: the terminal's colors, which Omarchy sets.
+  local theme="${BAT_THEMES[$THEME]:-ansi}"
 
   local config="$HOME/.config/bat/config"
   [[ -f "$config" ]] || return
@@ -112,8 +112,8 @@ update_bat() {
 }
 
 update_delta() {
-  local theme="${DELTA_THEMES[$THEME]}"
-  [[ -z "$theme" ]] && return
+  # Unmapped themes use the omarchy feature in .gitconfig: the terminal's colors.
+  local theme="${DELTA_THEMES[$THEME]:-omarchy}"
 
   local config="$HOME/.gitconfig"
   [[ -f "$config" ]] || return
@@ -201,12 +201,39 @@ generate_starship_palette() {
   fi
 }
 
-update_zellij() {
-  local theme="${ZELLIJ_THEMES[$THEME]}"
-  [[ -z "$theme" ]] && return
+# A zellij theme from the Omarchy theme's colors, for themes zellij doesn't ship.
+generate_zellij_theme() {
+  local accent foreground background red green yellow blue magenta cyan orange
+  load_theme_colors
+  mkdir -p "$HOME/.config/zellij/themes"
+  printf '%s\n' \
+    'themes {' \
+    '  omarchy {' \
+    "    fg \"$foreground\"" \
+    "    bg \"$background\"" \
+    "    black \"$background\"" \
+    "    red \"$red\"" \
+    "    green \"$green\"" \
+    "    yellow \"$yellow\"" \
+    "    blue \"$blue\"" \
+    "    magenta \"$magenta\"" \
+    "    cyan \"$cyan\"" \
+    "    white \"$foreground\"" \
+    "    orange \"${orange:-$yellow}\"" \
+    '  }' \
+    '}' >"$HOME/.config/zellij/themes/omarchy.kdl"
+}
 
+update_zellij() {
   local config="$HOME/.config/zellij/config.kdl"
   [[ -f "$config" ]] || return
+
+  local theme="${ZELLIJ_THEMES[$THEME]}"
+  if [[ -z "$theme" ]]; then
+    [[ -f "$COLORS_TOML" ]] || return
+    generate_zellij_theme
+    theme="omarchy"
+  fi
 
   if grep -q '^theme "' "$config"; then
     sed_inplace "s/^theme \"[^\"]*\"/theme \"$theme\"/" "$config"
