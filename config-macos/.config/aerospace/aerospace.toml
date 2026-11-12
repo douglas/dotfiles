@@ -252,10 +252,15 @@ run = 'layout floating'
 # screensaver rule, so its Ghostty window floats where it is.
 
 # 2: terminals
+#
+# Not Ghostty: macOS reports each of its native tabs as a window, so moving
+# "new windows" to 2 also moves new tabs, and the tab group shrinks. Ghostty
+# stays tiled where it opens instead, as Ghostty's docs recommend
+# (https://ghostty.org/docs/help/macos-tiling-wms).
 
 [[on-window-detected]]
 if.app-id = 'com.mitchellh.ghostty'
-run = 'move-node-to-workspace 2'
+run = 'layout tiling'
 
 [[on-window-detected]]
 if.app-id = 'com.termius-dmg.mac'
