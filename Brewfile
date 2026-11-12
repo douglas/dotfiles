@@ -46,7 +46,7 @@ brew "libpq"
 brew "livekit"
 brew "mkcert"
 brew "mr"
-brew "mysql@8.0", restart_service: true, link: true
+brew "mysql@8.0", link: true # client libraries for the mysql2 gem; the server runs in dox-compose
 brew "neovim"
 brew "nss"
 brew "parallel"
@@ -54,7 +54,7 @@ brew "pdftk-java"
 brew "qpdf"
 brew "rbenv"
 brew "rbspy"
-brew "redis", restart_service: true
+brew "redis" # CLI; the server runs in dox-compose
 brew "ripgrep"
 brew "rsync"
 brew "rubyfmt"
