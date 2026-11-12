@@ -8,7 +8,7 @@
 # copies that folder from the Linux machine to the same place here. The Mac's
 # Ghostty and Neovim configs read it the way they do on Linux; this script
 # then does what Hyprland and Omarchy's bar do there: the btop theme link,
-# the window borders, the wallpaper and dark mode.
+# the wallpaper and dark mode.
 # Rerun it after switching themes on Linux.
 set -euo pipefail
 
@@ -29,9 +29,6 @@ color() { sed -nE "s/^$1[[:space:]]*=[[:space:]]*\"#([0-9a-fA-F]{6})\".*/\1/p" "
 # btop: the shared btop.conf picks the "current" theme, as Omarchy links it.
 mkdir -p "$HOME/.config/btop/themes"
 ln -sfn "$theme/btop.theme" "$HOME/.config/btop/themes/current.theme"
-
-# Borders read the accent from colors.toml when they start.
-brew services restart borders >/dev/null 2>&1 || true
 
 # Wallpaper: macOS can't use .webp, so keep a PNG copy.
 wallpaper="$HOME/Library/Application Support/omarchy/background.png"

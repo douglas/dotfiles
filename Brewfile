@@ -103,8 +103,7 @@ cask "sublime-text"
 cask "vicinae"
 cask "wezterm"
 
-# The Omarchy-style desktop (Install/macOS/install.sh desktop adds
-# borders from its author's tap, trusted for that one package).
+# The Omarchy-style desktop.
 brew "btop"
 brew "fastfetch"
 brew "media-control"
