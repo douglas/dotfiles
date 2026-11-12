@@ -103,16 +103,30 @@ function grs() {
 	git reset "HEAD~${commit_count}"
 }
 
-# Terminal title: over SSH, name the pane after the machine (short hostname),
-# so herdr and Ghostty show where you are. Locally in herdr, clear it so the
-# pane shows its own label again after you leave an SSH session (Ghostty sets
-# its own title, so leave that alone).
+# Terminal title in herdr: when you run `ssh t1g`, name the pane "t1g" (the
+# name you typed), and clear it at the next local prompt so the pane gets its
+# own label back. Ghostty sets its own titles, so this only runs in herdr.
 autoload -Uz add-zsh-hook
-function _set_terminal_title() {
-	if [[ -n $SSH_CONNECTION ]]; then
-		print -Pn '\e]2;%m\a'
-	elif [[ $TERM_PROGRAM == herdr ]]; then
-		print -n '\e]2;\a'
-	fi
+function _ssh_title_preexec() {
+	local -a words=(${(z)1})
+	[[ ${words[1]} == (ssh|mosh) ]] || return
+	local word host skip=0
+	for word in ${words[2,-1]}; do
+		if (( skip )); then
+			skip=0
+		elif [[ $word == -[BbcDEeFIiJLlmOoPpQRSWw] ]]; then
+			skip=1
+		elif [[ $word != -* ]]; then
+			host=${word##*@}
+			break
+		fi
+	done
+	[[ -n $host ]] && print -n "\e]2;${host}\a"
 }
-add-zsh-hook precmd _set_terminal_title
+function _ssh_title_precmd() {
+	print -n '\e]2;\a'
+}
+if [[ $TERM_PROGRAM == herdr && -z $SSH_CONNECTION ]]; then
+	add-zsh-hook preexec _ssh_title_preexec
+	add-zsh-hook precmd _ssh_title_precmd
+fi
