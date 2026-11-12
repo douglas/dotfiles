@@ -67,6 +67,10 @@ setting("focus", "followsMouse", "true")
 # SketchyBar is the bar, and JankyBorders draws the themed borders.
 setting("workspaceBar", "enabled", "false")
 setting("borders", "enabled", "false")
+# The menu bar is hidden by macOS itself (install.sh) and SketchyBar sits on
+# top. OmniWM's own hidden bar reveals the native menu bar on clicks near the
+# top, which showed through SketchyBar.
+setting("hiddenBar", "enabled", "false")
 
 # Omarchy's tiling keys (default/hypr/bindings/tiling.lua), Super -> Option.
 hotkey("closeFocusedWindow", "Option+W")  # SUPER+W
