@@ -23,10 +23,10 @@ local function hyprtasking_action(name, argument)
 end
 
 hl.unbind("CTRL + UP")
+-- Ctrl+Down stays unbound so apps get it, like on the Mac.
 hl.unbind("CTRL + DOWN")
 hl.unbind("mouse:275")
 o.bind("CTRL + UP", "Mission Control", hyprtasking_action("toggle", "all"))
-o.bind("CTRL + DOWN", "Mission Control", hyprtasking_action("toggle", "all"))
 o.bind("mouse:275", nil, hyprtasking_action("toggle", "all"), { mouse = true })
 
 hl.define_submap("hyprtasking", function()
