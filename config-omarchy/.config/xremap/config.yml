@@ -184,6 +184,25 @@ keymap:
       F18-Ctrl-Right: Super-Tab
 
   # ============================================================
+  # Herdr GUI — only keys that differ from the macOS-style section
+  # ============================================================
+  # Herdr is a terminal: Ctrl-c interrupts and Ctrl-v pastes images, so
+  # Cmd clipboard and tab keys go to its Ctrl-Shift bindings. Everything
+  # else falls through to the macOS-style section below (first match wins).
+  - name: Herdr shortcuts (Cmd)
+    application:
+      only: [herdr-app]
+    remap:
+      F18-c: Ctrl-Shift-c
+      F18-v: Ctrl-Shift-v
+      F18-t: Ctrl-Shift-t
+      F18-w: Ctrl-Shift-w
+      F18-n: Ctrl-Shift-n
+      F18-f: Ctrl-Shift-f
+      F18-k: Ctrl-Shift-k
+      F18-Backspace: Ctrl-u
+
+  # ============================================================
   # All other apps — Cmd key (F18)
   # ============================================================
   - name: macOS-style shortcuts (Cmd)
