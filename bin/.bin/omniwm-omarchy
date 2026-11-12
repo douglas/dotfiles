@@ -64,6 +64,10 @@ setting("gaps.outer", "left", "10.0")
 setting("gaps.outer", "right", "10.0")
 setting("gaps.outer", "bottom", "10.0")
 setting("focus", "followsMouse", "true")
+# Omarchy's launcher pops up at once. OmniWM's palette fades in as a search
+# bar and then grows into the list (two steps that look like two launches);
+# only the global switch turns that off, window moves included.
+setting("general", "animationsEnabled", "false")
 # OmniWM's bar (OmniShell, laid out below) replaces the menu bar; JankyBorders
 # draws the themed borders.
 setting("workspaceBar", "enabled", "true")
