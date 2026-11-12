@@ -2,9 +2,18 @@
 # Omarchy's screensaver runs `ttfx --random-effect`. Limit that pick to the
 # Matrix effect, so Omarchy's own screensaver always shows Matrix.
 # exec keeps the process named ttfx, which the screensaver's pgrep/pkill need.
+# The real ttfx: Omarchy's package on Linux, cargo's build on macOS.
+real=""
+for candidate in /usr/bin/ttfx "$HOME/.cargo/bin/ttfx"; do
+  if [[ -x $candidate ]]; then real=$candidate; break; fi
+done
+if [[ -z $real ]]; then
+  echo "ttfx: not installed (macOS: Install/macOS/install.sh desktop builds it)" >&2
+  exit 127
+fi
 for arg in "$@"; do
   if [[ $arg == --random-effect || $arg == -R ]]; then
-    exec /usr/bin/ttfx "$@" --include-effects matrix
+    exec "$real" "$@" --include-effects matrix
   fi
 done
-exec /usr/bin/ttfx "$@"
+exec "$real" "$@"
