@@ -5,7 +5,7 @@
 # (~/src/AeroSpace-edge, a reviewed tag); never use its in-app updater, which
 # installs whatever GitHub serves without checking a signature.
 
-start-at-login = true
+start-at-login = false
 # Off: parking new windows off-screen didn't help with the re-tile flash.
 new-window-prevent-flicker = false
 # The keys below need the local build from branch retile-batch-updates in

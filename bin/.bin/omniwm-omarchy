@@ -1,0 +1,112 @@
+#!/usr/bin/env python3
+"""Give OmniWM Omarchy's layout and keys (Option stands in for Super).
+
+Tiling only: OmniWM's bar and its launcher palette stay off; the macOS menu
+bar stays shown.
+
+  omniwm-omarchy [settings.toml]   default: ~/.config/omniwm/settings.toml
+
+Quit OmniWM first: it rewrites settings.toml itself. Edits the text in place,
+so the keys this leaves alone stay as OmniWM wrote them, and fails loudly if a
+key it expects is missing. Install/macOS/install.sh desktop runs it.
+"""
+
+import os
+import re
+import sys
+
+path = (
+    sys.argv[1]
+    if len(sys.argv) > 1
+    else os.path.expanduser("~/.config/omniwm/settings.toml")
+)
+with open(path) as f:
+    s = f.read()
+
+
+def setting(section, key, value):
+    """Set key = value inside [section] (up to the next header)."""
+    global s
+    m = re.search(
+        rf"^\[{re.escape(section)}\]\n(.*?)(?=^\[)", s, re.DOTALL | re.MULTILINE
+    )
+    if not m:
+        sys.exit(f"missing section [{section}]")
+    body, n = re.subn(
+        rf"^{re.escape(key)} = .*$", f"{key} = {value}", m.group(1), flags=re.MULTILINE
+    )
+    if n != 1:
+        sys.exit(f"missing {section}.{key}")
+    s = s[: m.start(1)] + body + s[m.end(1) :]
+
+
+def hotkey(action, binding):
+    global s
+    s, n = re.subn(
+        rf'^binding = "[^"]*"\nid = "{re.escape(action)}"$',
+        f'binding = "{binding}"\nid = "{action}"',
+        s,
+        flags=re.MULTILINE,
+    )
+    if n != 1:
+        sys.exit(f"missing hotkey {action}")
+
+
+# Hyprland's layout, Omarchy's gaps (gaps_in 5 per side, gaps_out 10), focus
+# follows the mouse (follow_mouse = 1).
+setting("general", "defaultLayoutType", '"dwindle"')
+# Each workspace carries its own layout, and OmniWM seeds them as niri
+# (scrolling), which overrides the default above.
+s, _ = re.subn(r'^layoutType = "niri"$', 'layoutType = "dwindle"', s, flags=re.MULTILINE)
+setting("gaps", "size", "10.0")
+# A lone window fills the outer-gap frame only with fullscreenUsesOuterGaps
+# (otherwise it covers the whole screen). The top gap counts from the screen
+# top, the menu bar (27.5) included. With
+# two or more windows OmniWM 0.8 adds the inner gap at the edges as well
+# (reported upstream), so those get 20.
+setting("gaps", "fullscreenUsesOuterGaps", "true")
+setting("gaps.outer", "top", "37.5")
+setting("gaps.outer", "left", "10.0")
+setting("gaps.outer", "right", "10.0")
+setting("gaps.outer", "bottom", "10.0")
+setting("focus", "followsMouse", "true")
+# Windows glide to their tiles, like Hyprland. (The launcher palette, whose
+# two-step fade-in was why this was once off, isn't used.)
+setting("general", "animationsEnabled", "true")
+# No OmniWM bar: the macOS menu bar stays. No borders either.
+setting("workspaceBar", "enabled", "false")
+setting("borders", "enabled", "false")
+# OmniWM's hidden bar conceals menu bar icons, which needs Full Disk Access.
+setting("hiddenBar", "enabled", "false")
+
+# Hardening for a managed Mac (see the OmniWM review): Homebrew updates it,
+# nothing drives it over IPC, and no widget sends the playing song to
+# lrclib.net.
+setting("general", "updateChecksEnabled", "false")
+setting("general", "ipcEnabled", "false")
+setting("shellPermissions.services", "lyrics", "false")
+
+# Omarchy's tiling keys (default/hypr/bindings/tiling.lua), Super -> Option.
+hotkey("closeFocusedWindow", "Option+W")  # SUPER+W
+hotkey("toggleSplit", "Option+J")  # SUPER+J
+hotkey("toggleColumnTabbed", "Unassigned")  # frees Option+T
+hotkey("toggleFocusedWindowFloating", "Option+T")  # SUPER+T
+hotkey("toggleFullscreen", "Option+F")  # SUPER+F
+hotkey("focusPrevious", "Unassigned")  # frees Option+Tab
+hotkey("switchWorkspace.next", "Option+Tab")  # SUPER+TAB
+hotkey("switchWorkspace.previous", "Option+Shift+Tab")  # SUPER+SHIFT+TAB
+hotkey("resizeContainerPrimarySpan.shrink", "Unassigned")
+hotkey("resizeContainerPrimarySpan.grow", "Unassigned")
+hotkey("resizeFocusedWindow.shrink", "Option+Minus")  # SUPER+MINUS
+hotkey("resizeFocusedWindow.grow", "Option+Equal")  # SUPER+EQUAL
+# Free Omarchy's app keys for macOS Shortcuts: SUPER+SHIFT+B browser and
+# SUPER+SHIFT+F file manager.
+hotkey("balanceSizes", "Unassigned")
+hotkey("toggleContainerFullPrimarySpan", "Unassigned")
+# Super+Space is Omarchy's launcher: Vicinae has Command+Space (OmniWM's
+# palette can't be themed); Control+Option+Space still opens the palette.
+hotkey("openCommandPalette.applications", "Unassigned")
+
+with open(path, "w") as f:
+    f.write(s)
+print(f"omniwm-omarchy: updated {path}")
