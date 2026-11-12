@@ -1,4 +1,3 @@
-tap "ngrok/ngrok"
 brew "zstd"
 brew "coreutils"
 brew "openssl@3"
