@@ -38,8 +38,8 @@ window-height = 1000
 window-position-x = 0
 window-position-y = 0
 
-# Save ghostty window state
-window-save-state = always
+# Follow macOS: a quit Ghostty opens fresh, without its old windows
+window-save-state = default
 
 # Use a different titlebar configuration for macOS
 macos-titlebar-style = tabs
