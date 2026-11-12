@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+# Give this Mac the Omarchy theme the desktop is using right now.
+#
+#   omarchy-theme-pull [host]      default host: desktop
+#
+# Omarchy renders the current theme into ~/.local/state/omarchy/current
+# (ghostty.conf, btop.theme, neovim.lua, colors.toml, the background). This
+# copies that folder from the Linux machine to the same place here. The Mac's
+# Ghostty and Neovim configs read it the way they do on Linux; this script
+# then does what Hyprland and Omarchy's bar do there: the btop theme link,
+# SketchyBar's palette, the window borders, the wallpaper and dark mode.
+# Rerun it after switching themes on Linux.
+set -euo pipefail
+
+[[ $OSTYPE == darwin* ]] || { echo "omarchy-theme-pull: macOS only (Linux has the theme already)" >&2; exit 1; }
+export PATH="/opt/homebrew/bin:$PATH"
+
+host=${1:-desktop}
+state="$HOME/.local/state/omarchy/current"
+theme="$state/theme"
+mkdir -p "$state"
+
+# -L: the background (and the theme folder itself) are links on Linux.
+rsync -aL --delete "$host:.local/state/omarchy/current/" "$state/"
+echo "theme: $(<"$state/theme.name") (from $host)"
+
+color() { sed -nE "s/^$1[[:space:]]*=[[:space:]]*\"#([0-9a-fA-F]{6})\".*/\1/p" "$theme/colors.toml" | tr 'A-F' 'a-f'; }
+
+# btop: the shared btop.conf picks the "current" theme, as Omarchy links it.
+mkdir -p "$HOME/.config/btop/themes"
+ln -sfn "$theme/btop.theme" "$HOME/.config/btop/themes/current.theme"
+
+# SketchyBar (omarchy4mac) reads its palette from colors.sh, which its
+# checkout ignores.
+bar="$HOME/.config/sketchybar/colors.sh"
+if [[ -d $(dirname "$bar") ]]; then
+  {
+    echo "#!/usr/bin/env bash"
+    echo "# Written by omarchy-theme-pull from Omarchy's colors.toml."
+    printf 'export %s="0x%s%s"\n' \
+      BG ff "$(color background)" BG_TRANS c0 "$(color background)" FG ff "$(color foreground)" \
+      SURFACE ff "$(color selection)" OVERLAY ff "$(color muted)" COMMENT ff "$(color muted)" \
+      ACCENT ff "$(color accent)" RED ff "$(color red)" GREEN ff "$(color green)" \
+      YELLOW ff "$(color yellow)" BLUE ff "$(color blue)" MAGENTA ff "$(color magenta)" \
+      CYAN ff "$(color cyan)" ORANGE ff "$(color orange)"
+  } >"$bar"
+  sketchybar --reload >/dev/null 2>&1 || true
+fi
+
+# Borders read the accent from colors.toml when they start.
+brew services restart borders >/dev/null 2>&1 || true
+
+# Wallpaper: macOS can't use .webp, so keep a PNG copy.
+wallpaper="$HOME/Library/Application Support/omarchy/background.png"
+mkdir -p "$(dirname "$wallpaper")"
+sips -s format png "$state/background" --out "$wallpaper" >/dev/null
+osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$wallpaper\""
+
+# Light or dark, as the theme says.
+dark=true
+[[ "$(sed -nE 's/^mode[[:space:]]*=[[:space:]]*"(.*)"/\1/p' "$theme/colors.toml")" == light ]] && dark=false
+osascript -e "tell application \"System Events\" to tell appearance preferences to set dark mode to $dark"
+
+echo "Applied. Reload Ghostty's config (cmd+shift+,); Neovim picks it up in new sessions."
