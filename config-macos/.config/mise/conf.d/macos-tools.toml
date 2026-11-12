@@ -1,0 +1,27 @@
+# macOS has no Omarchy, so this lists the tools Omarchy's
+# /etc/mise/conf.d/omarchy-tools.toml provides on Linux, minus the ones
+# ~/.config/mise/config.toml disables. Go comes from pacman on Linux.
+[tools]
+go = "latest"
+amp = { version = "latest", lazy = true, auto_update = "4h", lazy_bins = ["amp"], minimum_release_age = "0s" }
+basecamp = { version = "latest", lazy = true, minimum_release_age = "0s" }
+claude = { version = "latest", lazy = true, auto_update = "4h", minimum_release_age = "0s" }
+codex = { version = "latest", lazy = true, auto_update = "4h", minimum_release_age = "0s" }
+crush = { version = "latest", lazy = true, auto_update = "4h", minimum_release_age = "0s" }
+gh = { version = "latest", lazy = true, minimum_release_age = "0s" }
+ghui = { version = "latest", lazy = true, minimum_release_age = "0s" }
+hey-cli = { version = "latest", lazy = true, minimum_release_age = "0s" }
+hunk = { version = "latest", lazy = true, minimum_release_age = "0s" }
+muse = { version = "latest", lazy = true, auto_update = "4h", minimum_release_age = "0s" }
+node = { version = "latest", lazy = true, minimum_release_age = "0s" }
+"npm:@kilocode/cli" = { version = "latest", lazy = true, auto_update = "4h", lazy_bins = ["kilo"], minimum_release_age = "0s" }
+"npm:@minimax-ai/code" = { version = "latest", lazy = true, auto_update = "4h", lazy_bins = ["mcode"], minimum_release_age = "0s", allow_builds = "better-sqlite3" }
+"npm:@moonshot-ai/kimi-code" = { version = "latest", lazy = true, auto_update = "4h", lazy_bins = ["kimi"], minimum_release_age = "0s" }
+"npm:cf" = { version = "latest", lazy = true, lazy_bins = ["cf"], minimum_release_age = "0s" }
+"npm:command-code" = { version = "latest", lazy = true, auto_update = "4h", lazy_bins = ["commandcode"], minimum_release_age = "0s" }
+"npm:freebuff" = { version = "latest", lazy = true, auto_update = "4h", lazy_bins = ["freebuff"], minimum_release_age = "0s" }
+oh-my-pi = { version = "latest", lazy = true, auto_update = "4h", minimum_release_age = "0s" }
+opencode = { version = "latest", lazy = true, auto_update = "4h", minimum_release_age = "0s" }
+pi = { version = "latest", lazy = true, auto_update = "4h", minimum_release_age = "0s" }
+playwright = { version = "latest", lazy = true, minimum_release_age = "0s" }
+uv = { version = "latest", lazy = true, minimum_release_age = "0s" }
