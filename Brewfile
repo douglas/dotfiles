@@ -102,3 +102,12 @@ cask "stats"
 cask "sublime-merge"
 cask "sublime-text"
 cask "wezterm"
+
+# The Omarchy-style desktop (Install/macOS/install.sh desktop adds AeroSpace,
+# SketchyBar and borders from their own taps, trusted one package at a time).
+brew "btop"
+brew "fastfetch"
+brew "media-control"
+cask "hammerspoon"
+cask "font-hack-nerd-font"
+cask "font-sketchybar-app-font"
