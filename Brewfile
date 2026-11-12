@@ -100,6 +100,7 @@ cask "spotify"
 cask "stats"
 cask "sublime-merge"
 cask "sublime-text"
+cask "thaw"
 cask "vicinae"
 cask "wezterm"
 
