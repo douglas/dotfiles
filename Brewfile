@@ -102,6 +102,7 @@ cask "spotify"
 cask "stats"
 cask "sublime-merge"
 cask "sublime-text"
+cask "vicinae"
 cask "wezterm"
 
 # The Omarchy-style desktop (Install/macOS/install.sh desktop adds OmniWM, and

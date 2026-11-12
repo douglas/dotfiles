@@ -1,0 +1,23 @@
+{
+	"$schema": "https://vicinae.com/schemas/config.json",
+
+	// Omarchy's launcher on the Mac: Catppuccin Mocha, solid (no glass), on
+	// Command+Space (Raycast's old key). settings.json imports this file; the
+	// settings GUI writes there, and its values win over these.
+
+	// Hardening (see the Vicinae review): no daily system-info ping, no favicon
+	// lookups that show third parties the sites you open, no keystroke tap
+	// (snippets and paste-to-app fall back to copy), Homebrew does updates.
+	"telemetry": { "system_info": false },
+	"favicon_service": "none",
+	"input_server": { "enabled": false },
+	"updates": { "show_notice": false },
+
+	"theme": {
+		"light": { "name": "catppuccin-mocha", "icon_theme": "auto" },
+		"dark": { "name": "catppuccin-mocha", "icon_theme": "auto" }
+	},
+	"launcher_window": { "material": "none" },
+
+	"global_shortcuts": { "toggle": "cmd+space" }
+}
