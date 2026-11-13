@@ -18,10 +18,10 @@ shape = "block"
 blinking = false
 
 # Rio counts screen pixels: Linux's 13 matches herdr-app at zoom 1; this
-# matches herdr-app at zoom 1.35 and Ghostty's 18.
+# matches herdr-app at zoom 1.2 and Ghostty's 16.
 [fonts]
 family = "CommitMono Nerd Font"
-size = 18
+size = 16
 
 [bindings]
 keys = [

@@ -1,5 +1,5 @@
 # Copy of config-omarchy/.config/rio/config.toml with a bigger font, for laptops
-# where Ghostty is 13 (18.4 matches it here; Rio can't include files). Picked by
+# where Ghostty is 13 (17 suits it here; Rio can't include files). Picked by
 # uwsm/env.d/50-rio. Keep the rest in sync with the shared config.
 # Mirrors ~/.config/herdr-app/keys.json where Rio can.
 # herdr tab = Rio tab, herdr pane = Rio split, herdr space = Rio window.
@@ -20,7 +20,7 @@ blinking = false
 
 [fonts]
 family = "CommitMono Nerd Font"
-size = 18.4
+size = 17
 
 [bindings]
 keys = [

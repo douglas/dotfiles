@@ -9,10 +9,10 @@ scrollback-limit = 10000000
 # duti -s dev.zed.Zed public.plain-text all
 
 # Font. macOS counts a point as one screen pixel. The Linux desktop's 11 draws
-# 13px letters, like herdr-app's 13 at zoom 1; 18 is about that at herdr's macOS zoom 1.35.
+# 13px letters, like herdr-app's 13 at zoom 1; 16 is about that at herdr's macOS zoom 1.2.
 font-family = CommitMono Nerd Font
 font-style = Regular
-font-size = 18
+font-size = 16
 font-thicken = true
 
 # Padding (matches Linux 14)

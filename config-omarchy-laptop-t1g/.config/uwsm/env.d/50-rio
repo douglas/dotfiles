@@ -1,5 +1,5 @@
 #!/bin/sh
 
 # Rio cannot include files, so this machine uses the bigger-font copy of the
-# Rio config (18.4 matches Ghostty 13 here).
+# Rio config (17 suits Ghostty 13 here).
 export RIO_CONFIG_HOME="$HOME/.config/rio-large"
