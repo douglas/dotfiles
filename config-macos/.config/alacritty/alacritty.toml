@@ -1,0 +1,47 @@
+# The current Omarchy theme, as on Linux (omarchy-theme-pull copies it here).
+general.import = ["~/.local/state/omarchy/current/theme/alacritty.toml"]
+
+[env]
+TERM = "xterm-256color"
+
+[terminal]
+osc52 = "CopyPaste"
+
+# macOS counts a point as one screen pixel, so this matches Ghostty's 20.
+[font]
+size = 20.0
+normal = { family = "CommitMono Nerd Font" }
+bold = { family = "CommitMono Nerd Font" }
+italic = { family = "CommitMono Nerd Font" }
+
+[cursor]
+style = { shape = "Block", blinking = "Never" }
+
+[window]
+padding.x = 14
+padding.y = 14
+option_as_alt = "OnlyLeft"
+
+# Keybinds as on Linux, with Cmd where Linux uses F18 (xremap). Alacritty has
+# no splits or key chords, so only text, clipboard, font, search, window and
+# tab keys carry over (macOS Alacritty has tabs).
+[keyboard]
+bindings = [
+  { key = "Return", mods = "Shift", chars = "\u001B\r" },
+  { key = "Return", mods = "Alt|Shift", chars = "\u001B[13;4u" },
+  { key = "Back", mods = "Control", chars = "\u0017" },
+  { key = "Back", mods = "Alt", chars = "\u0017" },
+  { key = "Back", mods = "Command", chars = "\u0015" },
+  { key = "Left", mods = "Control", chars = "\u001Bb" },
+  { key = "Right", mods = "Control", chars = "\u001Bf" },
+  { key = "A", mods = "Command", chars = "\u0001" },
+  { key = "E", mods = "Command", chars = "\u0005" },
+  { key = "Left", mods = "Command", chars = "\u0001" },
+  { key = "Right", mods = "Command", chars = "\u0005" },
+  { key = "F", mods = "Command", action = "SearchForward" },
+  { key = "Equals", mods = "Command", action = "IncreaseFontSize" },
+  { key = "N", mods = "Command", action = "CreateNewWindow" },
+  { key = "T", mods = "Command", action = "CreateNewTab" },
+  { key = "LBracket", mods = "Command|Shift", action = "SelectPreviousTab" },
+  { key = "RBracket", mods = "Command|Shift", action = "SelectNextTab" },
+]

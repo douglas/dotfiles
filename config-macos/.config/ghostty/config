@@ -1,13 +1,6 @@
 # The current Omarchy theme, as on Linux (omarchy-theme-pull copies it here).
 config-file = ?"~/.local/state/omarchy/current/theme/ghostty.conf"
 
-# Search entire scrollback history in default text editor
-keybind = cmd+f=write_screen_file:open
-
-# Search Selection
-# HOWTO: Cmd+triple_click to select your last output then press cmd+shift+f to search it
-keybind = cmd+shift+f=write_selection_file:open
-
 # RECOMMENDED: Set this to something big so you can capture all of your scrollback
 scrollback-limit = 10000000
 
@@ -15,15 +8,12 @@ scrollback-limit = 10000000
 # brew install duti
 # duti -s dev.zed.Zed public.plain-text all
 
-# Font configurations
+# Font. macOS counts a point as one screen pixel. The Linux desktop's 11 draws
+# 13px letters, like herdr-app's 13 at zoom 1; 20 is that at herdr's macOS zoom 1.5.
 font-family = CommitMono Nerd Font
 font-style = Regular
-font-size = 17
+font-size = 20
 font-thicken = true
-
-# Move between tabs like iterm2
-keybind = cmd+right=next_tab
-keybind = cmd+left=previous_tab
 
 # Padding (matches Linux 14)
 window-padding-x = 14
@@ -44,9 +34,8 @@ window-save-state = default
 # Use a different titlebar configuration for macOS
 macos-titlebar-style = tabs
 
+# Left Option is Alt, so the shared Alt keybinds (Alt+H/J/K/L, Alt+[ ]) work.
 macos-option-as-alt = left
-keybind = alt+left=esc:b
-keybind = alt+right=esc:f
 
 # Cursor (matches Linux)
 cursor-style = block
@@ -55,3 +44,61 @@ shell-integration-features = no-cursor,ssh-env
 
 # No "cols x rows" box while the tiler resizes a new window.
 resize-overlay = never
+
+# Cmd keys, as herdr-app has them on macOS (Cmd is where Linux uses F18 via xremap).
+# The Ctrl/Alt keybinds shared with Linux are in ./keys (included below).
+keybind = cmd+c=copy_to_clipboard
+keybind = cmd+v=paste_from_clipboard
+keybind = cmd+f=start_search
+# Scrollback or selection in the default editor
+keybind = cmd+alt+f=write_screen_file:open
+keybind = cmd+shift+f=write_selection_file:open
+# Line editing, like Linux Cmd+A/E/Backspace and herdr-app Cmd+Left/Right
+keybind = cmd+a=text:\x01
+keybind = cmd+e=text:\x05
+keybind = cmd+arrow_left=text:\x01
+keybind = cmd+arrow_right=text:\x05
+keybind = cmd+backspace=text:\x15
+keybind = alt+backspace=text:\x17
+# Alt+Left/Right move between splits, as in herdr-app (./keys); Ctrl+Left/Right
+# jump words there.
+# Cmd+Enter goes to the app instead of toggling fullscreen
+keybind = cmd+enter=unbind
+# App
+keybind = cmd+equal=increase_font_size:1
+keybind = cmd+plus=increase_font_size:1
+keybind = cmd+minus=decrease_font_size:1
+keybind = cmd+zero=reset_font_size
+keybind = cmd+comma=open_config
+keybind = cmd+shift+p=toggle_command_palette
+# Windows (herdr spaces)
+keybind = cmd+n=new_window
+keybind = cmd+alt+bracket_left=goto_window:previous
+keybind = cmd+alt+bracket_right=goto_window:next
+keybind = ctrl+cmd+arrow_up=goto_window:previous
+keybind = ctrl+cmd+arrow_down=goto_window:next
+# Tabs
+keybind = cmd+t=new_tab
+keybind = cmd+w=close_tab
+keybind = cmd+shift+bracket_left=previous_tab
+keybind = cmd+shift+bracket_right=next_tab
+keybind = cmd+one=goto_tab:1
+keybind = cmd+two=goto_tab:2
+keybind = cmd+three=goto_tab:3
+keybind = cmd+four=goto_tab:4
+keybind = cmd+five=goto_tab:5
+keybind = cmd+six=goto_tab:6
+keybind = cmd+seven=goto_tab:7
+keybind = cmd+eight=goto_tab:8
+keybind = cmd+nine=goto_tab:9
+# Splits (herdr panes)
+keybind = cmd+d=new_split:right
+keybind = cmd+shift+d=new_split:down
+keybind = cmd+shift+w=close_surface
+keybind = cmd+shift+enter=toggle_split_zoom
+keybind = cmd+alt+arrow_left=goto_split:left
+keybind = cmd+alt+arrow_right=goto_split:right
+keybind = cmd+alt+arrow_up=goto_split:up
+keybind = cmd+alt+arrow_down=goto_split:down
+
+config-file = keys
