@@ -15,8 +15,8 @@ confirm-before-quit = false
 shape = "block"
 blinking = false
 
-# Rio has no config includes, so the size can't follow the per-machine
-# Ghostty file. 13 matches Ghostty's font-size = 10 on the desktop.
+# Rio counts screen pixels and can't include files: 13 matches herdr-app and
+# the other terminals on 2x screens. The 1x t14 uses its own copy (rio-1x).
 [fonts]
 family = "CommitMono Nerd Font"
 size = 13

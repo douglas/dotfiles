@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Rio cannot include files, so this 1x screen gets its own Rio config with a
+# bigger font (16 matches the 13pt of the other terminals here).
+export RIO_CONFIG_HOME="$HOME/.config/rio-1x"
