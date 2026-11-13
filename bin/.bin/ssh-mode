@@ -34,12 +34,33 @@ ssh_mode_rule_numbers() {
   sudo ufw status numbered | awk -v tag="# $comment" 'index($0, tag) { n = $0; sub(/^\[ */, "", n); sub(/\].*/, "", n); print n }'
 }
 
+# In a terminal with gum (Omarchy's), status is a card in the terminal's
+# palette, so it follows the Omarchy theme; otherwise plain lines.
+pretty=false
+[[ -t 1 ]] && command -v gum >/dev/null && pretty=true
+$pretty && export CLICOLOR_FORCE=1
+
 show_status() {
-  echo "sshd: $(systemctl is-active sshd.service || true), at boot: $(systemctl is-enabled sshd.service 2>/dev/null || true)"
-  echo "ssh-mode firewall rules:"
-  sudo ufw status | awk -v tag="# $comment" 'index($0, tag) { print "  " $0; found = 1 } END { if (!found) print "  none" }'
-  echo "Listening on port 22:"
-  ss -Htln 'sport = :22' | awk '{print "  " $4} END { if (NR == 0) print "  nothing" }'
+  local active boot rules ports
+  active="$(systemctl is-active sshd.service || true)"
+  boot="$(systemctl is-enabled sshd.service 2>/dev/null || true)"
+  rules="$(sudo ufw status | awk -v tag="# $comment" 'index($0, tag) { sub(/ +# .*/, ""); gsub(/ +/, " "); print; found = 1 } END { if (!found) print "none" }')"
+  ports="$(ss -Htln 'sport = :22' | awk '{print $4} END { if (NR == 0) print "nothing" }')"
+  if ! $pretty; then
+    echo "sshd: $active, at boot: $boot"
+    echo "ssh-mode firewall rules:"
+    sed 's/^/  /' <<<"$rules"
+    echo "Listening on port 22:"
+    sed 's/^/  /' <<<"$ports"
+    return
+  fi
+  local color=8 border=8
+  [[ $active == active ]] && color=2 border=2
+  gum style --border rounded --border-foreground "$border" --padding "0 1" \
+    "$(gum style --bold "ssh-mode") $(gum style --foreground 8 "· $(hostname -s)")" \
+    "$(gum style --foreground "$color" "● sshd $active")  $(gum style --foreground 8 "at boot: $boot")" \
+    "$(gum style --foreground 4 "firewall")  $(tr '\n' ' ' <<<"$rules")" \
+    "$(gum style --foreground 4 "listening")  $(tr '\n' ' ' <<<"$ports")"
 }
 
 case "${1:-}" in
