@@ -4,10 +4,22 @@
 # Defaults already match herdr for Ctrl+Shift+T/N/C/V/F, Ctrl+1-9, Ctrl+Shift+Left/Right,
 # Ctrl+Plus/Minus/0 and Ctrl+Comma.
 
+# Colors follow the Omarchy theme: themes/omarchy.toml links to the file
+# Omarchy renders from ~/.config/omarchy/themed/rio.toml.tpl.
+theme = "omarchy"
 padding-x = 14
+padding-y = [14, 14]
+confirm-before-quit = false
 
+[cursor]
+shape = "block"
+blinking = false
+
+# Rio has no config includes, so the size can't follow the per-machine
+# Ghostty file. 13 matches Ghostty's font-size = 10 on the desktop.
 [fonts]
 family = "CommitMono Nerd Font"
+size = 13
 
 [bindings]
 keys = [
