@@ -13,6 +13,8 @@ theme = "omarchy"
 padding-x = 14
 padding-y = [14, 14]
 confirm-before-quit = false
+# Copy selected text to the clipboard, like herdr-app.
+copy-on-select = true
 
 [cursor]
 shape = "block"

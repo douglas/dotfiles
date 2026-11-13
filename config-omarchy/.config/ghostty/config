@@ -29,6 +29,9 @@ config-file = keys
 #keybind = super+control+shift+alt+arrow_left=resize_split:left,100
 #keybind = super+control+shift+alt+arrow_right=resize_split:right,100
 
+# Copy selected text to the clipboard, like herdr-app.
+copy-on-select = both
+
 # Focus split on hover
 focus-follows-mouse = true
 

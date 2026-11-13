@@ -42,6 +42,9 @@ cursor-style = block
 cursor-style-blink = false
 shell-integration-features = no-cursor,ssh-env
 
+# Copy selected text to the clipboard, like herdr-app.
+copy-on-select = clipboard
+
 # No "cols x rows" box while the tiler resizes a new window.
 resize-overlay = never
 
