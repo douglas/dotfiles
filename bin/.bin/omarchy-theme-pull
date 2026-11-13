@@ -36,6 +36,16 @@ mkdir -p "$(dirname "$wallpaper")"
 sips -s format png "$state/background" --out "$wallpaper" >/dev/null
 osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$wallpaper\""
 
+# ZapFast and Spotifast: what their Omarchy hooks do on Linux, into the macOS
+# themes folders. Pick "omarchy" once in each app's Settings → Appearance; a
+# running app picks up changes after a restart.
+for app in zapfast spotifast; do
+  [[ -f "$theme/$app.json" ]] || continue
+  dir="$HOME/Library/Application Support/me.paolino.$app/themes"
+  mkdir -p "$dir"
+  cp "$theme/$app.json" "$dir/omarchy.json"
+done
+
 # Light or dark, as the theme says.
 dark=true
 [[ "$(sed -nE 's/^mode[[:space:]]*=[[:space:]]*"(.*)"/\1/p' "$theme/colors.toml")" == light ]] && dark=false

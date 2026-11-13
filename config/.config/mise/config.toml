@@ -13,6 +13,9 @@ ruby = "4.0.9"
 
 [settings]
 lockfile = true
+# Keep mise's tools ahead of /usr/bin even when PATH is re-exported after activation
+# (agent shell snapshots do this). Without it, `mise x -- ruby` runs the system Ruby.
+activate_aggressive = true
 # Only install releases that have been public for a week, so a hijacked
 # package is usually caught and pulled before it reaches this machine.
 minimum_release_age = "7d"
