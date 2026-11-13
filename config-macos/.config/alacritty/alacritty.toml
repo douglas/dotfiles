@@ -1,3 +1,5 @@
+# Homebrew disabled the Alacritty cask (it fails Gatekeeper), so the Brewfile
+# doesn't install it; this config is ready if you install it another way.
 # The current Omarchy theme, as on Linux (omarchy-theme-pull copies it here).
 general.import = ["~/.local/state/omarchy/current/theme/alacritty.toml"]
 
