@@ -46,6 +46,53 @@ for app in zapfast spotifast; do
   cp "$theme/$app.json" "$dir/omarchy.json"
 done
 
+# Claude Code: the Omarchy theme, as omarchy-theme-set-claude installs it on
+# Linux. Pick it once with /theme (custom:omarchy).
+if [[ -f "$theme/claude.json" ]]; then
+  mkdir -p "$HOME/.claude/themes"
+  cp "$theme/claude.json" "$HOME/.claude/themes/omarchy.json"
+fi
+
+# Sublime settings aren't strict JSON (comments, trailing commas), so set one
+# "key": "value" line in place, or add it after the opening brace.
+sublime_set() {
+  local file="$1" key="$2" value="$3"
+  [[ -f "$file" ]] || printf '{\n}\n' >"$file"
+  if grep -q "\"$key\"[[:space:]]*:" "$file"; then
+    sed -i '' -E "s|(\"$key\"[[:space:]]*:[[:space:]]*)\"[^\"]*\"|\1\"$value\"|" "$file"
+  else
+    sed -i '' -E "1,/\{/s|\{|{\\
+	\"$key\": \"$value\",|" "$file"
+  fi
+}
+
+# Sublime Merge: the Omarchy theme and color scheme, as the Linux theme-set
+# hook installs them.
+merge="$HOME/Library/Application Support/Sublime Merge/Packages"
+merge_theme="$theme/sublime-merge-omarchy-dark.sublime-theme"
+[[ -f "$theme/light.mode" ]] && merge_theme="$theme/sublime-merge-omarchy-light.sublime-theme"
+if [[ -d "$merge" && -f "$merge_theme" ]]; then
+  mkdir -p "$merge/Theme - Omarchy" "$merge/User"
+  cp "$merge_theme" "$merge/Theme - Omarchy/Omarchy.sublime-theme"
+  cp "$theme/sublime-merge-omarchy.sublime-color-scheme" "$merge/Theme - Omarchy/Omarchy.sublime-color-scheme"
+  for key in theme light_theme dark_theme; do
+    sublime_set "$merge/User/Preferences.sublime-settings" "$key" "Omarchy.sublime-theme"
+  done
+  for key in color_scheme light_color_scheme dark_color_scheme; do
+    sublime_set "$merge/User/Preferences.sublime-settings" "$key" \
+      "Packages/Theme - Omarchy/Omarchy.sublime-color-scheme"
+  done
+fi
+
+# Sublime Text: the Catppuccin package's scheme for the Catppuccin themes.
+case "$(<"$state/theme.name")" in
+  catppuccin) scheme="Catppuccin Mocha.sublime-color-scheme" ;;
+  catppuccin-latte) scheme="Catppuccin Latte.sublime-color-scheme" ;;
+  *) scheme="" ;;
+esac
+text="$HOME/Library/Application Support/Sublime Text/Packages/User/Preferences.sublime-settings"
+[[ -n "$scheme" && -f "$text" ]] && sublime_set "$text" color_scheme "$scheme"
+
 # Light or dark, as the theme says.
 dark=true
 [[ "$(sed -nE 's/^mode[[:space:]]*=[[:space:]]*"(.*)"/\1/p' "$theme/colors.toml")" == light ]] && dark=false
