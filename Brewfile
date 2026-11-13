@@ -112,3 +112,11 @@ brew "btop"
 brew "fastfetch"
 brew "media-control"
 cask "font-hack-nerd-font"
+
+# Carmine Paolino's ZapFast (WhatsApp) and Spotifast (Spotify), as on Linux
+# (pkgrepo zapfast-bin, spotifast-bin). Homebrew loads third-party casks only
+# once they're trusted, so on a new Mac run this once before brew bundle:
+#   brew trust --cask crmne/tap/zapfast crmne/tap/spotifast
+tap "crmne/tap"
+cask "crmne/tap/spotifast"
+cask "crmne/tap/zapfast"
