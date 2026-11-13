@@ -2,17 +2,19 @@
 set -euo pipefail
 
 # Open SSH to the local network for a while, then close it again.
-# `on` starts sshd without enabling it, so a reboot also turns SSH off.
+# `on` starts sshd without enabling it, so a reboot also turns SSH off;
+# `on --boot` also enables it, so SSH comes back on after a reboot.
 
 comment="ssh-mode"
 hardening="/etc/ssh/sshd_config.d/10-ssh-mode.conf"
 
 usage() {
   cat <<'EOF'
-Usage: ssh-mode <on|off|status> [subnet]
+Usage: ssh-mode <on [--boot] [subnet]|off|status>
 
   on [subnet]  Allow SSH from the local subnet (default: the default route's
                network, e.g. 192.168.50.0/24), key logins only, start sshd
+  on --boot    The same, and keep sshd on after reboots (until 'ssh-mode off')
   off          Remove the ssh-mode firewall rules, stop and disable sshd
   status       Show sshd state, ssh-mode firewall rules and listening ports
 EOF
@@ -42,6 +44,11 @@ show_status() {
 
 case "${1:-}" in
   on)
+    boot=false
+    if [[ ${2:-} == --boot ]]; then
+      boot=true
+      shift
+    fi
     subnet="${2:-$(local_subnet)}"
     if [[ ! -s ~/.ssh/authorized_keys ]]; then
       echo "Warning: ~/.ssh/authorized_keys is empty or missing; key logins will fail." >&2
@@ -54,8 +61,13 @@ case "${1:-}" in
     if ! sudo ufw status | awk 'NR == 1 && $2 == "active" { ok = 1 } END { exit !ok }'; then
       echo "Warning: ufw is inactive, so sshd is reachable from every network, not just $subnet." >&2
     fi
-    sudo systemctl start sshd.service
-    echo "SSH is on for $subnet (keys only) until 'ssh-mode off' or a reboot."
+    if $boot; then
+      sudo systemctl enable --now sshd.service
+      echo "SSH is on for $subnet (keys only), also after reboots, until 'ssh-mode off'."
+    else
+      sudo systemctl start sshd.service
+      echo "SSH is on for $subnet (keys only) until 'ssh-mode off' or a reboot."
+    fi
     show_status
     ;;
   off)
