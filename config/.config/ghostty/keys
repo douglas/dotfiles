@@ -107,18 +107,3 @@ keybind = ctrl+k>shift+nine=goto_window:previous
 keybind = ctrl+k>shift+zero=goto_window:next
 keybind = ctrl+k>r=prompt_window_title
 keybind = ctrl+k>ctrl+k=text:\x0b
-# A tab with every home machine, like herdr-app's and kitty's Ctrl+K \:
-#   desktop | t1g
-#   --------+-----
-#   mbp16   | t14s
-# Ghostty can't give a split a command, so each split gets one typed in
-# (machine-shell: a login shell on its own machine, SSH to the others).
-keybind = ctrl+k>backslash=new_tab
-keybind = chain=new_split:right
-keybind = chain=text:exec machine-shell t1g\r
-keybind = chain=new_split:down
-keybind = chain=text:exec machine-shell t14s\r
-keybind = chain=goto_split:left
-keybind = chain=new_split:down
-keybind = chain=text:exec machine-shell mbp16\r
-keybind = chain=goto_split:up
