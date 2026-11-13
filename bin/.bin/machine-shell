@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# A shell on one of the home machines, for a herdr-app "machines" pane:
+#
+#   machine-shell <host>      host: desktop, t1g, t14s, mbp16 (~/.ssh/config.d/home)
+#
+# On that machine itself it starts a login shell; anywhere else it opens SSH
+# to it, so the same layout works from every machine. When SSH ends, a local
+# shell takes over so the pane stays open.
+set -uo pipefail
+
+host="${1:?usage: machine-shell <host>}"
+if [[ "$(hostname -s)" == "$host" ]]; then
+  exec "${SHELL:-zsh}" -l
+fi
+ssh "$host"
+exec "${SHELL:-zsh}" -l

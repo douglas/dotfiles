@@ -125,6 +125,7 @@
     "ctrl-k -": "pane.split:right",
     "ctrl-k =": "pane.split:down",
     "ctrl-k |": "pane.split:right",
+    "ctrl-k \\": "mod.open:machines",
     "ctrl-k shift-\\": "pane.split:right",
     "ctrl-k x": "pane.close",
     "ctrl-k z": "pane.zoom",
