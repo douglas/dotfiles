@@ -15,8 +15,8 @@ confirm-before-quit = false
 shape = "block"
 blinking = false
 
-# Rio counts screen pixels and can't include files: 13 matches herdr-app and
-# the other terminals on 2x screens. The 1x t14 uses its own copy (rio-1x).
+# Rio counts screen pixels and can't include files: 13 matches Ghostty 11 and
+# herdr-app. Laptops at Ghostty 13 use the rio-large copy (uwsm/env.d/50-rio).
 [fonts]
 family = "CommitMono Nerd Font"
 size = 13
