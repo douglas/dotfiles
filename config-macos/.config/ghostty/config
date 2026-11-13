@@ -104,4 +104,9 @@ keybind = cmd+alt+arrow_right=goto_split:right
 keybind = cmd+alt+arrow_up=goto_split:up
 keybind = cmd+alt+arrow_down=goto_split:down
 
+# Ctrl+K \: a tab with every home machine, like herdr-app and kitty. Ghostty
+# can't give a split a command from a keybind, so this types ghostty-machines
+# (AppleScript does the splits); press it at a shell prompt.
+keybind = ctrl+k>backslash=text:ghostty-machines\r
+
 config-file = keys
