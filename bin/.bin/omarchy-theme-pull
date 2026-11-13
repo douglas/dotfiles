@@ -53,6 +53,15 @@ if [[ -f "$theme/claude.json" ]]; then
   cp "$theme/claude.json" "$HOME/.claude/themes/omarchy.json"
 fi
 
+# T3 Code: the Omarchy theme, as omarchy-theme-set-t3code installs it on
+# Linux, selected with its CLI (Settings → About installs `t3`).
+if [[ -f "$theme/t3code.json" ]]; then
+  mkdir -p "$HOME/.t3/userdata/themes"
+  cp "$theme/t3code.json" "$HOME/.t3/userdata/themes/omarchy.json"
+  t3="$(command -v t3 || echo "$HOME/.local/bin/t3")"
+  [[ -x "$t3" ]] && "$t3" theme set omarchy >/dev/null 2>&1 || true
+fi
+
 # Sublime settings aren't strict JSON (comments, trailing commas), so set one
 # "key": "value" line in place, or add it after the opening brace.
 sublime_set() {
