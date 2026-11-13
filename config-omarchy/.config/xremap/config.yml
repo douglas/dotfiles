@@ -28,14 +28,14 @@ keymap:
       F18-Ctrl-j: Super-Ctrl-j
 
   # ============================================================
-  # Terminal (Ghostty/Alacritty/Kitty) — Cmd key (F18)
+  # Terminal (Ghostty/Alacritty/Kitty/Foot/Rio) — Cmd key (F18)
   # ============================================================
   # Keep any Kitty-only section minimal (e.g. F18-Shift-arrows split nav).
   # xremap applies every matching keymap: duplicating the Ctrl-Left/Right tab
   # remaps there broke Ghostty's ctrl+k leader splits.
   - name: Terminal shortcuts (Cmd)
     application:
-      only: [com.mitchellh.ghostty, Alacritty, kitty]
+      only: [com.mitchellh.ghostty, Alacritty, kitty, foot, rio]
     remap:
       # App launcher
       F18-Space: { launch: ["omacast", "toggle"] }
@@ -51,8 +51,11 @@ keymap:
       F18-n: Ctrl-Shift-n
       F18-q: Super-w
 
+      # Line start/end, like Herdr (Ctrl-a/Ctrl-e in the shell)
+      F18-a: Ctrl-a
+      F18-e: Ctrl-e
+
       # Actions
-      F18-a: Ctrl-Shift-a
       F18-f: Ctrl-Shift-f
       F18-g: Ctrl-Shift-g
       F18-k: Ctrl-Shift-k
@@ -210,7 +213,7 @@ keymap:
   # ============================================================
   - name: macOS-style shortcuts (Cmd)
     application:
-      not: [com.mitchellh.ghostty, Alacritty, kitty, spotify]
+      not: [com.mitchellh.ghostty, Alacritty, kitty, foot, rio, spotify]
     remap:
       # App launcher
       F18-Space: { launch: ["omacast", "toggle"] }

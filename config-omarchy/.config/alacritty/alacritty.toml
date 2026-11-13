@@ -22,12 +22,20 @@ padding.x = 14
 padding.y = 14
 decorations = "None"
 
-# Note: Ghostty splits (ctrl+k leader bindings) have no native Alacritty equivalent.
-# Use tmux or zellij for split pane support.
+# Keybindings, mirroring ~/.config/herdr-app/keys.json where Alacritty can.
+# Alacritty has no tabs, splits or key chords on Linux, so only text, clipboard,
+# font size, search and new-window bindings carry over.
 [keyboard]
 bindings = [
-{ key = "Insert", mods = "Shift", action = "Paste" },
-{ key = "Insert", mods = "Control", action = "Copy" },
-{ key = "Return", mods = "Super", action = "ToggleFullscreen" },
-  { key = "Return", mods = "Shift", chars = "\u001B[13;2u" }
+  { key = "Insert", mods = "Shift", action = "Paste" },
+  { key = "Insert", mods = "Control", action = "Copy" },
+  { key = "Return", mods = "Super", action = "ToggleFullscreen" },
+  { key = "Return", mods = "Shift", chars = "\u001B\r" },
+  { key = "Return", mods = "Alt|Shift", chars = "\u001B[13;4u" },
+  { key = "Back", mods = "Control", chars = "\u0017" },
+  { key = "Left", mods = "Control", chars = "\u001Bb" },
+  { key = "Right", mods = "Control", chars = "\u001Bf" },
+  { key = "Equals", mods = "Control", action = "IncreaseFontSize" },
+  { key = "F", mods = "Control|Shift", action = "SearchForward" },
+  { key = "N", mods = "Control|Shift", action = "CreateNewWindow" },
 ]
