@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Install or update Ghostty's nightly "tip" build as /Applications/Ghostty Dev.app,
+# next to the stable Ghostty from the Brewfile:
+#
+#   ghostty-dev-install
+#
+# Homebrew's ghostty@tip cask installs to the same Ghostty.app as the stable
+# cask and conflicts with it, so the tip build comes straight from Ghostty's
+# GitHub "tip" release instead. The zip is the signed, notarized app; its
+# SHA-256 is checked against the digest GitHub publishes for the asset.
+set -euo pipefail
+
+[[ $OSTYPE == darwin* ]] || { echo "ghostty-dev-install: macOS only" >&2; exit 1; }
+export PATH="/opt/homebrew/bin:$PATH"
+
+asset="ghostty-macos-universal.zip"
+target="/Applications/Ghostty Dev.app"
+api="https://api.github.com/repos/ghostty-org/ghostty/releases/tags/tip"
+
+work="$(mktemp -d)"
+trap 'rm -rf "$work"' EXIT
+
+release="$(curl -fsSL "$api")"
+url="$(jq -r --arg a "$asset" '.assets[] | select(.name == $a) | .browser_download_url' <<<"$release")"
+digest="$(jq -r --arg a "$asset" '.assets[] | select(.name == $a) | .digest' <<<"$release")"
+[[ -n $url && $digest == sha256:* ]] || { echo "ghostty-dev-install: $asset not found in the tip release" >&2; exit 1; }
+
+echo "Downloading $asset"
+curl -fL --progress-bar "$url" -o "$work/$asset"
+actual="sha256:$(shasum -a 256 "$work/$asset" | cut -d' ' -f1)"
+[[ $actual == "$digest" ]] || { echo "ghostty-dev-install: checksum mismatch ($actual, expected $digest)" >&2; exit 1; }
+
+ditto -x -k "$work/$asset" "$work/app"
+[[ -d "$work/app/Ghostty.app" ]] || { echo "ghostty-dev-install: no Ghostty.app in $asset" >&2; exit 1; }
+
+rm -rf "$target"
+mv "$work/app/Ghostty.app" "$target"
+echo "Installed $(defaults read "$target/Contents/Info.plist" CFBundleShortVersionString) as $target"
