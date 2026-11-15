@@ -14,10 +14,10 @@ config-omarchy/         # Shared Omarchy base (Hyprland Lua, keybindings)
 config-omarchy-desktop/ # Desktop overrides (font size, window dimensions)
 config-omarchy-laptop/  # Shared laptop glue (monitor/profile entrypoints)
 config-omarchy-laptop-t1g/ # T1G laptop model overrides
-config-omarchy-laptop-t14/ # T14 laptop model overrides
+config-omarchy-laptop-p14s/ # P14s laptop model overrides
 ```
 
-On Linux, profile detection uses `hostnamectl chassis` to determine whether to stow desktop or laptop profile packages. Machine tags such as `t1g` and `t14` come from `~/.config/dotlayer/dotlayer.yml`, where each tag has a DMI/model detection command. Use `DOTLAYER_MACHINE=t14` to force a tag for testing.
+On Linux, profile detection uses `hostnamectl chassis` to determine whether to stow desktop or laptop profile packages. Machine tags such as `t1g` and `p14s` come from `~/.config/dotlayer/dotlayer.yml`, where each tag has a DMI/model detection command. Use `DOTLAYER_MACHINE=p14s` to force a tag for testing.
 
 **Ghostty, Kitty, Alacritty, and Hyprland** use app-level includes or source files named `machine`/`machine-*` for model-specific values. That keeps Stow packages additive and avoids conflicts between shared Omarchy config and machine overrides.
 
@@ -28,7 +28,7 @@ On Linux, profile detection uses `hostnamectl chassis` to determine whether to s
 ./install.sh
 
 # Test a laptop model without changing links
-DOTLAYER_PROFILE=laptop DOTLAYER_MACHINE=t14 ./install.sh --dry-run --verbose
+DOTLAYER_PROFILE=laptop DOTLAYER_MACHINE=p14s ./install.sh --dry-run --verbose
 
 # macOS also uses dotlayer
 ./install.sh --dry-run
@@ -77,7 +77,7 @@ and loads last, so layouts chosen through hyprmoncfg take precedence.
 | `config-omarchy-desktop` | Ghostty machine config, Zed settings, Hyprland envs for desktop |
 | `config-omarchy-laptop` | Shared laptop monitor/profile entrypoints |
 | `config-omarchy-laptop-t1g` | T1G laptop terminal and Hyprland model overrides |
-| `config-omarchy-laptop-t14` | T14 laptop terminal and Hyprland model overrides |
+| `config-omarchy-laptop-p14s` | P14s laptop terminal and Hyprland model overrides |
 
 ## Applications
 

@@ -2,7 +2,7 @@
 // in four equal quarters:
 //   desktop | t1g
 //   --------+-----
-//   mbp16   | t14s
+//   mbp16   | p14s
 // Each pane runs machine-shell, which is a local shell on its own machine and
 // SSH elsewhere, so this works from any of them. Opens as an invisible popup,
 // acts, and closes, like split-left.
@@ -42,7 +42,7 @@ export default class Machines extends View {
       const t1g = (await waitForPanes(cx, tab, 2)).find((p) => p !== desktop);
       run("pane.split", { direction: "down", pane: desktop, argv: shell("mbp16") });
       await waitForPanes(cx, tab, 3);
-      run("pane.split", { direction: "down", pane: t1g, argv: shell("t14s") });
+      run("pane.split", { direction: "down", pane: t1g, argv: shell("p14s") });
       await waitForPanes(cx, tab, 4);
 
       run("pane.focus", { pane: desktop });
