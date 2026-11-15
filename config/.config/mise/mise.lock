@@ -176,7 +176,7 @@ url_api = "https://api.github.com/repos/gitleaks/gitleaks/releases/assets/378333
 [[tools."aqua:max-sixty/worktrunk"]]
 version = "0.81.0"
 backend = "aqua:max-sixty/worktrunk"
-specifiers = ["latest"]
+specifiers = ["0.81.0"]
 
 [tools."aqua:max-sixty/worktrunk"."platforms.linux-arm64"]
 checksum = "sha256:7a334d2e64c577afd0247e2411eff673360ab1f18897564f2d2e5d5374fbd74b"
