@@ -58,9 +58,8 @@ Hyprtasking rebuild checks still run when adoption is skipped.
 Shell layout and idle preferences live in `config-omarchy/.config/omarchy/shell.json`;
 supported font, spacing, and bar sizing overrides live in `shell.toml`.
 Hyprtasking gestures are loaded from each profile's `hyprtasking_profile.lua`.
-The T1G layer also stores its monitor defaults and the saved hyprmoncfg
-profiles (laptop-only, presentation, hawaii-small-rooms), which
-`hyprmoncfgd` applies when monitors change. Generated `hyprmoncfg-monitors.lua` remains machine-local
+The T1G layer also stores its monitor defaults and the saved laptop-only
+hyprmoncfg profile. Generated `hyprmoncfg-monitors.lua` remains machine-local
 and loads last, so layouts chosen through hyprmoncfg take precedence.
 
 ## Stow packages
