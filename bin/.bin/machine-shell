@@ -9,7 +9,7 @@
 set -uo pipefail
 
 host="${1:?usage: machine-shell <host>}"
-if [[ "$(hostname -s)" == "$host" ]]; then
+if [[ "${HOSTNAME%%.*}" == "$host" ]]; then
   exec "${SHELL:-zsh}" -l
 fi
 ssh "$host"
