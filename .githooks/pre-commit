@@ -39,6 +39,24 @@ if [ "${#env_violations[@]}" -gt 0 ]; then
   exit 1
 fi
 
+# A script with a shebang must be executable, or a link to it can't run.
+# (Install/Omarchy/lib.sh is sourced, never run; it keeps its shebang.)
+declare -a mode_violations=()
+for path in "${staged_files[@]}"; do
+  [[ "$path" == Install/Omarchy/lib.sh ]] && continue
+  mode="$(git ls-files -s -- "$path" | awk '{ print $1 }')"
+  [[ "$mode" == 100644 ]] || continue
+  if [[ "$(git cat-file blob ":$path" | head -c 2)" == '#!' ]]; then
+    mode_violations+=("$path")
+  fi
+done
+
+if [ "${#mode_violations[@]}" -gt 0 ]; then
+  echo "pre-commit: file(s) start with #! but are not executable (git update-index --chmod=+x <file>):"
+  printf '  - %s\n' "${mode_violations[@]}"
+  exit 1
+fi
+
 # Key material, package binaries, and work packages never belong in this
 # public repo.
 blocked_path_regex='(\.(key|pem|p12|pfx|rpm|deb)$|(^|/)id_(rsa|ecdsa|ed25519)$|(^|/)(doximity|dox-env)(/|$))'
