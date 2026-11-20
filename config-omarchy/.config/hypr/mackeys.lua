@@ -219,6 +219,32 @@ local function hyprland_chord(chord)
   return mods .. " + " .. bind_key(key)
 end
 
+-- Every { wm = "..." } action replays a bind recorded from Omarchy or from the
+-- overrides. When an Omarchy update renames or drops one, its Cmd chord would
+-- silently do nothing, so name the missing ones in the journal and a notification.
+local function check_wm_targets()
+  local missing, seen = {}, {}
+  for _, profile in ipairs({ global, wm, terminal, spotify, herdr, default }) do
+    for chord, action in pairs(profile) do
+      if type(action) == "table" and action.wm and not (_G.mackeys_binds or {})[normalize(action.wm)] then
+        local entry = chord .. " -> " .. action.wm
+        if not seen[entry] then
+          seen[entry] = true
+          missing[#missing + 1] = entry
+        end
+      end
+    end
+  end
+  if #missing == 0 then
+    return
+  end
+
+  table.sort(missing)
+  local message = "mackeys: no Hyprland bind for " .. table.concat(missing, "; ")
+  hl.exec_cmd("logger -t mackeys -p user.warning " .. o.shell_quote(message))
+  hl.exec_cmd(o.notify(message))
+end
+
 function M.setup()
   local options = hl.get_config("input.kb_options")
   options = type(options) == "string" and options or ""
@@ -258,6 +284,8 @@ function M.setup()
   end
   o.bind_hold("MOD3 + mouse:272", "mackeys: Cmd click", ctrl("down"),
     "mackeys: Cmd click release", ctrl("up"), { non_consuming = true })
+
+  check_wm_targets()
 end
 
 return M
