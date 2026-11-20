@@ -1,13 +1,43 @@
 {
   "bar": {
+    "background": "glassy",
     "id": "omarchy.bar",
     "layout": {
       "center": [
         {
-          "id": "omarchy.clock",
           "format": "HH:mm",
           "formatAlt": "d MMMM 'W'ww yyyy",
+          "id": "omarchy.clock",
           "verticalFormat": "HH\n—\nmm"
+        }
+      ],
+      "centerBegin": [
+        {
+          "id": "omarchy.indicators"
+        }
+      ],
+      "centerEnd": [
+        {
+          "cities": [
+            {
+              "name": "Montreal",
+              "zone": "America/Montreal"
+            },
+            {
+              "lat": 37.77493,
+              "lon": -122.41942,
+              "name": "San Francisco",
+              "region": "California, US",
+              "zone": "America/Los_Angeles"
+            }
+          ],
+          "id": "omarchy.elsewhen"
+        },
+        {
+          "id": "omarchy.weather"
+        },
+        {
+          "id": "omarchy.system-update"
         }
       ],
       "left": [
@@ -29,41 +59,41 @@
           "id": "omarchy.keyboard-layout"
         },
         {
-          "id": "crmne.omastats",
-          "cpuStyle": "text",
-          "modules": "cpu,memory,network,gpu",
-          "gpuStyle": "text",
-          "networkStyle": "text",
-          "memoryStyle": "text",
-          "barSensors": "cpu",
-          "barLabels": "text",
-          "showProcesses": true,
-          "gpuTabVersion": 1,
-          "tabs": "cpu,gpu,memory,disks,network,sensors,battery",
-          "graphWidth": 36,
-          "style": "both",
-          "disksStyle": "",
-          "sensorsStyle": "",
-          "batteryStyle": "",
-          "disksSource": "all",
           "barGpus": "all",
-          "temperatureUnit": "Celsius",
-          "refreshSeconds": 1,
+          "barLabels": "text",
+          "barSensors": "cpu",
+          "batteryStyle": "",
+          "cpuStyle": "text",
+          "disksSource": "all",
+          "disksStyle": "",
+          "gpuStyle": "text",
+          "gpuTabVersion": 1,
+          "graphWidth": 36,
           "historySeconds": 240,
+          "id": "crmne.omastats",
+          "memoryStyle": "text",
+          "modules": "cpu,memory,network,gpu",
+          "networkStyle": "text",
           "publicIp": true,
-          "showCores": true,
-          "showLoad": true,
-          "showBreakdown": true,
-          "showVolumes": true,
+          "refreshSeconds": 1,
+          "sensorsStyle": "",
           "showActivity": true,
-          "showInterfaces": true,
-          "showTotals": true,
           "showAddresses": true,
-          "showTemperatures": true,
+          "showBreakdown": true,
+          "showCores": true,
+          "showDetails": true,
+          "showDevices": true,
           "showFans": true,
           "showHistory": true,
-          "showDetails": true,
-          "showDevices": true
+          "showInterfaces": true,
+          "showLoad": true,
+          "showProcesses": true,
+          "showTemperatures": true,
+          "showTotals": true,
+          "showVolumes": true,
+          "style": "both",
+          "tabs": "cpu,gpu,memory,disks,network,sensors,battery",
+          "temperatureUnit": "Celsius"
         },
         {
           "id": "io.github.douglas.omarchy-kefctl"
@@ -71,8 +101,16 @@
         {
           "id": "io.github.douglas.omarchy-ekvm",
           "inputs": [
-            { "label": "Neo", "value": "0x11" },
-            { "label": "Desktop", "value": "0x31" }
+            {
+              "label": "Neo",
+              "value": "0x11",
+              "host": "neo"
+            },
+            {
+              "label": "Desktop",
+              "value": "0x31",
+              "host": "desktop"
+            }
           ]
         },
         {
@@ -94,46 +132,15 @@
           "id": "omarchy.power"
         }
       ],
-      "centerBegin": [
-        {
-          "id": "omarchy.indicators"
-        }
-      ],
-      "centerEnd": [
-        {
-          "id": "omarchy.elsewhen",
-          "cities": [
-            {
-              "name": "Montreal",
-              "zone": "America/Montreal"
-            },
-            {
-              "name": "San Francisco",
-              "zone": "America/Los_Angeles",
-              "lat": 37.77493,
-              "lon": -122.41942,
-              "region": "California, US"
-            }
-          ]
-        },
-        {
-          "id": "omarchy.weather"
-        },
-        {
-          "id": "omarchy.system-update"
-        }
-      ],
       "tray": []
     },
     "neoshIconFontSize": 11,
-    "position": "top",
-    "transparent": true
+    "position": "top"
   },
   "idle": {
     "lock": 300,
     "screensaver": 150
   },
-  "version": 1,
   "plugins": [
     {
       "id": "typecraft.omacast"
@@ -141,5 +148,6 @@
     {
       "id": "io.voxtype.settings"
     }
-  ]
+  ],
+  "version": 1
 }
