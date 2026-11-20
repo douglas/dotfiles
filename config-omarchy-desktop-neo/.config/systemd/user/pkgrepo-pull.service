@@ -4,6 +4,7 @@
 Description=pkgrepo: pull new builds from the backup
 After=network-online.target
 Wants=network-online.target
+OnFailure=pkgrepo-notify@%n.service
 
 [Service]
 Type=oneshot
