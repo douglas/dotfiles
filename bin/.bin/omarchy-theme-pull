@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Give this Mac the Omarchy theme the desktop is using right now.
 #
-#   omarchy-theme-pull [host]      default host: desktop
+#   omarchy-theme-pull [host]      default host: fd01
 #
 # Omarchy renders the current theme into ~/.local/state/omarchy/current
 # (ghostty.conf, btop.theme, neovim.lua, colors.toml, the background). This
@@ -15,7 +15,7 @@ set -euo pipefail
 [[ $OSTYPE == darwin* ]] || { echo "omarchy-theme-pull: macOS only (Linux has the theme already)" >&2; exit 1; }
 export PATH="/opt/homebrew/bin:$PATH"
 
-host=${1:-desktop}
+host=${1:-fd01}
 state="$HOME/.local/state/omarchy/current"
 theme="$state/theme"
 mkdir -p "$state"

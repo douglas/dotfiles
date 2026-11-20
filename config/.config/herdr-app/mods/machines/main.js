@@ -1,6 +1,6 @@
 // One tab with a shell on every home machine (mod.open:machines, ctrl-k \),
 // in four equal quarters:
-//   desktop | t1g
+//   fd01    | t1g
 //   --------+-----
 //   mbp16   | p14s
 // Each pane runs machine-shell, which is a local shell on its own machine and
@@ -28,7 +28,7 @@ export default class Machines extends View {
   init(_props, cx) {
     cx.spawn(async (cx) => {
       const before = focused()?.tab;
-      run("tab.new", { name: "machines", argv: shell("desktop") });
+      run("tab.new", { name: "machines", argv: shell("fd01") });
       let here = focused();
       for (let i = 0; i < 40 && (!here?.pane || here.tab === before); i++) {
         await cx.sleep(25);

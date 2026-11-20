@@ -1,8 +1,8 @@
-# Lends this GPU to neo for models too big for one machine
+# Lends this GPU to fdai for models too big for one machine
 # (llama-server --rpc 10.20.0.1:50052). The RPC protocol has no auth, so it
-# binds only to the Thunderbolt address, which only neo can reach.
+# binds only to the Thunderbolt address, which only fdai can reach.
 [Unit]
-Description=llama.cpp RPC server for neo over Thunderbolt
+Description=llama.cpp RPC server for fdai over Thunderbolt
 After=network-online.target
 
 [Service]

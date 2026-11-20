@@ -1,13 +1,13 @@
 # kitty session for Ctrl+K \ (keys.conf): one tab with a shell on every home
 # machine, in four equal quarters, like herdr-app's machines mod:
-#   desktop | t1g
+#   fd01    | t1g
 #   --------+-----
 #   mbp16   | p14s
 # The grid layout fills column by column, hence the launch order. Each window
 # runs machine-shell: a login shell on its own machine, SSH to the others.
 new_tab machines
 layout grid
-launch --title desktop sh -c 'exec "$HOME/.bin/machine-shell" desktop'
+launch --title fd01 sh -c 'exec "$HOME/.bin/machine-shell" fd01'
 launch --title mbp16 sh -c 'exec "$HOME/.bin/machine-shell" mbp16'
 launch --title t1g sh -c 'exec "$HOME/.bin/machine-shell" t1g'
 launch --title p14s sh -c 'exec "$HOME/.bin/machine-shell" p14s'
