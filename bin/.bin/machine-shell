@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # A shell on one of the home machines, for a herdr-app "machines" pane:
 #
-#   machine-shell <host>      host: fd01, t1g, p14s, mbp16 (~/.ssh/config.d/home)
+#   machine-shell <host>      host: f22, f35, av8, su34 (~/.ssh/config.d/home)
 #
 # On that machine itself it starts a login shell; anywhere else it opens SSH
 # to it, so the same layout works from every machine. When SSH ends, a local

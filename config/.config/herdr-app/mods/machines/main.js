@@ -1,8 +1,8 @@
 // One tab with a shell on every home machine (mod.open:machines, ctrl-k \),
 // in four equal quarters:
-//   fd01    | t1g
-//   --------+-----
-//   mbp16   | p14s
+//   f22   | f35
+//   ------+-----
+//   su34  | av8
 // Each pane runs machine-shell, which is a local shell on its own machine and
 // SSH elsewhere, so this works from any of them. Opens as an invisible popup,
 // acts, and closes, like split-left.
@@ -28,7 +28,7 @@ export default class Machines extends View {
   init(_props, cx) {
     cx.spawn(async (cx) => {
       const before = focused()?.tab;
-      run("tab.new", { name: "machines", argv: shell("fd01") });
+      run("tab.new", { name: "machines", argv: shell("f22") });
       let here = focused();
       for (let i = 0; i < 40 && (!here?.pane || here.tab === before); i++) {
         await cx.sleep(25);
@@ -38,11 +38,11 @@ export default class Machines extends View {
       const desktop = here.pane;
 
       // Left and right halves, then each half split top and bottom.
-      run("pane.split", { direction: "right", pane: desktop, argv: shell("t1g") });
-      const t1g = (await waitForPanes(cx, tab, 2)).find((p) => p !== desktop);
-      run("pane.split", { direction: "down", pane: desktop, argv: shell("mbp16") });
+      run("pane.split", { direction: "right", pane: desktop, argv: shell("f35") });
+      const f35 = (await waitForPanes(cx, tab, 2)).find((p) => p !== desktop);
+      run("pane.split", { direction: "down", pane: desktop, argv: shell("su34") });
       await waitForPanes(cx, tab, 3);
-      run("pane.split", { direction: "down", pane: t1g, argv: shell("p14s") });
+      run("pane.split", { direction: "down", pane: f35, argv: shell("av8") });
       await waitForPanes(cx, tab, 4);
 
       run("pane.focus", { pane: desktop });

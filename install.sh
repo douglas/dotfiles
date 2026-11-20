@@ -4,7 +4,7 @@
 ##
 ## Usage:
 ##   ./install.sh
-##   DOTLAYER_PROFILE=laptop DOTLAYER_MACHINE=p14s ./install.sh --dry-run --verbose
+##   DOTLAYER_PROFILE=laptop DOTLAYER_MACHINE=av8 ./install.sh --dry-run --verbose
 ##
 
 set -euo pipefail

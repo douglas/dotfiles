@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Open a Ghostty tab with a shell on every home machine, in four equal quarters,
 # like herdr-app's and kitty's Ctrl+K \:
-#   fd01    | t1g
-#   --------+-----
-#   mbp16   | p14s
+#   f22   | f35
+#   ------+-----
+#   su34  | av8
 #
 # macOS only: Ghostty's AppleScript dictionary can split a terminal and give the
 # new split a command; its keybinds and Linux IPC can't. Each terminal runs
@@ -18,15 +18,15 @@ on run argv
   set ms to item 1 of argv
   tell application "Ghostty"
     set cfg to new surface configuration
-    set command of cfg to ms & " fd01"
+    set command of cfg to ms & " f22"
     if (count of windows) is 0 then new window
     set newTab to new tab in front window with configuration cfg
     set topLeft to focused terminal of newTab
-    set command of cfg to ms & " t1g"
+    set command of cfg to ms & " f35"
     set topRight to split topLeft direction right with configuration cfg
-    set command of cfg to ms & " mbp16"
+    set command of cfg to ms & " su34"
     split topLeft direction down with configuration cfg
-    set command of cfg to ms & " p14s"
+    set command of cfg to ms & " av8"
     split topRight direction down with configuration cfg
     focus topLeft
   end tell

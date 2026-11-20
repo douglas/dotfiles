@@ -1,4 +1,4 @@
-# Keep the repo fdai serves current: download new builds from the GitHub
+# Keep the repo e7 serves current: download new builds from the GitHub
 # backup that bin/build uploads from whichever machine built them.
 [Unit]
 Description=pkgrepo: pull new builds from the backup

@@ -104,14 +104,14 @@
           "id": "io.github.douglas.desk",
           "inputs": [
             {
-              "label": "FDAI",
+              "label": "E7",
               "value": "0x11",
-              "host": "fdai"
+              "host": "e7"
             },
             {
-              "label": "FD01",
+              "label": "F22",
               "value": "0x31",
-              "host": "fd01"
+              "host": "f22"
             }
           ]
         },
