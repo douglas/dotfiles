@@ -10,6 +10,11 @@ dofile((os.getenv("OMARCHY_PATH") or "/usr/share/omarchy") .. "/default/hypr/boo
 -- keeping core window-manager bindings:
 -- omarchy_preinstalled_bindings = false
 
+-- macOS-style Cmd key (replaces xremap). Record every bind from here on, so
+-- Cmd shortcuts can reuse the matching Super binding. Set up at the end.
+local mackeys = require("hypr.mackeys")
+mackeys.record()
+
 -- Load Omarchy defaults.
 require("default.hypr.omarchy")
 
@@ -27,6 +32,8 @@ require("default.hypr.toggles")
 
 -- Add any other personal Hyprland configuration below.
 -- o.window("qemu", { workspace = "5" })
+
+mackeys.setup()
 
 -- Added by hyprmoncfg: its generated monitor rules load last, so nothing before this can override the applied layout.
 do local path = (os.getenv("XDG_CONFIG_HOME") or os.getenv("HOME") .. "/.config") .. "/hypr/hyprmoncfg-monitors.lua"; local file = io.open(path, "r"); if file then file:close(); dofile(path) end end

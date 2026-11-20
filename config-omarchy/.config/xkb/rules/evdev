@@ -1,0 +1,7 @@
+// macOS-style keyboard options for Hyprland (replaces xremap's modmap).
+// libxkbcommon reads ~/.config/xkb first, which hides /etc/xkb, so include
+// Omarchy's rules (%E = /etc/xkb), which in turn include the system rules.
+! include %E/evdev
+
+! option = symbols
+  mackeys:mac = +mackeys(mac)

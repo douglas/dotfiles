@@ -1,0 +1,21 @@
+// Left Alt is the macOS Cmd key: Hyper on its own modifier (Mod3), so Hyprland
+// can bind "MOD3 + ..." without clashing with Super or Alt. F18 is Cmd too,
+// because the Keychron firmware sends F18 for that key.
+// Caps Lock is Control. The extra ISO key next to Left Shift is Shift.
+partial modifier_keys
+xkb_symbols "mac" {
+  replace key <LALT> { type[Group1] = "ONE_LEVEL", symbols[Group1] = [ Hyper_L ] };
+  replace key <FK18> { type[Group1] = "ONE_LEVEL", symbols[Group1] = [ Hyper_L ] };
+  modifier_map Mod3 { <LALT>, <FK18> };
+
+  // The explicit action beats the Caps Lock action omarchy:shift_caps_compose sets.
+  replace key <CAPS> {
+    type[Group1] = "ONE_LEVEL",
+    symbols[Group1] = [ Control_L ],
+    actions[Group1] = [ SetMods(modifiers = Control) ]
+  };
+  modifier_map Control { <CAPS> };
+
+  replace key <LSGT> { type[Group1] = "ONE_LEVEL", symbols[Group1] = [ Shift_L ] };
+  modifier_map Shift { <LSGT> };
+};
