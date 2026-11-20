@@ -13,7 +13,8 @@
 import { View, div } from "gpui-kit";
 import { run, props, closeOverlay, focused, panes } from "herdr";
 
-const shell = (host) => ["machine-shell", host];
+// By full path: herdr's terminal server may start without ~/.bin on its PATH.
+const shell = (host) => ["sh", "-c", 'exec "$HOME/.bin/machine-shell" "$0"', host];
 
 // The panes of a tab, by id.
 const tabPanes = (tab) => panes().filter((p) => p.tab === tab).map((p) => p.pane);
