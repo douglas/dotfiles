@@ -96,10 +96,7 @@
           "temperatureUnit": "Celsius"
         },
         {
-          "id": "io.github.douglas.omarchy-kefctl"
-        },
-        {
-          "id": "io.github.douglas.omarchy-ekvm",
+          "id": "io.github.douglas.desk",
           "inputs": [
             {
               "label": "Neo",
