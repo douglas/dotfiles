@@ -48,7 +48,7 @@ copy-on-select = clipboard
 # No "cols x rows" box while the tiler resizes a new window.
 resize-overlay = never
 
-# Cmd keys, as herdr-app has them on macOS (Cmd is where Linux uses F18 via xremap).
+# Cmd keys, as herdr-app has them on macOS (Cmd is where Linux uses F18 via hypr/mackeys.lua).
 # The Ctrl/Alt keybinds shared with Linux are in ./keys (included below).
 keybind = cmd+c=copy_to_clipboard
 keybind = cmd+v=paste_from_clipboard

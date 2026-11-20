@@ -69,7 +69,7 @@ keys = [
   { key = "up", with = "control | alt", action = "SelectPrevSplit" },
   { key = "right", with = "control | alt", action = "SelectNextSplit" },
   { key = "down", with = "control | alt", action = "SelectNextSplit" },
-  # Cmd keys, as herdr-app has them on macOS (Cmd is where Linux uses F18 via xremap)
+  # Cmd keys, as herdr-app has them on macOS (Cmd is where Linux uses F18 via hypr/mackeys.lua)
   { key = "a", with = "super", esc = "\u0001" },
   { key = "e", with = "super", esc = "\u0005" },
   { key = "left", with = "super", esc = "\u0001" },

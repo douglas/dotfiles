@@ -13,7 +13,7 @@ keybind = ctrl+shift+f=start_search
 keybind = alt+shift+enter=csi:13;4u
 keybind = shift+enter=text:\x1b\r
 # Ghostty's default Ctrl+Enter is fullscreen; pass it to the app like Herdr
-# (on Linux, xremap sends Cmd+Enter as Ctrl+Enter).
+# (on Linux, hypr/mackeys.lua sends Cmd+Enter as Ctrl+Enter).
 keybind = ctrl+enter=unbind
 keybind = ctrl+backspace=text:\x17
 keybind = ctrl+arrow_left=text:\x1bb

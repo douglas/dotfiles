@@ -1,10 +1,10 @@
 // Zed keymap — macOS-like Super shortcuts
-// Complements xremap (which maps Super→Ctrl for common keys).
-// Includes both xremap-covered basics (as backup) and Zed-specific shortcuts.
+// Complements hypr/mackeys.lua (which maps Cmd→Ctrl for common keys).
+// Includes both mackeys-covered basics (as backup) and Zed-specific shortcuts.
 [
   {
     "bindings": {
-      // Basics (also handled by xremap → Ctrl, listed here for completeness)
+      // Basics (also handled by mackeys → Ctrl, listed here for completeness)
       "super-s": "workspace::Save",
       "super-shift-s": "workspace::SaveAs",
       "super-n": "workspace::NewFile",
@@ -41,7 +41,7 @@
       "super-]": "editor::Indent",
       "super-[": "editor::Outdent",
       "super-shift-k": "editor::DeleteLine",
-      "ctrl-enter": "zed::ToggleFullScreen",  // super+enter via xremap
+      "ctrl-enter": "zed::ToggleFullScreen",  // super+enter via hypr/mackeys.lua
       "super-shift-enter": "editor::NewlineAbove",
 
       // Multi-cursor & selection
@@ -61,8 +61,8 @@
       "super-\\": "pane::SplitRight",
 
       // Tab navigation
-      "ctrl-pagedown": "pane::ActivateNextItem",   // super+shift+] via xremap
-      "ctrl-pageup": "pane::ActivatePreviousItem", // super+shift+[ via xremap
+      "ctrl-pagedown": "pane::ActivateNextItem",   // super+shift+] via hypr/mackeys.lua
+      "ctrl-pageup": "pane::ActivatePreviousItem", // super+shift+[ via hypr/mackeys.lua
       "super-shift-t": "pane::ReopenClosedItem",
       "super-1": ["pane::ActivateItem", 0],
       "super-2": ["pane::ActivateItem", 1],

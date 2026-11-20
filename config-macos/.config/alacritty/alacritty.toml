@@ -28,7 +28,7 @@ padding.x = 14
 padding.y = 14
 option_as_alt = "OnlyLeft"
 
-# Keybinds as on Linux, with Cmd where Linux uses F18 (xremap). Alacritty has
+# Keybinds as on Linux, with Cmd where Linux uses F18 (hypr/mackeys.lua). Alacritty has
 # no splits or key chords, so only text, clipboard, font, search, window and
 # tab keys carry over (macOS Alacritty has tabs).
 [keyboard]

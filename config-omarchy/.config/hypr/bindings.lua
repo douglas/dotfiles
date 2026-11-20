@@ -20,24 +20,24 @@
 -- hl.unbind("SUPER + SPACE")
 -- o.bind("SUPER + SPACE", "Omarchy menu", "omarchy-menu toggle root")
 
--- xremap translates F18+Space to SUPER+ALT+SPACE.
+-- Cmd+Space runs omacast directly (hypr/mackeys.lua); SUPER+ALT+SPACE opens it too.
 -- Keep SUPER+SPACE on the default Omarchy launcher.
 hl.unbind("SUPER + ALT + SPACE")
 o.bind("SUPER + ALT + SPACE", "omacast launcher", hl.dsp.global("omacast:toggle"))
 
--- F18+Q is remapped to SUPER+W. Close the Omarchy control center before
+-- Cmd+Q (hypr/mackeys.lua) runs this SUPER+W bind. Close the Omarchy control center before
 -- falling back to Omarchy's normal close-window behavior.
 hl.unbind("SUPER + W")
 o.bind("SUPER + W", "Close window or control center", "$HOME/.bin/omarchy-close-or-killactive")
 
--- xremap routes F18+Ctrl+J to the settings menu.
+-- Cmd+Ctrl+J (hypr/mackeys.lua) runs this settings-menu bind.
 hl.unbind("SUPER + CTRL + J")
 o.bind("SUPER + CTRL + J", "Settings menu", "omarchy-menu toggle settings")
 
 -- Disable a default binding without replacing it.
 -- hl.unbind("SUPER + SHIFT + B")
 
--- xremap translates the physical Cmd/F18 key to Super. Cycle once through
+-- Cmd+Tab (hypr/mackeys.lua) runs these SUPER+TAB binds. Cycle once through
 -- each running application, including windows on other workspaces.
 local function cycle_global_app(next)
   local applications = {}

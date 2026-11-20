@@ -71,7 +71,7 @@ and loads last, so layouts chosen through hyprmoncfg take precedence.
 | `git` | `.gitconfig` and `.gitignore` — delta pager, difftastic, aliases, SSH signing |
 | `zsh` | `.zshrc` and `~/.zsh/` — extensions (git, fzf, networking, Rails), Catppuccin theme |
 | `config` | Shared `~/.config/` for ai-usagebar, bat, bottom, btop, bun, delta, fsh, gh, ghostty, lazydocker, lazygit, pnpm, qalculate, tmux, uv, Warp, wt, yazi, zed |
-| `config-linux` | Linux `~/.config/` (autostart, fcitx5, mise, systemd user units, user-dirs, zed) plus system files: split xremap services, hardening installer, sleep hook, Keychron udev rule |
+| `config-linux` | Linux `~/.config/` (autostart, fcitx5, mise, systemd user units, user-dirs, zed) plus system files: Keychron udev rule |
 | `config-macos` | Cursor editor settings and keybindings, and herdr-app: Herdr's Mac keys with every Linux key on top (`herdr-keys-macos` regenerates it after a Linux key change), the Linux mods (linked, not copied), a fixed copy of the Omarchy theme, and the same settings file as Linux (linked). Herdr itself comes from `herdr-ffm-macos` (in `bin`), which builds the release with pkgrepo's focus-follows-mouse patch into `~/Applications/Herdr.app`; rerun it when the patch changes |
 | `config-omarchy` | Shared Omarchy config: Hyprland Lua, Neosh integration, Omarchy hooks, audio policy, startup, plus alacritty, cmux, foot, herdr-app, hunk, kitty, starship, sublime-merge, and zellij. Neovim uses Omarchy's stock LazyVim. Legacy Hyprland `.conf` files remain excluded from Stow as migration reference. On a machine that already ran the Herdr GUI, delete `~/.config/herdr-app/keys.json` and `settings.json` before restowing, or adoption replaces the tracked ones. |
 | `config-omarchy-desktop` | Ghostty machine config, Zed settings, Hyprland envs for desktop |
@@ -104,20 +104,8 @@ and loads last, so layouts chosen through hyprmoncfg take precedence.
 - [lazydocker](https://github.com/jesseduffield/lazydocker) — Docker TUI
 
 **System (Linux)**
-- [xremap](https://github.com/xremap/xremap) — macOS-style keybindings on Linux, with a privileged input daemon and an unprivileged Hyprland bridge
+- macOS-style Cmd key in Hyprland, no remapper daemon: an XKB option (`config-omarchy/.config/xkb`) plus `config-omarchy/.config/hypr/mackeys.lua`
 - udev rules for Keychron keyboard HID access
-- systemd sleep hook to restart xremap after suspend/resume
-
-The xremap security migration is deliberately staged so the working remapper is
-not stopped before the replacement is ready:
-
-```sh
-sudo ~/.public_dotfiles/config-linux/usr/local/sbin/harden-xremap install
-# Reboot and test all remaps.
-sudo ~/.public_dotfiles/config-linux/usr/local/sbin/harden-xremap status
-sudo ~/.public_dotfiles/config-linux/usr/local/sbin/harden-xremap finalize
-# Reboot again to discard the old login session's input-group credentials.
-```
 
 ## Theme
 
