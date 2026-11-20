@@ -524,10 +524,61 @@ if command -v herdr-app >/dev/null 2>&1 && herdr-app status >/dev/null 2>&1; the
   herdr-app "do" app.theme --name omarchy >/dev/null 2>&1 || true
 fi
 
-# Apply generated hyprtasking label colors/effects to the active Hyprland session.
-if command -v hyprctl >/dev/null 2>&1 && [[ -f "$THEME_DIR/hyprtasking-labels.conf" ]]; then
-  sig=$(ls -1t /run/user/$UID/hypr/*/.socket.sock 2>/dev/null | head -n1 | xargs dirname | xargs basename)
-  if [[ -n "$sig" ]]; then
-    HYPRLAND_INSTANCE_SIGNATURE="$sig" hyprctl keyword source "$THEME_DIR/hyprtasking-labels.conf" >/dev/null 2>&1 || true
+# ── Hyprtasking overview labels ──────────────────────────────────────────────
+# Omarchy renders themed/hyprtasking-labels.lua.tpl into hyprtasking-labels.lua.
+# Hyprland's Lua config has no hyprlang keyword/source commands; runtime config
+# goes through the Lua API, which hyprctl reaches with `eval`. (Omarchy's own
+# theme step applies its Lua theme by reloading the config; this one file
+# isn't loaded by any module, so evaluate it directly.) Problems are logged to
+# HOOK_LOG, never swallowed.
+
+HOOK_LOG="$HOME/.local/state/omarchy/theme-set-hook.log"
+
+# log_hook <stderr|file> message...
+log_hook() {
+  local where="$1"
+  shift
+  mkdir -p "$(dirname "$HOOK_LOG")"
+  printf '%s theme-set: %s\n' "$(date '+%F %T')" "$*" >>"$HOOK_LOG"
+  [[ $where == stderr ]] && printf 'theme-set hook: %s\n' "$*" >&2
+  return 0
+}
+
+hyprland_signature() {
+  local sock
+  if [[ -n ${HYPRLAND_INSTANCE_SIGNATURE:-} ]]; then
+    printf '%s\n' "$HYPRLAND_INSTANCE_SIGNATURE"
+    return 0
   fi
-fi
+  sock=$(ls -1t "${XDG_RUNTIME_DIR:-/run/user/$UID}"/hypr/*/.socket.sock 2>/dev/null | head -n1)
+  [[ -n $sock ]] || return 1
+  basename "$(dirname "$sock")"
+}
+
+apply_hyprtasking_labels() {
+  local labels="$THEME_DIR/hyprtasking-labels.lua"
+  local plugin="$HOME/src/hyprtasking/build/libhyprtasking.so"
+  local sig reply
+
+  [[ -f $labels ]] || return 0
+  command -v hyprctl >/dev/null 2>&1 || return 0
+  sig=$(hyprland_signature) || return 0 # no running session: nothing to apply
+
+  # Hyprland rejects options a plugin never registered, so only apply them when
+  # the loaded build has label options at all.
+  if ! rg -aq 'labels:(enabled|text_color)' "$plugin" 2>/dev/null; then
+    log_hook file "hyprtasking labels not applied: $plugin registers no labels options"
+    return 0
+  fi
+
+  if ! reply=$(HYPRLAND_INSTANCE_SIGNATURE="$sig" hyprctl eval "$(<"$labels")" 2>&1); then
+    log_hook stderr "hyprctl eval failed for $labels: $reply"
+    return 1
+  fi
+  if [[ -n $reply && $reply != ok ]]; then
+    log_hook stderr "hyprctl eval of $labels replied: $reply"
+    return 1
+  fi
+}
+
+apply_hyprtasking_labels
