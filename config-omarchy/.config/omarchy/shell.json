@@ -71,8 +71,8 @@
         {
           "id": "io.github.douglas.omarchy-ekvm",
           "inputs": [
-            { "label": "Neo", "value": "0x11", "icon": "󰌢" },
-            { "label": "Desktop", "value": "0x31", "icon": "󰇄" }
+            { "label": "Neo", "value": "0x11" },
+            { "label": "Desktop", "value": "0x31" }
           ]
         },
         {
