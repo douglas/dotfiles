@@ -1,0 +1,19 @@
+# Serve the pkgrepo pacman repo (~/src/archlinux/pkgs) to the home network.
+# Every package and the database are signed and pacman checks them
+# (SigLevel = Required TrustedOnly), so plain HTTP on the LAN is enough.
+# Clients list http://neo.lan:8790 first and their own file:// copy second.
+[Unit]
+Description=pkgrepo: serve the pacman repo on port 8790
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/bin/python3 -m http.server 8790 --bind 0.0.0.0 --directory %h/src/archlinux/pkgs
+Restart=on-failure
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ReadOnlyPaths=%h
+
+[Install]
+WantedBy=default.target

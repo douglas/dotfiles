@@ -1,0 +1,10 @@
+# Keep the repo neo serves current: download new builds from the GitHub
+# backup that bin/build uploads from whichever machine built them.
+[Unit]
+Description=pkgrepo: pull new builds from the backup
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/src/archlinux/pkgrepo/bin/sync --pull

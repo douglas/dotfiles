@@ -1,0 +1,11 @@
+# bin/build also asks neo to pull right after a build; this catches the rest.
+[Unit]
+Description=pkgrepo: hourly pull of new builds
+
+[Timer]
+OnCalendar=hourly
+RandomizedDelaySec=5m
+Persistent=true
+
+[Install]
+WantedBy=timers.target
