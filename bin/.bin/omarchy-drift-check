@@ -1,0 +1,259 @@
+#!/bin/bash
+# omarchy-drift-check: early warning for Omarchy upstream drift.
+#
+# Usage: omarchy-drift-check [--accept]
+#
+#   (none)    check, print findings, exit 1 when there are any
+#   --accept  record the current state of the Omarchy files below as reviewed
+#
+# It looks at four things:
+#   a. Omarchy's own files the dotfiles override or depend on: the config/
+#      templates they replace, the default/hypr/*.lua modules they require, and
+#      the omarchy-* commands they call. Each is hashed in a tracked manifest
+#      (config-omarchy/.config/omarchy/drift-manifest.tsv). A file that differs
+#      from the manifest, or has disappeared, is a finding until --accept. The
+#      first time a file is seen to change since the last run (a copy of each
+#      lives in ~/.local/state/omarchy/drift/), its `diff -u` is printed, then
+#      the copy is updated.
+#   b. Legacy Hyprland syntax in both dotfiles repos (hyprlang keywords, exec-once,
+#      windowrulev2, `bind =`, `source =`, persistent workspace rules that clash
+#      with Omarchy's per-monitor workspaces).
+#   c. Commands: every omarchy-* command the manifest knows must still resolve.
+#   d. The hyprland and omarchy package versions, noted when they change.
+#
+# Read-only except for its state directory (and the manifest with --accept).
+# Needs rg and fd. Run by the Omarchy post-update hook, and by hand.
+
+set -uo pipefail
+
+OMARCHY="${OMARCHY_PATH:-/usr/share/omarchy}"
+PUB="$HOME/.public_dotfiles"
+PRIV="$HOME/.private_dotfiles"
+MANIFEST="${OMARCHY_DRIFT_MANIFEST:-$PUB/config-omarchy/.config/omarchy/drift-manifest.tsv}"
+STATE="${XDG_STATE_HOME:-$HOME/.local/state}/omarchy/drift"
+DIFF_LINES=40 # printed lines per file diff; the full diff goes to $STATE/last-drift.diff
+TAB=$'\t'
+
+usage() { sed -n '2,6p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; }
+
+accept=0
+case "${1:-}" in
+  "") ;;
+  --accept) accept=1 ;;
+  -h | --help) usage; exit 0 ;;
+  *) usage >&2; exit 2 ;;
+esac
+
+for tool in rg fd sha256sum; do
+  command -v "$tool" >/dev/null 2>&1 || { echo "omarchy-drift-check: $tool is required" >&2; exit 2; }
+done
+
+short() { printf '%s\n' "${1/#$HOME/\~}"; }
+
+# --- What the dotfiles depend on ------------------------------------------------
+
+declare -A cur=()     # "kind<TAB>name" -> sha256 of the file
+declare -A real_of=() # "kind<TAB>name" -> the resolved path that was hashed
+missing_required=()
+
+add_dep() { # kind name path
+  local real
+  real="$(readlink -f -- "$3")" || return 0
+  [[ -f $real ]] || return 0
+  cur["$1$TAB$2"]="$(sha256sum -- "$real" | cut -d' ' -f1)"
+  real_of["$1$TAB$2"]="$real"
+}
+
+discover_hypr_defaults() {
+  local roots=() dir mod rel file
+  for dir in "$PUB"/config-omarchy*/.config/hypr "$PRIV/config/.config/hypr"; do
+    [[ -d $dir ]] && roots+=("$dir")
+  done
+  if ((${#roots[@]})); then
+    while IFS= read -r mod; do
+      mod="${mod%.}"
+      rel="${mod#default.hypr.}"
+      file="$OMARCHY/default/hypr/${rel//.//}.lua"
+      if [[ -f $file ]]; then add_dep file "$file" "$file"; else missing_required+=("$mod"); fi
+    done < <(rg --hidden -oN --no-filename -g '*.lua' 'default\.hypr\.[a-z0-9_.-]+' "${roots[@]}" | sort -u)
+  fi
+  # What every Lua file relies on without naming it: the o.* helpers, the
+  # per-monitor workspace API, and the binds mackeys.lua replays.
+  for file in helpers monitor-workspaces bootstrap omarchy; do
+    add_dep file "$OMARCHY/default/hypr/$file.lua" "$OMARCHY/default/hypr/$file.lua"
+  done
+  for file in "$OMARCHY"/default/hypr/bindings/*.lua; do
+    add_dep file "$file" "$file"
+  done
+}
+
+# Omarchy's config/ templates (and theme templates) that a dotfiles package replaces.
+discover_overrides() {
+  local pkg file rel
+  for pkg in "$PUB"/config-omarchy* "$PRIV/config"; do
+    [[ -d $pkg/.config ]] || continue
+    while IFS= read -r file; do
+      rel="${file#"$pkg/.config/"}"
+      if [[ -f $OMARCHY/config/$rel ]]; then
+        add_dep file "$OMARCHY/config/$rel" "$OMARCHY/config/$rel"
+      elif [[ $rel == omarchy/themed/* && -f $OMARCHY/default/themed/${rel#omarchy/themed/} ]]; then
+        add_dep file "$OMARCHY/default/themed/${rel#omarchy/themed/}" "$OMARCHY/default/themed/${rel#omarchy/themed/}"
+      fi
+    done < <(fd -H --no-ignore -t f -t l . "$pkg/.config")
+  done
+}
+
+# omarchy-* commands the dotfiles mention that resolve to Omarchy's own files
+# (not to ~/.bin or other checkouts, which are tracked by git themselves).
+# Words that aren't commands (package and unit names) simply don't resolve.
+discover_commands() {
+  local token path real
+  while IFS= read -r token; do
+    token="${token%-}"
+    path="$(command -v "$token" 2>/dev/null)" || continue
+    real="$(readlink -f -- "$path")" || continue
+    [[ $real == "$HOME"/* || $real == /usr/local/* ]] && continue
+    add_dep cmd "$token" "$real"
+  done < <(rg --hidden -oN --no-filename --max-filesize 1M \
+    -g '!.git' -g '!*.lock' -g '!*.md' -g '!*.json' -g '!omarchy-drift-check' -g '!dox' -g '!wubular_src' \
+    '\bomarchy-[a-z0-9][a-z0-9-]*' "$PUB" "$PRIV" | sort -u)
+}
+
+discover_hypr_defaults
+discover_overrides
+discover_commands
+
+# --- --accept: record and stop ----------------------------------------------------
+
+snapshot_path() { printf '%s/files%s\n' "$STATE" "$1"; }
+
+save_snapshot() { # resolved path
+  local snap
+  snap="$(snapshot_path "$1")"
+  mkdir -p "$(dirname "$snap")"
+  cp -f -- "$1" "$snap"
+}
+
+if ((accept)); then
+  mkdir -p "$(dirname "$MANIFEST")" "$STATE"
+  for key in "${!cur[@]}"; do
+    printf '%s%s%s\n' "$key" "$TAB" "${cur[$key]}"
+  done | sort >"$MANIFEST"
+  for key in "${!real_of[@]}"; do save_snapshot "${real_of[$key]}"; done
+  echo "accepted ${#cur[@]} entries -> $(short "$MANIFEST")"
+  exit 0
+fi
+
+# --- a. Compare with the manifest and the saved copies -------------------------
+
+findings=0
+mkdir -p "$STATE/files"
+: >"$STATE/last-drift.diff"
+
+declare -A man=()
+if [[ -f $MANIFEST ]]; then
+  while IFS="$TAB" read -r kind name hash; do
+    [[ -n $kind ]] && man["$kind$TAB$name"]="$hash"
+  done <"$MANIFEST"
+fi
+
+changed=() gone=() added=() baselined=0 diffs=0
+
+for key in "${!cur[@]}"; do
+  real="${real_of[$key]}"
+  snap="$(snapshot_path "$real")"
+  if [[ ! -f $snap ]]; then
+    save_snapshot "$real"
+    baselined=$((baselined + 1))
+  elif ! cmp -s "$snap" "$real"; then
+    diffs=$((diffs + 1))
+    diff -u --label "saved: $real" --label "current: $real" "$snap" "$real" >>"$STATE/last-drift.diff"
+    save_snapshot "$real"
+  fi
+  if [[ -z ${man[$key]:-} ]]; then
+    added+=("${key#*"$TAB"}")
+  elif [[ ${man[$key]} != "${cur[$key]}" ]]; then
+    changed+=("${key#*"$TAB"}")
+  fi
+done
+
+for key in "${!man[@]}"; do
+  [[ -n ${cur[$key]:-} ]] && continue
+  kind="${key%%"$TAB"*}"
+  name="${key#*"$TAB"}"
+  # Still there but no longer referenced: a stale entry, not a loss.
+  if [[ $kind == cmd ]]; then command -v "$name" >/dev/null 2>&1 && continue
+  else [[ -e $name ]] && continue; fi
+  gone+=("$kind $name")
+done
+
+echo "omarchy-drift-check"
+if [[ ! -f $MANIFEST ]]; then
+  echo "[a] no manifest at $(short "$MANIFEST"): review, then run omarchy-drift-check --accept"
+  findings=$((findings + 1))
+else
+  summary="[a] ${#cur[@]} tracked: ${#changed[@]} changed, ${#gone[@]} gone, ${#added[@]} new"
+  ((baselined)) && summary+=", $baselined baselined"
+  echo "$summary"
+  for name in "${changed[@]}"; do echo "  changed: $name"; done
+  for name in "${gone[@]}"; do echo "  gone:    $name"; done
+  for name in "${missing_required[@]}"; do echo "  required but missing: $name"; done
+  ((${#added[@]})) && echo "  new (not in the manifest yet): ${#added[@]}; --accept records them"
+  findings=$((findings + ${#changed[@]} + ${#gone[@]} + ${#missing_required[@]}))
+  if ((${#changed[@]})); then echo "  after reviewing: omarchy-drift-check --accept"; fi
+fi
+if ((diffs)); then
+  echo "  $diffs file(s) changed since the last run (full diff: $(short "$STATE/last-drift.diff")):"
+  sed -n "1,${DIFF_LINES}p" "$STATE/last-drift.diff" | sed 's/^/    /'
+  total=$(wc -l <"$STATE/last-drift.diff")
+  ((total > DIFF_LINES)) && echo "    ... $((total - DIFF_LINES)) more line(s)"
+fi
+
+# --- b. Legacy syntax ----------------------------------------------------------------
+
+lint_hits=()
+lint_common=(--hidden --no-heading -n --max-filesize 1M
+  -g '!.git' -g '!*.lock' -g '!*.md' -g '!omarchy-drift-check' -g '!dox' -g '!wubular_src')
+mapfile -t lint_hits < <(
+  # Hyprlang-era commands and keywords, in any text file.
+  rg "${lint_common[@]}" -e 'hyprctl\s+(keyword|--batch)' -e '\bexec-once\b' -e '\bwindowrulev2\b' "$PUB" "$PRIV"
+  # `bind =` and `source =` lines, only where Hyprland config can live.
+  rg "${lint_common[@]}" -g '*.conf' -g '*.conf.tpl' -g '**/hypr/**' \
+    -e '^\s*bind[a-z]*\s*=' -e '^\s*source\s*=' "$PUB" "$PRIV"
+  # Persistent workspace rules fight monitor-workspaces.lua's per-monitor blocks.
+  if [[ -f $OMARCHY/default/hypr/monitor-workspaces.lua ]]; then
+    rg "${lint_common[@]}" -g '*.lua' -U -e '(?s)workspace_rule\(.{0,300}?persistent' "$PUB" "$PRIV" \
+      | sed -n '1p'
+  fi
+)
+echo "[b] legacy syntax: ${#lint_hits[@]} hit(s)"
+for hit in "${lint_hits[@]:0:8}"; do echo "  $(short "$hit")"; done
+((${#lint_hits[@]} > 8)) && echo "  ... $((${#lint_hits[@]} - 8)) more"
+findings=$((findings + ${#lint_hits[@]}))
+
+# --- c. Commands ---------------------------------------------------------------------
+
+tracked_cmds=0 missing_cmds=()
+for key in "${!man[@]}"; do
+  [[ $key == cmd"$TAB"* ]] || continue
+  tracked_cmds=$((tracked_cmds + 1))
+  command -v "${key#*"$TAB"}" >/dev/null 2>&1 || missing_cmds+=("${key#*"$TAB"}")
+done
+echo "[c] commands: $tracked_cmds tracked, ${#missing_cmds[@]} missing"
+for name in "${missing_cmds[@]}"; do echo "  missing: $name"; done
+# (A missing command is also listed under [a] as gone; count it once.)
+
+# --- d. Versions ---------------------------------------------------------------------
+
+versions="$(pacman -Q hyprland omarchy 2>/dev/null | paste -sd' ')"
+previous=""
+[[ -f $STATE/versions ]] && previous="$(<"$STATE/versions")"
+if [[ -z $previous || $previous == "$versions" ]]; then
+  echo "[d] $versions"
+else
+  echo "[d] $versions (was: $previous)"
+fi
+printf '%s\n' "$versions" >"$STATE/versions"
+
+echo "result: $findings finding(s)"
+((findings == 0))

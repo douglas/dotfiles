@@ -128,3 +128,33 @@ if [ -n "$zs_needed" ] && [ ! -e "/usr/lib/libvpx.so.${zs_needed}" ]; then
     echo "Zscaler: symlinked libvpx.so.${zs_needed} -> $zs_current"
   fi
 fi
+
+# Early warning for Omarchy upstream drift: the update may have changed files
+# the dotfiles override or call (config templates, default/hypr/*.lua, omarchy-*
+# commands), or dropped one. The checker prints a diff of each change, lints the
+# dotfiles for legacy Hyprland syntax and records the package versions. Nothing
+# is changed here; it only reports (and notifies when it found something).
+run_omarchy_drift_check() {
+  local check report rc
+  report="$HOME/.local/state/omarchy/drift/last-report.txt"
+  check="$(command -v omarchy-drift-check || true)"
+  [[ -n $check ]] || check="$HOME/.public_dotfiles/bin/.bin/omarchy-drift-check"
+  if [[ ! -x $check ]]; then
+    echo "Omarchy drift check skipped: omarchy-drift-check not found"
+    return 0
+  fi
+
+  mkdir -p "$(dirname "$report")"
+  "$check" >"$report" 2>&1
+  rc=$?
+  cat "$report"
+  if ((rc != 0)); then
+    echo "Omarchy drift: review the findings above (saved to $report), then run: omarchy-drift-check --accept"
+    if command -v omarchy-notification-send >/dev/null 2>&1; then
+      omarchy-notification-send -u normal "Omarchy update drifted from the dotfiles: run omarchy-drift-check"
+    fi
+  fi
+  return 0
+}
+
+run_omarchy_drift_check
