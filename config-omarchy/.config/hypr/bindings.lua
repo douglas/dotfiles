@@ -88,6 +88,9 @@ o.bind("SUPER + SHIFT + TAB", "Previous global app", function() cycle_global_app
 
 require("default.hypr.require_optional").module("hypr.hyprtasking")
 
+-- Desk plugin keys; only the desktop layer ships this file.
+require("default.hypr.require_optional").module("hypr.desk")
+
 -- Private machine preferences are an optional later layer. Keep the Omarchy
 -- module loadable when that layer is absent.
 require("default.hypr.require_optional").module("hypr.personal")
