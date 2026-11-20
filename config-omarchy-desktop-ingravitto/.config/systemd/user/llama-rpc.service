@@ -1,0 +1,14 @@
+# Lends this GPU to neo for models too big for one machine
+# (llama-server --rpc 10.20.0.1:50052). The RPC protocol has no auth, so it
+# binds only to the Thunderbolt address, which only neo can reach.
+[Unit]
+Description=llama.cpp RPC server for neo over Thunderbolt
+After=network-online.target
+
+[Service]
+Environment=LD_LIBRARY_PATH=/var/cache/lemonade/bin/llamacpp/vulkan
+ExecStart=/var/cache/lemonade/bin/llamacpp/vulkan/ggml-rpc-server -H 10.20.0.1 -p 50052 -d Vulkan0 -c
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
