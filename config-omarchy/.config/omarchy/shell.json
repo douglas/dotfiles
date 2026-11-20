@@ -69,6 +69,13 @@
           "id": "io.github.douglas.omarchy-kefctl"
         },
         {
+          "id": "io.github.douglas.omarchy-ekvm",
+          "inputs": [
+            { "label": "Neo", "value": "0x11" },
+            { "label": "Desktop", "value": "0x31" }
+          ]
+        },
+        {
           "id": "crmne.hyprmoncfg"
         },
         {
