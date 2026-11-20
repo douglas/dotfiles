@@ -150,7 +150,9 @@ end
 
 -- Terminals: Ctrl+Shift for clipboard and tabs, so Ctrl stays a control char.
 local terminal = {
-  ["CMD + c"] = "CTRL SHIFT + c", ["CMD + v"] = "CTRL SHIFT + v",
+  -- Like Herdr: text pastes, an image alone sends Ctrl+V for the app to read.
+  ["CMD + c"] = "CTRL SHIFT + c", ["CMD + v"] = { exec = "mackeys-terminal-paste" },
+  ["CTRL SHIFT + v"] = { exec = "mackeys-terminal-paste" },
   ["CMD + t"] = "CTRL SHIFT + t", ["CMD + w"] = "CTRL SHIFT + w",
   ["CMD + n"] = "CTRL SHIFT + n", ["CMD + f"] = "CTRL SHIFT + f",
   ["CMD + g"] = "CTRL SHIFT + g", ["CMD + k"] = "CTRL SHIFT + k",

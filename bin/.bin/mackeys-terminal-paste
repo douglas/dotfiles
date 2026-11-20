@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Cmd+V in a terminal, the way Herdr pastes: text pastes as usual
+# (Ctrl+Shift+V), and an image alone (a screenshot) sends Ctrl+V, so the
+# program reads the image from the clipboard itself (Claude Code, Codex).
+# Run by hypr/mackeys.lua outside Hyprland: wl-paste talks to the
+# compositor, so calling it from inside a bind would hang Hyprland.
+set -euo pipefail
+
+types=$(wl-paste --list-types 2>/dev/null || true)
+mods="CTRL SHIFT"
+if rg -q '^image/' <<<"$types" && ! rg -q '^(text/|UTF8_STRING$|STRING$|TEXT$)' <<<"$types"; then
+  mods="CTRL"
+fi
+
+if [[ ${1:-} == --print ]]; then
+  printf '%s\n' "$mods"
+  exit 0
+fi
+
+send() {
+  hyprctl -q dispatch "hl.dsp.send_key_state({ mods = \"$mods\", key = \"v\", state = \"$1\" })"
+}
+send down
+sleep 0.02
+send up
