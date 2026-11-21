@@ -6,9 +6,11 @@ format = """
 [](surface0)\
 $os\
 $username\
-[](bg:red fg:surface0)\
-$hostname\
-[](bg:peach fg:red)\
+${custom.host_f22}\
+${custom.host_e7}\
+${custom.host_t1g}\
+${custom.host_su34}\
+${custom.host_other}\
 $directory\
 [](fg:peach bg:green)\
 $git_branch\
@@ -26,9 +28,9 @@ $haskell\
 $python\
 [](fg:teal bg:blue)\
 $docker_context\
-[](fg:blue bg:purple)\
+[](fg:blue bg:mauve)\
 $time\
-[ ](fg:purple)\
+[ ](fg:mauve)\
 $line_break$character"""
 
 palette = 'catppuccin_mocha'
@@ -178,13 +180,34 @@ style_user = "bg:surface0 fg:text"
 style_root = "bg:surface0 fg:text"
 format = '[ $user ]($style)'
 
-# Always show this machine's short hostname after the username, so local
-# sessions (e.g. via herdr-app) on different machines are easy to tell apart.
-[hostname]
-ssh_only = false
-trim_at = "."
-style = "bg:red fg:mantle"
-format = "[ $hostname ]($style)"
+# One segment per machine, each in its own colour, so you can tell at a
+# glance which machine a terminal is on. Unknown machines fall back to grey.
+
+[custom.host_f22]
+when = '[[ ${HOSTNAME%%.*} == f22 ]]'
+shell = ["bash", "--norc", "--noprofile"]
+format = '[](bg:red fg:surface0)[ f22 ](bg:red fg:mantle)[](bg:peach fg:red)'
+
+[custom.host_e7]
+when = '[[ ${HOSTNAME%%.*} == e7 ]]'
+shell = ["bash", "--norc", "--noprofile"]
+format = '[](bg:yellow fg:surface0)[ e7 ](bg:yellow fg:mantle)[](bg:peach fg:yellow)'
+
+[custom.host_t1g]
+when = '[[ ${HOSTNAME%%.*} == t1g ]]'
+shell = ["bash", "--norc", "--noprofile"]
+format = '[](bg:lavender fg:surface0)[ t1g ](bg:lavender fg:mantle)[](bg:peach fg:lavender)'
+
+[custom.host_su34]
+when = '[[ ${HOSTNAME%%.*} == su34 ]]'
+shell = ["bash", "--norc", "--noprofile"]
+format = '[](bg:flamingo fg:surface0)[ su34 ](bg:flamingo fg:mantle)[](bg:peach fg:flamingo)'
+
+[custom.host_other]
+command = 'echo "${HOSTNAME%%.*}"'
+when = '[[ ! ${HOSTNAME%%.*} =~ ^(f22|e7|t1g|su34)$ ]]'
+shell = ["bash", "--norc", "--noprofile"]
+format = '[](bg:surface2 fg:surface0)[ $output ](bg:surface2 fg:mantle)[](bg:peach fg:surface2)'
 
 [directory]
 style = "fg:mantle bg:peach"
@@ -267,7 +290,7 @@ format = '[[ $symbol( $context) ](fg:base bg:blue)]($style)'
 disabled = false
 time_format = "%R"
 style = "bg:peach"
-format = '[[ $time ](fg:base bg:purple)]($style)'# 
+format = '[[ $time ](fg:base bg:mauve)]($style)'# 
 
 [line_break]
 disabled = false
