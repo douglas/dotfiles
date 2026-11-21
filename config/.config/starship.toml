@@ -6,8 +6,9 @@ format = """
 [](surface0)\
 $os\
 $username\
+[](bg:red fg:surface0)\
 $hostname\
-[](bg:peach fg:surface0)\
+[](bg:peach fg:red)\
 $directory\
 [](fg:peach bg:green)\
 $git_branch\
@@ -182,8 +183,8 @@ format = '[ $user ]($style)'
 [hostname]
 ssh_only = false
 trim_at = "."
-style = "bg:surface0 fg:red"
-format = "[$hostname ]($style)"
+style = "bg:red fg:mantle"
+format = "[ $hostname ]($style)"
 
 [directory]
 style = "fg:mantle bg:peach"
