@@ -177,9 +177,10 @@ style_user = "bg:surface0 fg:text"
 style_root = "bg:surface0 fg:text"
 format = '[ $user ]($style)'
 
-# Over SSH, show this machine's short hostname after the username.
+# Always show this machine's short hostname after the username, so local
+# sessions (e.g. via herdr-app) on different machines are easy to tell apart.
 [hostname]
-ssh_only = true
+ssh_only = false
 trim_at = "."
 style = "bg:surface0 fg:red"
 format = "[$hostname ]($style)"
