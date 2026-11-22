@@ -21,7 +21,6 @@ activate_aggressive = true
 minimum_release_age = "7d"
 # Agent CLIs from Omarchy's /etc/mise/conf.d/omarchy-tools.toml that I don't use.
 disable_tools = [
-  "antigravity-cli",
   "copilot",
   "cursor-agent",
   "grok",
