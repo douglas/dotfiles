@@ -195,3 +195,9 @@ cask "font-hack-nerd-font"
 tap "crmne/tap"
 cask "crmne/tap/spotifast"
 cask "crmne/tap/zapfast"
+
+# Orca (IDE and bots for coding agents), as on Linux (pkgrepo orca-ide-bin).
+# Third-party cask: trust it once before brew bundle (install.sh does):
+#   brew trust --cask stablyai/orca/orca
+tap "stablyai/orca"
+cask "stablyai/orca/orca"
