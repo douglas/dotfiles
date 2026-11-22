@@ -6,7 +6,7 @@
 ## Environment Variables
 ##
 export EDITOR='zed'
-export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gcr/ssh"
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
 ##
 ## General PATH changes
