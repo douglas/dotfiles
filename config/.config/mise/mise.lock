@@ -168,50 +168,50 @@ url = "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8
 url_api = "https://api.github.com/repos/gitleaks/gitleaks/releases/assets/378333178"
 
 [[tools."aqua:max-sixty/worktrunk"]]
-version = "0.81.0"
+version = "0.83.0"
 backend = "aqua:max-sixty/worktrunk"
-specifiers = ["0.81.0"]
+specifiers = ["0.83.0"]
 
 [tools."aqua:max-sixty/worktrunk"."platforms.linux-arm64"]
-checksum = "sha256:7a334d2e64c577afd0247e2411eff673360ab1f18897564f2d2e5d5374fbd74b"
-url = "https://github.com/max-sixty/worktrunk/releases/download/v0.81.0/worktrunk-aarch64-unknown-linux-musl.tar.xz"
-url_api = "https://api.github.com/repos/max-sixty/worktrunk/releases/assets/660537049"
+checksum = "sha256:92c68827a18b037c608b7728bcf7ce1d594771ac814bec7412a35129f276d4ae"
+url = "https://github.com/max-sixty/worktrunk/releases/download/v0.83.0/worktrunk-aarch64-unknown-linux-musl.tar.xz"
+url_api = "https://api.github.com/repos/max-sixty/worktrunk/releases/assets/776207072"
 provenance = "cosign"
 
 [tools."aqua:max-sixty/worktrunk"."platforms.linux-arm64-musl"]
-checksum = "sha256:7a334d2e64c577afd0247e2411eff673360ab1f18897564f2d2e5d5374fbd74b"
-url = "https://github.com/max-sixty/worktrunk/releases/download/v0.81.0/worktrunk-aarch64-unknown-linux-musl.tar.xz"
-url_api = "https://api.github.com/repos/max-sixty/worktrunk/releases/assets/660537049"
+checksum = "sha256:92c68827a18b037c608b7728bcf7ce1d594771ac814bec7412a35129f276d4ae"
+url = "https://github.com/max-sixty/worktrunk/releases/download/v0.83.0/worktrunk-aarch64-unknown-linux-musl.tar.xz"
+url_api = "https://api.github.com/repos/max-sixty/worktrunk/releases/assets/776207072"
 provenance = "cosign"
 
 [tools."aqua:max-sixty/worktrunk"."platforms.linux-x64"]
-checksum = "sha256:0c253f216985ce9cd7b202a11606b5ce6aa934b1019fd1fbb9b7ce2b47b1c74a"
-url = "https://github.com/max-sixty/worktrunk/releases/download/v0.81.0/worktrunk-x86_64-unknown-linux-musl.tar.xz"
-url_api = "https://api.github.com/repos/max-sixty/worktrunk/releases/assets/660537115"
+checksum = "sha256:e0dd5e5eb365890ddc7b255183c227e441fbb7da04cab5b72e54fa80fd21818b"
+url = "https://github.com/max-sixty/worktrunk/releases/download/v0.83.0/worktrunk-x86_64-unknown-linux-musl.tar.xz"
+url_api = "https://api.github.com/repos/max-sixty/worktrunk/releases/assets/776207130"
 provenance = "cosign"
 
 [tools."aqua:max-sixty/worktrunk"."platforms.linux-x64-musl"]
-checksum = "sha256:0c253f216985ce9cd7b202a11606b5ce6aa934b1019fd1fbb9b7ce2b47b1c74a"
-url = "https://github.com/max-sixty/worktrunk/releases/download/v0.81.0/worktrunk-x86_64-unknown-linux-musl.tar.xz"
-url_api = "https://api.github.com/repos/max-sixty/worktrunk/releases/assets/660537115"
+checksum = "sha256:e0dd5e5eb365890ddc7b255183c227e441fbb7da04cab5b72e54fa80fd21818b"
+url = "https://github.com/max-sixty/worktrunk/releases/download/v0.83.0/worktrunk-x86_64-unknown-linux-musl.tar.xz"
+url_api = "https://api.github.com/repos/max-sixty/worktrunk/releases/assets/776207130"
 provenance = "cosign"
 
 [tools."aqua:max-sixty/worktrunk"."platforms.macos-arm64"]
-checksum = "sha256:b9c3f2f8071554cf88500466d65d35e18ad5edad5762479a1f14bcddd5ab7882"
-url = "https://github.com/max-sixty/worktrunk/releases/download/v0.81.0/worktrunk-aarch64-apple-darwin.tar.xz"
-url_api = "https://api.github.com/repos/max-sixty/worktrunk/releases/assets/660537046"
+checksum = "sha256:5e489089672b553b6277595875ef3479df011755153021c84def90eddaeef7b8"
+url = "https://github.com/max-sixty/worktrunk/releases/download/v0.83.0/worktrunk-aarch64-apple-darwin.tar.xz"
+url_api = "https://api.github.com/repos/max-sixty/worktrunk/releases/assets/776207071"
 provenance = "cosign"
 
 [tools."aqua:max-sixty/worktrunk"."platforms.macos-x64"]
-checksum = "sha256:211fa3585afa0ce243de0f007fbe2d8b86c5c88c85eda17d09311b32e8533714"
-url = "https://github.com/max-sixty/worktrunk/releases/download/v0.81.0/worktrunk-x86_64-apple-darwin.tar.xz"
-url_api = "https://api.github.com/repos/max-sixty/worktrunk/releases/assets/660537085"
+checksum = "sha256:9e7f92a037b7dc8cb216a0f323ece11d7ee813572a7762d62fb36c88f33ba917"
+url = "https://github.com/max-sixty/worktrunk/releases/download/v0.83.0/worktrunk-x86_64-apple-darwin.tar.xz"
+url_api = "https://api.github.com/repos/max-sixty/worktrunk/releases/assets/776207096"
 provenance = "cosign"
 
 [tools."aqua:max-sixty/worktrunk"."platforms.windows-x64"]
-checksum = "sha256:389b595cb67482085419968939e329d61901cca9e959e4b6c288f01387b768b8"
-url = "https://github.com/max-sixty/worktrunk/releases/download/v0.81.0/worktrunk-x86_64-pc-windows-msvc.zip"
-url_api = "https://api.github.com/repos/max-sixty/worktrunk/releases/assets/660537101"
+checksum = "sha256:db4f76d81db05ac076566511948a5c8fa792910a7dcb15a1ac23a5409298fae8"
+url = "https://github.com/max-sixty/worktrunk/releases/download/v0.83.0/worktrunk-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/max-sixty/worktrunk/releases/assets/776207120"
 provenance = "cosign"
 
 [[tools."github:rustsec/rustsec"]]
