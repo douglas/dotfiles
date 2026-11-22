@@ -1,6 +1,9 @@
 # macOS has no Omarchy, so this lists the tools Omarchy's
 # /etc/mise/conf.d/omarchy-tools.toml provides on Linux, minus the ones
 # ~/.config/mise/config.toml disables. Go comes from pacman on Linux.
+# freebuff is left out: since 0.2.x it's published from a private repo with no
+# npm provenance, which fails mise's trust policy here (the lockfile covers
+# this file, unlike Omarchy's /etc config on Linux).
 [tools]
 go = "latest"
 amp = { version = "latest", lazy = true, auto_update = "4h", lazy_bins = ["amp"], minimum_release_age = "0s" }
@@ -19,7 +22,6 @@ node = { version = "latest", lazy = true, minimum_release_age = "0s" }
 "npm:@moonshot-ai/kimi-code" = { version = "latest", lazy = true, auto_update = "4h", lazy_bins = ["kimi"], minimum_release_age = "0s" }
 "npm:cf" = { version = "latest", lazy = true, lazy_bins = ["cf"], minimum_release_age = "0s" }
 "npm:command-code" = { version = "latest", lazy = true, auto_update = "4h", lazy_bins = ["commandcode"], minimum_release_age = "0s" }
-"npm:freebuff" = { version = "latest", lazy = true, auto_update = "4h", lazy_bins = ["freebuff"], minimum_release_age = "0s" }
 oh-my-pi = { version = "latest", lazy = true, auto_update = "4h", minimum_release_age = "0s" }
 opencode = { version = "latest", lazy = true, auto_update = "4h", minimum_release_age = "0s" }
 pi = { version = "latest", lazy = true, auto_update = "4h", minimum_release_age = "0s" }
