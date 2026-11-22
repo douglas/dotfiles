@@ -6,7 +6,8 @@
 ## Environment Variables
 ##
 export EDITOR='zed'
-export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gcr/ssh"
+# Omarchy's gcr agent, except in an ssh session that forwarded its own agent.
+[[ -n $SSH_CONNECTION && -S ${SSH_AUTH_SOCK:-} ]] || export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gcr/ssh"
 
 ##
 ## General PATH changes
