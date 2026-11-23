@@ -53,10 +53,10 @@
           "id": "omarchy.tray"
         },
         {
-          "id": "io.github.douglas.lemonitor"
+          "id": "io.github.douglas.gamedeals"
         },
         {
-          "id": "io.github.douglas.gamedeals"
+          "id": "io.github.douglas.lemonitor"
         },
         {
           "id": "omarchy.keyboard-layout"
@@ -75,7 +75,7 @@
           "graphWidth": 28,
           "historySeconds": 240,
           "memoryStyle": "ring",
-          "modules": "cpu,memory,gpu",
+          "modules": "cpu,memory",
           "networkStyle": "",
           "publicIp": true,
           "refreshSeconds": 1,

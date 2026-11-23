@@ -4,13 +4,19 @@
 # machine drifts and the next update-dotfiles stops on a stow conflict. Copy
 # what the shell saved into the dotfiles copy and put the link back, so the
 # change shows up in git and reaches the other machines.
+#
+# Desktops and laptops keep their own copy (config-omarchy-desktop and
+# config-omarchy-laptop), so the tracked file follows dotlayer's profile.
 set -euo pipefail
 
 live=$HOME/.config/omarchy/shell.json
-tracked=$HOME/.public_dotfiles/config-omarchy/.config/omarchy/shell.json
+profile=$("$HOME/.bin/dotlayer" status --json 2>/dev/null | jq -r '.profile // empty') || exit 0
+[[ $profile == desktop || $profile == laptop ]] || exit 0
+layer=config-omarchy-$profile
+tracked=$HOME/.public_dotfiles/$layer/.config/omarchy/shell.json
 
 [[ -f $live && ! -L $live && -f $tracked ]] || exit 0
 # A half-written or broken file stays as it is for a person to look at.
 jq empty "$live" 2>/dev/null || exit 0
 cat "$live" >"$tracked"
-ln -sfn ../../.public_dotfiles/config-omarchy/.config/omarchy/shell.json "$live"
+ln -sfn "../../.public_dotfiles/$layer/.config/omarchy/shell.json" "$live"

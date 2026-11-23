@@ -55,7 +55,10 @@ including the laptop model, using dotlayer's resolver. It preserves migration
 changes for review and skips adoption when the checkout has uncommitted work.
 Hyprtasking rebuild checks still run when adoption is skipped.
 
-Shell layout and idle preferences live in `config-omarchy/.config/omarchy/shell.json`;
+Shell layout and idle preferences live in `shell.json`, one copy per profile
+(`config-omarchy-desktop` and `config-omarchy-laptop`; laptops leave the GPU
+graph out of the system monitor). `omarchy-shell-json-relink` saves shell edits
+back into the copy for the machine's profile;
 supported font, spacing, and bar sizing overrides live in `shell.toml`.
 Hyprtasking gestures are loaded from each profile's `hyprtasking_profile.lua`.
 The T1G layer also stores its monitor defaults and the saved laptop-only

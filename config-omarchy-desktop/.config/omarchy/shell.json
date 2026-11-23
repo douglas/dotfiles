@@ -1,0 +1,158 @@
+{
+  "bar": {
+    "background": "glassy",
+    "id": "omarchy.bar",
+    "layout": {
+      "center": [
+        {
+          "format": "HH:mm",
+          "formatAlt": "d MMMM 'W'ww yyyy",
+          "id": "omarchy.clock",
+          "verticalFormat": "HH\n—\nmm"
+        }
+      ],
+      "centerBegin": [
+        {
+          "id": "omarchy.indicators"
+        }
+      ],
+      "centerEnd": [
+        {
+          "cities": [
+            {
+              "name": "Montreal",
+              "zone": "America/Montreal"
+            },
+            {
+              "lat": 37.77493,
+              "lon": -122.41942,
+              "name": "San Francisco",
+              "region": "California, US",
+              "zone": "America/Los_Angeles"
+            }
+          ],
+          "id": "omarchy.elsewhen"
+        },
+        {
+          "id": "omarchy.weather"
+        },
+        {
+          "id": "omarchy.system-update"
+        }
+      ],
+      "left": [
+        {
+          "id": "omarchy.menu"
+        },
+        {
+          "id": "io.github.douglas.workspaces9"
+        }
+      ],
+      "right": [
+        {
+          "id": "omarchy.tray"
+        },
+        {
+          "id": "io.github.douglas.gamedeals"
+        },
+        {
+          "id": "io.github.douglas.lemonitor"
+        },
+        {
+          "id": "omarchy.keyboard-layout"
+        },
+        {
+          "id": "crmne.omastats",
+          "barGpus": "all",
+          "barLabels": "icon",
+          "barSensors": "cpu",
+          "batteryStyle": "",
+          "cpuStyle": "ring",
+          "disksSource": "all",
+          "disksStyle": "",
+          "gpuStyle": "ring",
+          "gpuTabVersion": 1,
+          "graphWidth": 28,
+          "historySeconds": 240,
+          "memoryStyle": "ring",
+          "modules": "cpu,memory,gpu",
+          "networkStyle": "",
+          "publicIp": true,
+          "refreshSeconds": 1,
+          "sensorsStyle": "",
+          "showActivity": true,
+          "showAddresses": true,
+          "showBreakdown": true,
+          "showCores": true,
+          "showDetails": true,
+          "showDevices": true,
+          "showFans": true,
+          "showHistory": true,
+          "showInterfaces": true,
+          "showLoad": true,
+          "showProcesses": true,
+          "showTemperatures": true,
+          "showTotals": true,
+          "showVolumes": true,
+          "style": "text",
+          "tabs": "cpu,gpu,memory,disks,network,sensors,battery",
+          "temperatureUnit": "Celsius",
+          "barDisks": "",
+          "utilizationColors": false,
+          "utilizationNormalColor": "",
+          "utilizationCriticalColor": "",
+          "showGpuMemory": false
+        },
+        {
+          "id": "io.github.douglas.desk",
+          "inputs": [
+            {
+              "label": "E7",
+              "value": "0x11",
+              "host": "e7"
+            },
+            {
+              "label": "F22",
+              "value": "0x31",
+              "host": "f22"
+            }
+          ]
+        },
+        {
+          "id": "crmne.hyprmoncfg"
+        },
+        {
+          "id": "omarchy.bluetooth"
+        },
+        {
+          "id": "io.github.douglas.netdeck"
+        },
+        {
+          "id": "omarchy.audio"
+        },
+        {
+          "id": "omarchy.monitor"
+        },
+        {
+          "id": "omarchy.power"
+        }
+      ],
+      "tray": []
+    },
+    "neoshIconFontSize": 11,
+    "position": "top"
+  },
+  "idle": {
+    "lock": 300,
+    "screensaver": 150
+  },
+  "plugins": [
+    {
+      "id": "typecraft.omacast"
+    },
+    {
+      "id": "io.voxtype.settings"
+    }
+  ],
+  "version": 1
+}
