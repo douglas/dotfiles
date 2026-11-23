@@ -1,0 +1,3 @@
+# Match the Herdr app prefix in Sheprd.
+[keys]
+prefix = "ctrl+k"
