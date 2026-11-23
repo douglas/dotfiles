@@ -1,0 +1,137 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      '@kilocode/cli':
+        specifier: 7.8.32
+        version: 7.8.32
+
+packages:
+
+  '@kilocode/cli-darwin-arm64@7.8.32':
+    resolution: {integrity: sha512-yJkTSPFodBn0jQatHwKesPEk2q+iO9AGeQOWFJh/ji56JY+5BU2AYhTFOIjCkSThGTzADmmzBAK83p0YkIzYCA==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@kilocode/cli-darwin-x64-baseline@7.8.32':
+    resolution: {integrity: sha512-ymoLuVfrX8PJ8+3Dyk9852u+AOCtz3RIB8Rqt+2tYNvv89vohoKUg+AZ67WxMBVyZ1qW4ZwWLLuqBE9tjf+VAg==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@kilocode/cli-darwin-x64@7.8.32':
+    resolution: {integrity: sha512-/Ao9JBKVO9e1LDyhJlvzYhQsLFXTX1cBPKKcw9nAcHykkGCn+dLACwRXj8mFnNDzXv5fvffzmvfJ8RDatFCbFA==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@kilocode/cli-linux-arm64-musl@7.8.32':
+    resolution: {integrity: sha512-IixHGK2tuh1aRu0goauJDLrrgRcKtetpX8fqoxJI+8NhCkQa0/wv6KDI4oM0t4vgQus7YLGy2ABzT4SWpZ5lbw==}
+    cpu: [arm64]
+    os: [linux]
+    libc: [musl]
+
+  '@kilocode/cli-linux-arm64@7.8.32':
+    resolution: {integrity: sha512-MKtHc8bjfmWMOjpSoLewvQwb1LXt9PUevmtXr9503lA7HKnfynwe8YZ0bY/oyM0e9IgFgS3vvSdtAxZFfRGsmw==}
+    cpu: [arm64]
+    os: [linux]
+
+  '@kilocode/cli-linux-x64-baseline-musl@7.8.32':
+    resolution: {integrity: sha512-ms0599ekHZKo5hP6irx7kpI615ARmOm9nXy/YHhyNe1nuN47nyjj95GVmg2Kv4Th83cKSyWByWTYid1MajSViA==}
+    cpu: [x64]
+    os: [linux]
+    libc: [musl]
+
+  '@kilocode/cli-linux-x64-baseline@7.8.32':
+    resolution: {integrity: sha512-ENJBqOUoXGNYa1zhmaiDUm6rOIXhrrVSWSQwSXochLo8xuOGAVfD4VVEXYAMjLIv6/JXjV+bHRWl3JEZ7IKDVQ==}
+    cpu: [x64]
+    os: [linux]
+
+  '@kilocode/cli-linux-x64-musl@7.8.32':
+    resolution: {integrity: sha512-hEAashNb9Gno6DJr0r4Iz0faNsZvyb+r0eQN0HcnanNdP0MA/meMCrqrKEq7CCgUBsndyR6drziMvXHmHSkKGQ==}
+    cpu: [x64]
+    os: [linux]
+    libc: [musl]
+
+  '@kilocode/cli-linux-x64@7.8.32':
+    resolution: {integrity: sha512-uCJSztb0qkJY102BwZ5zfVC8ZYnHY0T5FMKB1Ixj2FBeHkyNNPmjc/60dk5pyvmcNsyBI8cEjjbJF3lveoHgsQ==}
+    cpu: [x64]
+    os: [linux]
+
+  '@kilocode/cli-windows-arm64@7.8.32':
+    resolution: {integrity: sha512-I/zJXmn1e0r+8A/DrelS5RGtLDLh+6zsTYV7r+wOfMwQWEecFFxeFI7wr3hBFsNti30U2PYggJVQKd5QI4q+Ww==}
+    cpu: [arm64]
+    os: [win32]
+
+  '@kilocode/cli-windows-x64-baseline@7.8.32':
+    resolution: {integrity: sha512-XNOxj7cl+qPF9YYh9oG+wl2Q9CQ7QsP+tUJnNhQ4QkxUwQdiBI+3+qWiog2tQO+G8L+jK3yUsGBjGodLHT435g==}
+    cpu: [x64]
+    os: [win32]
+
+  '@kilocode/cli-windows-x64@7.8.32':
+    resolution: {integrity: sha512-X/BIgsLMlzZ0yd1kJHNdGcsyQ4wUSG4JxHnQlQZoG7lFjMnS3nHwSHPWKQXYQ05fD41FcXrYkbMImHnr/SJujQ==}
+    cpu: [x64]
+    os: [win32]
+
+  '@kilocode/cli@7.8.32':
+    resolution: {integrity: sha512-lbW+z4wMioOFejeJy0eSEdaYj9BdOt/QUbQMVLFmuaqJSluBSxlmJPSEaHCKrwU/7NVEH1wnA/K1o1Ol9nWz2A==}
+    cpu: [arm64, x64]
+    os: [darwin, linux, win32]
+    hasBin: true
+
+snapshots:
+
+  '@kilocode/cli-darwin-arm64@7.8.32':
+    optional: true
+
+  '@kilocode/cli-darwin-x64-baseline@7.8.32':
+    optional: true
+
+  '@kilocode/cli-darwin-x64@7.8.32':
+    optional: true
+
+  '@kilocode/cli-linux-arm64-musl@7.8.32':
+    optional: true
+
+  '@kilocode/cli-linux-arm64@7.8.32':
+    optional: true
+
+  '@kilocode/cli-linux-x64-baseline-musl@7.8.32':
+    optional: true
+
+  '@kilocode/cli-linux-x64-baseline@7.8.32':
+    optional: true
+
+  '@kilocode/cli-linux-x64-musl@7.8.32':
+    optional: true
+
+  '@kilocode/cli-linux-x64@7.8.32':
+    optional: true
+
+  '@kilocode/cli-windows-arm64@7.8.32':
+    optional: true
+
+  '@kilocode/cli-windows-x64-baseline@7.8.32':
+    optional: true
+
+  '@kilocode/cli-windows-x64@7.8.32':
+    optional: true
+
+  '@kilocode/cli@7.8.32':
+    optionalDependencies:
+      '@kilocode/cli-darwin-arm64': 7.8.32
+      '@kilocode/cli-darwin-x64': 7.8.32
+      '@kilocode/cli-darwin-x64-baseline': 7.8.32
+      '@kilocode/cli-linux-arm64': 7.8.32
+      '@kilocode/cli-linux-arm64-musl': 7.8.32
+      '@kilocode/cli-linux-x64': 7.8.32
+      '@kilocode/cli-linux-x64-baseline': 7.8.32
+      '@kilocode/cli-linux-x64-baseline-musl': 7.8.32
+      '@kilocode/cli-linux-x64-musl': 7.8.32
+      '@kilocode/cli-windows-arm64': 7.8.32
+      '@kilocode/cli-windows-x64': 7.8.32
+      '@kilocode/cli-windows-x64-baseline': 7.8.32
