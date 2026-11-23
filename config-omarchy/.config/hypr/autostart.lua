@@ -14,3 +14,20 @@ o.launch_on_start("env GSETTINGS_BACKEND=memory uwsm-app -- 1password --silent")
 -- Built locally against the installed Hyprland headers. This is kept outside
 -- Omarchy's defaults so package upgrades do not replace the plugin setup.
 o.launch_on_start("hyprctl plugin load $HOME/src/hyprtasking/build/libhyprtasking.so")
+
+-- Omarchy's autostart runs `herdr server`, but this setup removes the herdr
+-- terminal app (Install/Omarchy/01-packages.sh), and uwsm-app shows an error
+-- notification for a command that isn't installed. Skip that one launch while
+-- herdr is missing; it runs again by itself if herdr is ever reinstalled.
+-- Omarchy runs its autostart after the whole config has loaded, so wrapping
+-- hl.exec_cmd here still catches it.
+local herdr_found = os.execute("command -v herdr >/dev/null 2>&1")
+_G.omarchy_original_exec_cmd = _G.omarchy_original_exec_cmd or hl.exec_cmd
+if herdr_found == true or herdr_found == 0 then
+  hl.exec_cmd = _G.omarchy_original_exec_cmd
+else
+  hl.exec_cmd = function(command, ...)
+    if command == o.launch("herdr server") then return end
+    return _G.omarchy_original_exec_cmd(command, ...)
+  end
+end
