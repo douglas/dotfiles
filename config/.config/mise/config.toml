@@ -24,6 +24,7 @@ disable_tools = [
   "copilot",
   "cursor-agent",
   "grok",
+  "muse",
   "http:devin",
   "http:kiro-cli",
   "npm:@deepseek-ai/dsh",
