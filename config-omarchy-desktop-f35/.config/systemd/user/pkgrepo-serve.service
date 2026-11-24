@@ -1,7 +1,7 @@
 # Serve the pkgrepo pacman repo (~/src/archlinux/pkgs) to the home network.
 # Every package and the database are signed and pacman checks them
 # (SigLevel = Required TrustedOnly), so plain HTTP on the LAN is enough.
-# Clients list http://e7.lan:8790 first and their own file:// copy second.
+# Clients list http://f35.lan:8790 first and their own file:// copy second.
 # bin/serve answers only for the database, packages and their .sig files: no
 # *.part downloads in progress, no *.old backups, no directory listing.
 [Unit]

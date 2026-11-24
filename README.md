@@ -13,15 +13,15 @@ config-macos/               # macOS-only configs (Cursor editor, herdr-app)
 config-omarchy/             # Shared Omarchy base (Hyprland Lua, keybindings)
 config-omarchy-desktop/     # Desktop overrides (font size, window dimensions)
 config-omarchy-desktop-f22/ # f22 desktop overrides
-config-omarchy-desktop-e7/  # e7 desktop overrides
+config-omarchy-desktop-f35/  # f35 desktop overrides
 config-omarchy-laptop/      # Shared laptop glue (monitor/profile entrypoints)
-config-omarchy-laptop-f35/  # f35 laptop model overrides
+config-omarchy-laptop-f18/  # f18 laptop model overrides
 config-omarchy-laptop-av8/  # av8 laptop model overrides
 config-omarchy-laptop-f15/  # f15 laptop model overrides
 config-omarchy-laptop-su34/ # su34 laptop model overrides
 ```
 
-On Linux, profile detection uses `hostnamectl chassis` to determine whether to stow desktop or laptop profile packages. Machine tags such as `f35` and `av8` come from `~/.config/dotlayer/dotlayer.yml`, where each tag has a DMI/model detection command. Use `DOTLAYER_MACHINE=av8` to force a tag for testing.
+On Linux, profile detection uses `hostnamectl chassis` to determine whether to stow desktop or laptop profile packages. Machine tags such as `f18` and `av8` come from `~/.config/dotlayer/dotlayer.yml`, where each tag has a DMI/model detection command. Use `DOTLAYER_MACHINE=av8` to force a tag for testing.
 
 **Ghostty, Kitty, Alacritty, and Hyprland** use app-level includes or source files named `machine`/`machine-*` for model-specific values. That keeps Stow packages additive and avoids conflicts between shared Omarchy config and machine overrides.
 
@@ -65,7 +65,7 @@ graph out of the system monitor). `omarchy-shell-json-relink` saves shell edits
 back into the copy for the machine's profile;
 supported font, spacing, and bar sizing overrides live in `shell.toml`.
 Hyprtasking gestures are loaded from each profile's `hyprtasking_profile.lua`.
-The `f35` layer also stores its monitor defaults and the saved laptop-only
+The `f18` layer also stores its monitor defaults and the saved laptop-only
 hyprmoncfg profile. Generated `hyprmoncfg-monitors.lua` remains machine-local
 and loads last, so layouts chosen through hyprmoncfg take precedence.
 
@@ -83,9 +83,9 @@ and loads last, so layouts chosen through hyprmoncfg take precedence.
 | `config-omarchy` | Shared Omarchy config: Hyprland Lua, Neosh integration, Omarchy hooks, audio policy, startup, plus alacritty, cmux, foot, herdr-app, kitty, starship, sublime-merge, and zellij. Neovim uses Omarchy's stock LazyVim. On a machine that already ran the Herdr GUI, delete `~/.config/herdr-app/keys.json` and `settings.json` before restowing, or adoption replaces the tracked ones. |
 | `config-omarchy-desktop` | Desktop Zed settings, shell layout, Hyprland desk/input profiles |
 | `config-omarchy-desktop-f22` | f22 desktop terminal and monitor overrides |
-| `config-omarchy-desktop-e7` | e7 desktop terminal and monitor overrides |
+| `config-omarchy-desktop-f35` | f35 desktop terminal and monitor overrides |
 | `config-omarchy-laptop` | Shared laptop monitor/profile entrypoints |
-| `config-omarchy-laptop-f35` | f35 laptop terminal and Hyprland model overrides |
+| `config-omarchy-laptop-f18` | f18 laptop terminal and Hyprland model overrides |
 | `config-omarchy-laptop-av8` | av8 laptop terminal and Hyprland model overrides |
 | `config-omarchy-laptop-f15` | f15 laptop terminal and Hyprland model overrides |
 | `config-omarchy-laptop-su34` | su34 laptop terminal and Hyprland model overrides |

@@ -1,6 +1,6 @@
 // One tab with a shell on every home machine (mod.open:machines, ctrl-k \),
 // in a 3x2 grid:
-//   f22  | e7  | f35
+//   f22  | f35 | f18
 //   -----+-----+----
 //   su34 | f15 | av8
 // Each pane runs machine-shell, which is a local shell on its own machine and
@@ -39,20 +39,20 @@ export default class Machines extends View {
       const f22 = here.pane;
       const seen = new Set([f22]);
 
-      // Top row: f22 | e7 | f35
-      run("pane.split", { direction: "right", pane: f22, argv: shell("e7") });
-      const e7 = (await waitForPanes(cx, tab, 2)).find((p) => !seen.has(p));
-      seen.add(e7);
-      run("pane.split", { direction: "right", pane: e7, argv: shell("f35") });
-      const f35 = (await waitForPanes(cx, tab, 3)).find((p) => !seen.has(p));
+      // Top row: f22 | f35 | f18
+      run("pane.split", { direction: "right", pane: f22, argv: shell("f35") });
+      const f35 = (await waitForPanes(cx, tab, 2)).find((p) => !seen.has(p));
       seen.add(f35);
+      run("pane.split", { direction: "right", pane: f35, argv: shell("f18") });
+      const f18 = (await waitForPanes(cx, tab, 3)).find((p) => !seen.has(p));
+      seen.add(f18);
 
       // Bottom row: su34 | f15 | av8
       run("pane.split", { direction: "down", pane: f22, argv: shell("su34") });
       await waitForPanes(cx, tab, 4);
-      run("pane.split", { direction: "down", pane: e7, argv: shell("f15") });
+      run("pane.split", { direction: "down", pane: f35, argv: shell("f15") });
       await waitForPanes(cx, tab, 5);
-      run("pane.split", { direction: "down", pane: f35, argv: shell("av8") });
+      run("pane.split", { direction: "down", pane: f18, argv: shell("av8") });
       await waitForPanes(cx, tab, 6);
 
       run("pane.focus", { pane: f22 });

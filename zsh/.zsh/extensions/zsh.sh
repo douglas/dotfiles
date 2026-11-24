@@ -103,7 +103,7 @@ function grs() {
 	git reset "HEAD~${commit_count}"
 }
 
-# Terminal title in herdr: when you run `ssh f35`, name the pane "f35" (the
+# Terminal title in herdr: when you run `ssh f18`, name the pane "f18" (the
 # name you typed), and clear it at the next local prompt so the pane gets its
 # own label back. Ghostty sets its own titles, so this only runs in herdr.
 autoload -Uz add-zsh-hook

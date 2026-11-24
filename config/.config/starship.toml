@@ -7,8 +7,8 @@ format = """
 $os\
 $username\
 ${custom.host_f22}\
-${custom.host_e7}\
 ${custom.host_f35}\
+${custom.host_f18}\
 ${custom.host_av8}\
 ${custom.host_f15}\
 ${custom.host_su34}\
@@ -190,15 +190,15 @@ when = '[[ ${HOSTNAME%%.*} == f22 ]]'
 shell = ["bash", "--norc", "--noprofile"]
 format = '[](bg:red fg:surface0)[ f22 ](bg:red fg:mantle)[](bg:peach fg:red)'
 
-[custom.host_e7]
-when = '[[ ${HOSTNAME%%.*} == e7 ]]'
-shell = ["bash", "--norc", "--noprofile"]
-format = '[](bg:yellow fg:surface0)[ e7 ](bg:yellow fg:mantle)[](bg:peach fg:yellow)'
-
 [custom.host_f35]
 when = '[[ ${HOSTNAME%%.*} == f35 ]]'
 shell = ["bash", "--norc", "--noprofile"]
-format = '[](bg:lavender fg:surface0)[ f35 ](bg:lavender fg:mantle)[](bg:peach fg:lavender)'
+format = '[](bg:yellow fg:surface0)[ f35 ](bg:yellow fg:mantle)[](bg:peach fg:yellow)'
+
+[custom.host_f18]
+when = '[[ ${HOSTNAME%%.*} == f18 ]]'
+shell = ["bash", "--norc", "--noprofile"]
+format = '[](bg:lavender fg:surface0)[ f18 ](bg:lavender fg:mantle)[](bg:peach fg:lavender)'
 
 [custom.host_av8]
 when = '[[ ${HOSTNAME%%.*} == av8 ]]'
@@ -217,7 +217,7 @@ format = '[](bg:flamingo fg:surface0)[ su34 ](bg:flamingo fg:mantle)[](bg:
 
 [custom.host_other]
 command = 'echo "${HOSTNAME%%.*}"'
-when = '[[ ! ${HOSTNAME%%.*} =~ ^(f22|e7|f35|av8|f15|su34)$ ]]'
+when = '[[ ! ${HOSTNAME%%.*} =~ ^(f22|f35|f18|av8|f15|su34)$ ]]'
 shell = ["bash", "--norc", "--noprofile"]
 format = '[](bg:surface2 fg:surface0)[ $output ](bg:surface2 fg:mantle)[](bg:peach fg:surface2)'
 

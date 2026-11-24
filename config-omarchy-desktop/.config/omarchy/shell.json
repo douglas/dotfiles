@@ -107,7 +107,7 @@
           "id": "io.github.douglas.desk",
           "inputs": [
             {
-              "host": "e7",
+              "host": "f35",
               "label": "E7",
               "value": "0x11"
             },

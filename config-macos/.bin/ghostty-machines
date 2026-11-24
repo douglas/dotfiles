@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Open a Ghostty tab with a shell on every home machine, in four equal quarters,
 # like herdr-app's and kitty's Ctrl+K \:
-#   f22   | f35
+#   f22   | f18
 #   ------+-----
 #   su34  | av8
 #
@@ -22,7 +22,7 @@ on run argv
     if (count of windows) is 0 then new window
     set newTab to new tab in front window with configuration cfg
     set topLeft to focused terminal of newTab
-    set command of cfg to ms & " f35"
+    set command of cfg to ms & " f18"
     set topRight to split topLeft direction right with configuration cfg
     set command of cfg to ms & " su34"
     split topLeft direction down with configuration cfg

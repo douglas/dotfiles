@@ -1,4 +1,4 @@
-# bin/build also asks e7 to pull right after a build; this catches the rest.
+# bin/build also asks f35 to pull right after a build; this catches the rest.
 [Unit]
 Description=pkgrepo: hourly pull of new builds
 

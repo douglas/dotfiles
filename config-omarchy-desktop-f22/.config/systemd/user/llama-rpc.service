@@ -1,8 +1,8 @@
-# Lends this GPU to e7 for models too big for one machine
+# Lends this GPU to f35 for models too big for one machine
 # (llama-server --rpc 10.20.0.1:50052). The RPC protocol has no auth, so it
-# binds only to the Thunderbolt address, which only e7 can reach.
+# binds only to the Thunderbolt address, which only f35 can reach.
 [Unit]
-Description=llama.cpp RPC server for e7 over Thunderbolt
+Description=llama.cpp RPC server for f35 over Thunderbolt
 After=network-online.target
 
 [Service]
