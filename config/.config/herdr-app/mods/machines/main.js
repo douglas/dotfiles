@@ -1,8 +1,8 @@
 // One tab with a shell on every home machine (mod.open:machines, ctrl-k \),
-// in four equal quarters:
-//   f22   | f35
-//   ------+-----
-//   su34  | av8
+// in a 3x2 grid:
+//   f22  | e7  | f35
+//   -----+-----+----
+//   su34 | f15 | av8
 // Each pane runs machine-shell, which is a local shell on its own machine and
 // SSH elsewhere, so this works from any of them. Opens as an invisible popup,
 // acts, and closes, like split-left.
@@ -36,17 +36,26 @@ export default class Machines extends View {
         here = focused();
       }
       const tab = here.tab;
-      const desktop = here.pane;
+      const f22 = here.pane;
+      const seen = new Set([f22]);
 
-      // Left and right halves, then each half split top and bottom.
-      run("pane.split", { direction: "right", pane: desktop, argv: shell("f35") });
-      const f35 = (await waitForPanes(cx, tab, 2)).find((p) => p !== desktop);
-      run("pane.split", { direction: "down", pane: desktop, argv: shell("su34") });
-      await waitForPanes(cx, tab, 3);
-      run("pane.split", { direction: "down", pane: f35, argv: shell("av8") });
+      // Top row: f22 | e7 | f35
+      run("pane.split", { direction: "right", pane: f22, argv: shell("e7") });
+      const e7 = (await waitForPanes(cx, tab, 2)).find((p) => !seen.has(p));
+      seen.add(e7);
+      run("pane.split", { direction: "right", pane: e7, argv: shell("f35") });
+      const f35 = (await waitForPanes(cx, tab, 3)).find((p) => !seen.has(p));
+      seen.add(f35);
+
+      // Bottom row: su34 | f15 | av8
+      run("pane.split", { direction: "down", pane: f22, argv: shell("su34") });
       await waitForPanes(cx, tab, 4);
+      run("pane.split", { direction: "down", pane: e7, argv: shell("f15") });
+      await waitForPanes(cx, tab, 5);
+      run("pane.split", { direction: "down", pane: f35, argv: shell("av8") });
+      await waitForPanes(cx, tab, 6);
 
-      run("pane.focus", { pane: desktop });
+      run("pane.focus", { pane: f22 });
       closeOverlay(props()?.overlay);
     });
   }

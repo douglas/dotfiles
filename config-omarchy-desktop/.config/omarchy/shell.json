@@ -1,6 +1,6 @@
 {
   "bar": {
-    "background": "glassy",
+    "background": "opaque",
     "id": "omarchy.bar",
     "layout": {
       "center": [
@@ -62,7 +62,7 @@
           "id": "omarchy.keyboard-layout"
         },
         {
-          "id": "crmne.omastats",
+          "barDisks": "",
           "barGpus": "all",
           "barLabels": "icon",
           "barSensors": "cpu",
@@ -74,6 +74,7 @@
           "gpuTabVersion": 1,
           "graphWidth": 28,
           "historySeconds": 240,
+          "id": "crmne.omastats",
           "memoryStyle": "ring",
           "modules": "cpu,memory,gpu",
           "networkStyle": "",
@@ -87,6 +88,7 @@
           "showDetails": true,
           "showDevices": true,
           "showFans": true,
+          "showGpuMemory": false,
           "showHistory": true,
           "showInterfaces": true,
           "showLoad": true,
@@ -97,24 +99,22 @@
           "style": "text",
           "tabs": "cpu,gpu,memory,disks,network,sensors,battery",
           "temperatureUnit": "Celsius",
-          "barDisks": "",
           "utilizationColors": false,
-          "utilizationNormalColor": "",
           "utilizationCriticalColor": "",
-          "showGpuMemory": false
+          "utilizationNormalColor": ""
         },
         {
           "id": "io.github.douglas.desk",
           "inputs": [
             {
+              "host": "e7",
               "label": "E7",
-              "value": "0x11",
-              "host": "e7"
+              "value": "0x11"
             },
             {
+              "host": "f22",
               "label": "F22",
-              "value": "0x31",
-              "host": "f22"
+              "value": "0x31"
             }
           ]
         },

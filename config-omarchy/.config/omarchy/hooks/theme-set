@@ -74,31 +74,9 @@ sed_inplace() {
 }
 
 update_zed() {
-  # Unmapped themes use Omarchy, generated from the theme by zed-theme.json.tpl.
-  local theme="${ZED_THEMES[$THEME]:-Omarchy}"
-
-  local settings="$HOME/.config/zed/settings.json"
-  [[ -f "$settings" ]] || return
-
-  # Detect if this is a light theme
-  local is_light=false
-  [[ -f "$THEME_DIR/light.mode" ]] && is_light=true
-
-  # Handle object format: "theme": { "dark": "...", "light": "..." }
-  if grep -q '"dark":' "$settings"; then
-    if [[ "$is_light" == true ]]; then
-      sed_inplace "s/\"light\": \"[^\"]*\"/\"light\": \"$theme\"/" "$settings"
-    else
-      sed_inplace "s/\"dark\": \"[^\"]*\"/\"dark\": \"$theme\"/" "$settings"
-    fi
-  fi
-
-  # Handle flat format: "theme": "Name" (older Zed configs / dotfiles)
-  if grep -q '"theme": "[^{]' "$settings"; then
-    sed_inplace "s/\"theme\": \"[^\"]*\"/\"theme\": \"$theme\"/" "$settings"
-  fi
-
-  sed_inplace "s/\"icon_theme\": \"[^\"]*\"/\"icon_theme\": \"$theme\"/" "$settings"
+  # Zed uses "theme": "Omarchy" in settings.json; deploy_template_output updates
+  # ~/.config/zed/themes/omarchy.json directly so settings.json stays clean.
+  return 0
 }
 
 update_bat() {
@@ -252,6 +230,8 @@ update_hunk() {
 
   local config="$HOME/.config/hunk/config.toml"
   mkdir -p "$(dirname "$config")"
+  # Machine-local generated config; never write through an old Stow symlink.
+  [[ -L "$config" ]] && rm -f "$config"
 
   local accent cursor foreground background selection_foreground selection_background
   local color0 color1 color2 color3 color4 color5 color6 color7
