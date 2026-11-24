@@ -8,7 +8,9 @@
 restore_omarchy_dotlayers() (
   cd "$HOME/.public_dotfiles" || return 0
 
-  if [[ -n "$(git status --porcelain --untracked-files=normal)" ]]; then
+  # Ignore shell.json tweaks (written by Omarchy's shell UI) so they don't block
+  # restoring the rest of the Omarchy dotlayers.
+  if [[ -n "$(git status --porcelain --untracked-files=normal -- . ':!config-omarchy-*/.config/omarchy/shell.json')" ]]; then
     echo "Omarchy migration restore skipped: ~/.public_dotfiles has uncommitted changes"
     echo "Review them before restoring dotlayers; Hyprtasking rebuild will still run."
     return 0
@@ -16,8 +18,9 @@ restore_omarchy_dotlayers() (
 
   # Use the same detector/resolver as dotlayer, including chassis overrides
   # and machine layers. Do not pull repositories or install system files here.
-  local packages
-  if ! packages=$(ruby -I "$HOME/src/dotlayer/lib" -rdotlayer -e '
+  local packages ruby_args=()
+  [[ -d "$HOME/src/dotlayer/lib" ]] && ruby_args=(-I "$HOME/src/dotlayer/lib")
+  if ! packages=$(ruby "${ruby_args[@]}" -rdotlayer -e '
     config = Dotlayer::Config.new
     detection = Dotlayer::Detector.new(config: config).detect
     Dotlayer::Resolver.new(config: config, detection: detection).resolve.each do |repo, package|

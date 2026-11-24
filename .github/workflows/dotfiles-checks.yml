@@ -1,0 +1,36 @@
+name: Dotfiles Checks
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install zsh
+        run: sudo apt-get update && sudo apt-get install -y zsh
+
+      - name: Shellcheck
+        run: |
+          shellcheck -S warning .githooks/pre-commit install.sh \
+            config-omarchy/.config/omarchy/hooks/post-update \
+            config-omarchy/.local/bin/omarchy-shell-json-relink \
+            $(git ls-files bin/.bin | while IFS= read -r f; do [ -f "$f" ] && head -n1 "$f" | grep -qE '^#!.*(bash|/sh)' && printf '%s\n' "$f"; done)
+
+      - name: Zsh syntax check
+        run: |
+          zsh -n zsh/.zshrc zsh/.zsh/extensions/*.sh
+
+      - name: Gitleaks
+        env:
+          GITLEAKS_VERSION: 8.30.1
+        run: |
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
+            | tar -xz gitleaks
+          ./gitleaks git . --redact --no-banner

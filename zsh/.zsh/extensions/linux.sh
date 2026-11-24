@@ -5,9 +5,17 @@
 ##
 ## Environment Variables
 ##
-export EDITOR='zed'
+if (( $+commands[zeditor] )) && ! (( $+commands[zed] )); then
+	export EDITOR='zeditor'
+	export VISUAL='zeditor'
+else
+	export EDITOR='zed'
+	export VISUAL='zed'
+fi
 # Omarchy's gcr agent, except in an ssh session that forwarded its own agent.
-[[ -n $SSH_CONNECTION && -S ${SSH_AUTH_SOCK:-} ]] || export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gcr/ssh"
+if [[ -n ${XDG_RUNTIME_DIR:-} ]]; then
+	[[ -n $SSH_CONNECTION && -S ${SSH_AUTH_SOCK:-} ]] || export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gcr/ssh"
+fi
 
 ##
 ## General PATH changes
@@ -22,7 +30,7 @@ alias spotify='spotify --enable-features=UseOzonePlatform,WaylandWindowDecoratio
 # Hyprland control helper: always target the most recent live instance socket.
 function hctl() {
 	local sig
-	sig="$(ls -1t /run/user/$UID/hypr/*/.socket.sock 2>/dev/null | head -n1 | xargs dirname | xargs basename)"
+	sig="$(command ls -1t /run/user/$UID/hypr/*/.socket.sock 2>/dev/null | head -n1 | xargs -r dirname | xargs -r basename)"
 	if [[ -z "$sig" ]]; then
 		echo "No active Hyprland socket found"
 		return 1

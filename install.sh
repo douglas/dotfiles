@@ -9,6 +9,11 @@
 
 set -euo pipefail
 
+repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -d "$repo_dir/.githooks" ]] && [[ -z "$(git -C "$repo_dir" config --local --get core.hooksPath 2>/dev/null || true)" ]]; then
+  git -C "$repo_dir" config --local core.hooksPath .githooks
+fi
+
 # The ~/.config/dotlayer/dotlayer.yml link only exists after the first stow,
 # so point a fresh machine straight at the private config.
 config_args=()

@@ -5,6 +5,7 @@
 ##
 ## Environment
 ##
+typeset -U path PATH fpath
 export VISUAL=zed
 export EDITOR=zed
 export _ZO_DOCTOR=0
@@ -36,11 +37,13 @@ fi
 ## Default aliases (transparent replacements)
 ##
 alias fix_term="stty sane"  # Restore terminal after Claude Code or other apps leave it in a broken state
-alias cat="bat"
-alias top="bottom"
-alias ls="eza"
-alias ll="eza -la"
-alias lt="eza -laT -I .git ."
+(( $+commands[bat] )) && alias cat="bat"
+(( $+commands[bottom] )) && alias top="bottom"
+if (( $+commands[eza] )); then
+	alias ls="eza"
+	alias ll="eza -la"
+	alias lt="eza -laT -I .git ."
+fi
 
 codex() {
 	local arg
@@ -122,7 +125,7 @@ export PATH="$PATH:$HOME/.lmstudio/bin"
 # End of LM Studio CLI section
 
 # Zoxide (must be initialized at the very end of .zshrc)
-eval "$(zoxide init --cmd cd zsh)"
+(( $+commands[zoxide] )) && eval "$(zoxide init --cmd cd zsh)"
 
 
 if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
