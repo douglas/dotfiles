@@ -108,7 +108,7 @@
           "inputs": [
             {
               "host": "f35",
-              "label": "E7",
+              "label": "F35",
               "value": "0x11"
             },
             {
