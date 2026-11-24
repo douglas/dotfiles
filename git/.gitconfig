@@ -16,6 +16,9 @@
   # side-by-side = true
   line-numbers = true
   features = line-numbers decorations catppuccin-mocha
+[include]
+  # Written by the Omarchy theme-set hook so theme changes don't dirty git/.gitconfig.
+  path = ~/.local/state/omarchy/current/theme/delta.gitconfig
 [delta "omarchy"]
   # Omarchy themes without a delta theme: syntax in the terminal's colors.
   syntax-theme = ansi

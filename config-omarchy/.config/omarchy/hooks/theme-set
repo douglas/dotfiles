@@ -103,35 +103,35 @@ update_zed() {
 
 update_bat() {
   # Unmapped themes use bat's ansi theme: the terminal's colors, which Omarchy sets.
+  # Write an untracked shell snippet (sourced by .zshrc) instead of mutating bat/config.
   local theme="${BAT_THEMES[$THEME]:-ansi}"
-
-  local config="$HOME/.config/bat/config"
-  [[ -f "$config" ]] || return
-
-  sed_inplace "s/--theme=\"[^\"]*\"/--theme=\"$theme\"/" "$config"
+  mkdir -p "$THEME_DIR"
+  printf 'export BAT_THEME=%q\n' "$theme" >"$THEME_DIR/bat.sh"
 }
 
 update_delta() {
   # Unmapped themes use the omarchy feature in .gitconfig: the terminal's colors.
+  # Write an untracked git include (loaded by git/.gitconfig) instead of mutating .gitconfig.
   local theme="${DELTA_THEMES[$THEME]:-omarchy}"
-
-  local config="$HOME/.gitconfig"
-  [[ -f "$config" ]] || return
-
-  sed_inplace "s/features = line-numbers decorations [a-z-]*/features = line-numbers decorations $theme/" "$config"
+  mkdir -p "$THEME_DIR"
+  printf '[delta]\n  features = line-numbers decorations %s\n' "$theme" >"$THEME_DIR/delta.gitconfig"
 }
 
 update_starship() {
   local palette="${STARSHIP_PALETTES[$THEME]}"
-  local config="$HOME/.config/starship.toml"
-  [[ -f "$config" ]] || return
+  local source_config="$HOME/.config/starship.toml"
+  local config="$THEME_DIR/starship.toml"
+  [[ -f "$source_config" ]] || return
+
+  mkdir -p "$THEME_DIR"
+  cp "$source_config" "$config"
 
   if [[ -n "$palette" ]] && grep -q "^\[palettes\.$palette\]" "$config"; then
     # Use a predefined palette (only if the palette section exists in the config)
     if grep -q "^palette = " "$config"; then
-      sed_inplace "s/^palette = .*/palette = '$palette'/" "$config"
+      sed -i "s/^palette = .*/palette = '$palette'/" "$config"
     else
-      sed_inplace "1i palette = '$palette'" "$config"
+      sed -i "1i palette = '$palette'" "$config"
     fi
   elif [[ -f "$COLORS_TOML" ]]; then
     # Generate an 'omarchy' palette from the current theme's colors.toml
@@ -225,8 +225,9 @@ generate_zellij_theme() {
 }
 
 update_zellij() {
-  local config="$HOME/.config/zellij/config.kdl"
-  [[ -f "$config" ]] || return
+  local source_config="$HOME/.config/zellij/config.kdl"
+  local config="$THEME_DIR/zellij.kdl"
+  [[ -f "$source_config" ]] || return
 
   local theme="${ZELLIJ_THEMES[$THEME]}"
   if [[ -z "$theme" ]]; then
@@ -235,11 +236,14 @@ update_zellij() {
     theme="omarchy"
   fi
 
+  mkdir -p "$THEME_DIR"
+  cp "$source_config" "$config"
+
   if grep -q '^theme "' "$config"; then
-    sed_inplace "s/^theme \"[^\"]*\"/theme \"$theme\"/" "$config"
+    sed -i "s/^theme \"[^\"]*\"/theme \"$theme\"/" "$config"
   else
     # Add theme line at the top of the file
-    sed_inplace "1i theme \"$theme\"" "$config"
+    sed -i "1i theme \"$theme\"" "$config"
   fi
 }
 
@@ -376,8 +380,10 @@ update_sublime_merge() {
     return
   fi
 
-  # Write through the Stow symlink; mv would replace the link with a file.
-  cat "$tmp" >"$preferences"
+  # Write only when values actually changed so stowed Preferences.sublime-settings stays clean.
+  if ! cmp -s "$tmp" "$preferences"; then
+    cat "$tmp" >"$preferences"
+  fi
   rm -f "$tmp"
 }
 

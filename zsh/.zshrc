@@ -96,6 +96,16 @@ fi
 if [[ -f ~/.local/state/omarchy/current/theme/gum.sh ]]; then
 	source ~/.local/state/omarchy/current/theme/gum.sh
 fi
+# Bat, Starship, and Zellij runtime theme overrides (keeps stowed dotfiles clean)
+if [[ -f ~/.local/state/omarchy/current/theme/bat.sh ]]; then
+	source ~/.local/state/omarchy/current/theme/bat.sh
+fi
+if [[ -f ~/.local/state/omarchy/current/theme/starship.toml ]]; then
+	export STARSHIP_CONFIG="$HOME/.local/state/omarchy/current/theme/starship.toml"
+fi
+if [[ -f ~/.local/state/omarchy/current/theme/zellij.kdl ]]; then
+	export ZELLIJ_CONFIG_FILE="$HOME/.local/state/omarchy/current/theme/zellij.kdl"
+fi
 ##
 ## Work related configurations
 ##
