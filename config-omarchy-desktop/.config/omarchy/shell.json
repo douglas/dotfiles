@@ -155,7 +155,16 @@
     },
     {
       "id": "io.voxtype.settings"
+    },
+    {
+      "id": "douglas.polkit"
     }
   ],
-  "version": 1
+  "version": 1,
+  "disabledPlugins": [
+    "omarchy.polkit"
+  ],
+  "cloneSourceRestores": [
+    "douglas.polkit"
+  ]
 }
