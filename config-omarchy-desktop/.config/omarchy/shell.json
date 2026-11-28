@@ -37,6 +37,9 @@
           "id": "omarchy.weather"
         },
         {
+          "id": "io.github.douglas.agents-plus"
+        },
+        {
           "id": "omarchy.system-update"
         }
       ],
